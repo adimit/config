@@ -1,4 +1,5 @@
 * Notes
+** TODO Make a prettier mode line with all-the-icons package
 * Emacs config
 ** Package Configuration
 *** Fix TLS
