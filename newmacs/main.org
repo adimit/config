@@ -1008,7 +1008,9 @@ in org mode.
     (org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
     :config
-    (aleks/set-org-mode-fixed-pitch-faces))
+    (aleks/set-org-mode-fixed-pitch-faces)
+    :custom
+    (org-tags-column 0))
 #+END_SRC
 
 *** Prettification
