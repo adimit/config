@@ -138,11 +138,17 @@ Activate evil mode
   (use-package magit)
   (use-package evil-magit)
 #+END_SRC
-** Smartparens
+** Parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :config
-    (smartparens-global-mode t))
+    (smartparens-global-mode t)
+    (setq show-parent-delay 0)
+    (show-paren-mode 1))
+
+  (use-package rainbow-delimiters
+    :hook ((web-mode . rainbow-delimiters-mode)
+           (emacs-lisp-mode . rainbow-delimiters-mode)))
 #+END_SRC
 ** Org-Mode
 Use =variable-pitch-mode= for org, but also correctly format
