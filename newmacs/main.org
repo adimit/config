@@ -315,11 +315,14 @@ file. Using ivy, this ends up being more usable.
 
   (use-package web-mode
     :mode (("\\.tsx$" . web-mode))
-    :hook ((web-mode . company-mode)
-           (web-mode . (lambda () (prettier-js-mode)))
-           (web-mode . (lambda () (pcase (file-name-extension buffer-file-name)
-                                    ("tsx" (my-tide-setup-hook))
-                                    (_ (my-web-mode-hook)))))))
+    :init
+    (add-hook 'web-mode-hook 'variable-pitch-mode)
+    (add-hook 'web-mode-hook 'company-mode)
+    (add-hook 'web-mode-hook 'prettier-js-mode)
+    (add-hook 'web-mode-hook (lambda () (pcase (file-name-extension buffer-file-name)
+                        ("tsx" (my-tide-setup-hook))
+                        (_ (my-web-mode-hook))))))
+
   (use-package tide
     :mode (("\\.ts$" . tide-mode)))
 
