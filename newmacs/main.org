@@ -334,3 +334,7 @@ file. Using ivy, this ends up being more usable.
   (use-package yaml-mode :mode "\\.ya?ml$")
 #+END_SRC
 * Languages
+** Graphql
+#+BEGIN_SRC emacs-lisp
+  (use-package graphql-mode)
+#+END_SRC
