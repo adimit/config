@@ -4,3 +4,4 @@
 ls-R
 /emacs/*.el
 /emacs/private.org
+/newmacs/main.el
