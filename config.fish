@@ -150,11 +150,11 @@ end
 function render_load_average
   set -l load_average $argv[1]
   set_color normal
-  if test $load_average -gt 5.0
+  if test $load_average -gt 5
     set_color --bold $fish_color_error
-  else if test $load_average -gt 2.0
+  else if test $load_average -gt 2
     set_color --bold yellow
-  else if test $load_average -gt 1.0
+  else if test $load_average -gt 1
     set_color --bold white
   end
   echo -n $load_average
