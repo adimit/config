@@ -34,11 +34,10 @@ No files with =~= everywhere.
 #+END_SRC
 *** Font
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil
-                      :family "Fira Code"
-                      :weight 'normal
-                      :width 'normal
-                      :height 110)
+  (custom-theme-set-faces
+   'user
+   '(variable-pitch ((t (:family "Sans" :height 110 :weight normal :width normal))))
+   '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
 #+END_SRC
 *** Theme
 #+BEGIN_SRC emacs-lisp
@@ -146,6 +145,12 @@ Activate evil mode
     (smartparens-global-mode t))
 #+END_SRC
 ** Org-Mode
+Use =variable-pitch-mode= for org, but also correctly format
+everything that needs fixed pitch.
+#+BEGIN_SRC emacs-lisp
+  (use-package org-variable-pitch)
+#+END_SRC
+
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (use-package org
