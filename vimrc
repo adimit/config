@@ -68,17 +68,9 @@ if has("digraphs")
      digraph ., 8230
 endif
 
-if (has('gui_running'))
-     set mousemodel=extend
-     set gcr=a:blinkon0 " no cursor blinking in gui mode
-     colorscheme mine
-     set guifont=Monaco\ 9
-     set guioptions=ac
-else
-     set mouse=""
-     colorscheme impact
-     set background=dark
-endif
+set mouse=""
+colorscheme impact
+set background=dark
 
 set showcmd
 set ruler
@@ -234,6 +226,9 @@ filetype indent on
 autocmd BufEnter *.pl set filetype=prolog "Perl sucks anyway
 ""autocmd FileType prolog <buffer> noremap <F2> :!swipl -g 'help(<cword>)'<CR><CR>
 autocmd FileType prolog setlocal suffixesadd=.pl,.plt
+
+""" SfS Website
+autocmd BufEnter *.ssi set ft=html
 
 """ Haskell
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
