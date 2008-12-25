@@ -102,6 +102,7 @@ alias pls='pl -s'
 alias nt='urxvtc'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
+alias whereami='hostname'
 
 alias rm='rm -iv'
 alias mv='mv -i'
