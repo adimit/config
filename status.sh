@@ -4,7 +4,7 @@ BG='#0a0c0f'
 FG='#aacccc'
 DATEFMT="^bg($BG) %a, %b %d ^fg(white)%H:%M"
 SLEEP=5
-HLBAK="#3a5a5a"
+HLBAK="#4060A5"
 BITMAPS="${HOME}/etc/dzen2"
 export MPD_HOST="localhost"
 
