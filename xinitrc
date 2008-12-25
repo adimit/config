@@ -19,10 +19,8 @@ if [ -d ${HOME}/opt ]; then
 fi
 
 # Start daemons
-fetchmail -m "/usr/bin/procmail -d %T"
 urxvtd -q -o -f&
 unclutter&
-pulseaudio -D &
 
 # Initialize x-environment
 setxkbmap -layout us,bg -variant dvp, -option "grp:menu_toggle" \
@@ -44,11 +42,16 @@ start_dwm() {
 }
 
 start_xmonad() {
-	set_background
+	xcompmgr&
+	cairo-clock&
 	DBGFILE="${HOME}/.xmonad/debug"
-	dbus-launch ssh-agent gpg-agent --default-cache-ttl 604800\
-	  --max-cache-ttl 1209600 --daemon xmonad > $DBGFILE&
+	set_background
+	transset-df -n "MacSlow" 0.5
+	dbus-launch ssh-agent gpg-agent --default-cache-ttl 604800 \
+	--max-cache-ttl 1209600 --daemon $HOME/.cabal/bin/xmonad > $DBGFILE&
 	XMPID=$!
+	plasma&
+	xscreensaver&
 	wait $XMPID
 }
 
@@ -57,21 +60,17 @@ start_gnome() {
 }
 
 start_kde() {
-	kdeinit4
-	kwin&
-	plasma
+	startkde
 }
 
 
-case $1 in
+case $2 in
 	xmonad) start_xmonad
 	;;
 	gnome) start_gnome
 	;;
-	kde) start_kde
+	kde4) start_kde
 	;;
 	dwm) start_dwm
-	;;
-	*) start_xmonad
 	;;
 esac
