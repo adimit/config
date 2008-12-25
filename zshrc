@@ -12,6 +12,17 @@ fi
 
 set -o vi
 PATH="${HOME}/bin:${PATH}"
+export PATH="$HOME/bin:${PATH}"
+if [ -d ${HOME}/opt ]; then
+	for i in ${HOME}/opt/*/bin; do
+		PATH="$i:${PATH}"
+	done
+fi
+if [ -d /opt ]; then
+	for i in /opt/*/bin; do
+		PATH="$i:${PATH}"
+	done
+fi
 
 ### Environment
 ###############
@@ -87,8 +98,7 @@ alias gvim='gvim  -p'
 alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
 alias ccp="rsync -rvr --progress"
-alias pl='swipl'
-alias pls='swipl -s'
+alias pls='pl -s'
 alias nt='urxvtc'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
@@ -100,10 +110,10 @@ alias cp='cp -i'
 alias cpu='ps aux | sort -k 3,3 | tail '
 alias mem='ps aux | sort -k 4,4 | tail '
 
-alias cdrecord='sudo wodim driveropts=burnfree --verbose dev=/dev/hdb'
+alias cdrecord='sudo cdrecord driveropts=burnfree --verbose dev=/dev/sr0'
 
 # pastebins
-alias rafb='pastebinit -b http://rafb.net -a Mantaar -i'
+alias rafb='pastebinit -i'
 
 alias news='newsbeuter'
 
@@ -120,6 +130,7 @@ hash -d wp=~/etc/wallpapers
 hash -d music=~/music
 hash -d src=~/src
 hash -d werti=~/src/WERTi
+hash -d wiki=~/var/wiki/wikidata
 
 # common typos
 alias iv=vi
@@ -193,7 +204,7 @@ q() {
 # copy all torrent files to my torrent server
 copytorrents() {
 	find ${HOME}/var/tmp -maxdepth  1 -name '*torrent' \
-	-exec 'scp' '{}' 'payak:var/p2p' ';' -delete
+	-exec 'scp' '{}' 'aleks@payak:var/p2p' ';' -delete
 }
 
 # find a todo file somewhere down the fs hierarchy
@@ -270,8 +281,22 @@ zle -N zle-keymap-select
 ## Run the curt system more comfortably:
 
 curt() {
-	swipl -g curt -s $1
+	pl -g curt -s $1
 }
+
+# Connect SOCKS to mendelssohn
+mendsocks() {
+	ssh -fND localhost:8880 aleks@mendelssohn.sfs.uni-tuebingen.de
+}
+
+pacs () {
+       echo -e "$(pacman -Ss $@ | sed \
+       -e 's#core/.*#\\033[1;31m&\\033[0;37m#g' \
+       -e 's#extra/.*#\\033[0;32m&\\033[0;37m#g' \
+       -e 's#community/.*#\\033[1;35m&\\033[0;37m#g' \
+       -e 's#^.*/.* [0-9].*#\\033[0;36m&\\033[0;37m#g' )"
+}
+
 
 
 ### Cache
