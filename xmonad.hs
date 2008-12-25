@@ -20,6 +20,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DwmPromote
 import XMonad.Actions.FlexibleResize as Flexi
 import XMonad.Actions.Submap
+import XMonad.Actions.GridSelect
 import XMonad.Util.Run
 import XMonad.Layout.Combo
 import XMonad.Layout.Dishes
@@ -34,6 +35,8 @@ import XMonad.Layout.WindowArranger
 import XMonad.Prompt.Shell
 import XMonad.Actions.Search
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.FadeInactive
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Actions.CycleRecentWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.CopyWindow
@@ -42,6 +45,7 @@ import XMonad.Util.Loggers as L
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.NoBorders
 import XMonad.Layout.MultiToggle.Instances
+import XMonad.Layout.Monitor
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import qualified Data.Maybe as DM
@@ -96,16 +100,16 @@ myWorkspaces = [  wsCode
 		, wsMisc ]
 
 -- Graphical setup
-myBgColor		= "#0a0c0f"
-myFgColor		= "#aacccc"
-myBgColor'		= "'" ++ myBgColor ++ "'" -- quote-escaped for dzen2
-myFgColor'		= "'" ++ myFgColor ++ "'" -- quote-escaped for dzen2
-myFont			= "'-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*'"
-myNormalBorderColor	= myBgColor
-myFocusedBorderColor	= myFgColor
-myBitmapsDir		= "/home/aleks/etc/dzen2"
-myHighlightFG		= "#eeeeee"
-myHighlightBG		= "#3a5a5a"
+myBgColor            = "#0a0c0f"
+myFgColor            = "#aacccc"
+myBgColor'           = "'" ++ myBgColor ++ "'" -- quote-escaped for dzen2
+myFgColor'           = "'" ++ myFgColor ++ "'" -- quote-escaped for dzen2
+myFont               = "'-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*'"
+myNormalBorderColor  = myBgColor
+myFocusedBorderColor = myFgColor
+myBitmapsDir         = "/home/adimit/etc/dzen2"
+myHighlightFG        = "#eeeeee"
+myHighlightBG        = "#6080B5"
 
 -- Borders
 -- Default Gaps
@@ -118,7 +122,7 @@ dzen2 = "dzen2 -ta l -bg " ++ myBgColor'
 		   ++ " -w "  ++ "1200"
 		   ++ " -ta l"
 
-dzen2' = "/home/aleks/bin/status.sh | HLBAK='"++ myHighlightBG ++"' dzen2 -ta l -bg " ++ myBgColor'
+dzen2' = "/home/adimit/bin/status.sh | HLBAK='"++ myHighlightBG ++"' dzen2 -ta l -bg " ++ myBgColor'
                    ++ " -fg " ++ myFgColor'
 		   ++ " -fn " ++ myFont
 		   ++ " -w "  ++ "205"
@@ -134,26 +138,26 @@ leo       = searchEngine "dict.leo.org"   "http://dict.leo.org/ende?lp=ende&lang
 -- Configs
 myTabbedConf =
     defaultTheme { activeColor 	= "#A0A5A0"
-		    , inactiveColor 	= "#202A24"
-		    , urgentColor 	= "#FF8800"
-		    , activeBorderColor   = "#FFFFFF"
-		    , inactiveBorderColor = "#BBBBBB"
-		    , urgentBorderColor   = "##00FF00"
-		    , activeTextColor     = "#FFFFFF"
-		    , inactiveTextColor   = "#BFBFBF"
-		    , urgentTextColor     = "#FF0000"
-		    , fontName		= "-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*"
-    }
+		 , inactiveColor 	= "#202A24"
+		 , urgentColor 	= "#FF8800"
+		 , activeBorderColor   = "#FFFFFF"
+		 , inactiveBorderColor = "#BBBBBB"
+		 , urgentBorderColor   = "##00FF00"
+		 , activeTextColor     = "#FFFFFF"
+		 , inactiveTextColor   = "#BFBFBF"
+		 , urgentTextColor     = "#FF0000"
+		 , fontName            = myFont
+                 }
 
-myXPConfig = defaultXPConfig {
-	--font		= myFont
-	 bgColor	= myBgColor
+myXPConfig = defaultXPConfig
+	{ font		= myFont
+	, bgColor	= myBgColor
 	, fgColor	= myHighlightFG
 	, fgHLight	= myHighlightBG
 	, bgHLight	= myHighlightFG
 	, borderColor	= myFocusedBorderColor
 	, position	= Bottom
-}
+        }
 
 getWSCol :: WorkspaceId -> [Char] -> [Char]
 getWSCol wsName dftCol = 
@@ -165,13 +169,13 @@ myPP h = defaultPP
 	{ ppCurrent  = (\wsName -> dzenColor "black" (getWSCol wsName myHighlightBG) (wrap " " " " wsName))
 	, ppHidden   = (\wsName -> dzenColor ( getWSCol wsName myFocusedBorderColor) "" wsName)
 	, ppLayout   = (\wsName -> "^bg()^fg()" ++ case wsName of
-			"Tall"			-> " ^i(" ++ myBitmapsDir ++ "/tall.xbm) "
-			"Mirror Tall"			-> " ^i(" ++ myBitmapsDir ++ "/mirrortall.xbm) "
-			"Full"			-> " ^i(" ++ myBitmapsDir ++ "/full.xbm) "
-			"Grid True"		-> " ^i(" ++ myBitmapsDir ++ "/grid.xbm) "
-			"Dishes 2 (1%6)"	-> " ^i(" ++ myBitmapsDir ++ "/dishes.xbm) "
-			"Mirror Dishes 2 (1%6)"	-> " ^i(" ++ myBitmapsDir ++ "/dishes_mirrored.xbm) "
-			"Tabbed Simplest"	-> " ^i(" ++ myBitmapsDir ++ "/tabbed.xbm) "
+			"Tall"                  -> " ^i(" ++ myBitmapsDir ++ "/tall.xbm) "
+			"Mirror Tall"           -> " ^i(" ++ myBitmapsDir ++ "/mirrortall.xbm) "
+			"Full"                  -> " ^i(" ++ myBitmapsDir ++ "/full.xbm) "
+			"Grid True"             -> " ^i(" ++ myBitmapsDir ++ "/grid.xbm) "
+			"Dishes 2 (1%6)"        -> " ^i(" ++ myBitmapsDir ++ "/dishes.xbm) "
+			"Mirror Dishes 2 (1%6)" -> " ^i(" ++ myBitmapsDir ++ "/dishes_mirrored.xbm) "
+			"Tabbed Simplest"       -> " ^i(" ++ myBitmapsDir ++ "/tabbed.xbm) "
 			otherwise               -> wsName)
 	, ppSep     = " "
 	, ppTitle   = dzenColor myHighlightFG myHighlightBG . wrap " " "^bg(black)" . staticString 100
@@ -273,9 +277,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,               xK_dollar),     toggleWS)
 
     -- Multimedia keys (don't forget xmodmap)
-    , ((0                    , 0xff000001), unsafeSpawn "amixer -q sset Master 1%-")
-    , ((0                    , 0xff000002), unsafeSpawn "amixer -q sset Master 1%+")
-    , ((0                    , 0xff000003), unsafeSpawn "amixer -q sset Master toggle")
+    , ((0                    , xK_XF86AudioRaiseVolume), unsafeSpawn "amixer -q sset Master 3%+")
+    , ((0                    , xK_XF86AudioLowerVolume), unsafeSpawn "amixer -q sset Master 3%-")
+    , ((0                    , xK_XF86AudioMute), unsafeSpawn "amixer -q sset Master toggle")
 
     -- remote multimedia keys
     , ((modMask .|. shiftMask,          xK_Left   ), unsafeSpawn "MPD_HOST=\"payak\" mpc volume -1")
@@ -285,7 +289,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,               xK_BackSpace),     shellPrompt myXPConfig)
 
     -- mpc control
-
     , ((modMask , xK_c), submap . M.fromList $
 		    [ ((0, xK_n),     spawn "mpc next")
 		    , ((0, xK_p),     spawn "mpc prev")
@@ -295,7 +298,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 		    ])
 
     -- remote mpc control
-
     , ((modMask , xK_r), submap . M.fromList $
 		    [ ((0, xK_n),     spawn "MPD_HOST=\"payak\" mpc next")
 		    , ((0, xK_p),     spawn "MPD_HOST=\"payak\" mpc prev")
@@ -305,7 +307,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 		    ])
 
     -- Prompt.AppendFile
-    , ((modMask, xK_F3), appendFilePrompt myXPConfig "/home/aleks/TODO")
+    , ((modMask, xK_F3), appendFilePrompt myXPConfig "/home/adimit/TODO")
 
     -- Prompt.Man
     , ((modMask, xK_F1), manPrompt myXPConfig)
@@ -330,10 +332,17 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- MultiToggle
     , ((modMask .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
     , ((modMask .|. shiftMask, xK_m), sendMessage $ Toggle MIRROR)
+
+    -- Monitor overlay (toggle widget layer)
+    , ((modMask, xK_m     ), sendMessage ToggleMonitor)
+
+    -- GridSelect
+    , ((modMask, xK_g     ), (gridselect defaultGSConfig) >>= (\w -> case w of
+                                Just w -> focus w >> windows W.shiftMaster 
+                                Nothing -> return()))
     ]
 
     ++
-
 
     -- dynamic workspaces
     [ ((modMask .|. shiftMask, xK_BackSpace ), removeWorkspace)
@@ -366,6 +375,9 @@ wsKeyList = [xK_ampersand
 		, xK_bracketright
 		, xK_semicolon]
 
+xK_XF86AudioLowerVolume = 0x1008ff11
+xK_XF86AudioRaiseVolume = 0x1008ff13
+xK_XF86AudioMute        = 0x1008ff12
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
@@ -397,14 +409,18 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- which denotes layout choice.
 --
 myLayout =
-	workspaceDir "~" $
-	avoidStruts(
-		    id . smartBorders
+	workspaceDir "~"
+        $ ewmhDesktopsLayout
+	$ avoidStruts(
+
+		    id
+		    . smartBorders
 		    . mkToggle(NOBORDERS ?? FULL ?? EOT)
 		    . mkToggle(single MIRROR)
+		    . addPersistentMonitor (ClassName "Cairo-clock" `And` Title "MacSlow's Cairo-Clock") (Rectangle (1400-150) (100) 150 150)
 		    -- $ hintedTile HT.Tall
 		    $ tiled
-		    ||| Dishes 2 (1/6)
+		    -- ||| Dishes 2 (1/6)
 		    -- ||| tabbed shrinkText myTabbedConf
 		   )
   where
@@ -438,11 +454,12 @@ myLayout =
 --
 myManageHook = composeAll 
     [ className =? "MPlayer"        --> doFloat
-    , className =? "Firefox"      --> doF (W.shift wsWeb)
+    , className =? "Navigator"      --> doF (W.shift wsWeb)
     , className =? "Eclipse"        --> doF (W.shift wsCode')
     , className =? "Opera"  	    --> doF (W.shift wsDoc)
     , className =? "Gimp"           --> doFloat
     , className =? "Gimp"           --> doF (W.shift "gimp")
+    , className =? "Cairo-clock"    --> (ask >>= \w -> liftX (hide w) >> doF (W.delete w))
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
     <+> manageDocks
@@ -471,7 +488,7 @@ main = do
 	din <- spawnPipe dzen2
 	spawnPipe dzen2'
 	xmonad $ defaultConfig {
-        terminal             = myTerminal
+          terminal           = myTerminal
 	, modMask            = msModMask
         , workspaces         = myWorkspaces
         , normalBorderColor  = myNormalBorderColor
@@ -481,8 +498,15 @@ main = do
 	, startupHook        = setWMName "LG3D"
         , layoutHook         = myLayout
         , manageHook         = myManageHook
-	, logHook            = dynamicLogWithPP $ myPP din
+	, logHook            = (dynamicLogWithPP $ myPP din) >> myLogHook
 	}
+
+myLogHook :: X ()
+myLogHook = fadeHook >> ewmhDesktopsLogHook
+
+-- LoogHook: Fade hook
+fadeHook :: X ()
+fadeHook = fadeInactiveLogHook 0xdddddddd
 
 -- Custom loggers
 logLoad :: L.Logger
