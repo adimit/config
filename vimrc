@@ -69,7 +69,7 @@ if has("digraphs")
 endif
 
 set mouse=""
-colorscheme impact
+colorscheme default
 set background=dark
 
 set showcmd
@@ -79,12 +79,18 @@ set ruler
 set laststatus=2
 set statusline=%t\ %y
 set statusline+=%=                           " right align
-set statusline+=%([%{Tlist_Get_Tagname_By_Line()}]%)\ %l/%L,%c%m(%P)
+if exists("*Tlist_Get_Tagname_By_Line()")
+	set statusline+=%([%{Tlist_Get_Tagname_By_Line()}]%)\ %l/%L,%c%m(%P)
+else
+	set statusline+=%l/%L,%c%m(%P)
+endif
 
 """ Tabbing
-set showtabline=2 " always show a tabline
-set switchbuf=usetab
-" find files in new buffer!
+if exists("&showtabline")
+	set showtabline=2 " always show a tabline
+	set switchbuf=usetab
+endif
+" find files in new buffer
 nnoremap gf <C-W>gf
 " open file under cursor, create if necessary
 nnoremap gF :view <cfile><cr>
@@ -247,11 +253,11 @@ autocmd FileType php let php_folding=1
 """ Vim
 let g:vimsyn_folding='af'
 
-function! ShowSynStack()
-	for id in synstack(line("."), col("."))
-		echo synIDattr(id, "name")
-	endfor
-endfunction
+" function! ShowSynStack()
+" 	for id in synstack(line("."), col("."))
+" 		echo synIDattr(id, "name")
+" 	endfor
+" endfunction
 
 nnoremap <Leader><S-S> :call ShowSynStack()<CR>
 nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
