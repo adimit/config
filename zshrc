@@ -83,16 +83,22 @@ setopt autocd
 ###########
 
 # color for different kinds of documents
-eval `dircolors`
+if [ -x $(which dircolors) ]; then
+	eval `dircolors`
+fi
 
 ### Simple command aliases
 alias vi=vim
-alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
+if [ $(uname) = "Linux" ]; then
+	alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
+elif [ $(uname) = "Darwin" ]; then
+	alias ls='ls -GFC' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
+fi
+alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
 alias du='du -h' df='df -h'
 alias umerge='emerge -C'
 alias iwscan="/sbin/iwlist eth1 scan"
-alias grep='grep --color="auto"'
 alias vim='vim -p'
 alias gvim='gvim  -p'
 alias scp='scp -r'
