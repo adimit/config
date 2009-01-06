@@ -3,7 +3,6 @@
 # Thu Sep 27 02:00:44 CEST 2007
 #
 # Aleksandar Dimitrov
-#
 
 # Set keymap
 if [ $TERM = "linux" ]; then
@@ -109,6 +108,7 @@ alias nt='urxvtc'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
 alias whereami='hostname'
+alias tr='transmission-remote'
 
 alias rm='rm -iv'
 alias mv='mv -i'
@@ -211,7 +211,7 @@ q() {
 # copy all torrent files to my torrent server
 copytorrents() {
 	find ${HOME}/var/tmp -maxdepth  1 -name '*torrent' \
-	-exec 'scp' '{}' 'aleks@payak:var/p2p' ';' -delete
+	-exec 'transmission-remote' 'kumar' '-a' '{}' ';' -delete
 }
 
 # find a todo file somewhere down the fs hierarchy
@@ -261,8 +261,8 @@ if [ $TERM = "rxvt-unicode" ]; then
 fi
 
 zle-keymap-select() {
-	local showcmd="[C]"
-	local showins="[I]"
+	local showcmd="_ "
+	local showins="| "
 	if [[ $KEYMAP = vicmd ]]; then
 		if [[ $PS1 != ${showcmd}* ]]; then
 			if [[ $PS1 = ${showins}* ]]; then
@@ -311,11 +311,10 @@ zstyle ':completion::complete:*' use-cache 1
 
 source ${HOME}/.zshrc.local
 
-### Workaround for tiling WMs and urxvt (doesn't work)
-sleep 0.2 && kill -SIGWINCH $$
+if [[ -n $SSH_CLIENT ]]; then
+	PROMPTHOST="$(hostname) "
+fi
 
 ## Prompt
-autoload -U promptinit
-promptinit
-PS1="%{${fg[green]}${bg[default]}%}%{${fg[cyan]}${bg[default]}%}%D{%H:%M}%(?.. %B%{${fg[red]}${bg[default]}%}%?%b)%{${bg[default]}${fg[green]}%} %# %{${fg[default]}${bg[default]}%}"
-RPS1="%B%{${fg[blue]}${bg[default]}%}%~%{${fg[green]}${bg[default]}%}%{${fg[default]}${bg[default]}%}%b"
+PS1="%F{blue}$PROMPTHOST%f%1(j.%F{yellow}%j%f .)%(?..%B%F{red}%?%f%b )%(#.%B%F{red}.%F{green})%#%f%b "
+RPS1="%F{blue}%~%f"
