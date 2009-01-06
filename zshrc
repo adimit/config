@@ -311,7 +311,7 @@ pacs () {
 zstyle ':completion::complete:*' use-cache 1
 
 if [[ -n $SSH_CLIENT ]]; then
-	PROMPTHOST="$(hostname) "
+	PROMPTHOST="$(hostname -s) "
 fi
 
 ## Prompt
