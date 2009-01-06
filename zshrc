@@ -92,6 +92,7 @@ if [ $(uname) = "Linux" ]; then
 	alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 elif [ $(uname) = "Darwin" ]; then
 	alias ls='ls -GFC' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
+	export TERM="xterm-color"
 fi
 alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
@@ -309,8 +310,6 @@ pacs () {
 ### Cache
 zstyle ':completion::complete:*' use-cache 1
 
-source ${HOME}/.zshrc.local
-
 if [[ -n $SSH_CLIENT ]]; then
 	PROMPTHOST="$(hostname) "
 fi
@@ -318,3 +317,5 @@ fi
 ## Prompt
 PS1="%F{blue}$PROMPTHOST%f%1(j.%F{yellow}%j%f .)%(?..%B%F{red}%?%f%b )%(#.%B%F{red}.%F{green})%#%f%b "
 RPS1="%F{blue}%~%f"
+
+source ${HOME}/.zshrc.local
