@@ -27,6 +27,7 @@ import XMonad.Layout.Dishes
 import XMonad.Layout.Grid
 import XMonad.Layout.HintedGrid as HG
 import XMonad.Layout.HintedTile as HT
+import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Square
 import XMonad.Layout.Tabbed
 import XMonad.Layout.TwoPane
@@ -334,11 +335,11 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_m), sendMessage $ Toggle MIRROR)
 
     -- Monitor overlay (toggle widget layer)
-    , ((modMask, xK_m     ), sendMessage ToggleMonitor)
+    , ((modMask, xK_m     ), broadcastMessage ToggleMonitor >> refresh)
 
     -- GridSelect
     , ((modMask, xK_g     ), (gridselect defaultGSConfig) >>= (\w -> case w of
-                                Just w -> focus w >> windows W.shiftMaster 
+                                Just w  -> focus w >> windows W.shiftMaster 
                                 Nothing -> return()))
     ]
 
@@ -398,6 +399,19 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 ------------------------------------------------------------------------
 -- Layouts:
 --
+
+-- Monitor Layout:
+-- Cairo-Clock
+
+clock = monitor
+        { prop = ClassName "Cairo-clock" `And` Title "MacSlow's Cairo-Clock"
+        , rect = Rectangle (1400-150) (100) 150 150
+        , persistent = True
+        , opacity = 0x88888888
+        , visible = True -- Hide on start?
+        , name = "clock"
+        }
+
 -- tabbed layout config:
 
 -- You can specify and transform your layouts by modifying these values.
@@ -412,12 +426,11 @@ myLayout =
 	workspaceDir "~"
         $ ewmhDesktopsLayout
 	$ avoidStruts(
-
 		    id
 		    . smartBorders
 		    . mkToggle(NOBORDERS ?? FULL ?? EOT)
 		    . mkToggle(single MIRROR)
-		    . addPersistentMonitor (ClassName "Cairo-clock" `And` Title "MacSlow's Cairo-Clock") (Rectangle (1400-150) (100) 150 150)
+                    . ModifiedLayout clock
 		    -- $ hintedTile HT.Tall
 		    $ tiled
 		    -- ||| Dishes 2 (1/6)
@@ -459,10 +472,10 @@ myManageHook = composeAll
     , className =? "Opera"  	    --> doF (W.shift wsDoc)
     , className =? "Gimp"           --> doFloat
     , className =? "Gimp"           --> doF (W.shift "gimp")
-    , className =? "Cairo-clock"    --> (ask >>= \w -> liftX (hide w) >> doF (W.delete w))
+    -- , className =? "Cairo-clock"    --> (ask >>= \w -> liftX (hide w) >> doF (W.delete w))
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
-    <+> manageDocks
+    <+> manageDocks <+> manageMonitor clock
  
  
 ------------------------------------------------------------------------
