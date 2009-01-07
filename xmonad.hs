@@ -28,6 +28,7 @@ import XMonad.Layout.Grid
 import XMonad.Layout.HintedGrid as HG
 import XMonad.Layout.HintedTile as HT
 import XMonad.Layout.LayoutModifier
+import qualified XMonad.Layout.Magnifier as Mag
 import XMonad.Layout.Square
 import XMonad.Layout.Tabbed
 import XMonad.Layout.TwoPane
@@ -177,6 +178,9 @@ myPP h = defaultPP
 			"Dishes 2 (1%6)"        -> " ^i(" ++ myBitmapsDir ++ "/dishes.xbm) "
 			"Mirror Dishes 2 (1%6)" -> " ^i(" ++ myBitmapsDir ++ "/dishes_mirrored.xbm) "
 			"Tabbed Simplest"       -> " ^i(" ++ myBitmapsDir ++ "/tabbed.xbm) "
+                        "Magnifier Tall"        -> " ^i(" ++ myBitmapsDir ++ "/magnifier.xbm) "
+                        "Mirror Magnifier Tall" -> " ^i(" ++ myBitmapsDir ++ "/mirrormagnifier.xbm) "
+
 			otherwise               -> wsName)
 	, ppSep     = " "
 	, ppTitle   = dzenColor myHighlightFG myHighlightBG . wrap " " "^bg(black)" . staticString 100
@@ -432,7 +436,7 @@ myLayout =
 		    . mkToggle(single MIRROR)
                     . ModifiedLayout clock
 		    -- $ hintedTile HT.Tall
-		    $ tiled
+		    $ tiled ||| Mag.magnifiercz 1.2 tiled
 		    -- ||| Dishes 2 (1/6)
 		    -- ||| tabbed shrinkText myTabbedConf
 		   )
