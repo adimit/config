@@ -299,6 +299,7 @@ pacs () {
 }
 
 
+autoload -U zmv
 
 ### Cache
 zstyle ':completion::complete:*' use-cache 1
