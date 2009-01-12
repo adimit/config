@@ -70,7 +70,11 @@ endif
 
 set mouse=""
 colorscheme default
-set background=dark
+if $TERM_PROGRAM == "APPLE_TERMINAL"
+	set background=light
+else
+	set background=dark
+endif
 
 set showcmd
 set ruler
