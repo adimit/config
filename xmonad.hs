@@ -27,6 +27,8 @@ import XMonad.Layout.Dishes
 import XMonad.Layout.Grid
 import XMonad.Layout.HintedGrid as HG
 import XMonad.Layout.HintedTile as HT
+import XMonad.Layout.LayoutModifier
+import qualified XMonad.Layout.Magnifier as Mag
 import XMonad.Layout.Square
 import XMonad.Layout.Tabbed
 import XMonad.Layout.TwoPane
@@ -74,30 +76,30 @@ wsRead = "read"
 -- Workspace colors map
 wsCols :: M.Map WorkspaceId [Char]
 wsCols = M.fromList $
-	[ (wsCode,  "#aaccee")
-	, (wsWeb,   "#eebbaa")
-	, (wsCode', "#aa99ee")
-	, (wsMail,  "#bb99aa")
-	, (wsDoc,   "#bbdd99")
-	, (wsWork,  "#edcd88")
-	, (wsTest,  "#ee8844")
-	, (wsMisc,  "grey90")
-	, (wsLog,   "#ee9988")
-	, (wsWrite, "#aaeebb")
-	, (wsRead,  "#888888") ]
+        [ (wsCode,  "#aaccee")
+        , (wsWeb,   "#eebbaa")
+        , (wsCode', "#aa99ee")
+        , (wsMail,  "#bb99aa")
+        , (wsDoc,   "#bbdd99")
+        , (wsWork,  "#edcd88")
+        , (wsTest,  "#ee8844")
+        , (wsMisc,  "grey90")
+        , (wsLog,   "#ee9988")
+        , (wsWrite, "#aaeebb")
+        , (wsRead,  "#888888") ]
 
 -- Workspaces, as xmonad knows them
 myWorkspaces = [  wsCode
-		, wsCode'
-		, wsMail
-		, wsWeb
-		, wsDoc
-		, wsTest
-		, wsWrite
-		, wsRead
-		, wsWork
-		, wsLog
-		, wsMisc ]
+                , wsCode'
+                , wsMail
+                , wsWeb
+                , wsDoc
+                , wsTest
+                , wsWrite
+                , wsRead
+                , wsWork
+                , wsLog
+                , wsMisc ]
 
 -- Graphical setup
 myBgColor            = "#0a0c0f"
@@ -118,16 +120,16 @@ myDefaultGaps = [(14,14,0,0)]
 
 dzen2 = "dzen2 -ta l -bg " ++ myBgColor'
                    ++ " -fg " ++ myFgColor'
-		   ++ " -fn " ++ myFont
-		   ++ " -w "  ++ "1200"
-		   ++ " -ta l"
+                   ++ " -fn " ++ myFont
+                   ++ " -w "  ++ "1200"
+                   ++ " -ta l"
 
 dzen2' = "/home/adimit/bin/status.sh | HLBAK='"++ myHighlightBG ++"' dzen2 -ta l -bg " ++ myBgColor'
                    ++ " -fg " ++ myFgColor'
-		   ++ " -fn " ++ myFont
-		   ++ " -w "  ++ "205"
-		   ++ " -x "  ++ "1195"
-		   ++ " -ta r -l 3 -u"
+                   ++ " -fn " ++ myFont
+                   ++ " -w "  ++ "205"
+                   ++ " -x "  ++ "1195"
+                   ++ " -ta r -l 3 -u"
 
 -- Search Engines.
 lastfm    = searchEngine "last.fm"        "http://www.last.fm/music/"
@@ -137,64 +139,67 @@ leo       = searchEngine "dict.leo.org"   "http://dict.leo.org/ende?lp=ende&lang
 
 -- Configs
 myTabbedConf =
-    defaultTheme { activeColor 	= "#A0A5A0"
-		 , inactiveColor 	= "#202A24"
-		 , urgentColor 	= "#FF8800"
-		 , activeBorderColor   = "#FFFFFF"
-		 , inactiveBorderColor = "#BBBBBB"
-		 , urgentBorderColor   = "##00FF00"
-		 , activeTextColor     = "#FFFFFF"
-		 , inactiveTextColor   = "#BFBFBF"
-		 , urgentTextColor     = "#FF0000"
-		 , fontName            = myFont
+    defaultTheme { activeColor         = "#A0A5A0"
+                 , inactiveColor       = "#202A24"
+                 , urgentColor         = "#FF8800"
+                 , activeBorderColor   = "#FFFFFF"
+                 , inactiveBorderColor = "#BBBBBB"
+                 , urgentBorderColor   = "##00FF00"
+                 , activeTextColor     = "#FFFFFF"
+                 , inactiveTextColor   = "#BFBFBF"
+                 , urgentTextColor     = "#FF0000"
+                 , fontName            = myFont
                  }
 
 myXPConfig = defaultXPConfig
-	{ font		= myFont
-	, bgColor	= myBgColor
-	, fgColor	= myHighlightFG
-	, fgHLight	= myHighlightBG
-	, bgHLight	= myHighlightFG
-	, borderColor	= myFocusedBorderColor
-	, position	= Bottom
+        { font            = myFont
+        , bgColor         = myBgColor
+        , fgColor         = myHighlightFG
+        , fgHLight        = myHighlightBG
+        , bgHLight        = myHighlightFG
+        , borderColor     = myFocusedBorderColor
+        , position        = Bottom
         }
 
 getWSCol :: WorkspaceId -> [Char] -> [Char]
 getWSCol wsName dftCol = 
-	case (M.lookup wsName wsCols) of
-		Nothing -> dftCol
-		Just color -> color
+        case (M.lookup wsName wsCols) of
+                Nothing -> dftCol
+                Just color -> color
 
 myPP h = defaultPP
-	{ ppCurrent  = (\wsName -> dzenColor "black" (getWSCol wsName myHighlightBG) (wrap " " " " wsName))
-	, ppHidden   = (\wsName -> dzenColor ( getWSCol wsName myFocusedBorderColor) "" wsName)
-	, ppLayout   = (\wsName -> "^bg()^fg()" ++ case wsName of
-			"Tall"                  -> " ^i(" ++ myBitmapsDir ++ "/tall.xbm) "
-			"Mirror Tall"           -> " ^i(" ++ myBitmapsDir ++ "/mirrortall.xbm) "
-			"Full"                  -> " ^i(" ++ myBitmapsDir ++ "/full.xbm) "
-			"Grid True"             -> " ^i(" ++ myBitmapsDir ++ "/grid.xbm) "
-			"Dishes 2 (1%6)"        -> " ^i(" ++ myBitmapsDir ++ "/dishes.xbm) "
-			"Mirror Dishes 2 (1%6)" -> " ^i(" ++ myBitmapsDir ++ "/dishes_mirrored.xbm) "
-			"Tabbed Simplest"       -> " ^i(" ++ myBitmapsDir ++ "/tabbed.xbm) "
-			otherwise               -> wsName)
-	, ppSep     = " "
-	, ppTitle   = dzenColor myHighlightFG myHighlightBG . wrap " " "^bg(black)" . staticString 100
-	, ppOutput  = hPutStrLn h
-	-- , ppExtras  = logLoad : L.date ("^pa(1250)^bg() %a, %b %d ^fg(white)%H:%M^fg()") : []
-	}
+        { ppCurrent  = (\wsName -> dzenColor "black" (getWSCol wsName myHighlightBG) (wrap " " " " wsName))
+        , ppHidden   = (\wsName -> dzenColor ( getWSCol wsName myFocusedBorderColor) "" wsName)
+        , ppLayout   = (\wsName -> "^bg()^fg()" ++ case wsName of
+                        "Tall"                  -> " ^i(" ++ myBitmapsDir ++ "/tall.xbm) "
+                        "Mirror Tall"           -> " ^i(" ++ myBitmapsDir ++ "/mirrortall.xbm) "
+                        "Full"                  -> " ^i(" ++ myBitmapsDir ++ "/full.xbm) "
+                        "Grid True"             -> " ^i(" ++ myBitmapsDir ++ "/grid.xbm) "
+                        "Dishes 2 (1%6)"        -> " ^i(" ++ myBitmapsDir ++ "/dishes.xbm) "
+                        "Mirror Dishes 2 (1%6)" -> " ^i(" ++ myBitmapsDir ++ "/dishes_mirrored.xbm) "
+                        "Tabbed Simplest"       -> " ^i(" ++ myBitmapsDir ++ "/tabbed.xbm) "
+                        "Magnifier Tall"        -> " ^i(" ++ myBitmapsDir ++ "/magnifier.xbm) "
+                        "Mirror Magnifier Tall" -> " ^i(" ++ myBitmapsDir ++ "/mirrormagnifier.xbm) "
+
+                        otherwise               -> wsName)
+        , ppSep     = " "
+        , ppTitle   = dzenColor myHighlightFG myHighlightBG . wrap " " "^bg(black)" . staticString 100
+        , ppOutput  = hPutStrLn h
+        -- , ppExtras  = logLoad : L.date ("^pa(1250)^bg() %a, %b %d ^fg(white)%H:%M^fg()") : []
+        }
 
 -- Keymaps
 searchEngineMap method = M.fromList $
-	[ ((0, xK_g), method google)
-	, ((0, xK_w), method wikipedia)
-	, ((0, xK_s), method scholar)
-	, ((0, xK_y), method youtube)
-	, ((0, xK_m), method maps)
-	, ((0, xK_p), method piratebay)
-	, ((0, xK_l), method lastfm)
-	, ((0, xK_d), method leo)
-	, ((shiftMask, xK_p), method piratebay')
-	]
+        [ ((0, xK_g), method google)
+        , ((0, xK_w), method wikipedia)
+        , ((0, xK_s), method scholar)
+        , ((0, xK_y), method youtube)
+        , ((0, xK_m), method maps)
+        , ((0, xK_p), method piratebay)
+        , ((0, xK_l), method lastfm)
+        , ((0, xK_d), method leo)
+        , ((shiftMask, xK_p), method piratebay')
+        ]
 
 
 -- modmasks
@@ -290,21 +295,21 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- mpc control
     , ((modMask , xK_c), submap . M.fromList $
-		    [ ((0, xK_n),     spawn "mpc next")
-		    , ((0, xK_p),     spawn "mpc prev")
-		    , ((0, xK_r),     spawn "mpc repeat")
-		    , ((0, xK_space), spawn "mpc toggle")
-		    , ((0, xK_c),     spawn "mpc crop")
-		    ])
+                    [ ((0, xK_n),     spawn "mpc next")
+                    , ((0, xK_p),     spawn "mpc prev")
+                    , ((0, xK_r),     spawn "mpc repeat")
+                    , ((0, xK_space), spawn "mpc toggle")
+                    , ((0, xK_c),     spawn "mpc crop")
+                    ])
 
     -- remote mpc control
     , ((modMask , xK_r), submap . M.fromList $
-		    [ ((0, xK_n),     spawn "MPD_HOST=\"payak\" mpc next")
-		    , ((0, xK_p),     spawn "MPD_HOST=\"payak\" mpc prev")
-		    , ((0, xK_r),     spawn "MPD_HOST=\"payak\" mpc repeat")
-		    , ((0, xK_space), spawn "MPD_HOST=\"payak\" mpc toggle")
-		    , ((0, xK_c),     spawn "MPD_HOST=\"payak\" mpc crop")
-		    ])
+                    [ ((0, xK_n),     spawn "MPD_HOST=\"payak\" mpc next")
+                    , ((0, xK_p),     spawn "MPD_HOST=\"payak\" mpc prev")
+                    , ((0, xK_r),     spawn "MPD_HOST=\"payak\" mpc repeat")
+                    , ((0, xK_space), spawn "MPD_HOST=\"payak\" mpc toggle")
+                    , ((0, xK_c),     spawn "MPD_HOST=\"payak\" mpc crop")
+                    ])
 
     -- Prompt.AppendFile
     , ((modMask, xK_F3), appendFilePrompt myXPConfig "/home/adimit/TODO")
@@ -334,11 +339,11 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_m), sendMessage $ Toggle MIRROR)
 
     -- Monitor overlay (toggle widget layer)
-    , ((modMask, xK_m     ), sendMessage ToggleMonitor)
+    , ((modMask, xK_m     ), broadcastMessage ToggleMonitor >> refresh)
 
     -- GridSelect
     , ((modMask, xK_g     ), (gridselect defaultGSConfig) >>= (\w -> case w of
-                                Just w -> focus w >> windows W.shiftMaster 
+                                Just w  -> focus w >> windows W.shiftMaster 
                                 Nothing -> return()))
     ]
 
@@ -364,16 +369,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 -- modified for progdvor
 wsKeyList = [xK_ampersand
-		, xK_bracketleft
-		, xK_braceleft
-		, xK_braceright
-		, xK_parenleft
-		, xK_equal
-		, xK_asterisk
-		, xK_parenright
-		, xK_plus
-		, xK_bracketright
-		, xK_semicolon]
+                , xK_bracketleft
+                , xK_braceleft
+                , xK_braceright
+                , xK_parenleft
+                , xK_equal
+                , xK_asterisk
+                , xK_parenright
+                , xK_plus
+                , xK_bracketright
+                , xK_semicolon]
 
 xK_XF86AudioLowerVolume = 0x1008ff11
 xK_XF86AudioRaiseVolume = 0x1008ff13
@@ -398,6 +403,19 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 ------------------------------------------------------------------------
 -- Layouts:
 --
+
+-- Monitor Layout:
+-- Cairo-Clock
+
+clock = monitor
+        { prop = ClassName "Cairo-clock" `And` Title "MacSlow's Cairo-Clock"
+        , rect = Rectangle (1400-150) (100) 150 150
+        , persistent = True
+        , opacity = 0x88888888
+        , visible = True -- Hide on start?
+        , name = "clock"
+        }
+
 -- tabbed layout config:
 
 -- You can specify and transform your layouts by modifying these values.
@@ -409,20 +427,19 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- which denotes layout choice.
 --
 myLayout =
-	workspaceDir "~"
+        workspaceDir "~"
         $ ewmhDesktopsLayout
-	$ avoidStruts(
-
-		    id
-		    . smartBorders
-		    . mkToggle(NOBORDERS ?? FULL ?? EOT)
-		    . mkToggle(single MIRROR)
-		    . addPersistentMonitor (ClassName "Cairo-clock" `And` Title "MacSlow's Cairo-Clock") (Rectangle (1400-150) (100) 150 150)
-		    -- $ hintedTile HT.Tall
-		    $ tiled
-		    -- ||| Dishes 2 (1/6)
-		    -- ||| tabbed shrinkText myTabbedConf
-		   )
+        $ avoidStruts(
+                    id
+                    . smartBorders
+                    . mkToggle(NOBORDERS ?? FULL ?? EOT)
+                    . mkToggle(single MIRROR)
+                    . ModifiedLayout clock
+                    -- $ hintedTile HT.Tall
+                    $ tiled ||| Mag.magnifiercz 1.2 tiled
+                    -- ||| Dishes 2 (1/6)
+                    -- ||| tabbed shrinkText myTabbedConf
+                   )
   where
      -- default tiling algorithm partitions the screen into two panes
      -- hintedTile   = HintedTile nmaster delta ratio TopLeft
@@ -456,13 +473,13 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Navigator"      --> doF (W.shift wsWeb)
     , className =? "Eclipse"        --> doF (W.shift wsCode')
-    , className =? "Opera"  	    --> doF (W.shift wsDoc)
+    , className =? "Opera"              --> doF (W.shift wsDoc)
     , className =? "Gimp"           --> doFloat
     , className =? "Gimp"           --> doF (W.shift "gimp")
-    , className =? "Cairo-clock"    --> (ask >>= \w -> liftX (hide w) >> doF (W.delete w))
+    -- , className =? "Cairo-clock"    --> (ask >>= \w -> liftX (hide w) >> doF (W.delete w))
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
-    <+> manageDocks
+    <+> manageDocks <+> manageMonitor clock
  
  
 ------------------------------------------------------------------------
@@ -485,21 +502,21 @@ myManageHook = composeAll
 
 
 main = do 
-	din <- spawnPipe dzen2
-	spawnPipe dzen2'
-	xmonad $ defaultConfig {
+        din <- spawnPipe dzen2
+        spawnPipe dzen2'
+        xmonad $ defaultConfig {
           terminal           = myTerminal
-	, modMask            = msModMask
+        , modMask            = msModMask
         , workspaces         = myWorkspaces
         , normalBorderColor  = myNormalBorderColor
         , focusedBorderColor = myFocusedBorderColor
         , keys               = myKeys
         , mouseBindings      = myMouseBindings
-	, startupHook        = setWMName "LG3D"
+        , startupHook        = setWMName "LG3D"
         , layoutHook         = myLayout
         , manageHook         = myManageHook
-	, logHook            = (dynamicLogWithPP $ myPP din) >> myLogHook
-	}
+        , logHook            = (dynamicLogWithPP $ myPP din) >> myLogHook
+        }
 
 myLogHook :: X ()
 myLogHook = fadeHook >> ewmhDesktopsLogHook
@@ -516,6 +533,6 @@ logLoad = L.logCmd "cut -d \\  -f 1 < /proc/loadavg"
 --   to pad it when it's too short
 staticString :: Int -> String -> String
 staticString l s | length s <=  l = s ++ replicate (l - length s) ' '
-		 | otherwise     = (take (l - length end) s) ++ end
-	where
-		end = "..."
+                 | otherwise     = (take (l - length end) s) ++ end
+                 where
+                         end = "..."
