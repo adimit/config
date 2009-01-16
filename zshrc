@@ -9,6 +9,11 @@ if [ $TERM = "linux" ]; then
 	loadkeys ~/.capsesc_swap&>/dev/null
 fi
 
+# If we're on a Mac, don't confuse the GNU command line apps
+if [ $(uname) = "Darwin" ]; then
+	export TERM="xterm-color"
+fi
+
 set -o vi
 PATH="${HOME}/bin:${PATH}"
 export PATH="$HOME/bin:${PATH}"
@@ -88,12 +93,7 @@ fi
 
 ### Simple command aliases
 alias vi=vim
-if [ $(uname) = "Linux" ]; then
-	alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
-elif [ $(uname) = "Darwin" ]; then
-	alias ls='ls -GFC' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
-	export TERM="xterm-color"
-fi
+alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
 alias du='du -h' df='df -h'
