@@ -46,11 +46,9 @@ start_xmonad() {
 	cairo-clock&
 	DBGFILE="${HOME}/.xmonad/debug"
 	set_background
-	transset-df -n "MacSlow" 0.5
 	dbus-launch ssh-agent gpg-agent --default-cache-ttl 604800 \
 	--max-cache-ttl 1209600 --daemon $HOME/.cabal/bin/xmonad > $DBGFILE&
 	XMPID=$!
-	plasma&
 	xscreensaver&
 	wait $XMPID
 }
