@@ -55,7 +55,7 @@ staticString l s | length s <=  l = s ++ replicate (l - length s) ' '
 -- | Workspaces
 myWorkspaces :: [String]
 myWorkspaces = [ "code", "code'", "comm", "web",  "doc" 
-             , "rec", "work", "write", "read", "misc", "music" ]
+             , "rec", "work", "write", "read", "music", "misc" ]
 
 -- | Workspace Color Map
 wsCols :: M.Map WorkspaceId [Char]
@@ -79,9 +79,7 @@ myLayout = workspaceDir "~" $ ewmhDesktopsLayout $
 
 -- | Colors
 backgroundColor      = "#0a0c0f"
-highlightColor       = "#aacccc"
-backgroundColor'     = "'" ++ backgroundColor ++ "'" -- quote-escaped for dzen2
-highlightColor'      = "'" ++ highlightColor ++ "'" -- quote-escaped for dzen2
+highlightColor       = "#b09a90"
 
 myBitmapsDir         = "/home/adimit/etc/dzen2"
 
@@ -124,6 +122,7 @@ myManageHook = composeAll
     , className =? "Opera"          --> doF (W.shift "doc")
     , className =? "Gimp"           --> doFloat
     , className =? "Gimp"           --> doF (W.shift "gimp")
+    -- , className =? "Opera"          --> doF (\w -> setOpacity w 50)
     , className =? "Conky"          --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
@@ -135,7 +134,7 @@ fadeHook = fadeInactiveLogHook 0xdddddddd
 
 -- | Default Font
 monaco :: String
-monaco = "xft:Monaco:size=9"
+monaco = "xft:Monaco:size=8"
 
 -- | Prompt Configuration
 promptConfig = defaultXPConfig
@@ -165,10 +164,12 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                , ((mmsk .|. shiftMask, xK_Return   ), dwmpromote)
                , ((mmsk,               xK_a        ), withFocused $ windows . W.sink)
                , ((mmsk,               xK_b        ), sendMessage ToggleStruts)
-               , ((mmsk,               xK_dollar   ), toggleWS)
+               , ((mmsk,               xK_grave    ), toggleWS)
                , ((mmsk,               xK_d        ), changeDir promptConfig)
                , ((mmsk .|. shiftMask, xK_b        ), warpToWindow (1/7) (1/7))
                , ((mmsk,               xK_m        ), broadcastMessage ToggleMonitor >> refresh)
+               , ((mmsk,               xK_c        ), submap . M.fromList $ mpcControls "localhost")
+               , ((mmsk .|. shiftMask, xK_c        ), submap . M.fromList $ mpcControls "kumar")
                ]
                ++ -- Find windows
                [ ((mmsk              , xK_slash    ), windowPromptGoto  promptConfig)
@@ -178,6 +179,11 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                [ ((mmsk              , xK_s        ), submap $ searchEngineMap $ 
                                                                promptSearch promptConfig)
                , ((mmsk .|. shiftMask, xK_s        ), submap $ searchEngineMap $ selectSearch)
+               ]
+               ++ -- Volume Control
+               [ ((0,       xK_XF86AudioLowerVolume), spawn "amixer -q sset Master '3%-'")
+               , ((0,       xK_XF86AudioRaiseVolume), spawn "amixer -q sset Master '3%+'")
+               , ((0,       xK_XF86AudioMute       ), spawn "amixer -q sset Master togglemute")
                ]
                ++ -- Dynamic Workspaces
                [ ((mmsk .|. shiftMask, xK_BackSpace), DWS.removeWorkspace)
@@ -196,10 +202,23 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                                                          Just win  -> focus win >> windows W.shiftMaster 
                                                          Nothing   -> return()))
                ]
+
+mpcControls host = [ ((0, xK_n    ), spawn $ "MPD_HOST=" ++ host ++ " mpc next")
+                   , ((0, xK_p    ), spawn $ "MPD_HOST=" ++ host ++ " mpc prev")
+                   , ((0, xK_r    ), spawn $ "MPD_HOST=" ++ host ++ " mpc repeat")
+                   , ((0, xK_space), spawn $ "MPD_HOST=" ++ host ++ " mpc toggle")
+                   , ((0, xK_c    ), spawn $ "MPD_HOST=" ++ host ++ " mpc crop")
+                   , ((0, xK_s    ), spawn $ "MPD_HOST=" ++ host ++ " mpc stop")
+                   ]
+
+wsKeys = wsKeysDvorak
+
+wsKeysDvorak :: [KeySym]
+wsKeysDvorak = [1..9] ++ [xK_apostrophe]
                
 -- | Key Bindings: Switch Workspaces
-wsKeys :: [KeySym]
-wsKeys = [ xK_ampersand
+wsKeysDVP :: [KeySym]
+wsKeysDVP = [ xK_ampersand
          , xK_bracketleft
          , xK_braceleft
          , xK_braceright
@@ -217,6 +236,7 @@ myMouseBindings (XConfig {XMonad.modMask = mmsk}) = M.fromList $
                 [ ((mmsk, button1), (\w -> focus w >> mouseMoveWindow w))
                 , ((mmsk, button2), (\w -> focus w >> windows W.swapMaster))
                 , ((mmsk, button3), (\w -> focus w >> mouseResizeWindow w))
+                , ((mmsk .|. shiftMask, button1), (\w -> setOpacity w 0x77777777))
                 ]
 
 getWSCol :: WorkspaceId -> [Char] -> [Char]
@@ -249,6 +269,7 @@ myPP = defaultPP
 myLogHook = \bar ->
             do fadeHook
                ewmhDesktopsLogHook
+               setWMName "LG3D"
                dynamicLogWithPP myPP { ppOutput = hPutStrLn bar }
                updatePointer (Relative 1 1)
 
@@ -263,6 +284,5 @@ main = do sp <- mkSpawner
                    , focusedBorderColor = highlightColor
                    , mouseBindings      = myMouseBindings
                    , keys               = \c -> myKeys sp c `M.union` keys defaultConfig c
-                   , startupHook        = setWMName "LG3D"
                    , layoutHook         = myLayout
                    , manageHook         = myManageHook }
