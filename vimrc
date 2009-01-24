@@ -229,8 +229,9 @@ filetype plugin on
 filetype indent on
 
 """ Prolog
+hi Flicker ctermfg=white cterm=bold
 autocmd BufEnter *.pl set filetype=prolog "Perl sucks anyway
-""autocmd FileType prolog <buffer> noremap <F2> :!swipl -g 'help(<cword>)'<CR><CR>
+au FileType prolog au CursorMoved * exe 'match Flicker /\V\<'.escape(expand('<cword>'), '/').'\>/'
 autocmd FileType prolog setlocal suffixesadd=.pl,.plt
 
 """ SfS Website
