@@ -1,0 +1,10 @@
+Config { font = "xft:Monaco:size=8"
+       , bgColor  = "#0a0c0f"
+       , fgColor  = "white"
+       , position = Top
+       , lowerOnStart = True
+       , commands = [ Run StdinReader, Run Date "%a, %b %d | %H:%M" "date" 10 ]
+       , sepChar  = "%"
+       , alignSep = "}{"
+       , template = "%StdinReader% }{ %date%"
+       }
