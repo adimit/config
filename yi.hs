@@ -16,21 +16,21 @@ defaultVimUiTheme = defaultLightTheme  `override` \super self ->
 
 myConfigUI :: UIConfig
 myConfigUI = (configUI defaultConfig)  
-	{ configTheme = defaultVimUiTheme
-        , configWindowFill = '~'
-	}
+             { configTheme = defaultVimUiTheme
+             , configWindowFill = '~'
+             }
 
 haskellModeKeys = [ ctrlCh 'c' ?>> char 'g' ?>>! Haskell.ghciLoadBuffer
                   , ctrlCh 'c' ?>> char 'l' ?>>! Haskell.ghciGet
                   , ctrlCh 'c' ?>> char 'h' ?>>! hoogle
                   , ctrlCh 'c' ?>> char 's' ?>>! hoogleSearch
-		  ]
+                  ]
 
 myHaskellMode = Haskell.cleverMode { modeKeymap = (choice haskellModeKeys <||) }
 
 main :: IO ()
 main = yi $ defaultConfig 
-	{ configUI = myConfigUI
+        { configUI = myConfigUI
         , defaultKm = keymap
-	, modeTable = AnyMode myHaskellMode : modeTable defaultConfig
-	}
+        , modeTable = AnyMode myHaskellMode : modeTable defaultConfig
+        }
