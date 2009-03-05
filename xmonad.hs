@@ -168,8 +168,8 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                , ((mmsk,               xK_d        ), changeDir promptConfig)
                , ((mmsk .|. shiftMask, xK_b        ), warpToWindow (1/7) (1/7))
                , ((mmsk,               xK_m        ), broadcastMessage ToggleMonitor >> refresh)
-               , ((mmsk,               xK_c        ), submap . M.fromList $ mpcControls "localhost")
-               , ((mmsk .|. shiftMask, xK_c        ), submap . M.fromList $ mpcControls "kumar")
+               , ((mmsk,               xK_r        ), submap . M.fromList $ mpcControls "localhost")
+               , ((mmsk .|. shiftMask, xK_r        ), submap . M.fromList $ mpcControls "kumar")
                ]
                ++ -- Find windows
                [ ((mmsk              , xK_slash    ), windowPromptGoto  promptConfig)

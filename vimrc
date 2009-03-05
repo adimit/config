@@ -8,8 +8,6 @@ autocmd!
 
 """ Environment
 """""""""""""""
-noremap ; :
-noremap - :
 
 set nocompatible
 " Enable a nice big viminfo file

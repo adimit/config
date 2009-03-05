@@ -1,0 +1,42 @@
+!urxvt.inheritPixmap: true
+!urxvt.fading: 30
+urxvt.tintColor: #111a1a
+urxvt.shading: 50
+
+urxvt.scrollBar: false
+
+urxvt.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Devanagari MT:size=10
+urxvt.italicFont: xft:Monaco:italic:autohint=true
+urxvt.boldItalicFont: xft:Monaco:bold:italic:autohint=true
+
+urxvt.urlLauncher: firefox
+urxvt.perl-ext-common: default,matcher
+urxvt.tabbed: true
+
+urxvt.background: #0a0c0f
+urxvt.foreground: #ddeeee
+
+! Black
+*color0:  #0a0c0f
+*color8:  #7f8f8f
+! Red
+*color1:  #dd4a4a
+*color9:  #ff6a6a
+! Green
+*color2:  #4add4a
+*color10: #6aff8a
+! Yellow
+*color3:  #ddaa4a
+*color11: #ffcc7a
+! Blue
+*color4:  #4a6add
+*color12: #6a8aff
+! Purple
+*color5:  #8f4a8f
+*color13: #bf6abf
+! Cyan
+*color6:  #4aafaf
+*color14: #6adfdf
+! White
+*color7:  #aacccc
+*color15: #ddeeee
