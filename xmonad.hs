@@ -38,6 +38,7 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Window
 import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.Scratchpad
 import qualified Data.Map as M
 import qualified System.IO.UTF8 as UTF8
 import qualified XMonad.Actions.DynamicWorkspaces as DWS
@@ -67,18 +68,18 @@ wsCols = M.fromList $
       , "#edcd88" , "#ee8844" , "grey90"  , "#ee9988" , "#aaeebb" , "#888888" ]
 
 -- | Layout 
-myLayout = workspaceDir "~" $ avoidStruts 
-                     ( id
-                     . smartBorders
-                     . mkToggle(NOBORDERS ?? FULL ?? EOT)
-                     . mkToggle(single MIRROR)
-                     . ModifiedLayout clock
-                     $ layoutHints tiled ||| layoutHints (magnify tiled)
-                     ) where tiled   = XMonad.Tall nmaster delta ratio
-                             nmaster = 1
-                             ratio   = 1/2
-                             delta   = 3/100
-                             magnify = Mag.magnifiercz (12%10)
+myLayout = ( workspaceDir "~"
+           . avoidStruts
+           . smartBorders
+           . mkToggle(NOBORDERS ?? FULL ?? EOT)
+           . mkToggle(single MIRROR)
+           . ModifiedLayout clock
+           $ layoutHints tiled ||| layoutHints (magnify tiled)
+           ) where tiled   = XMonad.Tall nmaster delta ratio
+                   nmaster = 1
+                   ratio   = 1/2
+                   delta   = 3/100
+                   magnify = Mag.magnifiercz (12%10)
 
 -- | Colors
 backgroundColor      = "#0a0c0f"
@@ -164,7 +165,7 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
         where customKeys =  
                [ ((mmsk,               xK_Return   ), spawnHere sp $ XMonad.terminal conf) 
                , ((mmsk,               xK_BackSpace), shellPromptHere sp promptConfig)
-               , ((mmsk .|. shiftMask, xK_Return   ), dwmpromote)
+               , ((mmsk .|. ctrlMask , xK_Return   ), dwmpromote)
                , ((mmsk,               xK_a        ), withFocused $ windows . W.sink)
                , ((mmsk,               xK_b        ), sendMessage ToggleStruts)
                , ((mmsk,               xK_grave    ), toggleWS)
@@ -173,6 +174,7 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                , ((mmsk,               xK_m        ), broadcastMessage ToggleMonitor >> refresh)
                , ((mmsk,               xK_r        ), submap . M.fromList $ mpcControls "localhost")
                , ((mmsk .|. shiftMask, xK_r        ), submap . M.fromList $ mpcControls "kumar")
+               , ((mmsk .|. shiftMask, xK_Return   ), scratchpadSpawnActionTerminal "urxvt")
                ]
                ++ -- Find windows
                [ ((mmsk              , xK_slash    ), windowPromptGoto  promptConfig)
