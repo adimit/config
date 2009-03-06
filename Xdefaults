@@ -16,6 +16,24 @@ urxvt.tabbed: true
 urxvt.background: #0a0c0f
 urxvt.foreground: #ddeeee
 
+scratchpad.inheritPixmap: true
+scratchpad.fading: 30
+scratchpad.tintColor: #111a1a
+scratchpad.shading: 50
+
+scratchpad.scrollBar: false
+
+scratchpad.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Cambria:size=10
+scratchpad.italicFont: xft:Monaco:italic:autohint=true
+scratchpad.boldItalicFont: xft:Monaco:bold:italic:autohint=true
+
+scratchpad.urlLauncher: firefox
+scratchpad.perl-ext-common: default,matcher
+scratchpad.tabbed: true
+
+scratchpad.background: #1a1c1f
+scratchpad.foreground: #ddeeee
+
 ! Black
 *color0:  #0a0c0f
 *color8:  #7f8f8f
