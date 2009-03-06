@@ -21,6 +21,7 @@ import XMonad.Actions.Submap
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.Warp
 import XMonad.Config (defaultConfig)
+import XMonad.Actions.Warp
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.FadeInactive
@@ -273,7 +274,7 @@ myLogHook = \bar ->
                ewmhDesktopsLogHook
                setWMName "LG3D"
                dynamicLogWithPP myPP { ppOutput = UTF8.hPutStrLn bar }
-               updatePointer (Relative 1 1)
+               updatePointer (Nearest)
 
 main :: IO ()
 main = do sp <- mkSpawner
