@@ -26,6 +26,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.FadeInactive
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
+import XMonad.Layout.LayoutHints
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Monitor
 import XMonad.Layout.MultiToggle
@@ -37,6 +38,7 @@ import XMonad.Prompt.Shell
 import XMonad.Prompt.Window
 import XMonad.Util.Run (spawnPipe)
 import qualified Data.Map as M
+import qualified System.IO.UTF8 as UTF8
 import qualified XMonad.Actions.DynamicWorkspaces as DWS
 import qualified XMonad.Layout.Magnifier as Mag
 import qualified XMonad.StackSet as W
@@ -64,13 +66,13 @@ wsCols = M.fromList $
       , "#edcd88" , "#ee8844" , "grey90"  , "#ee9988" , "#aaeebb" , "#888888" ]
 
 -- | Layout 
-myLayout = workspaceDir "~" $ ewmhDesktopsLayout $ 
-         avoidStruts ( id
+myLayout = workspaceDir "~" $ avoidStruts 
+                     ( id
                      . smartBorders
                      . mkToggle(NOBORDERS ?? FULL ?? EOT)
                      . mkToggle(single MIRROR)
                      . ModifiedLayout clock
-                     $ tiled ||| magnify tiled
+                     $ layoutHints tiled ||| layoutHints (magnify tiled)
                      ) where tiled   = XMonad.Tall nmaster delta ratio
                              nmaster = 1
                              ratio   = 1/2
@@ -159,8 +161,8 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
         ++ zip (zip (repeat (mmsk)) wsKeys) (map (withNthWorkspace W.greedyView) [0..])
         ++ zip (zip (repeat (mmsk .|. shiftMask)) wsKeys) (map (withNthWorkspace W.shift) [0..])
         where customKeys =  
-               [ ((mmsk,               xK_Return   ), spawn $ XMonad.terminal conf) 
-               , ((mmsk,               xK_BackSpace), shellPrompt promptConfig)
+               [ ((mmsk,               xK_Return   ), spawnHere sp $ XMonad.terminal conf) 
+               , ((mmsk,               xK_BackSpace), shellPromptHere sp promptConfig)
                , ((mmsk .|. shiftMask, xK_Return   ), dwmpromote)
                , ((mmsk,               xK_a        ), withFocused $ windows . W.sink)
                , ((mmsk,               xK_b        ), sendMessage ToggleStruts)
@@ -270,7 +272,7 @@ myLogHook = \bar ->
             do fadeHook
                ewmhDesktopsLogHook
                setWMName "LG3D"
-               dynamicLogWithPP myPP { ppOutput = hPutStrLn bar }
+               dynamicLogWithPP myPP { ppOutput = UTF8.hPutStrLn bar }
                updatePointer (Relative 1 1)
 
 main :: IO ()
@@ -281,8 +283,9 @@ main = do sp <- mkSpawner
                    , workspaces         = myWorkspaces
                    , logHook            = myLogHook bar
                    , normalBorderColor  = backgroundColor
+                   , handleEventHook    = ewmhDesktopsEventHook
                    , focusedBorderColor = highlightColor
                    , mouseBindings      = myMouseBindings
                    , keys               = \c -> myKeys sp c `M.union` keys defaultConfig c
                    , layoutHook         = myLayout
-                   , manageHook         = myManageHook }
+                   , manageHook         = manageSpawn sp <+> myManageHook }
