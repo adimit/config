@@ -5,7 +5,7 @@ urxvt.shading: 50
 
 urxvt.scrollBar: false
 
-urxvt.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Devanagari MT:size=10
+urxvt.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Cambria:size=10
 urxvt.italicFont: xft:Monaco:italic:autohint=true
 urxvt.boldItalicFont: xft:Monaco:bold:italic:autohint=true
 
