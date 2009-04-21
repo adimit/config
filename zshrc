@@ -305,6 +305,13 @@ pacs () {
        -e 's#^.*/.* [0-9].*#\\033[0;36m&\\033[0;37m#g' )"
 }
 
+# Make a directory that will be tracked, but its content ignored by git
+mkgidir () {
+	mkdir $1
+	echo "*" >| $1/.gitignore
+	echo "!.gitignore" >> $1/.gitignore
+}
+
 
 autoload -U zmv
 
