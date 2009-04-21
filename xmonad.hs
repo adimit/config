@@ -123,7 +123,6 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Navigator"      --> doF (W.shift "web")
     , className =? "Eclipse"        --> doF (W.shift "code'")
-    , className =? "Opera"          --> doF (W.shift "doc")
     , className =? "Gimp"           --> doFloat
     , className =? "Gimp"           --> doF (W.shift "gimp")
     -- , className =? "Opera"          --> doF (\w -> setOpacity w 50)
