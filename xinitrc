@@ -23,11 +23,7 @@ urxvtd -q -o -f&
 unclutter&
 
 # Initialize x-environment
-setxkbmap -layout us,bg -variant dvp, -option "grp:menu_toggle" \
-					 -option "grp_led:scroll" \
-					 -option "compose:ralt"
 xsetroot -cursor_name left_ptr
-xmodmap ~/.Xmodmap
 xset r rate 145 35
 
 set_background() {
@@ -43,7 +39,7 @@ start_dwm() {
 
 start_xmonad() {
 	xcompmgr&
-	cairo-clock&
+	#cairo-clock&
 	DBGFILE="${HOME}/.xmonad/debug"
 	set_background
 	dbus-launch ssh-agent gpg-agent --default-cache-ttl 604800 \
