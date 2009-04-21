@@ -5,3 +5,4 @@ colorscheme zenburn
 set background=dark
 set guifont=Monaco\ 10
 set guioptions=ac
+colorscheme desert
