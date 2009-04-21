@@ -5,6 +5,7 @@ import qualified Yi.Mode.Haskell as H
 import Yi.Prelude
 import Yi.Hoogle (hoogle,hoogleSearch)
 import Yi.Keymap.Keys
+import Yi.UI.Vty (start)
 import Data.Monoid
 
 bestHaskellMode = H.cleverMode { modeKeymap = (choice haskellModeKeys <||) }
@@ -20,6 +21,7 @@ haskellModeKeys = [ ctrlCh 'c' ?>> char 'g' ?>>! H.ghciLoadBuffer
 main :: IO ()
 main = yi $ defaultConfig
         { configKillringAccumulate = False
+        , startFrontEnd = start
         , modeTable = AnyMode bestHaskellMode : modeTable defaultConfig
         , configUI = (configUI defaultConfig)
           { configWindowFill = '~'
