@@ -6,12 +6,12 @@
 	diff = auto
 	status = auto
 [color "branch"]
-	current = yellow reverse
-	local = yellow 
+	current = red bold
+	local = red 
 	remote = green
 [color "diff"]
-	meta = yellow bold
-	frag = magenta bold
+	meta = yellow
+	frag = magenta
 	old = red bold
 	new = green bold
 [color "status"]
