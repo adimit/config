@@ -18,6 +18,7 @@ import XMonad.Actions.GridSelect
 import XMonad.Actions.Search
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.Submap
+import XMonad.Actions.TopicSpace
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.Warp
 import XMonad.Config (defaultConfig)
@@ -37,6 +38,7 @@ import XMonad.Layout.WorkspaceDir
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Window
+import XMonad.Prompt.Workspace
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.Scratchpad
 import qualified Data.Map as M
@@ -64,10 +66,53 @@ myWorkspaces = [ "code", "code'", "comm", "web",  "doc"
 -- | Workspace Color Map
 wsCols :: M.Map WorkspaceId [Char]
 wsCols = M.fromList $
-      zip myWorkspaces [ "#aaccee" , "#eebbaa" , "#aa99ee" , "#bb99aa" , "#bbdd99"
+      zip (map fst myTopics) [ "#aaccee" , "#eebbaa" , "#aa99ee" , "#bb99aa" , "#bbdd99"
       , "#edcd88" , "#ee8844" , "grey90"  , "#ee9988" , "#aaeebb" , "#888888" ]
 
--- | Layout 
+-- | Topics
+myTopics = [ ("src" , ("$HOME/src"    , spawnShell >*> 3))
+           , ("src'", ("$HOME/src"    , spawnShell >*> 3))
+           , ("com", ("$HOME/var/tmp" , spawnMutt >> spawnShell))
+           , ("web", ("$HOME/var/tmp" , spawn "firefox"))
+           , ("uni", ("$HOME/dat/uni" , spawnShell))
+           , ("hiwi", ("$HOME/dat/uni/hiwi", spawnShell))
+           , ("work", ("$HOME/dat", spawnShell))
+           , ("read", ("$HOME/etc/res", spawn "evince"))
+           , ("data", ("$HOME/etc", spawnShell))
+           , ("music", ("/home/music", spawn "sonata"))
+           , ("misc", ("$HOME/var/tmp", spawnShell))
+           , ("semantik", ("$HOME/dat/uni/sem", (spawn "evince") >> spawnShell >*> 2))
+           , ("rte", ("$HOME/dat/uni/rte", spawnShell))
+           , ("gimp", ("$HOME/etc", spawn "gimp"))
+           ]
+
+spawnMutt = spawn "urxvt -e mutt"
+
+myTopicConfig :: TopicConfig
+myTopicConfig = TopicConfig
+        { topicDirs = M.fromList $ map (\(c,b)-> (c,(fst b))) myTopics
+        , topicActions = M.fromList $ map (\(c,b)-> (c,(snd b))) myTopics
+        , defaultTopicAction = const $ spawnShell
+        , defaultTopic = "misc"
+        , maxTopicHistory = 10
+        }
+
+spawnShell :: X ()
+spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
+
+spawnShellIn :: Dir -> X ()
+spawnShellIn dir = spawn ("TOPICSTART=\"true\" urxvtc -cd "++dir)
+
+goto :: Topic -> X ()
+goto = switchTopic myTopicConfig
+
+promptedGoto :: X ()
+promptedGoto = workspacePrompt promptConfig goto
+
+promptedShift :: X ()
+promptedShift = workspacePrompt promptConfig $ windows . W.shift
+
+-- | Layout
 myLayout = ( workspaceDir "~"
            . avoidStruts
            . smartBorders
@@ -124,9 +169,6 @@ myManageHook = composeAll
     , className =? "Navigator"      --> doF (W.shift "web")
     , className =? "Eclipse"        --> doF (W.shift "code'")
     , className =? "Gimp"           --> doFloat
-    , className =? "Gimp"           --> doF (W.shift "gimp")
-    -- , className =? "Opera"          --> doF (\w -> setOpacity w 50)
-    , className =? "Conky"          --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
     <+> manageDocks <+> manageMonitor clock
@@ -159,10 +201,10 @@ xK_XF86AudioMute        = 0x1008ff12
 -- | Custom Key Bindings
 myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
         customKeys
-        ++ zip (zip (repeat (mmsk)) wsKeys) (map (withNthWorkspace W.greedyView) [0..])
-        ++ zip (zip (repeat (mmsk .|. shiftMask)) wsKeys) (map (withNthWorkspace W.shift) [0..])
-        where customKeys =  
-               [ ((mmsk,               xK_Return   ), spawnHere sp $ XMonad.terminal conf) 
+        -- ++ zip (zip (repeat (mmsk)) wsKeys) (map (withNthWorkspace W.greedyView) [0..])
+        -- ++ zip (zip (repeat (mmsk .|. shiftMask)) wsKeys) (map (withNthWorkspace W.shift) [0..])
+        where customKeys =
+               [ ((mmsk,               xK_Return   ), spawnHere sp $ XMonad.terminal conf)
                , ((mmsk,               xK_BackSpace), shellPromptHere sp promptConfig)
                , ((mmsk .|. ctrlMask , xK_Return   ), dwmpromote)
                , ((mmsk,               xK_a        ), withFocused $ windows . W.sink)
@@ -191,21 +233,25 @@ myKeys sp conf@(XConfig {modMask = mmsk, workspaces = ws}) = M.fromList $
                ]
                ++ -- Dynamic Workspaces
                [ ((mmsk .|. shiftMask, xK_BackSpace), DWS.removeWorkspace)
-               , ((mmsk,               xK_t        ), DWS.selectWorkspace promptConfig)
-               , ((mmsk .|. shiftMask, xK_t        ), withWorkspace promptConfig (windows . W.shift))
+               -- , ((mmsk,               xK_t        ), DWS.selectWorkspace promptConfig)
+               -- , ((mmsk .|. shiftMask, xK_t        ), withWorkspace promptConfig (windows . W.shift))
                , ((mmsk .|. ctrlMask , xK_t        ), withWorkspace promptConfig (windows . copy))
                , ((mmsk .|. shiftMask, xK_r        ), DWS.renameWorkspace promptConfig)
                ]
+               ++ -- Topics
+               [ ((mmsk .|. ctrlMask , xK_space    ), currentTopicAction myTopicConfig)
+               , ((mmsk              , xK_t        ), promptedGoto)
+               , ((mmsk .|. shiftMask, xK_t        ), promptedShift)
+               ]
+               ++
+               [ ((mmsk              , k           ), switchNthLastFocused myTopicConfig i)
+                 | (i,k) <- zip [1..] wsKeys]
                ++ -- MultiToggle
                [ ((mmsk .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
                , ((mmsk .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR)
                ]
                ++ -- GridSelect
-               [ ((mmsk              , xK_g        ), (gridselect defaultGSConfig) >>= (\w -> 
-                                                    case w of
-                                                         Just win  -> focus win >> windows W.shiftMaster 
-                                                         Nothing   -> return()))
-               ]
+               [ ((mmsk              , xK_g        ), (goToSelected defaultGSConfig)) ]
 
 mpcControls host = [ ((0, xK_n    ), spawn $ "MPD_HOST=" ++ host ++ " mpc next")
                    , ((0, xK_p    ), spawn $ "MPD_HOST=" ++ host ++ " mpc prev")
@@ -217,10 +263,10 @@ mpcControls host = [ ((0, xK_n    ), spawn $ "MPD_HOST=" ++ host ++ " mpc next")
 
 wsKeys = wsKeysDvorak
 
-wsKeysDvorak :: [KeySym]
-wsKeysDvorak = [1..9] ++ [xK_apostrophe]
-               
 -- | Key Bindings: Switch Workspaces
+wsKeysDvorak :: [KeySym]
+wsKeysDvorak =  [xK_apostrophe] ++ [1..9]
+
 wsKeysDVP :: [KeySym]
 wsKeysDVP = [ xK_ampersand
          , xK_bracketleft
@@ -282,7 +328,7 @@ main = do sp <- mkSpawner
           bar <- spawnPipe "xmobar"
           xmonad $ defaultConfig
                    { terminal           = "urxvtc"
-                   , workspaces         = myWorkspaces
+                   , workspaces         = (map fst myTopics)
                    , logHook            = myLogHook bar
                    , normalBorderColor  = backgroundColor
                    , handleEventHook    = ewmhDesktopsEventHook

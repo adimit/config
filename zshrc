@@ -327,3 +327,7 @@ PS1="%F{blue}$PROMPTHOST%f%1(j.%F{yellow}%j%f .)%(?..%B%F{red}%?%f%b )%(#.%B%F{r
 RPS1="%F{blue}%~%f"
 
 source ${HOME}/.zshrc.local
+
+if [ $TOPICSTART ]; then
+	ls
+fi
