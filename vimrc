@@ -237,7 +237,7 @@ autocmd BufEnter *.ssi set ft=html
 
 """ Haskell
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
-au BufEnter *.hs compiler ghc
+au BufEnter *.hs set expandtab shiftwidth=4
 
 """ Perl
 let perl_extended_vars=1 " highlight advanced perl vars inside strings
