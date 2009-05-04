@@ -5,7 +5,7 @@ urxvt.shading: 50
 
 urxvt.scrollBar: false
 
-urxvt.font: xft:Monaco:size=9,xft:Dejavu Sans Mono:size=9,xft:Cambria:size=9
+urxvt.font: xft:Monaco:size=8,xft:Dejavu Sans Mono:size=8,xft:Cambria:size=8
 urxvt.italicFont: xft:Monaco:italic:autohint=true
 urxvt.boldItalicFont: xft:Monaco:bold:italic:autohint=true
 
@@ -23,7 +23,7 @@ scratchpad.shading: 50
 
 scratchpad.scrollBar: false
 
-scratchpad.font: xft:Monaco:size=9,xft:Dejavu Sans Mono:size=9,xft:Cambria:size=9
+scratchpad.font: xft:Monaco:size=8,xft:Dejavu Sans Mono:size=8,xft:Cambria:size=8
 scratchpad.italicFont: xft:Monaco:italic:autohint=true
 scratchpad.boldItalicFont: xft:Monaco:bold:italic:autohint=true
 
