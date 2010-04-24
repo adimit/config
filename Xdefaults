@@ -1,11 +1,8 @@
-!urxvt.inheritPixmap: true
-!urxvt.fading: 30
-urxvt.tintColor: #111a1a
-urxvt.shading: 50
+urxvt.depth: 32
 
 urxvt.scrollBar: false
 
-urxvt.font: xft:Monaco:size=8,xft:Dejavu Sans Mono:size=8,xft:Cambria:size=8
+urxvt.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Cambria:size=10
 urxvt.italicFont: xft:Monaco:italic:autohint=true
 urxvt.boldItalicFont: xft:Monaco:bold:italic:autohint=true
 
@@ -13,7 +10,7 @@ urxvt.urlLauncher: firefox
 urxvt.perl-ext-common: default,matcher
 urxvt.tabbed: true
 
-urxvt.background: #0a0c0f
+urxvt.background: rgba:0000/0000/0000/9999
 urxvt.foreground: #ddeeee
 
 scratchpad.inheritPixmap: true
