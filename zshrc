@@ -22,11 +22,6 @@ if [ -d ${HOME}/opt ]; then
 		PATH="$i:${PATH}"
 	done
 fi
-if [ -d /opt ]; then
-	for i in /opt/*/bin; do
-		PATH="$i:${PATH}"
-	done
-fi
 
 ### Environment
 ###############
