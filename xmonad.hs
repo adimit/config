@@ -46,7 +46,7 @@ musicplayer = "rhythmbox-client"
 -- | Topic configuration
 myTopics :: [Topic]
 myTopics = [ "dash", "mail", "web", "src", "osem", "ord", "admin", "read", "music"
-           , "vid", "wow", "w", "u" ]
+           , "vid", "wow", "w", "u", "p2p" ]
 
 -- Topic helpers
 --
@@ -79,6 +79,7 @@ myTopicConfig = TopicConfig
         , ("ord"  , "~/Documents/w/ord")
         , ("w"    , "~/Documents/w")
         , ("u"    , "~/Documents/u/")
+        , ("p2p"  , "~/Downloads/")
         ]
     , defaultTopicAction = const $ spawnShell >*> 2
     , defaultTopic = "dash"
@@ -92,8 +93,8 @@ myTopicConfig = TopicConfig
         , ("osem" , spawn "gvim" >> spawnShell >*> 2)
         , ("ord"  , spawn "gvim" >> spawnShell >*> 2)
         , ("vid"  , spawn "vlc")
-        --, ("u"    , spawnShell >*> 3)
-        -- , ("w"    , spawnShell >*> 3)
+        , ("wow"  , spawn "cd ~/opt/wow; wine wow -opengl")
+        , ("p2p"  , spawn "transmission" >> spawnShell)
         ]
     }
 
