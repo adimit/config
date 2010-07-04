@@ -46,7 +46,7 @@ musicplayer = "rhythmbox-client"
 -- | Topic configuration
 myTopics :: [Topic]
 myTopics = [ "dash", "mail", "web", "src", "osem", "ord", "admin", "read", "music"
-           , "vid", "wow", "w", "u", "p2p" ]
+           , "vid", "chat", "wow", "w", "u", "p2p" ]
 
 -- Topic helpers
 --
