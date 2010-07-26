@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -z $1 ]; then
+	exit 1
+else
+	linkname=$HOME/.$(basename "$1")
+	case ${1:0:1} in
+		"/") ln -sf "$1" "$linkname" ;;
+		*  ) ln -sf "$(pwd)"/"$1" "$linkname" ;;
+	esac
+fi
