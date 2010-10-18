@@ -1,57 +1,42 @@
-urxvt.depth: 32
-
 urxvt.scrollBar: false
+urxvt.font: xft:Droid Sans Mono:size=9
 
-urxvt.font: xft:Monaco:size=10,xft:Dejavu Sans Mono:size=10,xft:Cambria:size=10
-urxvt.italicFont: xft:Monaco:italic:autohint=true
-urxvt.boldItalicFont: xft:Monaco:bold:italic:autohint=true
+urxvt.inheritPixmap: true
+urxvt.tintColor: #203040
+urxvt.shading: 50
 
-urxvt.urlLauncher: firefox
-urxvt.perl-ext-common: default,matcher
-urxvt.tabbed: true
+urxvt.background: #101010
+urxvt.foreground: #ffffff
 
-urxvt.background: rgba:0000/0000/0000/9999
-urxvt.foreground: #ddeeee
-
-scratchpad.inheritPixmap: true
-scratchpad.fading: 30
-scratchpad.tintColor: #111a1a
-scratchpad.shading: 50
-
-scratchpad.scrollBar: false
-
-scratchpad.font: xft:Monaco:size=8,xft:Dejavu Sans Mono:size=8,xft:Cambria:size=8
-scratchpad.italicFont: xft:Monaco:italic:autohint=true
-scratchpad.boldItalicFont: xft:Monaco:bold:italic:autohint=true
-
-scratchpad.urlLauncher: firefox
-scratchpad.perl-ext-common: default,matcher
-scratchpad.tabbed: true
-
-scratchpad.background: #1a1c1f
-scratchpad.foreground: #ddeeee
-
+!-- Tango color scheme
 ! Black
-*color0:  #0a0c0f
-*color8:  #7f8f8f
+URxvt*color0: #2e3436
+URxvt*color8: #555753
+
 ! Red
-*color1:  #dd4a4a
-*color9:  #ff6a6a
+URxvt*color1: #cc0000
+URxvt*color9: #ef2929
+
 ! Green
-*color2:  #4add4a
-*color10: #6aff8a
+URxvt*color2: #4e9a06
+URxvt*color10: #8ae234
+
 ! Yellow
-*color3:  #ddaa4a
-*color11: #ffcc7a
+URxvt*color3: #c4a000
+URxvt*color11: #fce94f
+
 ! Blue
-*color4:  #4a6add
-*color12: #6a8aff
+URxvt*color4: #00AFFF
+URxvt*color12: #729fcf
+
 ! Purple
-*color5:  #8f4a8f
-*color13: #bf6abf
+URxvt*color5: #75507b
+URxvt*color13: #ad7fa8
+
 ! Cyan
-*color6:  #4aafaf
-*color14: #6adfdf
+URxvt*color6: #0b939b
+URxvt*color14: #00f5e9
+
 ! White
-*color7:  #aacccc
-*color15: #ddeeee
+URxvt*color15: #eeeeec
+URxvt*color7: #d3d7cf
