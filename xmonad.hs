@@ -22,83 +22,33 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Workspace
 
-import XMonad.Actions.TopicSpace
 import qualified Data.Map as M
 import qualified XMonad.Layout.Magnifier as Mag
 import qualified XMonad.StackSet as W
 
 -- | Default Font
-monaco :: String
-monaco = "xft:Monaco:size=8"
+monospace :: String
+monospace = "xft:Monospace:size=8"
 
-myTheme = defaultTheme { fontName = monaco }
+myTheme = defaultTheme { fontName = monospace }
 
 -- | Browser executable as found in $PATH
 browser :: String
 browser = "chromium-browser"
 
-mua :: String
-mua = "evolution"
-
-musicplayer :: String
-musicplayer = "rhythmbox-client"
-
--- | Topic configuration
-myTopics :: [Topic]
-myTopics = [ "dash", "mail", "web", "src", "osem", "ord", "admin", "read", "music"
-           , "vid", "chat", "wow", "w", "u", "p2p" ]
-
--- Topic helpers
---
-spawnShell :: X ()
-spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
-
-spawnShellIn :: Dir -> X ()
-spawnShellIn dir = spawn $ "urxvt -cd " ++ dir
-
-goto :: Topic -> X ()
-goto = switchTopic myTopicConfig
-
-promptedGoto :: X ()
-promptedGoto = workspacePrompt promptConfig goto
-
-promptedShift :: X ()
-promptedShift = workspacePrompt promptConfig $ windows . W.shift
+layouts = layoutHints
+        . smartBorders
+        . mkToggle(NOBORDERS ?? FULL ?? EOT)
+        . mkToggle(single MIRROR)
+        . desktopLayoutModifiers
+        $ tiled
+    where tiled = XMonad.Tall nm delta ratio
+          nm    = 1
+          ratio = 1/2
+          delta = 3/100
 
 
-myTopicConfig :: TopicConfig
-myTopicConfig = TopicConfig
-    { topicDirs = M.fromList $
-        [ ("dash" , "~/Desktop")
-        , ("mail" , "~/Downloads")
-        , ("web"  , "~/Downloads")
-        , ("read" , "~/Documents/lit")
-        , ("src"  , "~/src")
-        , ("osem" , "~/Documents/w/osem")
-        , ("admin", "~/Documents/w/srv")
-        , ("ord"  , "~/Documents/w/ord")
-        , ("w"    , "~/Documents/w")
-        , ("u"    , "~/Documents/u/")
-        , ("p2p"  , "~/Downloads/")
-        ]
-    , defaultTopicAction = const $ spawnShell >*> 2
-    , defaultTopic = "dash"
-    , maxTopicHistory = 10
-    , topicActions = M.fromList $
-        [ ("mail" , spawn mua)
-        , ("web"  , spawn browser)
-        , ("music", spawn musicplayer)
-        , ("read" , spawn "mendeleydesktop")
-        , ("src"  , spawn "gvim" >> spawnShell >*> 2)
-        , ("osem" , spawn "gvim" >> spawnShell >*> 2)
-        , ("ord"  , spawn "gvim" >> spawnShell >*> 2)
-        , ("vid"  , spawn "vlc")
-        , ("wow"  , spawn "cd ~/opt/wow; wine wow -opengl")
-        , ("p2p"  , spawn "transmission" >> spawnShell)
-        ]
-    }
-
-layouts = ( workspaceDir "~"
+layouts'= ( workspaceDir "~"
           . smartBorders
           . mkToggle(NOBORDERS ?? FULL ?? EOT)
           . mkToggle(single MIRROR)
@@ -113,7 +63,7 @@ layouts = ( workspaceDir "~"
 
 promptConfig = defaultXPConfig
         { position          = Bottom
-        , font              = monaco
+        , font              = "xft:Dejavu Sans Mono:size=8"
         , promptBorderWidth = 0 }
 
 myKeys sp conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
@@ -125,22 +75,12 @@ myKeys sp conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             ++ -- GridSelect
             [ ((mask              , xK_g         ), (goToSelected defaultGSConfig)) ]
             ++ -- MultiToggle
-            [ ((mask .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
-            , ((mask .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR)
-            ]
-            ++ -- Topic Space
-            [ ((mask              , xK_k  ), promptedGoto)
-            , ((mask .|. shiftMask, xK_k  ), promptedShift)
-            , ((mask              , xK_a  ), currentTopicAction myTopicConfig)
-            ]
-            ++ -- Topic Space numbers
-            [ ((mask, k), switchNthLastFocused myTopicConfig i)
-            | (i,k) <- zip [1..] workspaceKeys]
+            [ ((mask .|. shiftMask, xK_f          ), sendMessage $ Toggle FULL)
+            , ((mask .|. shiftMask, xK_m          ), sendMessage $ Toggle MIRROR) ]
 
 workspaceKeys = [ xK_1, xK_2, xK_3, xK_4, xK_5, xK_6, xK_7, xK_8, xK_9, xK_0 ]
 
 main = do sp <- mkSpawner
-          checkTopicConfig myTopics myTopicConfig
           xmonad $ gnomeConfig
              { terminal   = "urxvt"
              , layoutHook = layouts
@@ -150,5 +90,5 @@ main = do sp <- mkSpawner
              , logHook    = fadeInactiveLogHook 0.8
              , normalBorderColor  = "#000000"
              , focusedBorderColor = "#8899ff"
-             , workspaces = myTopics
              }
+
