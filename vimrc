@@ -67,8 +67,10 @@ if has("digraphs")
 endif
 
 set mouse=""
-colorscheme default
-set background=dark
+if !has("gui_running")
+     colorscheme default
+     set background=dark
+endif
 
 set showcmd
 set ruler
@@ -228,9 +230,9 @@ filetype indent on
 
 """ Prolog
 hi Flicker ctermfg=white cterm=bold
-autocmd BufEnter *.pl set filetype=prolog "Perl sucks anyway
+au BufEnter *.pl set filetype=prolog "Perl sucks anyway
 au FileType prolog au CursorMoved * exe 'match Flicker /\V\<'.escape(expand('<cword>'), '/').'\>/'
-autocmd FileType prolog setlocal suffixesadd=.pl,.plt
+au FileType prolog setlocal suffixesadd=.pl,.plt
 
 """ SfS Website
 autocmd BufEnter *.ssi set ft=html
@@ -238,6 +240,19 @@ autocmd BufEnter *.ssi set ft=html
 """ Haskell
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
 au BufEnter *.hs set expandtab shiftwidth=4
+
+"" Fruit salad is tasty.
+let hs_highlight_types = 1
+let hs_highlight_more_types = 1
+let hs_highlight_boolean = 1
+
+"" Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
+au BufEnter *.hs compiler ghc
+let g:haddock_browser = "/usr/bin/opera"
+let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
+" This will run GHCi on the code on every write, and spit out compiler errors!
+au BufWritePost *.hs GHCi :ctags
+au BufWritePost *.hs GHCReload
 
 """ Perl
 let perl_extended_vars=1 " highlight advanced perl vars inside strings
@@ -316,10 +331,6 @@ autocmd FileType mail,text nmap <F8> :set spelllang=
 
 """ Eclim
 let g:EclimBrowser='firefox'
-
-""" Misc
-""""""""
-let g:haddock_browser='firefox'
 
 """ Man pages
 runtime! ftplugin/man.vim
