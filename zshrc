@@ -43,7 +43,7 @@ DIRSTACKSIZE=10
 
 # Paths
 #
-JAVADIR=${HOME}/opt/java
+JAVADIR=${HOME}/src/local/java
 if [ -d $JAVADIR ]; then
 	for i in $JAVADIR/*.jar; do
 		CLASSPATH=$i:$CLASSPATH
@@ -100,7 +100,7 @@ alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
 alias ccp="rsync -rvr --progress"
 alias pls='pl -s'
-alias nt='urxvtc'
+alias nt='urxvt'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
 alias whereami='hostname'
