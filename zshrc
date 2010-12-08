@@ -86,9 +86,16 @@ if [ -x $(which dircolors) ]; then
 	eval `dircolors`
 fi
 
+if [ $(uname -s) = "Darwin" ]; then
+	alias ls='ls -GFBC'
+else
+	alias ls='ls --color="auto" -CFB'
+fi
+
+
 ### Simple command aliases
+alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
-alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
 alias du='du -h' df='df -h'
@@ -104,9 +111,8 @@ alias nt='urxvt'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
 alias whereami='hostname'
-alias tr='transmission-remote'
 
-alias rm='rm -iv'
+aliascrm='rm -iv'
 alias mv='mv -i'
 alias cp='cp -i'
 
@@ -282,7 +288,6 @@ zle-keymap-select() {
 zle -N zle-keymap-select
 
 ## Run the curt system more comfortably:
-
 curt() {
 	pl -g curt -s $1
 }
@@ -301,7 +306,7 @@ pacs () {
 }
 
 # Make a directory that will be tracked, but its content ignored by git
-mkgidir () {
+mkgitigndir () {
 	mkdir $1
 	echo "*" >| $1/.gitignore
 	echo "!.gitignore" >> $1/.gitignore
@@ -318,8 +323,16 @@ if [[ -n $SSH_CLIENT ]]; then
 fi
 
 ## Prompt
-PS1="%F{blue}$PROMPTHOST%f%1(j.%F{yellow}%j%f .)%(?..%B%F{red}%?%f%b )%(#.%B%F{red}.%F{green})%#%f%b "
-RPS1="%F{blue}%~%f"
+autoload -U colors
+colors
+
+color() { echo "%{${fg[$1]}%}" }
+
+CLDF="$(color 'default')"
+#PS1="$BLUE$PROMPTHOST%1(j.${fg[yellow]}%j .)%(?..%B${fg[red]}%?%b )%(#.%B${fg[red]}.${fg[green]})%#%b ${fg[black]}"
+#RPS1="%F{blue}%~%f"
+PS1="$(color 'blue')$PROMPTHOST$CLDF%1(j.$(color 'yellow')%j$CLDF .)%(?..%B$(color 'red')%?%b$CLDF )%(#.%B$(color 'red').$(color green))%#%b$CLDF "
+RPS1="$(color blue)%~$CLDF"
 
 source ${HOME}/.zshrc.local
 
