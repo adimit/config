@@ -81,11 +81,6 @@ setopt autocd
 ### Aliases
 ###########
 
-# color for different kinds of documents
-if [ -x $(which dircolors) ]; then
-	eval `dircolors`
-fi
-
 if [ $(uname -s) = "Darwin" ]; then
 	alias ls='ls -GFBC'
 else
@@ -327,10 +322,8 @@ autoload -U colors
 colors
 
 color() { echo "%{${fg[$1]}%}" }
-
 CLDF="$(color 'default')"
-#PS1="$BLUE$PROMPTHOST%1(j.${fg[yellow]}%j .)%(?..%B${fg[red]}%?%b )%(#.%B${fg[red]}.${fg[green]})%#%b ${fg[black]}"
-#RPS1="%F{blue}%~%f"
+
 PS1="$(color 'blue')$PROMPTHOST$CLDF%1(j.$(color 'yellow')%j$CLDF .)%(?..%B$(color 'red')%?%b$CLDF )%(#.%B$(color 'red').$(color green))%#%b$CLDF "
 RPS1="$(color blue)%~$CLDF"
 
