@@ -323,6 +323,8 @@ RPS1="%F{blue}%~%f"
 
 source ${HOME}/.zshrc.local
 
+export GPGKEY=11076BD2
+
 if [ $TOPICSTART ]; then
 	ls
 fi
