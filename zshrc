@@ -4,67 +4,21 @@
 #
 # Aleksandar Dimitrov
 
-# Set keymap
-if [ $TERM = "linux" ]; then
-	loadkeys ~/.capsesc_swap&>/dev/null
-fi
-
-# If we're on a Mac, don't confuse the GNU command line apps
-if [ $(uname) = "Darwin" ]; then
-	export TERM="xterm-color"
-fi
-
 set -o vi
-PATH="${HOME}/bin:${PATH}"
-export PATH="$HOME/bin:${PATH}"
-if [ -d ${HOME}/opt ]; then
-	for i in ${HOME}/opt/*/bin; do
-		PATH="$i:${PATH}"
-	done
-fi
+
+export PATH="${HOME}/bin:${PATH}"
 
 ### Environment
-###############
 
 export VISUAL=/usr/bin/vim
 export EDITOR=/usr/bin/vim
-### History
 HISTFILE=~/.history
 HISTSIZE=4000
 SAVEHIST=2000
-
-ECLIPSE_HOME=${HOME}/opt/ganymede
-
-# Tex
+ECLIPSE_HOME=${HOME}/local/eclipse
 export TEXMFHOME=${HOME}/.texmf
-
-### PUSHD History
 DIRSTACKSIZE=10
 
-# Paths
-#
-JAVADIR=${HOME}/src/local/java
-if [ -d $JAVADIR ]; then
-	for i in $JAVADIR/*.jar; do
-		CLASSPATH=$i:$CLASSPATH
-	done
-fi
-
-### Mail
-
-mailpref="${HOME}/mail"
-mailpath=($mailpref/inbox/new'?You have mail'
-	$mailpref/wolfgang/new'?Wolfgang sent mail'
-	$mailpref/ISCL/new'?New ISCL mail arrived'
-	$mailpref/fachschaft/new'?Fachschaft stirred'
-	$mailpref/detmar/new'?New mail in llearn'
-)
-
-
-### OPTIONS
-###########
-
-## History
 setopt incappendhistory
 setopt dvorak
 setopt correct
@@ -73,41 +27,31 @@ setopt histignoredups
 setopt histallowclobber
 setopt histignorespace
 setopt autopushd
-
-## Misc
 setopt noclobber
 setopt autocd
 
 ### Aliases
-###########
-
 if [ $(uname -s) = "Darwin" ]; then
 	alias ls='ls -GFBC'
 else
 	alias ls='ls --color="auto" -CFB'
 fi
-
-
 ### Simple command aliases
 alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
 alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
 alias du='du -h' df='df -h'
-alias umerge='emerge -C'
-alias iwscan="/sbin/iwlist eth1 scan"
+alias iwscan="/sbin/iwlist wlan0 scan"
 alias vim='vim -p'
 alias gvim='gvim  -p'
 alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
 alias ccp="rsync -rvr --progress"
 alias pls='pl -s'
-alias nt='urxvt'
-alias gcal='gcalcli'
-alias calm='gcalcli calm'
-alias whereami='hostname'
+alias nt='urxvt&'
 
-aliascrm='rm -iv'
+alias rm='rm -iv'
 alias mv='mv -i'
 alias cp='cp -i'
 
@@ -115,34 +59,16 @@ alias cpu='ps aux | sort -k 3,3 | tail '
 alias mem='ps aux | sort -k 4,4 | tail '
 
 alias cdrecord='sudo cdrecord driveropts=burnfree --verbose dev=/dev/sr0'
-
-# pastebins
-alias rafb='pastebinit -i'
-
-alias news='newsbeuter'
-
-# grep aliases
 alias pss='ps -ef | grep $1'
 
-### Suffix aliases
-alias -s tex=gvim cpp=gvim java=gvim xml=gvim php=gvim
-alias -s html=firefox
-alias -s jpg=feh jpeg=feh png=feh gif=feh
-
 ## Directory hashes
-hash -d wp=~/etc/wallpapers
-hash -d music=~/music
-hash -d src=~/src
-hash -d werti=~/src/WERTi
-hash -d wiki=~/var/wiki/wikidata
-
-# common typos
-alias iv=vi
-
-### Global aliases
-
-### Completion
-##############
+if [ "%m" = "minsk" ]; then
+	hash -d music=/media/minsk.crypto/music
+else
+	hash -d music=~/Music
+fi
+hash -d src=~/Documents/src
+hash -d werti=~/Documents/uni/werti
 
 autoload -U compinit
 compinit
@@ -154,9 +80,8 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
 ### Functions
-#############
 
-### Autoload
+## Autoload
 autoload -U zmv
 
 # create binary directories for opt
@@ -205,45 +130,6 @@ q() {
 	print "You're not in vi!"
 }
 
-# copy all torrent files to my torrent server
-copytorrents() {
-	find ${HOME}/var/tmp -maxdepth  1 -name '*torrent' \
-	-exec 'transmission-remote' 'kumar' '-a' '{}' ';' -delete
-}
-
-# find a todo file somewhere down the fs hierarchy
-find_todo() {
-	while [ ! -f ./TODO ]; do
-		if [ $(pwd) = "${HOME}" ]; then
-			echo "You don't have a TODO file. Go make one up, you bum!" 1>&2
-			echo "${HOME}/TODO"
-			return
-		fi
-		cd ..
-	done
-	if [ -f ./TODO ]; then
-		echo "$(pwd)/TODO"
-	fi
-}
-
-# manage a todo file found by find_todo/0
-todo() {
-	TODO=$(find_todo)
-	ACTION=cat
-	for i in $@; do 
-		case $i in
-			'-e') ACTION="$EDITOR"
-			;;
-			'-h') TODO="$HOME/TODO"
-			;;
-			*) print "What?" 1>&2
-			return;
-			;;
-		esac
-	done
-	eval "$ACTION $TODO"
-}
-
 ### Cosmetic stuff
 # change title to current directory
 if [ $TERM = "rxvt-unicode" ]; then
@@ -257,6 +143,7 @@ if [ $TERM = "rxvt-unicode" ]; then
 	preexec() { print -Pn "\e]0;${1//\\/\\\\}\a" }
 fi
 
+# display vi-zle state
 zle-keymap-select() {
 	local showcmd="_ "
 	local showins="| "
@@ -287,26 +174,12 @@ curt() {
 	pl -g curt -s $1
 }
 
-# Connect SOCKS to mendelssohn
-mendsocks() {
-	ssh -fND localhost:8880 aleks@mendelssohn.sfs.uni-tuebingen.de
-}
-
-pacs () {
-       echo -e "$(pacman -Ss $@ | sed \
-       -e 's#core/.*#\\033[1;31m&\\033[0;37m#g' \
-       -e 's#extra/.*#\\033[0;32m&\\033[0;37m#g' \
-       -e 's#community/.*#\\033[1;35m&\\033[0;37m#g' \
-       -e 's#^.*/.* [0-9].*#\\033[0;36m&\\033[0;37m#g' )"
-}
-
 # Make a directory that will be tracked, but its content ignored by git
 mkgitigndir () {
 	mkdir $1
 	echo "*" >| $1/.gitignore
 	echo "!.gitignore" >> $1/.gitignore
 }
-
 
 autoload -U zmv
 
