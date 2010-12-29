@@ -176,8 +176,8 @@ maybe_backgroundprocess="%1(j.$(color 'yellow')%j$CLDF .)"
 maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
 user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
 
-PROMPTCHAR="$(color 'yellow')》$CLDF"
-NORMALCHAR="$(color 'cyan')|$CLDF"
+PROMPTCHAR="$(color 'cyan')>$CLDF"
+NORMALCHAR="$(color 'yellow')∙$CLDF"
 
 TEMPPS1="\
 $maybe_hostname\
@@ -193,8 +193,13 @@ function zle-line-init zle-keymap-select {
     PS2=$PS1
     zle reset-prompt
 }
+
 zle -N zle-line-init
 zle -N zle-keymap-select
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '\ee' edit-command-line
 
 RPS1="$(color blue)%~$CLDF"
 
