@@ -15,21 +15,17 @@ import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.Tabbed
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
-
+import XMonad.Hooks.DynamicLog
 
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
 layouts = layoutHints
-        . smartBorders
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
         . desktopLayoutModifiers
         $ tiled ||| reflectHoriz (simpleTabbed *|* Full)
-    where tiled = XMonad.Tall nm delta ratio
-          nm    = 1
-          ratio = 1/2
-          delta = 3/100
+    where tiled = XMonad.Tall 1 (3/100) (1/2)
 
 promptConfig = defaultXPConfig
         { position          = Top
@@ -50,16 +46,14 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
 
 workspaceKeys = [ xK_1, xK_2, xK_3, xK_4, xK_5, xK_6, xK_7, xK_8, xK_9, xK_0 ]
 
-main = xmonad $ gnomeConfig
-             { terminal   = "urxvt"
-             , layoutHook = smartBorders layouts
-             , modMask    = mod4Mask
-             , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
-             , manageHook = composeAll [ manageHook gnomeConfig
-                                       , manageSpawn
-                                       , isFullscreen --> (doF W.focusDown <+> doFullFloat)
-                                       ]
-             , normalBorderColor  = "#000000"
-             , focusedBorderColor = "#8899ff"
-             }
+myConfig = gnomeConfig { terminal   = "urxvt"
+                       , layoutHook = smartBorders layouts
+                       , modMask    = mod4Mask
+                       , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
+                       , manageHook = composeAll [ manageHook gnomeConfig
+                                                 , manageSpawn
+                                                 , isFullscreen --> doFullFloat ]
+                       , normalBorderColor  = "#000000"
+                       , focusedBorderColor = "#8899ff" }
 
+main = xmonad =<< xmobar myConfig

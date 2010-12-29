@@ -6,6 +6,18 @@
 " Remove all existing autocmds
 autocmd!
 
+let mapleader = ","
+
+"" Pathogen
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+" open files in same directory (courtesy to vimcasts.org)
+map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>ev :vsp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
 """ Environment
 """""""""""""""
 
@@ -340,6 +352,5 @@ let g:EclimBrowser='firefox'
 """ Man pages
 runtime! ftplugin/man.vim
 
-""""""""""""""""""""""""""""""""""
 " autoreloading of vim config when saving it
 autocmd! bufwritepost .vimrc source ~/.vimrc
