@@ -176,8 +176,8 @@ maybe_backgroundprocess="%1(j.$(color 'yellow')%j$CLDF .)"
 maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
 user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
 
-PROMPTCHAR="》"
-NORMALCHAR="|"
+PROMPTCHAR="$(color 'yellow')》$CLDF"
+NORMALCHAR="$(color 'cyan')|$CLDF"
 
 TEMPPS1="\
 $maybe_hostname\
