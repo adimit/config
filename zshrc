@@ -314,7 +314,7 @@ autoload -U zmv
 zstyle ':completion::complete:*' use-cache 1
 
 if [[ -n $SSH_CLIENT ]]; then
-	PROMPTHOST="$(hostname -s)"
+	PROMPTHOST="%m "
 fi
 
 ## Prompt
@@ -324,7 +324,7 @@ colors
 color() { echo "%{${fg[$1]}%}" }
 CLDF="$(color 'default')"
 
-maybe_hostname="$(color 'blue')$PROMPTHOST $CLDF"
+maybe_hostname="$(color 'blue')${PROMPTHOST:-}$CLDF"
 maybe_backgroundprocess="%1(j.$(color 'yellow')%j$CLDF .)"
 maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
 user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
