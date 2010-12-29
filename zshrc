@@ -81,14 +81,16 @@ setopt autocd
 ### Aliases
 ###########
 
-# color for different kinds of documents
-if [ -x $(which dircolors) ]; then
-	eval `dircolors`
+if [ $(uname -s) = "Darwin" ]; then
+	alias ls='ls -GFBC'
+else
+	alias ls='ls --color="auto" -CFB'
 fi
 
+
 ### Simple command aliases
+alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
-alias ls='ls --color="auto" -CFB' ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias grep='grep --color="auto"'
 alias mkdir='nocorrect mkdir -p' touch 'nocorrect touch'
 alias du='du -h' df='df -h'
@@ -104,9 +106,8 @@ alias nt='urxvt'
 alias gcal='gcalcli'
 alias calm='gcalcli calm'
 alias whereami='hostname'
-alias tr='transmission-remote'
 
-alias rm='rm -iv'
+aliascrm='rm -iv'
 alias mv='mv -i'
 alias cp='cp -i'
 
@@ -282,7 +283,6 @@ zle-keymap-select() {
 zle -N zle-keymap-select
 
 ## Run the curt system more comfortably:
-
 curt() {
 	pl -g curt -s $1
 }
@@ -301,7 +301,7 @@ pacs () {
 }
 
 # Make a directory that will be tracked, but its content ignored by git
-mkgidir () {
+mkgitigndir () {
 	mkdir $1
 	echo "*" >| $1/.gitignore
 	echo "!.gitignore" >> $1/.gitignore
@@ -314,12 +314,29 @@ autoload -U zmv
 zstyle ':completion::complete:*' use-cache 1
 
 if [[ -n $SSH_CLIENT ]]; then
-	PROMPTHOST="$(hostname -s) "
+	PROMPTHOST="$(hostname -s)"
 fi
 
 ## Prompt
-PS1="%F{blue}$PROMPTHOST%f%1(j.%F{yellow}%j%f .)%(?..%B%F{red}%?%f%b )%(#.%B%F{red}.%F{green})%#%f%b "
-RPS1="%F{blue}%~%f"
+autoload -U colors
+colors
+
+color() { echo "%{${fg[$1]}%}" }
+CLDF="$(color 'default')"
+
+maybe_hostname="$(color 'blue')$PROMPTHOST $CLDF"
+maybe_backgroundprocess="%1(j.$(color 'yellow')%j$CLDF .)"
+maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
+user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
+
+PS1="\
+$maybe_hostname\
+$maybe_backgroundprocess\
+$maybe_errorcode\
+$user_prompt\
+$CLDF " #switch to default color for rest of line.
+
+RPS1="$(color blue)%~$CLDF"
 
 source ${HOME}/.zshrc.local
 
