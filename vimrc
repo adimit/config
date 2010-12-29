@@ -218,14 +218,9 @@ let java_highlight_all = 1
 " Anonymous classes
 set cinoptions+=j1
 
-autocmd FileType java abbrev sop System.out.printf(");<esc>hh
-autocmd FileType java abbrev sep System.err.printf(");<esc>hh
-autocmd FileType java abbrev psmain public static void main(String[] args) {<esc>o}<esc>kA
-autocmd FileType java nmap <F4> :JavaImport<CR>
-autocmd FileType java nmap <F2> :JavaDocSearch<CR>
-autocmd FileType java nmap <Leader>gs :JavaGetSet<CR>
-autocmd FileType java nmap <Leader>gg :JavaGet<CR>
-autocmd FileType java nmap <Leader>jc :JavaCorrect<CR>
+autocmd FileType java nmap <leader>i :JavaImport<CR>
+autocmd FileType java nmap <leader>d :JavaDocSearch<CR>
+autocmd FileType java nmap <Leader>c :JavaCorrect<CR>
 autocmd FileType java nnoremap <silent> <buffer> <CR> :JavaSearchContext<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>j :lne<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
