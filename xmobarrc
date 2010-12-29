@@ -1,12 +1,15 @@
-Config { font = "xft:Monaco:size=7"
-       , bgColor  = "#0a0c0f"
-       , fgColor  = "white"
+Config { font = "xft:Droid Sans Mono:size=8"
+       , bgColor = "black"
+       , fgColor = "grey"
        , position = Top
        , lowerOnStart = True
        , commands = [ Run StdinReader
-		    , Run CpuFreq ["-t","[<cpu0>|<cpu1>]","-L","0","-H","2","-l","lightblue","-n","white","-h","red"] 50
-                    , Run Date "%a, %b %d | %H:%M" "date" 10 ]
-       , sepChar  = "%"
+                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Date "%a %b %_d %H:%M" "date" 10
+                    ,  Run MPD ["-t", "<composer> <title> (<album>) <track>/<plength> <statei> ", "--", "-P", ">>", "-Z", "|", "-S", "><"] 10
+                    ]
+       , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpufreq% %date%"
+       , template = " %StdinReader% }{ %mpd% | %cpu% | %memory% | <fc=#ee9a00>%date%</fc>"
        }
