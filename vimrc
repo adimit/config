@@ -6,6 +6,18 @@
 " Remove all existing autocmds
 autocmd!
 
+let mapleader = ","
+
+"" Pathogen
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+" open files in same directory (courtesy to vimcasts.org)
+map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>ev :vsp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
 """ Environment
 """""""""""""""
 
@@ -44,18 +56,26 @@ set sidescrolloff=3
 
 " Show tabs and trailing whitespace visually
 if (&termencoding == "utf-8") || has("gui_running")
-	if v:version >= 700
-		set list listchars=tab:»\ ,trail:·,extends:…,nbsp:‗
-	else
-		set list listchars=tab:»\ ,trail:·,extends:…
-	endif
+     set list listchars=tab:▸\ ,trail:·,extends:…,nbsp:‗,eol:¶
 else
-	if v:version >= 700
-		set list listchars=tab:>\ ,trail:.,extends:>,nbsp:_
-	else
-		set list listchars=tab:>\ ,trail:.,extends:>
-	endif
+     set list listchars=tab:>\ ,trail:.,extends:>,nbsp:_,eol:¶
 endif
+
+nmap <leader>l :set list!<CR>
+
+function! Preserve(command)
+     " Preparation: save last search, and cursor position.
+     let _s=@/
+     let l = line(".")
+     let c = col(".")
+     " Do the business:
+     execute a:command
+     " Clean up: restore previous search history, and cursor position
+     let @/=_s
+     call cursor(l, c)
+endfunction
+nmap <leader>$ :call Preserve("%s/\\s\\+$//e")<CR>
+nmap <leader>= :call Preserve("normal gg=G")<CR>
 
 if ((has('syntax') && (&t_Co > 2)) || has('gui_running'))
      syntax on
@@ -138,7 +158,7 @@ set suffixes=.bak,~,.o,.h,.info,.swp,.obj,.class
 set pastetoggle=<F11>
 nmap <C-p> :tabprevious<cr>
 nmap <C-n> :tabnext<cr>
-nmap <F12> :tabnew 
+nmap <F12> :tabnew
 imap <C-z>n <Esc>:tabnext<cr>
 imap <C-z>p <Esc>:tabprev<cr>
 " Insert a single character and go back to command mode
@@ -210,14 +230,9 @@ let java_highlight_all = 1
 " Anonymous classes
 set cinoptions+=j1
 
-autocmd FileType java abbrev sop System.out.printf(");<esc>hh
-autocmd FileType java abbrev sep System.err.printf(");<esc>hh
-autocmd FileType java abbrev psmain public static void main(String[] args) {<esc>o}<esc>kA
-autocmd FileType java nmap <F4> :JavaImport<CR>
-autocmd FileType java nmap <F2> :JavaDocSearch<CR>
-autocmd FileType java nmap <Leader>gs :JavaGetSet<CR>
-autocmd FileType java nmap <Leader>gg :JavaGet<CR>
-autocmd FileType java nmap <Leader>jc :JavaCorrect<CR>
+autocmd FileType java nmap <leader>i :JavaImport<CR>
+autocmd FileType java nmap <leader>d :JavaDocSearch<CR>
+autocmd FileType java nmap <Leader>c :JavaCorrect<CR>
 autocmd FileType java nnoremap <silent> <buffer> <CR> :JavaSearchContext<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>j :lne<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
@@ -246,7 +261,7 @@ let hs_highlight_types = 1
 let hs_highlight_more_types = 1
 let hs_highlight_boolean = 1
 
-"" Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
+" Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
 au BufEnter *.hs compiler ghc
 let g:haddock_browser = "/usr/bin/opera"
 let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
@@ -273,6 +288,8 @@ let g:vimsyn_folding='af'
 " 	endfor
 " endfunction
 
+
+"" Helper functions for writing syntax highlighting code for Vim
 nnoremap <Leader><S-S> :call ShowSynStack()<CR>
 nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 
@@ -312,7 +329,7 @@ autocmd Filetype tex,latex,plaintex set efm=%E!\ LaTeX\ %trror:\ %m,
 
 """ Shell Scripts
 " Autoexecutable Scripts:
-" au BufWritePost * if getline(1) =~ "^#!" | silent !chmod a+x <afile>  | endif 
+" au BufWritePost * if getline(1) =~ "^#!" | silent !chmod a+x <afile>  | endif
 
 """ Misc
 " Set K&R indentation for certain file types
@@ -335,6 +352,5 @@ let g:EclimBrowser='firefox'
 """ Man pages
 runtime! ftplugin/man.vim
 
-""""""""""""""""""""""""""""""""""
 " autoreloading of vim config when saving it
 autocmd! bufwritepost .vimrc source ~/.vimrc
