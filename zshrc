@@ -143,32 +143,6 @@ if [ $TERM = "rxvt-unicode" ]; then
 	preexec() { print -Pn "\e]0;${1//\\/\\\\}\a" }
 fi
 
-# display vi-zle state
-zle-keymap-select() {
-	local showcmd="_ "
-	local showins="| "
-	if [[ $KEYMAP = vicmd ]]; then
-		if [[ $PS1 != ${showcmd}* ]]; then
-			if [[ $PS1 = ${showins}* ]]; then
-				PS1=$showcmd${PS1##$showins}
-			else
-				PS1="$showcmd$PS1"
-			fi
-			zle reset-prompt
-		fi
-	else
-		if [[ $PS1 != ${showins}* ]]; then
-			if [[ $PS1 = ${showcmd}* ]]; then
-				PS1=$showins${PS1##$showcmd}
-			else
-				PS1="$showins$PS1"
-			fi
-			zle reset-prompt
-		fi
-	fi
-}
-zle -N zle-keymap-select
-
 ## Run the curt system more comfortably:
 curt() {
 	pl -g curt -s $1
@@ -202,12 +176,25 @@ maybe_backgroundprocess="%1(j.$(color 'yellow')%j$CLDF .)"
 maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
 user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
 
-PS1="\
+PROMPTCHAR="》"
+NORMALCHAR="|"
+
+TEMPPS1="\
 $maybe_hostname\
 $maybe_backgroundprocess\
 $maybe_errorcode\
 $user_prompt\
-$CLDF " #switch to default color for rest of line.
+$CLDF" #switch to default color for rest of line.
+
+PS1="$TEMPPS1$PROMPTCHAR "
+
+function zle-line-init zle-keymap-select {
+    PS1="$TEMPPS1${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
+    PS2=$PS1
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 RPS1="$(color blue)%~$CLDF"
 
