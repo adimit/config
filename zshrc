@@ -62,13 +62,15 @@ alias cdrecord='sudo cdrecord driveropts=burnfree --verbose dev=/dev/sr0'
 alias pss='ps -ef | grep $1'
 
 ## Directory hashes
-if [ "%m" = "minsk" ]; then
+if [ "$(hostname -s)" = "minsk" ]; then
 	hash -d music=/media/minsk.crypto/music
 else
 	hash -d music=~/Music
 fi
 hash -d src=~/Documents/src
 hash -d werti=~/Documents/uni/werti
+hash -d ws=~/Documents/workspace
+hash -d uni=~/Documents/uni
 
 autoload -U compinit
 compinit
