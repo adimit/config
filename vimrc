@@ -222,11 +222,7 @@ autocmd FileType help nmap <buffer> <Return> <C-]>
 
 """ Java
 ""autocmd filetype java nmap <F9> :Ant<cr>
-"let java_highlight_functions="style" " this seems to bork end of fold block
-" detection when using fm=syntax
-"let java_highlight_ignore_javadoc = 1
 let java_highlight_all = 1
-"let java_mark_braces_in_parens_as_errors = 1
 " Anonymous classes
 set cinoptions+=j1
 
@@ -239,6 +235,8 @@ autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader><Space> :lopen<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Tab> :call eclim#util#FillTemplate("${", "}")<cr>
 autocmd FileType java nnoremap <silent> <buffer> <F11> :Sign<CR>
+
+autocmd FileType java sw=5 set ts=5
 
 filetype plugin on
 filetype indent on
