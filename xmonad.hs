@@ -20,7 +20,7 @@ import XMonad.Hooks.DynamicLog
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
-layouts = layoutHints
+layouts = layoutHintsToCenter
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
         . desktopLayoutModifiers
