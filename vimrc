@@ -236,7 +236,7 @@ autocmd FileType java nnoremap <silent> <buffer> <Leader><Space> :lopen<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Tab> :call eclim#util#FillTemplate("${", "}")<cr>
 autocmd FileType java nnoremap <silent> <buffer> <F11> :Sign<CR>
 
-autocmd FileType java sw=5 set ts=5
+autocmd FileType java set sw=5 ts=5
 
 filetype plugin on
 filetype indent on
