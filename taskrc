@@ -1,0 +1,263 @@
+# [Created by task 1.9.2 1/11/2011 13:28:36]
+# Task program configuration file.
+# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',
+# 'man task-tutorial', 'man task-color' or 'man taskrc'
+
+# Here is an example of entries that use the default, override and blank values
+#   variable=foo   -- By specifying a value, this overrides the default
+#   variable=      -- By specifying no value, this means no default
+#   #variable=foo  -- By commenting out the line, this uses the default
+
+# Files
+data.location=/home/adimit/.task
+locking=on                                    # Use file-level locking
+
+# Terminal
+curses=on                                     # Use ncurses library to determine terminal width
+defaultwidth=80                               # Without ncurses, assumed width
+#editor=vi                                    # Preferred text editor
+
+# Miscellaneous
+confirmation=yes                              # Confirmation on delete, big changes
+echo.command=yes                              # Details on command just run
+annotations=full                              # Level of verbosity for annotations: full, sparse or none
+next=2                                        # How many tasks per project in next report
+bulk=2                                        # > 2 tasks considered 'a lot', for confirmation
+nag=You have higher priority tasks.           # Nag message to keep you honest
+search.case.sensitive=yes                     # Setting to no allows case insensitive searches
+active.indicator=*                            # What to show as an active task indicator
+tag.indicator=+                               # What to show as a tag indicator
+recurrence.indicator=R                        # What to show as a task recurrence indicator
+recurrence.limit=1                            # Number of future recurring pending tasks
+undo.style=side                               # Undo style - can be 'side', or 'diff'
+
+# Dates
+dateformat=m/d/Y                              # Preferred input and display date format
+dateformat.holiday=YMD                        # Preferred input date format for holidays
+dateformat.report=m/d/Y                       # Preferred display date format for reports
+dateformat.annotation=m/d/Y                   # Preferred display date format for reports
+weekstart=Sunday                              # Sunday or Monday only
+displayweeknumber=yes                         # Show week numbers on calendar
+due=7                                         # Task is considered due in 7 days
+
+# Calendar controls
+calendar.legend=yes                           # Display the legend on calendar
+calendar.details=sparse                       # Calendar shows information for tasks w/due dates: full, sparse or none
+calendar.details.report=list                  # Report to use when showing task information in cal
+calendar.holidays=none                        # Show public holidays on calendar:full, sparse or none
+#monthsperline=3                              # Number of calendar months on a line
+
+# Color controls.
+color=on                                      # Enable color
+color.header=color3                           # Color of header messages
+color.footnote=color3                         # Color of footnote messages
+color.debug=color3                            # Color of diagnostic output
+
+color.summary.bar=on rgb141                   # Color of summary report progress bar
+color.summary.background=on color0            # Color of summary report background
+
+color.history.add=color0 on rgb500            # Color of added tasks in ghistory report
+color.history.done=color0 on rgb050           # Color of completed tasks in ghistory report
+color.history.delete=color0 on rgb550         # Color of deleted tasks in ghistory report
+
+color.undo.before=color1                      # Color of values before a change
+color.undo.after=color2                       # Color of values after a change
+
+color.calendar.today=color15 on rgb013         # Color of today in calendar
+color.calendar.due=color0 on color1           # Color of days  with due tasks in calendar
+color.calendar.due.today=color15 on color1    # Color of today with due tasks in calendar
+color.calendar.overdue=color0 on color9       # Color of days  with overdue tasks in calendar
+color.calendar.weekend=color235               # Color of weekend days in calendar
+color.calendar.holiday=color0 on color11      # Color of public holidays in calendar
+color.calendar.weeknumber=rgb013              # Color of the weeknumbers in calendar
+
+# The following rules are presented in their order of precedence.
+# The higher the color rule is up this list, the higher precedence
+# it has in determining the color for the task.  Precedence is shown
+# in brackets [1]
+color.recurring=rgb013                        # [1]  Color of recur.any: tasks
+color.overdue=color9                          # [2]  Color of overdue tasks
+color.due.today=rgb400                        # [3]  Color of tasks due today
+color.due=color1                              # [4]  Color of due tasks
+#color.keyword.car=on blue                    # [5]  Color of description.contains:car tasks
+#color.project.garden=on green                # [6]  Color of project:garden tasks
+#color.tag.bug=yellow                         # [7]  Color of +bug tasks
+color.active=rgb555 on rgb410                 # [8]  Color of active tasks
+color.pri.none=                               # [9]  Color of priority:  tasks
+color.pri.H=rgb255                            # [9]  Color of priority:H tasks
+color.pri.M=rgb250                            # [9]  Color of priority:M tasks
+color.pri.L=rgb245                            # [9]  Color of priority:L tasks
+color.tagged=rgb031                           # [10]  Color of tagged tasks
+color.alternate=on color233                   # [11] Alternate color for line coloring
+
+# Shadow file support
+#shadow.file=/tmp/shadow.txt                  # Location of shadow file
+#shadow.command=list                          # Task command for shadow file
+#shadow.notify=on                             # Footnote when updated
+
+#default.project=foo                          # Default project for 'add' command
+#default.priority=M                           # Default priority for 'add' command
+default.command=list                          # When no arguments are specified
+
+_forcecolor=no                                # Forces color to be on, even for non TTY output
+blanklines=true                               # Use more whitespace in output
+complete.all.projects=no                      # Include old project names in '_projects' command
+complete.all.tags=no                          # Include old tag names in '_ags' command
+list.all.projects=no                          # Include old project names in 'projects' command
+list.all.tags=no                              # Include old tag names in 'tags' command
+debug=no                                      # Display diagnostics
+hooks=off                                     # Hook system master switch
+fontunderline=yes                             # Uses underlines rather than -------
+shell.prompt=task>                            # Prompt used by the shell command
+
+# Import heuristics - alternate names for fields (comma-separated list of names)
+#import.synonym.bg=?
+#import.synonym.description=?
+#import.synonym.due=?
+#import.synonym.end=?
+#import.synonym.entry=?
+#import.synonym.fg=?
+#import.synonym.id=?
+#import.synonym.priority=?
+#import.synonym.project=?
+#import.synonym.recur=?
+#import.synonym.start=?
+#import.synonym.status=?
+#import.synonym.tags=?
+#import.synonym.uuid=?
+
+# Export Controls
+export.ical.class=PRIVATE                     # Could be PUBLIC, PRIVATE or CONFIDENTIAL
+
+# Aliases - alternate names for commands
+alias.rm=delete                               # Alias for the delete command
+alias.history=history.monthly                 # Prefer monthly over annual history reports
+alias.ghistory=ghistory.monthly               # Prefer monthly graphical over annual history reports
+alias.export=export.csv                       # Prefer CSV over iCal export
+alias.export.vcalendar=export.ical            # They are the same
+
+# Fields: id,uuid,project,priority,priority_long,entry,entry_time,
+#         start,entry_time,due,recur,recurrence_indicator,age,
+#         age_compact,active,tags,tag_indicator,description,
+#         description_only,end,end_time,countdown,countdown_compact
+# Description:   This report is ...
+# Sort:          due+,priority-,project+
+# Filter:        pro:x pri:H +bug limit:10
+# Dateformat:    due date format in reports
+
+# task long
+report.long.description=Lists all task, all data, matching the specified criteria
+report.long.columns=id,project,priority,entry,start,due,recur,countdown,age,tags,description
+report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Countdown,Age,Tags,Description
+report.long.sort=due+,priority-,project+
+report.long.filter=status:pending
+#report.long.dateformat=m/d/Y
+#report.long.annotations=full
+
+# task list
+report.list.description=Lists all tasks matching the specified criteria
+report.list.columns=id,project,priority,due,active,age,description
+report.list.labels=ID,Project,Pri,Due,Active,Age,Description
+report.list.sort=due+,priority-,active-,project+
+report.list.filter=status:pending
+#report.list.dateformat=m/d/Y
+#report.list.annotations=full
+
+# task ls
+report.ls.description=Minimal listing of all tasks matching the specified criteria
+report.ls.columns=id,project,priority,description
+report.ls.labels=ID,Project,Pri,Description
+report.ls.sort=priority-,project+
+report.ls.filter=status:pending
+#report.ls.dateformat=m/d/Y
+#report.ls.annotations=full
+
+# task minimal
+report.minimal.description=A really minimal listing
+report.minimal.columns=id,project,description
+report.minimal.labels=ID,Project,Description
+report.minimal.sort=project+,description+
+report.minimal.filter=status:pending
+#report.minimal.dateformat=m/d/Y
+#report.minimal.annotations=full
+
+# task newest
+report.newest.description=Shows the newest tasks
+report.newest.columns=id,project,priority,due,active,age,description
+report.newest.labels=ID,Project,Pri,Due,Active,Age,Description
+report.newest.sort=id-
+report.newest.filter=status:pending limit:10
+#report.newest.dateformat=m/d/Y
+#report.newest.annotations=full
+
+# task oldest
+report.oldest.description=Shows the oldest tasks
+report.oldest.columns=id,project,priority,due,active,age,description
+report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description
+report.oldest.sort=id+
+report.oldest.filter=status:pending limit:10
+#report.oldest.dateformat=m/d/Y
+#report.oldest.annotations=full
+
+# task overdue
+report.overdue.description=Lists overdue tasks matching the specified criteria
+report.overdue.columns=id,project,priority,due,active,age,description
+report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description
+report.overdue.sort=due+,priority-,active-,project+
+report.overdue.filter=status:pending due.before:today
+#report.overdue.dateformat=m/d/Y
+#report.overdue.annotations=full
+
+# task active
+report.active.description=Lists active tasks matching the specified criteria
+report.active.columns=id,project,priority,due,active,age,description
+report.active.labels=ID,Project,Pri,Due,Active,Age,Description
+report.active.sort=due+,priority-,project+
+report.active.filter=status:pending start.any:
+#report.active.dateformat=m/d/Y
+#report.active.annotations=full
+
+# task completed
+report.completed.description=Lists completed tasks matching the specified criteria
+report.completed.columns=end,project,priority,age,description
+report.completed.labels=Complete,Project,Pri,Age,Description
+report.completed.sort=end+,priority-,project+
+report.completed.filter=status:completed
+#report.completed.dateformat=m/d/Y
+#report.completed.annotations=full
+
+# task recurring
+report.recurring.description=Lists recurring tasks matching the specified criteria
+report.recurring.columns=id,project,priority,due,recur,active,age,description
+report.recurring.labels=ID,Project,Pri,Due,Recur,Active,Age,Description
+report.recurring.sort=due+,priority-,active-,project+
+report.recurring.filter=status:pending parent.any:
+#report.recurring.dateformat=m/d/Y
+#report.recurring.annotations=full
+
+# task waiting
+report.waiting.description=Lists all waiting tasks matching the specified criteria
+report.waiting.columns=id,project,priority,wait,age,description
+report.waiting.labels=ID,Project,Pri,Wait,Age,Description
+report.waiting.sort=wait+,priority-,project+
+report.waiting.filter=status:waiting
+#report.waiting.dateformat=m/d/Y
+#report.waiting.annotations=full
+
+# task all
+report.all.description=Lists all tasks matching the specified criteria
+report.all.columns=id,project,priority,due,active,age,description
+report.all.labels=ID,Project,Pri,Due,Active,Age,Description
+report.all.sort=due+,priority-,active-,project+
+#report.all.dateformat=m/d/Y
+#report.all.annotations=full
+
+# task next
+report.next.description=Lists the most urgent tasks
+report.next.columns=id,project,priority,due,active,age,description
+report.next.labels=ID,Project,Pri,Due,Active,Age,Description
+report.next.sort=due+,priority-,active-,project+
+report.next.filter=status:pending limit:page
+#report.next.dateformat=m/d/Y
+#report.next.annotations=full
+
