@@ -1,0 +1,36 @@
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set postponed = "=Drafts"
+
+set header_cache = ~/.mutt/cache/headers
+set message_cachedir = ~/.mutt/cache/bodies
+set certificate_file = ~/.mutt/certificates
+
+set move = no
+
+set sort = threads
+set sort_aux = date-received
+
+set imap_check_subscribed
+set imap_list_subscribed
+
+set mail_check = 15
+set timeout = 60
+
+set include
+set mime_forward
+set noconfirmappend
+
+set pager_context = 1
+set pager_index_lines = 6
+
+set crypt_autosign
+set pgp_use_gpg_agent
+
+source /usr/share/doc/mutt/examples/gpg.rc
+source ~/.mail/imap_private.rc
+
+source ~/.mail/aliases
+set alias_file = ~/.mail/aliases
+
+set folder_format = '%2C %3N %d %f'
