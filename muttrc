@@ -27,7 +27,7 @@ set pager_index_lines = 6
 set crypt_autosign
 set pgp_use_gpg_agent
 
-source /usr/share/doc/mutt/examples/gpg.rc
+source ~/.mail/gpg.rc
 source ~/.mail/imap_private.rc
 
 source ~/.mail/aliases
