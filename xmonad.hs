@@ -17,6 +17,8 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
 import XMonad.Hooks.DynamicLog
 
+import System.Info (os)
+
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
@@ -46,9 +48,13 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
 
 workspaceKeys = [ xK_1, xK_2, xK_3, xK_4, xK_5, xK_6, xK_7, xK_8, xK_9, xK_0 ]
 
+detectModMask = if os == "darwin"
+                   then mod1Mask
+                   else mod4Mask
+
 myConfig = gnomeConfig { terminal   = "urxvt"
                        , layoutHook = smartBorders layouts
-                       , modMask    = mod4Mask
+                       , modMask    = detectModMask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
                        , manageHook = composeAll [ manageHook gnomeConfig
                                                  , manageSpawn
