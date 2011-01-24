@@ -37,6 +37,7 @@ else
 	alias ls='ls --color="auto" -CFB'
 fi
 ### Simple command aliases
+alias wee='weechat-curses'
 alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
 alias grep='grep --color="auto"'
