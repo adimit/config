@@ -9,7 +9,7 @@
 #   #variable=foo  -- By commenting out the line, this uses the default
 
 # Files
-data.location=/home/adimit/.task
+data.location=~/.task
 locking=on                                    # Use file-level locking
 
 # Terminal

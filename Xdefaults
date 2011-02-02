@@ -1,5 +1,5 @@
 urxvt.scrollBar: false
-urxvt.font: xft:Droid Sans Mono:size=9
+urxvt.font: xft:Droid Sans Mono:size=10
 
 urxvt.inheritPixmap: true
 urxvt.tintColor: #203040

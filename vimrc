@@ -351,6 +351,11 @@ autocmd FileType mail,text nmap <F8> :set spelllang=
 """ Eclim
 let g:EclimBrowser='firefox'
 
+if filereadable("/mach_kernel") " in which case we're on the Mac
+     let g:EclimHome = '/Users/aleks/local/eclipse/plugins/org.eclim_1.6.1'
+     let g:EclimEclipseHome = '/Users/aleks/local/eclipse'
+endif
+
 """ Man pages
 runtime! ftplugin/man.vim
 
