@@ -241,6 +241,9 @@ autocmd FileType java set sw=5 ts=5
 filetype plugin on
 filetype indent on
 
+""" Lua
+autocmd FileType lua set sw=5 ts=5
+
 """ Prolog
 hi Flicker ctermfg=white cterm=bold
 au BufEnter *.pl set filetype=prolog "Perl sucks anyway
