@@ -1,6 +1,6 @@
 Config { font = "xft:Droid Sans Mono:size=8"
-       , bgColor = "black"
-       , fgColor = "grey"
+       , bgColor = "#363946"
+       , fgColor = "#cae682"
        , position = Top
        , lowerOnStart = True
        , commands = [ Run StdinReader
