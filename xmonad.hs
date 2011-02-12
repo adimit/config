@@ -85,10 +85,13 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             ++ -- TopicSpace
             [ ((mask              , xK_t        ), prompt (switchTopic myTopicConfig))
             , ((mask .|. shiftMask, xK_t        ), prompt $ windows . W.shift)
-            , ((mask              , xK_Return   ), spawnShell)
-            , ((mask              , xK_d        ), runSelectedAction myGSConfig topicGrid) ]
-            where prompt    = workspacePrompt promptConfig
-                  topicGrid = map (\t -> (t, windows $ W.greedyView t)) myTopics
+            , ((mask              , xK_Return   ), spawnShell) ]
+            ++ -- Topic + Grid
+            [ ((mask              , xK_d        ), runSelectedAction myGSConfig (tgr W.greedyView))
+            , ((mask .|. shiftMask, xK_d        ), runSelectedAction myGSConfig (tgr W.shift)) ]
+            where prompt = workspacePrompt promptConfig
+                  tgr f  = map (\t -> (t, windows $ f t)) myTopics
+
 
 myTopics :: [Topic]
 myTopics = [ "dash", "web", "comm", "werti", "eclipse", "logs", "test", "admin", "music"
