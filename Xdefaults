@@ -1,11 +1,11 @@
 urxvt.scrollBar: false
-urxvt.font: xft:Droid Sans Mono:size=10
+urxvt.font: xft:Droid Sans Mono:size=9
 
 urxvt.inheritPixmap: true
-urxvt.tintColor: #203040
-urxvt.shading: 50
+! urxvt.tintColor: #203040
+urxvt.shading: 100
 
-urxvt.background: #101010
+urxvt.background: #202020
 urxvt.foreground: #ffffff
 
 !-- Tango color scheme

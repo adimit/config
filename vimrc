@@ -240,6 +240,9 @@ autocmd FileType java set sw=5 ts=5
 filetype plugin on
 filetype indent on
 
+""" Lua
+autocmd FileType lua set sw=5 ts=5
+
 """ Prolog
 hi Flicker ctermfg=white cterm=bold
 au BufEnter *.pl set filetype=prolog "Perl sucks anyway
@@ -262,9 +265,13 @@ let hs_highlight_boolean = 1
 au BufEnter *.hs compiler ghc
 let g:haddock_browser = "/usr/bin/opera"
 let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
-" This will run GHCi on the code on every write, and spit out compiler errors!
-au BufWritePost *.hs GHCi :ctags
-au BufWritePost *.hs GHCReload
+" WriteAndGHC writes the file and reloads tags and type information
+function! WriteAndGHC()
+     :write
+     GHCi :ctags
+     GHCReload
+endfunction
+au FileType haskell nnoremap <leader>c :exe WriteAndGHC()<CR>
 
 """ Perl
 let perl_extended_vars=1 " highlight advanced perl vars inside strings
