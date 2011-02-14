@@ -52,7 +52,9 @@ myTerminal = "urxvt"
 myGSApps   = ["opera", "miro", "eclipse", "gmpc", "gvim"]
 
 spawnShell       = currentTopicDir myTopicConfig >>= spawnShellIn
-spawnShellIn dir = spawn $ myTerminal ++ " -cd ${HOME}/'" ++ escape' dir ++ "'"
+spawnShellIn dir = spawn $ myTerminal ++ " -cd ${HOME}/'" ++ escape' dir ++ "' || "
+                        ++ "FAILED_CHDIR=${HOME}/'"++escape' dir++"' " ++myTerminal
+                        -- ++ myTerminal
     where escape' ('\'':xs) = "\\'" ++ escape' xs
           escape'    (x:xs) = x:escape' xs
           escape'        [] = []
@@ -60,7 +62,7 @@ spawnShellIn dir = spawn $ myTerminal ++ " -cd ${HOME}/'" ++ escape' dir ++ "'"
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
                              , gs_cellwidth   = 100
-                             , gs_navigate    = M.unions [ reset, fpsKeys ]
+                             -- , gs_navigate    = M.unions [ reset, fpsKeys ]
                              , gs_font        = myFont
                              , gs_cellpadding = 4 }
     where (a,b) <+> (x,y) = (a+x,b+y)
