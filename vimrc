@@ -13,9 +13,8 @@ call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
 
 " open files in same directory (courtesy to vimcasts.org)
-map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>ee :e <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
-map <leader>ev :vsp <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
 """ Environment
@@ -340,6 +339,13 @@ set infercase
 set complete=.,w,k
 autocmd FileType mail,text,plaintex,tex,latex setlocal spell spelllang=en_US
 autocmd FileType mail,text nmap <F8> :set spelllang=
+
+""" Tabularize (from vimcasts.org)
+
+if exists(":Tabularize")
+	nmap <Leader>t= :Tabularize /=<CR>
+	vmap <Leader>t= :Tabularize /=<CR>
+endif
 
 """ Plugins
 """""""""""
