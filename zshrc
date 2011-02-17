@@ -68,10 +68,11 @@ if [ "$(hostname -s)" = "minsk" ]; then
 else
 	hash -d music=~/Music
 fi
-hash -d src=~/Documents/src
-hash -d werti=~/Documents/uni/werti
-hash -d ws=~/Documents/workspace
-hash -d uni=~/Documents/uni
+hash -d src=~/src
+hash -d doc=~/doc
+hash -d werti=~src/werti-passives
+hash -d ws=~src/workspace
+hash -d uni=~doc/uni
 
 autoload -U compinit
 compinit
