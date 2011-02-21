@@ -8,6 +8,11 @@ set -o vi
 
 export PATH="${HOME}/bin:${PATH}"
 
+cabalpath=${HOME}/.cabal/bin
+if [ -d $cabalpath ]; then
+	export PATH=$cabalpath:$PATH
+fi
+
 ### Environment
 
 export VISUAL=/usr/bin/vim
