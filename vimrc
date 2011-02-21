@@ -210,11 +210,10 @@ endfunction
 nmap <F3> :syn sync fromstart<cr>
 autocmd BufEnter * syntax sync fromstart
 
-""" Tags & Taglist
-set showfulltag
-set tags=tags;/
+""" Tags & Tagbar
+g:tagbar_compact = 1
 
-nnoremap <silent> <F8> :TlistToggle<CR>
+nnoremap <silent> <F8> :TagbarToggle<CR>
 
 """ Vim Help Files: make [Return] follow a link
 autocmd FileType help nmap <buffer> <Return> <C-]>
