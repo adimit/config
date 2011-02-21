@@ -6,7 +6,18 @@
 
 set -o vi
 
-export PATH="${HOME}/bin:${PATH}"
+localpath=$HOME/local
+if [ -d $localpath ]; then
+	for i in $(ls -1 $localpath); do
+		basepath=$localpath/$i
+		if [ -d $basepath/bin ]; then
+			PATH=$basepath/bin:$PATH
+		fi
+		if [ -d $basepath/man ]; then
+			MANPATH=$basepath/man:$MANPATH
+		fi
+	done
+fi
 
 ### Environment
 
