@@ -52,15 +52,17 @@ myTerminal = "urxvt"
 myGSApps   = ["opera", "miro", "eclipse", "gmpc", "gvim"]
 
 spawnShell       = currentTopicDir myTopicConfig >>= spawnShellIn
-spawnShellIn dir = spawn $ myTerminal ++ " -cd ${HOME}/'" ++ escape' dir ++ "'"
-    where escape' ('\'':xs) = "\\'" ++ escape' xs
-          escape'    (x:xs) = x:escape' xs
-          escape'        [] = []
+spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
+                        ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
+                        -- ++ myTerminal
+    where escape ('\'':xs) = "\\\"" ++ escape xs
+          escape    (x:xs) = x:escape xs
+          escape        [] = []
 
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
                              , gs_cellwidth   = 100
-                             , gs_navigate    = M.unions [ reset, fpsKeys ]
+                             -- , gs_navigate    = M.unions [ reset, fpsKeys ]
                              , gs_font        = myFont
                              , gs_cellpadding = 4 }
     where (a,b) <+> (x,y) = (a+x,b+y)
@@ -103,18 +105,20 @@ myTopicConfig = TopicConfig
     { defaultTopicAction = const $ spawnShell >*> 3
     , defaultTopic       = "dash"
     , maxTopicHistory    = 10
-    , topicActions = M.fromList [ ("conf"     , spawnShell >> spawnHere ed)
-                                , ("werti"    , spawn ed >> spawnShell) ]
-    , topicDirs    = M.fromList [ ("conf"     , "Documents/Configuration/public")
-                                , ("documents", "Documents")
-                                , ("eclipse"  , src ++ "workspace")
-                                , ("yi"       , src ++ "yi")
-                                , ("werti"    , src ++ "werti-passives")
-                                , ("xmonad"   , src ++ "xmonad")
-                                , ("picasa"   , "Pictures")
-                                , ("srv"      , "local/apache-tomcat-6.0.30")
-                                , ("src"      , src) ] }
-    where (src,ed,web) = ("Documents/src/","gvim","opera")
+    , topicActions = M.fromList [ ("conf"    , spawnShell >> spawnHere ed)
+                                , ("read"    , (spawn $ ed ++ " " ++ doc ++ "lib/pdf.bib") >> spawnShell)
+                                , ("dash"    , (spawn $ ed ++ " ~/doc/org/main.org") >> spawnShell)
+                                , ("werti"   , spawn ed >> spawnShell) ]
+    , topicDirs    = M.fromList [ ("conf"    , "~/config")
+                                , ("doc"     , doc)
+                                , ("read"    , doc ++ "lib/pdf")
+                                , ("eclipse" , src ++ "workspace")
+                                , ("yi"      , src ++ "yi")
+                                , ("werti"   , src ++ "werti-passives")
+                                , ("xmonad"  , ".xmonad")
+                                , ("srv"     , "~/local/apache-tomcat-6.0.30")
+                                , ("src"     , src) ] }
+    where (src,doc,ed,web) = ("${HOME}/src/","${HOME}/doc/","gvim","opera")
 
 myConfig = gnomeConfig { terminal   = myTerminal
                        , layoutHook = layouts
