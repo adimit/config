@@ -6,7 +6,18 @@
 
 set -o vi
 
-export PATH="${HOME}/bin:${PATH}"
+localpath=$HOME/local
+if [ -d $localpath ]; then
+	for i in $(ls -1 $localpath); do
+		basepath=$localpath/$i
+		if [ -d $basepath/bin ]; then
+			PATH=$basepath/bin:$PATH
+		fi
+		if [ -d $basepath/man ]; then
+			MANPATH=$basepath/man:$MANPATH
+		fi
+	done
+fi
 
 cabalpath=${HOME}/.cabal/bin
 if [ -d $cabalpath ]; then
@@ -73,10 +84,11 @@ if [ "$(hostname -s)" = "minsk" ]; then
 else
 	hash -d music=~/Music
 fi
-hash -d src=~/Documents/src
-hash -d werti=~/Documents/uni/werti
-hash -d ws=~/Documents/workspace
-hash -d uni=~/Documents/uni
+hash -d src=~/src
+hash -d doc=~/doc
+hash -d werti=~src/werti-passives
+hash -d ws=~src/workspace
+hash -d uni=~doc/uni
 
 autoload -U compinit
 compinit
