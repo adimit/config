@@ -27,10 +27,36 @@ set pager_index_lines = 6
 set crypt_autosign
 set pgp_use_gpg_agent
 
+# Collapsed view by default
+folder-hook '.*' 'push <esc>V'
+
+# PRETTY
+color status white black
+color normal white default
+color tree color12 default
+color indicator white black
+color hdrdefault color22 black
+
+color tilde default default
+color markers color9 default
+
+color index black color10 '~N'
+color index black color12 '~O'
+color index black color11 '~F'
+color index white color9 '~D'
+
+color index color12 default '~T'
+
+color index color9 default '~z >1M'
+
+set index_format = '%Z |%-15.15L|%2M|%s%*  |%5c %{%b %d}'
+set pager_format = '%X (%P)'
+set folder_format = '%2C %3N %d %f'
+
+
 source ~/.mail/gpg.rc
 source ~/.mail/imap_private.rc
 
 source ~/.mail/aliases
 set alias_file = ~/.mail/aliases
 
-set folder_format = '%2C %3N %d %f'
