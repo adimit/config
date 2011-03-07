@@ -98,11 +98,7 @@ set ruler
 set laststatus=2
 set statusline=%t\ %y
 set statusline+=%=                           " right align
-if exists("*Tlist_Get_Tagname_By_Line()")
-	set statusline+=%([%{Tlist_Get_Tagname_By_Line()}]%)\ %l/%L,%c%m(%P)
-else
-	set statusline+=%l/%L,%c%m(%P)
-endif
+set statusline+=%l/%L,%c%m(%P)
 
 """ Tabbing
 if exists("&showtabline")
@@ -210,11 +206,15 @@ endfunction
 nmap <F3> :syn sync fromstart<cr>
 autocmd BufEnter * syntax sync fromstart
 
-""" Tags & Taglist
+""" Tags & Tagbar
 set showfulltag
 set tags=tags;/
 
-nnoremap <silent> <F8> :TlistToggle<CR>
+nnoremap <silent> <F8> :TagbarToggle<CR>
+let g:tagbar_width=25
+let g:tagbar_compact=1
+
+
 
 """ Vim Help Files: make [Return] follow a link
 autocmd FileType help nmap <buffer> <Return> <C-]>
