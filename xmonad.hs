@@ -18,6 +18,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
 import XMonad.Hooks.DynamicLog
 import XMonad.Actions.TopicSpace
+import XMonad.Hooks.SetWMName
 
 import XMonad.Layout.PerWorkspace
 import XMonad.Prompt.Workspace
@@ -129,6 +130,7 @@ myConfig = gnomeConfig { terminal   = myTerminal
                                                  , manageSpawn
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
-                       , focusedBorderColor = myHL}
+                       , focusedBorderColor = myHL
+                       , startupHook = setWMName "LG3D" }
 
 main = xmonad =<< xmobar myConfig
