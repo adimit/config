@@ -244,7 +244,7 @@ autocmd FileType lua set sw=5 ts=5
 
 """ Prolog
 hi Flicker ctermfg=white cterm=bold
-au BufEnter *.pl set filetype=prolog "Perl sucks anyway
+au BufNewFile,BufRead *.pl set filetype=prolog "Perl sucks anyway
 au FileType prolog au CursorMoved * exe 'match Flicker /\V\<'.escape(expand('<cword>'), '/').'\>/'
 au FileType prolog setlocal suffixesadd=.pl,.plt
 
