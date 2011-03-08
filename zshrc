@@ -47,10 +47,10 @@ setopt noclobber
 setopt autocd
 
 ### Aliases
-if [ $(uname -s) = "Darwin" ]; then
-	alias ls='ls -GFBC'
-else
+if [ $(uname -s) = "Linux" ]; then
 	alias ls='ls --color="auto" -CFB'
+else
+	alias ls='ls -GFBC'
 fi
 ### Simple command aliases
 alias wee='weechat-curses'

@@ -110,14 +110,14 @@ myTopicConfig = TopicConfig
                                 , ("read"    , (spawn $ ed ++ " " ++ doc ++ "lib/pdf.bib") >> spawnShell)
                                 , ("dash"    , (spawn $ ed ++ " ~/doc/org/main.org") >> spawnShell)
                                 , ("werti"   , spawn ed >> spawnShell) ]
-    , topicDirs    = M.fromList [ ("conf"    , "~/config")
+    , topicDirs    = M.fromList [ ("conf"    , "$HOME/config")
                                 , ("doc"     , doc)
                                 , ("read"    , doc ++ "lib/pdf")
                                 , ("eclipse" , src ++ "workspace")
                                 , ("yi"      , src ++ "yi")
-                                , ("werti"   , src ++ "werti-passives")
-                                , ("xmonad"  , ".xmonad")
-                                , ("srv"     , "~/local/apache-tomcat-6.0.30")
+                                , ("werti"   , src ++ "werti")
+                                , ("xmonad"  , "$HOME/.xmonad")
+                                , ("srv"     , "$HOME/local/apache-tomcat-6.0.30")
                                 , ("src"     , src) ] }
     where (src,doc,ed,web) = ("${HOME}/src/","${HOME}/doc/","gvim","opera")
 
