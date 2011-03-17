@@ -24,6 +24,10 @@ if [ -d $cabalpath ]; then
 	export PATH=$cabalpath:$PATH
 fi
 
+if [ -d $HOME/bin ]; then
+	export PATH=$HOME/bin:$PATH
+fi
+
 ### Environment
 
 export VISUAL=/usr/bin/vim
