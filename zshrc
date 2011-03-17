@@ -227,7 +227,10 @@ bindkey '\ee' edit-command-line
 
 RPS1="$(color blue)%~$CLDF"
 
-source ${HOME}/.zshrc.local
+localfile=$HOME/.zshrc.local
+if [ -f $localfile ]; then
+	source $localfile
+fi
 
 export GPGKEY=11076BD2
 
