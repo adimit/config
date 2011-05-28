@@ -129,7 +129,7 @@ if [ $urxvtPix ]; then
 	echo -n "X resource… "
 	line="URxvt*backgroundPixmap: $(readlink -f $outfile);:root"
 	if [ "$(egrep -i "^urxvt.backgroundpixmap" $xdefaults)" ]; then
-		sed --follow-symlinks -iback "s#^urxvt.backgroundpixmap.*#$line#i" $xdefaults
+		sed --follow-symlinks -i "s#^urxvt.backgroundpixmap.*#$line#i" $xdefaults
 	else echo $line >>| $xdefaults
 	fi
 fi
