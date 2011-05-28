@@ -37,4 +37,4 @@ URxvt*color14: #00f5e9
 URxvt*color15: #eeeeec
 URxvt*color7: #d3d7cf
 
-URxvt*backgroundPixmap: /home/adimit/local/pics/6166181_autumn_wide_background.png;:root
+URxvt*backgroundPixmap: /home/adimit/.wp.png;:root
