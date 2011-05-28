@@ -1,0 +1,136 @@
+#!/bin/zsh
+
+progname=$(basename $0)
+
+warn() { echo >&2 "$progname: WARNING: $1." }
+
+usage() {
+	echo >&2 "Usage:\t$progname FILE [OPTION]\n\n\
+Where OPTION is of\n\n\
+\t-b NUM\t Amount of blur to use (if any.)\n\
+\t-c COL\t Use COL to tint. Colour is of form #RRGGBB. Default: #000000.\n\
+\t-o FILE\t Output file. Defaulting to affixing _background to the input\n\
+\t\t\t file's name, and outputting to the current directory.\
+\t-g MODE\t Tell gnome to set the desktop background. MODE can be IN or OUT,\
+\t\t\t selecting either the input file, or the output file as the background.\
+\t-X\t Modify ~/.Xdefaults to point URXVT to the new image as a backgroundPixmap.\
+\t-x NUM\t Alpha of target image in percent. Default: 50.\n"
+}
+
+diewith() {
+	echo >&2 "$progname: CRITICAL: $2"
+	exit $1;
+}
+
+if [ $# -eq 0 ]; then usage; diewith 3 "No command line arguments specified!"; fi
+
+infile=$1; shift
+
+if [ ! -f $infile ]; then
+	usage;
+	diewith 1 "File not found: '$infile'."
+fi
+
+info=$(identify $infile)
+if [ $? -gt 0 ]; then diewith 12 "$infile does not appear to be an image."; fi
+size=$(echo $info|cut -d ' ' -f 3)
+
+colour="#000000"
+blend=50
+suffix=${infile##*.}
+outfile="$(basename $infile .$suffix)_background.$suffix"
+blur=
+gnome_mode=
+targetsize=$size
+urxvtPix=
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-b) shift;
+			if [ $1 -gt 0 ]; then blur=$1;
+			else warn "ignoring -b, because $1 isn't a positive number.";
+			fi
+			;;
+		-c) shift; colour=$1 ;;
+		-o) shift; if [ -f $1 ]; then warn "overwriting $1"; outfile=$1; fi
+			;;
+		-s) shift; targetsize=$1 ;;
+		-g) shift;
+			if [[ $1 == "IN" || $1 == "OUT" ]]; then gnome_mode=$1;
+			else warn "ignoring -g, because $1 is neither IN, nor OUT."
+			fi
+			;;
+		-x) shift;
+			if [ $1 -gt 0 ]; then blend=$1; 
+			else warn "ignoring -x, because $1 isn't a positive number.";
+			fi
+			;;
+		-X) urxvtPix="yeah" ;;
+		*) usage $1; diewith 2 "Unrecognised option: $1" ;;
+	esac
+	shift
+done
+
+echo "Input:  $infile"
+echo "Output: $outfile"
+echo "Size:   $size to $targetsize"
+echo "Colour: $blend% on $colour"
+if [ $blur ]; then echo "Blur:   $blur"; fi
+
+gnome_setbackground() {
+	file=$(readlink -f $1)
+	gconftool-2 --type string --set \
+		/desktop/gnome/background/picture_filename $file
+}
+
+echo -n "Prepare… "
+temp=$(mktemp -d)
+cp $infile $temp/orig.$suffix
+curfile=$temp/orig.$suffix
+
+if [ $size != $targetsize ]; then
+	echo -n "Resize… "
+	convert $curfile -scale "${targetsize}^" -gravity Center \
+		-crop "$targetsize+0+0" +repage $temp/resized.$suffix
+	curfile=$temp/resized.$suffix
+fi
+
+if [ $blur ] ; then
+	echo -n "Blur… "
+	convert $curfile -adaptive-blur $blur $temp/blurred.$suffix
+	curfile=$temp/blurred.$suffix
+fi
+
+if [[ $gnome_mode == "IN" ]]; then
+	sizedfile="$(dirname $outfile)/$(basename $outfile .$suffix)_forgnome.$suffix"
+	cp $curfile $sizedfile
+	echo -n "Setting Gnome desktop… "
+	gnome_setbackground $sizedfile
+fi
+
+echo -n "Blending… "
+composite -blend $blend $curfile -size $targetsize xc:$colour -alpha Set $temp/blended.$suffix
+curfile=$temp/blended.$suffix
+
+echo -n "Saving… "
+cp $curfile $outfile
+
+if [[ $gnome_mode == "OUT" ]]; then
+	echo -n "Setting Gnome desktop… "
+	gnome_setbackground $outfile
+fi
+
+echo -n "Cleanup… "
+rm -rf $temp
+
+xdefaults=$HOME/.Xdefaults
+if [ $urxvtPix ]; then
+	echo -n "X resource… "
+	line="URxvt*backgroundPixmap: $(readlink -f $outfile);:root"
+	if [ "$(egrep -i "^urxvt.backgroundpixmap" $xdefaults)" ]; then
+		sed -iback "s#^urxvt.backgroundpixmap.*#$line#i" $xdefaults
+	else echo $line >>| $xdefaults
+	fi
+fi
+
+echo "Done."
