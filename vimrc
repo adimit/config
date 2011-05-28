@@ -252,6 +252,7 @@ autocmd BufEnter *.ssi set ft=html
 
 """ Haskell
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
+au BufEnter *.cabal set expandtab shiftwidth=4
 au BufEnter *.hs set expandtab shiftwidth=4
 
 "" Fruit salad is tasty.
