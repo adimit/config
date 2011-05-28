@@ -52,7 +52,8 @@ while [ $# -gt 0 ]; do
 			fi
 			;;
 		-c) shift; colour=$1 ;;
-		-o) shift; if [ -f $1 ]; then warn "overwriting $1"; outfile=$1; fi
+		-o) shift; if [ -f $1 ]; then warn "overwriting $1"; fi
+			outfile=$1;
 			;;
 		-s) shift; targetsize=$1 ;;
 		-g) shift;
