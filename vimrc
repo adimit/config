@@ -153,7 +153,7 @@ set suffixes=.bak,~,.o,.h,.info,.swp,.obj,.class
 set pastetoggle=<F11>
 nmap <C-p> :tabprevious<cr>
 nmap <C-n> :tabnext<cr>
-nmap <F12> :tabnew
+nmap <F12> :tabnew 
 imap <C-z>n <Esc>:tabnext<cr>
 imap <C-z>p <Esc>:tabprev<cr>
 " Insert a single character and go back to command mode
