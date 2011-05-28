@@ -96,17 +96,17 @@ if [ $size != $targetsize ]; then
 	curfile=$temp/resized.$suffix
 fi
 
-if [ $blur ] ; then
-	echo -n "Blur… "
-	convert $curfile -adaptive-blur $blur $temp/blurred.$suffix
-	curfile=$temp/blurred.$suffix
-fi
-
 if [[ $gnome_mode == "IN" ]]; then
 	sizedfile="$(dirname $outfile)/$(basename $outfile .$suffix)_forgnome.$suffix"
 	cp $curfile $sizedfile
 	echo -n "Setting Gnome desktop… "
 	gnome_setbackground $sizedfile
+fi
+
+if [ $blur ] ; then
+	echo -n "Blur… "
+	convert $curfile -adaptive-blur $blur $temp/blurred.$suffix
+	curfile=$temp/blurred.$suffix
 fi
 
 echo -n "Blending… "
