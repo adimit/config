@@ -1,12 +1,8 @@
 urxvt.scrollBar: false
 urxvt.font: xft:Droid Sans Mono:size=9
 
-!urxvt.inheritPixmap: true
-! urxvt.tintColor: #203040
-urxvt.shading: 100
-
-!urxvt.background: #202020
 urxvt.foreground: #ffffff
+urxvt.background: #202020
 
 !-- Tango color scheme
 ! Black
@@ -40,3 +36,5 @@ URxvt*color14: #00f5e9
 ! White
 URxvt*color15: #eeeeec
 URxvt*color7: #d3d7cf
+
+URxvt*backgroundPixmap: /home/adimit/local/pics/6166181_autumn_wide_background.png;:root
