@@ -47,11 +47,7 @@ urxvtPix=
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		-b) shift;
-			if [ $1 -gt 0 ]; then blur=$1;
-			else warn "ignoring -b, because $1 isn't a positive number.";
-			fi
-			;;
+		-b) shift; blur=$1 ;;
 		-c) shift; colour=$1 ;;
 		-o) shift; if [ -f $1 ]; then warn "overwriting $1"; fi
 			outfile=$1;
@@ -106,7 +102,7 @@ fi
 
 if [ $blur ] ; then
 	echo -n "Blur… "
-	convert $curfile -adaptive-blur $blur $temp/blurred.$suffix
+	convert $curfile -blur $blur $temp/blurred.$suffix
 	curfile=$temp/blurred.$suffix
 fi
 
