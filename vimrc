@@ -261,7 +261,7 @@ let hs_highlight_more_types = 1
 let hs_highlight_boolean = 1
 
 " Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
-au BufEnter *.hs compiler ghc
+" au BufEnter *.hs compiler ghc
 let g:haddock_browser = "/usr/bin/opera"
 let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
 " WriteAndGHC writes the file and reloads tags and type information
