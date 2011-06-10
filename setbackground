@@ -10,11 +10,12 @@ Where OPTION is of\n\n\
 \t-b NUM\t Amount of blur to use (if any.)\n\
 \t-c COL\t Use COL to tint. Colour is of form #RRGGBB. Default: #000000.\n\
 \t-o FILE\t Output file. Defaulting to affixing _background to the input\n\
-\t\t\t file's name, and outputting to the current directory.\
-\t-g MODE\t Tell gnome to set the desktop background. MODE can be IN or OUT,\
-\t\t\t selecting either the input file, or the output file as the background.\
-\t-X\t Modify ~/.Xdefaults to point URXVT to the new image as a backgroundPixmap.\
-\t-x NUM\t Alpha of target image in percent. Default: 50.\n"
+\t\t file's name, and outputting to the current directory.\n\
+\t-g MODE\t Tell gnome to set the desktop background. MODE can be IN or OUT,\n\
+\t\t selecting either the input file, or the output file as the background.\n\
+\t-X\t Modify ~/.Xdefaults to point URXVT to the new image as a backgroundPixmap.\n\
+\t-x NUM\t Alpha of target image in percent. Default: 50.\n\
+\t-s\t Target size of the resulting picture (for example 1600x1200)\n"
 }
 
 diewith() {
