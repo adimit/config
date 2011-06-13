@@ -218,7 +218,7 @@ maybe_errorcode="%(?..%B$(color 'red')%?%b$CLDF )"
 user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
 
 PROMPTCHAR="$(color 'cyan')>$CLDF"
-NORMALCHAR="$(color 'yellow')∙$CLDF"
+NORMALCHAR="$(color 'yellow')|$CLDF"
 
 TEMPPS1="\
 $maybe_hostname\
