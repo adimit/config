@@ -181,6 +181,23 @@ mkgitigndir () {
 
 autoload -U zmv
 
+tset() {
+	texdir=$(mktemp -d)
+	texrun=$(which pdflatex)
+	if [[ $1 == "-x" ]]; then texrun=$(which xelatex) fi
+	if [ -x $texrun ]; then
+		if [ ! -d $texdir ]; then
+			mkdir $texdir
+		fi
+		$texrun -output-directory $texdir $@ \
+			&& $texrun -output-directory $texdir $@ \
+			&& mv -f $texdir/*pdf .
+	else
+		echo "Could not find pdflatex/xetex executable: $texrun"
+	fi
+	rm -rf $texdir &> /dev/null
+}
+
 ### Cache
 zstyle ':completion::complete:*' use-cache 1
 
