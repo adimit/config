@@ -98,7 +98,7 @@ set ruler
 set laststatus=2
 set statusline=%t\ %y
 set statusline+=%=                           " right align
-set statusline+=%l/%L,%c%m(%P)
+set statusline+=%{fugitive#statusline()}%l/%L,%c%m(%P)
 
 """ Tabbing
 if exists("&showtabline")
@@ -360,8 +360,10 @@ endif
 """ Plugins
 """""""""""
 
-""" GUndo
+""" Fugitive
+autocmd BufReadPost fugitive://* set bufhidden=delete
 
+""" GUndo
 nmap <F5> :GundoToggle<CR>
 
 """ Eclim
