@@ -251,14 +251,15 @@ au FileType prolog setlocal suffixesadd=.pl,.plt
 autocmd BufEnter *.ssi set ft=html
 
 """ Haskell
+" WARNING: this seems to fail in Haskell code when you move around the string
+" (\()
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
 au BufEnter *.cabal set expandtab shiftwidth=4
 au BufEnter *.hs set expandtab shiftwidth=4
 
 "" Fruit salad is tasty.
-let hs_highlight_types = 1
-let hs_highlight_more_types = 1
-let hs_highlight_boolean = 1
+let hs_highlight_all_types = 1
+let hs_highlight_debug = 1
 
 " Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
 " au BufEnter *.hs compiler ghc
