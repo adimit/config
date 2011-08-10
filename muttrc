@@ -1,4 +1,5 @@
 set folder = "imaps://imap.gmail.com:993"
+set imap_keepalive = 30
 set spoolfile = "+INBOX"
 set postponed = "=Drafts"
 
