@@ -360,6 +360,10 @@ endif
 """ Plugins
 """""""""""
 
+""" GUndo
+
+nmap <F5> :GundoToggle<CR>
+
 """ Eclim
 let g:EclimBrowser='firefox'
 
