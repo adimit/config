@@ -1,27 +1,31 @@
 {-# LANGUAGE TypeSynonymInstances, ExtendedDefaultRules, Rank2Types #-}
 import XMonad
+
 import XMonad.Config.Desktop (desktopLayoutModifiers)
 import XMonad.Config.Gnome
+
 import XMonad.Actions.DwmPromote
 import XMonad.Actions.GridSelect
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.CycleWS
+import XMonad.Actions.DynamicWorkspaces
+
 import XMonad.Layout.DwmStyle
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.NoBorders
-import XMonad.Prompt
 import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.Tabbed
-import XMonad.Hooks.ManageHelpers
-import XMonad.Layout.Reflect
-import XMonad.Hooks.DynamicLog
-import XMonad.Actions.TopicSpace
-import XMonad.Hooks.SetWMName
-
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Reflect
+
+import XMonad.Prompt
 import XMonad.Prompt.Workspace
+
+import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
@@ -50,9 +54,7 @@ myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
 myTerminal = "urxvt"
-myGSApps   = ["opera", "miro", "eclipse", "gmpc", "gvim"]
 
-spawnShell       = currentTopicDir myTopicConfig >>= spawnShellIn
 spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
                         ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
                         -- ++ myTerminal
@@ -77,57 +79,34 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
 myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
+            , ((mask              , xK_Return   ), spawnShellIn "~")
             , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
             , ((mask,               xK_grave    ), toggleWS) ]
             ++ -- GridSelect
-            [ ((mask              , xK_g        ), goToSelected myGSConfig)
-            , ((mask .|. shiftMask, xK_g        ), spawnSelected myGSConfig myGSApps) ]
+            [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
+            ++ -- Dynamic Workspaces
+            [ ((mask              , xK_t        ), selectWorkspace promptConfig)
+            , ((mask .|. shiftMask, xK_BackSpace), removeWorkspace) ]
             ++ -- MultiToggle
             [ ((mask .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
             , ((mask .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR) ]
-            ++ -- TopicSpace
-            [ ((mask              , xK_t        ), prompt (switchTopic myTopicConfig))
-            , ((mask .|. shiftMask, xK_t        ), prompt $ windows . W.shift)
-            , ((mask              , xK_Return   ), spawnShell) ]
-            ++ -- Topic + Grid
+            ++ -- Grid for Workspaces
             [ ((mask              , xK_d        ), runSelectedAction myGSConfig (tgr W.greedyView))
             , ((mask .|. shiftMask, xK_d        ), runSelectedAction myGSConfig (tgr W.shift)) ]
             where prompt = workspacePrompt promptConfig
-                  tgr f  = map (\t -> (t, windows $ f t)) myTopics
+                  tgr f  = map (\t -> (t, windows $ f t)) myWS
 
-
-myTopics :: [Topic]
-myTopics = [ "dash", "web", "comm", "werti", "eclipse", "logs", "test", "admin", "music"
-           , "podc", "read", "yi", "vid", "play", "xmonad", "documents", "torrent", "conf"
-           , "src", "picasa", "srv" ]
-
-myTopicConfig :: TopicConfig
-myTopicConfig = TopicConfig
-    { defaultTopicAction = const $ spawnShell >*> 3
-    , defaultTopic       = "dash"
-    , maxTopicHistory    = 10
-    , topicActions = M.fromList [ ("conf"    , spawnShell >> spawnHere ed)
-                                , ("read"    , (spawn $ ed ++ " " ++ doc ++ "lib/pdf.bib") >> spawnShell)
-                                , ("dash"    , (spawn $ ed ++ " ~/doc/org/main.org") >> spawnShell)
-                                , ("werti"   , spawn ed >> spawnShell) ]
-    , topicDirs    = M.fromList [ ("conf"    , "$HOME/config")
-                                , ("doc"     , doc)
-                                , ("read"    , doc ++ "lib/pdf")
-                                , ("eclipse" , src ++ "workspace")
-                                , ("yi"      , src ++ "yi")
-                                , ("werti"   , src ++ "werti")
-                                , ("xmonad"  , "$HOME/.xmonad")
-                                , ("srv"     , "$HOME/local/apache-tomcat-6.0.30")
-                                , ("src"     , src) ] }
-    where (src,doc,ed,web) = ("${HOME}/src/","${HOME}/doc/","gvim","opera")
+myWS :: [String]
+myWS = map show [1..9]
 
 myConfig = gnomeConfig { terminal   = myTerminal
                        , layoutHook = layouts
                        , modMask    = if os == "darwin" then mod1Mask else mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
-                       , workspaces = myTopics
+                       , workspaces = myWS
                        , manageHook = composeAll [ manageHook gnomeConfig
                                                  , manageSpawn
+                                                 , className =? "Wine" --> doFloat
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
