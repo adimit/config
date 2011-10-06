@@ -36,5 +36,3 @@ URxvt*color14: #00f5e9
 ! White
 URxvt*color15: #eeeeec
 URxvt*color7: #d3d7cf
-
-URxvt*backgroundPixmap: /home/adimit/.wp.png;:root
