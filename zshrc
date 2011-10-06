@@ -84,10 +84,11 @@ alias pss='ps -ef | grep $1'
 
 ## Directory hashes
 if [ "$(hostname -s)" = "minsk" ]; then
-	hash -d music=/media/minsk.crypto/music
+	hash -d music=/media/music
 else
 	hash -d music=~/Music
 fi
+
 hash -d src=~/src
 hash -d doc=~/doc
 hash -d werti=~src/werti-passives
