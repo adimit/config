@@ -19,6 +19,7 @@ import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect
+import XMonad.Layout.ResizableTile
 
 import XMonad.Prompt
 import XMonad.Prompt.Workspace
@@ -37,8 +38,9 @@ layouts = smartBorders
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
         . layoutHintsToCenter
-        $ tiled ||| reflectHoriz (simpleTabbed *|* Full)
+        $ resizableTiled ||| reflectHoriz (simpleTabbed *|* Full)
     where tiled = XMonad.Tall 1 (3/100) (1/2)
+          resizableTiled = ResizableTall 1 (9/100) (1/2) []
 
 promptConfig = defaultXPConfig { position          = Top
                                , font              = myFont
@@ -86,7 +88,11 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
             ++ -- Dynamic Workspaces
             [ ((mask              , xK_t        ), selectWorkspace promptConfig)
+            , ((mask .|. shiftMask, xK_t        ), withWorkspace promptConfig (windows . W.shift))
             , ((mask .|. shiftMask, xK_BackSpace), removeWorkspace) ]
+            ++ -- ResizableTile
+            [ ((mask              , xK_v        ), sendMessage MirrorShrink)
+            , ((mask              , xK_z        ), sendMessage MirrorExpand) ]
             ++ -- MultiToggle
             [ ((mask .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
             , ((mask .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR) ]
