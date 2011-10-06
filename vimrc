@@ -44,11 +44,15 @@ if &term =~ "rxvt-unicode"
      endif
 endif
 
+set showtabline=1
+
 " Scroll with context"
 set scrolloff=3
 set sidescrolloff=3
 
 """ Graphics
+
+set cursorline
 
 " Stolen from http://docs.google.com/View?docid=dfkkkxv5_65d5p3nk
 " This enables you to see tab characters and stray whitespace
@@ -76,6 +80,8 @@ endfunction
 nmap <leader>$ :call Preserve("%s/\\s\\+$//e")<CR>
 nmap <leader>= :call Preserve("normal gg=G")<CR>
 
+nmap <F9> :diffup<CR>
+
 if ((has('syntax') && (&t_Co > 2)) || has('gui_running'))
      syntax on
 endif
@@ -85,11 +91,10 @@ if has("digraphs")
      digraph ., 8230
 endif
 
-set mouse=""
-if !has("gui_running")
-     colorscheme default
-     set background=dark
-endif
+set mouse="a"
+
+colorscheme default
+set background=dark
 
 set showcmd
 set ruler
