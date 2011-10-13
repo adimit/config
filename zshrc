@@ -199,6 +199,14 @@ tset() {
 	rm -rf $texdir &> /dev/null
 }
 
+disco() {
+	mpc clear
+	cd ~music
+	find -mindepth 2 -type d -mtime -2 -print | while read FNAME; do mpc add "$FNAME[3,-1]"; done
+	mpc play
+	cd -
+}
+
 ### Cache
 zstyle ':completion::complete:*' use-cache 1
 
