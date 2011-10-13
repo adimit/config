@@ -1,0 +1,107 @@
+#!/bin/zsh
+
+typeset -A suffix
+
+suffix=(V0 .mp3 V2 .mp3 320 .mp3 OGG .ogg)
+
+encodeV0() {
+	dest=$1
+	lame -V0 --nogapout "$dest" --nogap "$dir/"*wav || exit $!
+	id3Tags $dest
+}
+
+encodeV2() {
+	dest=$1
+	lame -V2 --nogapout "$dest" --nogap "$dir/"*wav || exit $!
+	id3Tags $dest
+}
+
+encode320() {
+	dest=$1
+	lame --preset insane --nogapout "$dest" --nogap "$dir/"*wav || exit $!
+	id3Tags $dest
+}
+
+encodeOGG() {
+	oggenc -q 8 $dir/*.flac
+	mv $dir/*.ogg $1
+}
+
+formats=
+dir=
+rmwav=false
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-r) rmwav=true; echo "Warning: will remove .wav files."; shift;;
+		V0) formats=($1 $formats); shift;;
+		V2) formats=($1 $formats); shift;;
+		320)formats=($1 $formats); shift;;
+		OGG)formats=($1 $formats); shift;;
+		*)  dir=$1;                shift;;
+	esac
+done
+
+echo "Transcoding to $formats"
+
+echo "Do we have .wav?"
+weHaveWav=true
+for i in $dir/*.flac; do
+	if [[ ! -f "$dir/$(basename $i .flac).wav" ]]; then
+		echo "$i has no .wav"
+		weHaveWav=false
+	fi
+done
+
+flacTag() { metaflac --show-tag=$1 "$2"|cut -d '=' -f 2 }
+
+id3Tags() {
+	echo "Tagging…"
+	dest=$1
+	for i in $dir/*.flac; do
+		filename="$dest/"$(basename "$i" .flac)".mp3"
+		echo "Tagging $filename."
+
+		artist=$(flacTag artist $i)
+		title=$(flacTag title $i)
+		album=$(flacTag album $i)
+		date=$(flacTag date $i)
+		number=$(flacTag tracknumber $i)
+
+		id3 -t "$title" -A "$album" -a "$artist" -y "$date" -T "$number" "$filename"
+	done
+}
+
+for f in $formats; do
+	dest=$(echo $dir|sed 's/FLAC/'$f'/')
+	if [[ $dest == $dir ]]; then
+		echo "$dir ← wrong directory name!"
+		exit
+	fi
+
+	if [[ $weHaveWav == false ]]; then
+		echo "No(t enough) .wav. Decoding first."
+		flac -f --decode "$dir/"*.flac || exit $!
+		weHaveWav=true;
+	else
+		echo "Reusing existing wave files."
+	fi
+
+	if [[ ! -d $dest ]]; then mkdir "$dest"; fi
+	echo "Processing $f"
+	echo "Input:  $dir"
+	echo "Output: $dest"
+
+	encode$f $dest
+
+	playlist=$(ls $dir/*m3u 2&>> /dev/null)
+	if [[ -f $playlist ]]; then
+		echo "Playlist $playlist"
+		regex="s/\\.flac/$suffix[$f]/g"
+		sed $regex < $playlist > $dest/"$(basename $playlist)"
+	fi
+	cp $dir/*.cue $dest
+	cp $dir/*.jp*g $dest
+done
+
+if [[ $rmwav = true ]]; then rm -fv "$dir/"*.wav; fi
