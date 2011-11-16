@@ -202,9 +202,22 @@ tset() {
 disco() {
 	mpc clear
 	cd ~music
-	find -mindepth 2 -type d -mtime -2 -print | while read FNAME; do mpc add "$FNAME[3,-1]"; done
+	find -mindepth 2 -type d -mtime $1 -print | while read FNAME; do mpc add "$FNAME[3,-1]"; done
 	mpc play
+	mpc playlist
 	cd -
+}
+
+jukebox() {
+	player="/media/CLIP CLAP/MUSIC/"
+	if [[ ! -d $player ]]; then
+		echo "$player not mounted!"
+		return
+	fi
+	cd /media/data/download
+	find -mindepth 1 -maxdepth 1 -type d -mtime $1 -print | while read FNAME; do \
+		flacs=$(ls "$FNAME/"*flac 2&>> /dev/null); \
+		if [ $flacs ]; then copymusic $FNAME; fi; done
 }
 
 ### Cache

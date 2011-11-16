@@ -75,8 +75,8 @@ id3Tags() {
 for f in $formats; do
 	dest=$(echo $dir|sed 's/FLAC/'$f'/')
 	if [[ $dest == $dir ]]; then
+		dest="$dir [$f]"
 		echo "$dir ← wrong directory name!"
-		exit
 	fi
 
 	if [[ $weHaveWav == false ]]; then
