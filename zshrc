@@ -199,6 +199,10 @@ tset() {
 	rm -rf $texdir &> /dev/null
 }
 
+updong() {
+	/usr/bin/uptime | perl -ne "/(\d+) d/;print 8,q(=)x\$1,\"D\n\""
+}
+
 disco() {
 	mpc clear
 	cd ~music
