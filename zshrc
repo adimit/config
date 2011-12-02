@@ -98,6 +98,8 @@ hash -d uni=~doc/uni
 autoload -U compinit
 compinit
 
+autoload -U zmv
+
 ### Keybindings
 ###############
 
