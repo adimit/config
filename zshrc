@@ -43,6 +43,7 @@ setopt incappendhistory
 setopt dvorak
 setopt correct
 setopt extendedhistory
+setopt extended_glob
 setopt histignoredups
 setopt histallowclobber
 setopt histignorespace
@@ -247,6 +248,8 @@ user_prompt="%(#.%B$(color 'red').$(color green))%#%b"
 
 PROMPTCHAR="$(color 'cyan')>$CLDF"
 NORMALCHAR="$(color 'yellow')|$CLDF"
+
+export SPROMPT="zsh: correct $(color 'red')%B%R%b$CLDF to $(color 'green')%B%r%b$CLDF [nyae]?"
 
 TEMPPS1="\
 $maybe_hostname\
