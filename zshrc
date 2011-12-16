@@ -96,8 +96,9 @@ hash -d werti=~src/werti-passives
 hash -d ws=~src/workspace
 hash -d uni=~doc/uni
 
-autoload -U compinit
-compinit
+autoload -U compinit && compinit
+zstyle ':completion:*' menu select=10
+zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tty,cmd'
 
 autoload -U zmv
 
