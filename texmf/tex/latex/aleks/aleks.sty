@@ -10,5 +10,8 @@
 \newcommand{\pair}[1]{\ensuremath{\left\langle#1\right\rangle}}
 \newcommand{\setof}[1]{\ensuremath{\left\{#1\right\}}}
 
-% We have \to, why not \from?
-\newcommand{\from}{\leftarrow}
+% We have \to, why not \from? — also we wrap both in \ensuremath, so we can use
+% them in plain text. If you want \to or \from to be followed by a space while
+% in text, follow them with an escaped space \ : lorem \to\ ipsum.
+\newcommand{\from}{\ensuremath{\leftarrow}}
+\renewcommand{\to}{\ensuremath{\rightarrow}}
