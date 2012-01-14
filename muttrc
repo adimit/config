@@ -50,7 +50,7 @@ color index color12 default '~T'
 
 color index color9 default '~z >1M'
 
-set index_format = '%Z |%-15.15L| %s%*  |%5c %{%b %d}'
+set index_format = '%Z |%-15.15L|%2M %s%*  |%5c %{%b %d}'
 set pager_format = '%X (%P)'
 set folder_format = '%2C %3N %d %f'
 
