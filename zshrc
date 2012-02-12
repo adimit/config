@@ -155,7 +155,7 @@ c() {
 	print "You're not in vi!"
 }
 
-q() {
+:q() {
 	print "You're not in vi!"
 }
 
