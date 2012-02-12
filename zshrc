@@ -147,12 +147,10 @@ c() {
 }
 
 # Vim addiction
+vimIsAwesome() { print "You're not in vim!"; }
 :w() { vimIsAwesome; }
 :wq() { vimIsAwesome; }
 :q() { vimIsAwesome; }
-vimIsAwesome {
-	print "You're not in vim!"
-}
 
 
 ### Cosmetic stuff
