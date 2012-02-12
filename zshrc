@@ -147,17 +147,13 @@ c() {
 }
 
 # Vim addiction
-:w() {
-	print "You're not in vi!"
+:w() { vimIsAwesome; }
+:wq() { vimIsAwesome; }
+:q() { vimIsAwesome; }
+vimIsAwesome {
+	print "You're not in vim!"
 }
 
-:wq() {
-	print "You're not in vi!"
-}
-
-:q() {
-	print "You're not in vi!"
-}
 
 ### Cosmetic stuff
 # change title to current directory
