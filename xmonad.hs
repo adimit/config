@@ -9,6 +9,7 @@ import XMonad.Actions.GridSelect
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.Navigation2D
 
 import XMonad.Layout.DwmStyle
 import XMonad.Layout.LayoutHints
@@ -83,12 +84,14 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
             , ((mask              , xK_Return   ), spawnShellIn "~")
             , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
+            , ((mask,               xK_r        ), sendMessage Shrink)
+            , ((mask,               xK_l        ), sendMessage Expand)
             , ((mask,               xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
             ++ -- Dynamic Workspaces
-            [ ((mask              , xK_t        ), selectWorkspace promptConfig)
-            , ((mask .|. shiftMask, xK_t        ), withWorkspace promptConfig (windows . W.shift))
+            [ ((mask              , xK_d        ), selectWorkspace promptConfig)
+            , ((mask .|. shiftMask, xK_d        ), withWorkspace promptConfig (windows . W.shift))
             , ((mask .|. shiftMask, xK_BackSpace), removeWorkspace) ]
             ++ -- ResizableTile
             [ ((mask              , xK_v        ), sendMessage MirrorShrink)
@@ -96,9 +99,17 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             ++ -- MultiToggle
             [ ((mask .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
             , ((mask .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR) ]
-            ++ -- Grid for Workspaces
-            [ ((mask              , xK_d        ), runSelectedAction myGSConfig (tgr W.greedyView))
-            , ((mask .|. shiftMask, xK_d        ), runSelectedAction myGSConfig (tgr W.shift)) ]
+            ++ -- Navigation2D
+            [ ((mask              , xK_h        ), windowGo L True)
+            , ((mask              , xK_s        ), windowGo R True)
+            , ((mask              , xK_n        ), windowGo U True)
+            , ((mask              , xK_t        ), windowGo D True)
+              -- Swap adjacent windows
+            , ((mask .|. shiftMask, xK_h        ), windowGo R True)
+            , ((mask .|. shiftMask, xK_s        ), windowGo L True)
+            , ((mask .|. shiftMask, xK_n        ), windowGo U True)
+            , ((mask .|. shiftMask, xK_t        ), windowGo D True)
+            ]
             where prompt = workspacePrompt promptConfig
                   tgr f  = map (\t -> (t, windows $ f t)) myWS
 
@@ -118,4 +129,4 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , focusedBorderColor = myHL
                        , startupHook = setWMName "LG3D" }
 
-main = xmonad =<< xmobar myConfig
+main = xmonad . withNavigation2DConfig defaultNavigation2DConfig =<< xmobar myConfig
