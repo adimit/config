@@ -11,19 +11,16 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.Navigation2D
 
-import XMonad.Layout.DwmStyle
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.NoBorders
 import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.Tabbed
-import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect
 import XMonad.Layout.ResizableTile
 
 import XMonad.Prompt
-import XMonad.Prompt.Workspace
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.DynamicLog
@@ -40,9 +37,9 @@ layouts = smartBorders
         . mkToggle(single MIRROR)
         . layoutHintsToCenter
         $ resizableTiled ||| reflectHoriz (simpleTabbed *|* Full)
-    where tiled = XMonad.Tall 1 (3/100) (1/2)
-          resizableTiled = ResizableTall 1 (9/100) (1/2) []
+    where resizableTiled = ResizableTall 1 (3/100) (1/2) []
 
+promptConfig :: XPConfig
 promptConfig = defaultXPConfig { position          = Top
                                , font              = myFont
                                , bgColor           = myHLBG
@@ -51,6 +48,7 @@ promptConfig = defaultXPConfig { position          = Top
                                , bgHLight          = myHL
                                , promptBorderWidth = 0 }
 
+myFont, myBG, myFG, myHL, myHLBG, myTerminal :: String
 myFont     = "xft:Droid Sans Mono:size=8"
 myBG       = "#202020"
 myFG       = "#EEEEEE"
@@ -58,6 +56,7 @@ myHL       = "#cae682"
 myHLBG     = "#363946"
 myTerminal = "urxvt"
 
+spawnShellIn :: (MonadIO m) => String -> m ()
 spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
                         ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
                         -- ++ myTerminal
@@ -79,7 +78,8 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
                                 , ((0,xK_u),      (1,0))
                                 , ((0,xK_period), (0,-1)) ]
 
-myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
+myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
+myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
             , ((mask              , xK_Return   ), spawnShellIn "~")
@@ -110,8 +110,6 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             , ((mask .|. shiftMask, xK_n        ), windowGo U True)
             , ((mask .|. shiftMask, xK_t        ), windowGo D True)
             ]
-            where prompt = workspacePrompt promptConfig
-                  tgr f  = map (\t -> (t, windows $ f t)) myWS
 
 myWS :: [String]
 myWS = map show [1..9]
@@ -129,4 +127,5 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , focusedBorderColor = myHL
                        , startupHook = setWMName "LG3D" }
 
+main :: IO ()
 main = xmonad . withNavigation2DConfig defaultNavigation2DConfig =<< xmobar myConfig
