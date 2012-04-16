@@ -71,7 +71,7 @@ alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
 alias ccp="rsync -rvr --progress"
 alias pls='pl -s'
-alias nt='urxvt&'
+alias nt='urxvt& disown %1'
 
 alias rm='rm -iv'
 alias mv='mv -i'
