@@ -146,6 +146,36 @@ c() {
 	if [ $? -eq 0 ]; then ls; fi
 }
 
+hvim_session_name() { echo "hvim$1" }
+# Usage:
+# 	hvim # Attach to the latest hvim session
+# 	hvim FILE # Create a new hvim session and open FILE
+hvim() {
+	next_session=0;
+	while [[ $? -eq 0 ]]; do
+		tmux has-session -t $(hvim_session_name $next_session) 2&>> /dev/null \
+			&& ((next_session=next_session+1))
+	done
+	if [[ -z $1 ]]; then # no file was given, attach
+		((current_session=next_session-1))
+		if [[ $current_session -eq -1 ]]; then
+			echo "hvim: FATAL: no session to attach to, but no file given."
+			return 1;
+		else
+			tmux attach -t $(hvim_session_name $current_session)
+		fi
+	else # we're opening a new session
+		sess=$(hvim_session_name $next_session)
+		tmux -f ~/config/hvim.conf new-session -s \
+			$sess -n vim -d "vim $1"
+		tmux split-window -v -t $sess
+		tmux send-keys -t $sess "ghci $1" C-m
+		tmux select-pane -t $sess -l
+		tmux resize-pane -t $sess -D 20
+		tmux attach -t $sess
+	fi
+}
+
 # Vim addiction
 vimIsAwesome() { print "You're not in vim!"; }
 :w() { vimIsAwesome; }
