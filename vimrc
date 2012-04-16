@@ -51,6 +51,12 @@ if &term =~ "rxvt-unicode"
      endif
 endif
 
+" better command line editing
+cnoremap <C-j> <t_kd>
+cnoremap <C-k> <t_ku>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+
 set showtabline=1
 
 " Scroll with context"
