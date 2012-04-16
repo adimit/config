@@ -104,11 +104,11 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask              , xK_s        ), windowGo R True)
             , ((mask              , xK_n        ), windowGo U True)
             , ((mask              , xK_t        ), windowGo D True)
-              -- Swap adjacent windows
-            , ((mask .|. shiftMask, xK_h        ), windowGo R True)
-            , ((mask .|. shiftMask, xK_s        ), windowGo L True)
-            , ((mask .|. shiftMask, xK_n        ), windowGo U True)
-            , ((mask .|. shiftMask, xK_t        ), windowGo D True)
+              -- Resize
+            , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
+            , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
+            , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
+            , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
             ]
 
 myWS :: [String]
