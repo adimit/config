@@ -17,6 +17,13 @@ map <leader>ee :e <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
+" easier use of fugitive
+map <leader>gd :Gdiff<CR>
+map <leader>gc :Gcommit<CR>
+map <leader>gs :Gstatus<CR>
+map <leader>gw :Gwrite<CR>
+map <leader>gl :Glog<CR>
+
 """ Environment
 """""""""""""""
 
