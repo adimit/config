@@ -156,13 +156,21 @@ hvim() {
 		tmux has-session -t $(hvim_session_name $next_session) 2&>> /dev/null \
 			&& ((next_session=next_session+1))
 	done
-	if [[ -z $1 ]]; then # no file was given, attach
+	if [[ -z $1 ]]; then # no file was given, attach to latest session
 		((current_session=next_session-1))
 		if [[ $current_session -eq -1 ]]; then
 			echo "hvim: FATAL: no session to attach to, but no file given."
 			return 1;
 		else
 			tmux attach -t $(hvim_session_name $current_session)
+		fi
+	elif [[ $1 -eq "-t" ]]; then # attach to specific session
+		if [[ -z $2 ]]; then
+			echo "hvim: FATAL: no session given with -t."
+			return 2
+		else
+			sess=$(hvim_session_name $2)
+			tmux attach -t $sess
 		fi
 	else # we're opening a new session
 		sess=$(hvim_session_name $next_session)
