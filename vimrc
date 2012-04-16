@@ -177,6 +177,9 @@ imap <C-z>p <Esc>:tabprev<cr>
 " Insert a single character and go back to command mode
 noremap S i<Space><Esc>r
 
+" Make Y behave like other capitals
+map Y y$
+
 """ General Abbreviations
 " Command Typos
 cabbrev Wq wq
@@ -223,6 +226,10 @@ endfunction
 " Reload folding and syntax (on entering the buffer)
 nmap <F3> :syn sync fromstart<cr>
 autocmd BufEnter * syntax sync fromstart
+
+" Save and return to normal mode on FocusLost
+au FocusLost * :silent! wall " save
+au FocusLost * call feedkeys("\<C-\>\<C-n>") " return to normal mode
 
 """ Tags & Tagbar
 set showfulltag
