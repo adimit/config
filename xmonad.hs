@@ -121,6 +121,7 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , workspaces = myWS
                        , manageHook = composeAll [ manageHook gnomeConfig
                                                  , manageSpawn
+                                                 , className =? "Conky" --> doIgnore
                                                  , className =? "Wine" --> doFloat
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
