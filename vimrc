@@ -292,8 +292,7 @@ autocmd BufEnter *.ssi set ft=html
 " WARNING: this seems to fail in Haskell code when you move around the string
 " (\()
 au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
-au BufEnter *.cabal set expandtab shiftwidth=4
-au BufEnter *.hs set expandtab shiftwidth=4
+au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
 
 "" Fruit salad is tasty.
 let hs_highlight_all_types = 1
@@ -317,6 +316,8 @@ let perl_extended_vars=1 " highlight advanced perl vars inside strings
 """ C, C++
 autocmd BufEnter  *.c,*.h	abbr FOR for (i = 0; i < 3; ++i)<CR>{<CR>}<Esc>O
 autocmd BufLeave  *.c,*.h	unabbr FOR
+
+au BufEnter *.c,*.h set shiftwidth=5 tabstop=5
 
 """ PHP
 autocmd FileType php let php_folding=1
