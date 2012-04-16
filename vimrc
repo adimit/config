@@ -106,7 +106,7 @@ endif
 
 set mouse="a"
 
-colorscheme default
+colorscheme lucius
 set background=dark
 
 set showcmd
