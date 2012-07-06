@@ -63,6 +63,20 @@ if &term =~ "rxvt-unicode"
      endif
 endif
 
+set rnu
+au InsertEnter * :set nu
+au InsertLeave * :set rnu
+au FocusLost *   :set nu
+au FocusGained * :set rnu
+
+function! g:ToggleNuMode()
+     if (&rnu == 1)
+	  set nu
+     else
+	  set rnu
+     endif
+endfun
+
 " better command line editing
 cnoremap <C-j> <t_kd>
 cnoremap <C-k> <t_ku>
