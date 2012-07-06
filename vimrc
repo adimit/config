@@ -138,6 +138,47 @@ set background=dark
 set showcmd
 set ruler
 
+""" Utility Functions:
+"" Print decimal number in Binary
+fun! Dec2Bin(nr)
+     return Dec2Base(a:nr,2)
+endfun
+
+"" Print decimal number in hexadecimal
+fun! Dec2Hex(nr)
+     return Dec2Base(a:nr,16)
+endfun
+
+"" Print a number in a certain base (max 16)
+fun! Dec2Base(nr,base)
+     let n=a:nr
+     let r = ""
+     while n
+          let r = '0123456789ABCDEF'[n % a:base] . r
+          let n = n / a:base
+     endwhile
+     return r
+endfun
+
+"" Print characters in binary (separated by dashes)
+fun! String2Bin(str)
+     return PrintChars(a:str,function("Dec2Bin"))
+endfun
+
+"" Print characters in hexadecimal
+fun! String2Hex(str)
+     return PrintChars(a:str,function("Dec2Hex"))
+endfun
+
+"" Print characters in given base
+fun! PrintChars(str,f)
+     let out = ''
+     for ix in range(strlen(a:str))
+          let out = out . '-' . a:f(char2nr(a:str[ix]))
+     endfor
+     return out[1:]
+endfun
+
 " Status bar
 set laststatus=2
 set statusline=%t\ %y
