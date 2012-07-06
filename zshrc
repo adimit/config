@@ -106,8 +106,8 @@ autoload -U zmv
 ### Keybindings
 ###############
 
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
+bindkey '^p' history-beginning-search-backward
+bindkey '^n' history-beginning-search-forward
 
 ### Functions
 
