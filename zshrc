@@ -316,7 +316,7 @@ if [ -f $localfile ]; then
 	source $localfile
 fi
 
-export GPGKEY=11076BD2
+export GPGKEY=290BBA85
 
 if [ $TOPICSTART ]; then
 	ls
