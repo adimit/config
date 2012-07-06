@@ -38,6 +38,18 @@ set lazyredraw
 """ Interface
 """""""""""""
 
+"" Don't hlsearch, but when I do search for something set hlsearch, then
+"" remove it when entering insert mode
+set nohlsearch
+noremap <leader>sss /
+map / :set hlsearch<CR><leader>sss
+au InsertEnter * :set nohlsearch
+
+noremap <leader>nnn n
+noremap <leader>NNN N
+map n :set hlsearch<CR><leader>nnn
+map N :set hlsearch<CR><leader>NNN
+
 set shortmess=ilmnrwxIat
 
 if &term =~ "rxvt-unicode"
