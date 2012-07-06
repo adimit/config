@@ -360,21 +360,26 @@ autocmd BufEnter *.ssi set ft=html
 " au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
 au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
 
+nnoremap <leader>ht :GhcModType<CR>
+nnoremap <leader>hc :GhcModTypeClear<CR>
+nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
+nnoremap <leader>he :GhcModExpand<CR>
+
+let g:ghcmod_use_basedir = getcwd()
+
 "" Fruit salad is tasty.
 let hs_highlight_all_types = 1
 let hs_highlight_debug = 1
+let hs_highlight_toplevel_fundefs = 1
+
+let g:scion_connection_setting = [ 'scion' , '/home/adimit/.cabal/bin/scion-server']
+set runtimepath+=/home/adimit/.cabal/share/scion
 
 " Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
 " au BufEnter *.hs compiler ghc
-let g:haddock_browser = "/usr/bin/opera"
-let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
+" let g:haddock_browser = "/usr/bin/iceweasel"
+" let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
 " WriteAndGHC writes the file and reloads tags and type information
-function! WriteAndGHC()
-     :write
-     GHCi :ctags
-     GHCReload
-endfunction
-au FileType haskell nnoremap <leader>c :exe WriteAndGHC()<CR>
 
 """ Perl
 let perl_extended_vars=1 " highlight advanced perl vars inside strings
