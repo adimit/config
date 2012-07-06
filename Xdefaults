@@ -1,8 +1,9 @@
 urxvt.scrollBar: false
-urxvt.font: xft:Droid Sans Mono:size=9
+urxvt.font: xft:Ubuntu Mono for Powerline:size=11
 
+urxvt.depth: 32
 urxvt.foreground: #ffffff
-urxvt.background: #202020
+urxvt.background: rgba:1000/1000/1000/DDDD
 
 !-- Tango color scheme
 ! Black

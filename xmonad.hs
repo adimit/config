@@ -9,20 +9,18 @@ import XMonad.Actions.GridSelect
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.Navigation2D
 
-import XMonad.Layout.DwmStyle
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.NoBorders
 import XMonad.Layout.LayoutCombinators hiding ((|||))
 import XMonad.Layout.Tabbed
-import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect
 import XMonad.Layout.ResizableTile
 
 import XMonad.Prompt
-import XMonad.Prompt.Workspace
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.DynamicLog
@@ -30,6 +28,7 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
+import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
@@ -39,17 +38,22 @@ layouts = smartBorders
         . mkToggle(single MIRROR)
         . layoutHintsToCenter
         $ resizableTiled ||| reflectHoriz (simpleTabbed *|* Full)
-    where tiled = XMonad.Tall 1 (3/100) (1/2)
-          resizableTiled = ResizableTall 1 (9/100) (1/2) []
+    where resizableTiled = ResizableTall 1 (3/100) (1/2) []
 
+promptConfig :: XPConfig
 promptConfig = defaultXPConfig { position          = Top
                                , font              = myFont
                                , bgColor           = myHLBG
                                , fgColor           = myFG
                                , fgHLight          = myBG
                                , bgHLight          = myHL
+                               , promptKeymap      = defaultXPKeymap' wordSep
                                , promptBorderWidth = 0 }
 
+wordSep :: Char -> Bool
+wordSep c = isSpace c || c == '/'
+
+myFont, myBG, myFG, myHL, myHLBG, myTerminal :: String
 myFont     = "xft:Droid Sans Mono:size=8"
 myBG       = "#202020"
 myFG       = "#EEEEEE"
@@ -57,6 +61,7 @@ myHL       = "#cae682"
 myHLBG     = "#363946"
 myTerminal = "urxvt"
 
+spawnShellIn :: (MonadIO m) => String -> m ()
 spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
                         ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
                         -- ++ myTerminal
@@ -78,17 +83,20 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
                                 , ((0,xK_u),      (1,0))
                                 , ((0,xK_period), (0,-1)) ]
 
-myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
+myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
+myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
             , ((mask              , xK_Return   ), spawnShellIn "~")
             , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
+            , ((mask,               xK_r        ), sendMessage Shrink)
+            , ((mask,               xK_l        ), sendMessage Expand)
             , ((mask,               xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
             ++ -- Dynamic Workspaces
-            [ ((mask              , xK_t        ), selectWorkspace promptConfig)
-            , ((mask .|. shiftMask, xK_t        ), withWorkspace promptConfig (windows . W.shift))
+            [ ((mask              , xK_d        ), selectWorkspace promptConfig)
+            , ((mask .|. shiftMask, xK_d        ), withWorkspace promptConfig (windows . W.shift))
             , ((mask .|. shiftMask, xK_BackSpace), removeWorkspace) ]
             ++ -- ResizableTile
             [ ((mask              , xK_v        ), sendMessage MirrorShrink)
@@ -96,11 +104,17 @@ myKeys conf@(XConfig { modMask = mask, workspaces = ws }) = M.fromList $
             ++ -- MultiToggle
             [ ((mask .|. shiftMask, xK_f        ), sendMessage $ Toggle FULL)
             , ((mask .|. shiftMask, xK_m        ), sendMessage $ Toggle MIRROR) ]
-            ++ -- Grid for Workspaces
-            [ ((mask              , xK_d        ), runSelectedAction myGSConfig (tgr W.greedyView))
-            , ((mask .|. shiftMask, xK_d        ), runSelectedAction myGSConfig (tgr W.shift)) ]
-            where prompt = workspacePrompt promptConfig
-                  tgr f  = map (\t -> (t, windows $ f t)) myWS
+            ++ -- Navigation2D
+            [ ((mask              , xK_h        ), windowGo L True)
+            , ((mask              , xK_s        ), windowGo R True)
+            , ((mask              , xK_n        ), windowGo U True)
+            , ((mask              , xK_t        ), windowGo D True)
+              -- Resize
+            , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
+            , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
+            , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
+            , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
+            ]
 
 myWS :: [String]
 myWS = map show [1..9]
@@ -112,10 +126,12 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , workspaces = myWS
                        , manageHook = composeAll [ manageHook gnomeConfig
                                                  , manageSpawn
+                                                 , className =? "Conky" --> doIgnore
                                                  , className =? "Wine" --> doFloat
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
                        , startupHook = setWMName "LG3D" }
 
-main = xmonad =<< xmobar myConfig
+main :: IO ()
+main = xmonad . withNavigation2DConfig defaultNavigation2DConfig =<< xmobar myConfig

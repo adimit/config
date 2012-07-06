@@ -17,6 +17,13 @@ map <leader>ee :e <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
+" easier use of fugitive
+map <leader>gd :Gdiff<CR>
+map <leader>gc :Gcommit<CR>
+map <leader>gs :Gstatus<CR>
+map <leader>gw :Gwrite<CR>
+map <leader>gl :Glog<CR>
+
 """ Environment
 """""""""""""""
 
@@ -31,6 +38,18 @@ set lazyredraw
 """ Interface
 """""""""""""
 
+"" Don't hlsearch, but when I do search for something set hlsearch, then
+"" remove it when entering insert mode
+set nohlsearch
+noremap <leader>sss /
+map / :set hlsearch<CR><leader>sss
+au InsertEnter * :set nohlsearch
+
+noremap <leader>nnn n
+noremap <leader>NNN N
+map n :set hlsearch<CR><leader>nnn
+map N :set hlsearch<CR><leader>NNN
+
 set shortmess=ilmnrwxIat
 
 if &term =~ "rxvt-unicode"
@@ -43,6 +62,26 @@ if &term =~ "rxvt-unicode"
 	  let &t_EI = "\<Esc>]12;grey80\x7"
      endif
 endif
+
+set rnu
+au InsertEnter * :set nu
+au InsertLeave * :set rnu
+au FocusLost *   :set nu
+au FocusGained * :set rnu
+
+function! g:ToggleNuMode()
+     if (&rnu == 1)
+	  set nu
+     else
+	  set rnu
+     endif
+endfun
+
+" better command line editing
+cnoremap <C-j> <t_kd>
+cnoremap <C-k> <t_ku>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
 
 set showtabline=1
 
@@ -93,11 +132,52 @@ endif
 
 set mouse="a"
 
-colorscheme default
+colorscheme lucius
 set background=dark
 
 set showcmd
 set ruler
+
+""" Utility Functions:
+"" Print decimal number in Binary
+fun! Dec2Bin(nr)
+     return Dec2Base(a:nr,2)
+endfun
+
+"" Print decimal number in hexadecimal
+fun! Dec2Hex(nr)
+     return Dec2Base(a:nr,16)
+endfun
+
+"" Print a number in a certain base (max 16)
+fun! Dec2Base(nr,base)
+     let n=a:nr
+     let r = ""
+     while n
+          let r = '0123456789ABCDEF'[n % a:base] . r
+          let n = n / a:base
+     endwhile
+     return r
+endfun
+
+"" Print characters in binary (separated by dashes)
+fun! String2Bin(str)
+     return PrintChars(a:str,function("Dec2Bin"))
+endfun
+
+"" Print characters in hexadecimal
+fun! String2Hex(str)
+     return PrintChars(a:str,function("Dec2Hex"))
+endfun
+
+"" Print characters in given base
+fun! PrintChars(str,f)
+     let out = ''
+     for ix in range(strlen(a:str))
+          let out = out . '-' . a:f(char2nr(a:str[ix]))
+     endfor
+     return out[1:]
+endfun
 
 " Status bar
 set laststatus=2
@@ -120,7 +200,6 @@ set showmatch mat=3 " Show matching parens for 300ms
 set incsearch
 set smarttab
 set ai " No, not Artificial Intelligence...
-set nohlsearch
 
 " Make backspace delete lots of things
 set backspace=indent,eol,start
@@ -163,6 +242,9 @@ imap <C-z>n <Esc>:tabnext<cr>
 imap <C-z>p <Esc>:tabprev<cr>
 " Insert a single character and go back to command mode
 noremap S i<Space><Esc>r
+
+" Make Y behave like other capitals
+map Y y$
 
 """ General Abbreviations
 " Command Typos
@@ -211,6 +293,10 @@ endfunction
 nmap <F3> :syn sync fromstart<cr>
 autocmd BufEnter * syntax sync fromstart
 
+" Save and return to normal mode on FocusLost
+au FocusLost * :silent! wall " save
+au FocusLost * call feedkeys("\<C-\>\<C-n>") " return to normal mode
+
 """ Tags & Tagbar
 set showfulltag
 set tags=tags;/
@@ -221,6 +307,19 @@ let g:tagbar_compact=1
 
 """ Vim Help Files: make [Return] follow a link
 autocmd FileType help nmap <buffer> <Return> <C-]>
+
+""" JSON
+
+au! BufRead,BufNewFile *.json set filetype=json 
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
+augroup END
 
 """ Java
 ""autocmd filetype java nmap <F9> :Ant<cr>
@@ -258,25 +357,29 @@ autocmd BufEnter *.ssi set ft=html
 """ Haskell
 " WARNING: this seems to fail in Haskell code when you move around the string
 " (\()
-au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
-au BufEnter *.cabal set expandtab shiftwidth=4
-au BufEnter *.hs set expandtab shiftwidth=4
+" au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
+au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
+
+nnoremap <leader>ht :GhcModType<CR>
+nnoremap <leader>hc :GhcModTypeClear<CR>
+nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
+nnoremap <leader>he :GhcModExpand<CR>
+
+let g:ghcmod_use_basedir = getcwd()
 
 "" Fruit salad is tasty.
 let hs_highlight_all_types = 1
 let hs_highlight_debug = 1
+let hs_highlight_toplevel_fundefs = 1
+
+let g:scion_connection_setting = [ 'scion' , '/home/adimit/.cabal/bin/scion-server']
+set runtimepath+=/home/adimit/.cabal/share/scion
 
 " Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
 " au BufEnter *.hs compiler ghc
-let g:haddock_browser = "/usr/bin/opera"
-let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
+" let g:haddock_browser = "/usr/bin/iceweasel"
+" let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
 " WriteAndGHC writes the file and reloads tags and type information
-function! WriteAndGHC()
-     :write
-     GHCi :ctags
-     GHCReload
-endfunction
-au FileType haskell nnoremap <leader>c :exe WriteAndGHC()<CR>
 
 """ Perl
 let perl_extended_vars=1 " highlight advanced perl vars inside strings
@@ -284,6 +387,8 @@ let perl_extended_vars=1 " highlight advanced perl vars inside strings
 """ C, C++
 autocmd BufEnter  *.c,*.h	abbr FOR for (i = 0; i < 3; ++i)<CR>{<CR>}<Esc>O
 autocmd BufLeave  *.c,*.h	unabbr FOR
+
+au BufEnter *.c,*.h set shiftwidth=5 tabstop=5
 
 """ PHP
 autocmd FileType php let php_folding=1
@@ -306,35 +411,8 @@ nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 au BufNewFile *.tex 0read ~/.vim/skellies/tex
 let g:tex_flavor = "latex"
 autocmd FileType tex,latex,plaintex iabbrev ... \ldots{}
-autocmd FileType tex,latex,plaintex set makeprg=xelatex\ -interaction\ nonstopmode\ %
-autocmd Filetype tex,latex,plaintex set efm=%E!\ LaTeX\ %trror:\ %m,
-	\%E!\ %m,
-	\%+WLaTeX\ %.%#Warning:\ %.%#line\ %l%.%#,
-	\%+W%.%#\ at\ lines\ %l--%*\\d,
-	\%WLaTeX\ %.%#Warning:\ %m,
-	\%Cl.%l\ %m,
-	\%+C\ \ %m.,
-	\%+C%.%#-%.%#,
-	\%+C%.%#[]%.%#,
-	\%+C[]%.%#,
-	\%+C%.%#%[{}\\]%.%#,
-	\%+C<%.%#>%.%#,
-	\%C\ \ %m,
-	\%-GSee\ the\ LaTeX%m,
-	\%-GType\ \ H\ <return>%m,
-	\%-G\ ...%.%#,
-	\%-G%.%#\ (C)\ %.%#,
-	\%-G(see\ the\ transcript%.%#),
-	\%-G\\s%#,
-	\%+O(%f)%r,
-	\%+P(%f%r,
-	\%+P\ %\\=(%f%r,
-	\%+P%*[^()](%f%r,
-	\%+P[%\\d%[^()]%#(%f%r,
-	\%+Q)%r,
-	\%+Q%*[^()])%r,
-	\%+Q[%\\d%*[^()])%r
-
+set grepprg=grep\ -nH\ $*
+au FileType tex setlocal iskeyword+=:
 
 """ Shell Scripts
 " Autoexecutable Scripts:
@@ -342,7 +420,7 @@ autocmd Filetype tex,latex,plaintex set efm=%E!\ LaTeX\ %trror:\ %m,
 
 """ Misc
 " Set K&R indentation for certain file types
-autocmd FileType ant,xml,vim,php,perl setlocal ts=5 sw=5
+autocmd FileType c,ant,xml,vim,php,perl setlocal ts=5 sw=5
 
 " Persistent undo (since 7.3)
 if ('persistent_undo')
@@ -367,6 +445,14 @@ endif
 
 """ Plugins
 """""""""""
+
+""" Powerline
+let g:Powerline_symbols = 'fancy'
+
+""" Syntastic
+let g:syntastic_mode_map = { 'mode' : 'active'
+                         \ , 'active_filetypes': ['latex','c']
+                         \ , 'passive_filetypes': ['haskell'] }
 
 """ Fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete

@@ -71,7 +71,8 @@ alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
 alias ccp="rsync -rvr --progress"
 alias pls='pl -s'
-alias nt='urxvt&'
+alias nt='urxvt& disown %1'
+alias p='mpc toggle'
 
 alias rm='rm -iv'
 alias mv='mv -i'
@@ -105,8 +106,8 @@ autoload -U zmv
 ### Keybindings
 ###############
 
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
+bindkey '^p' history-beginning-search-backward
+bindkey '^n' history-beginning-search-forward
 
 ### Functions
 
@@ -146,18 +147,52 @@ c() {
 	if [ $? -eq 0 ]; then ls; fi
 }
 
+hvim_session_name() { echo "hvim$1" }
+# Usage:
+# 	hvim # Attach to the latest hvim session
+# 	hvim FILE # Create a new hvim session and open FILE
+# 	hvim -t SESS # Attach to session SESS
+hvim() {
+	next_session=0;
+	while [[ $? -eq 0 ]]; do
+		tmux has-session -t $(hvim_session_name $next_session) 2&>> /dev/null \
+			&& ((next_session=next_session+1))
+	done
+	if [[ -z $1 ]]; then # no file was given, attach to latest session
+		((current_session=next_session-1))
+		if [[ $current_session -eq -1 ]]; then
+			echo "hvim: FATAL: no session to attach to, but no file given."
+			return 1;
+		else
+			sess=$(hvim_session_name $current_session)
+			tmux attach -t $sess
+		fi
+	elif [[ $1 == "-t" ]]; then # attach to specific session
+		if [[ -z $2 ]]; then
+			echo "hvim: FATAL: no session given with -t."
+			return 2
+		else
+			sess=$(hvim_session_name $2)
+			tmux attach -t $sess
+		fi
+	else # we're opening a new session
+		sess=$(hvim_session_name $next_session)
+		tmux -f ~/config/hvim.conf \
+			new-session -s $sess -n vim -d "vim $1"
+		tmux split-window -v -t $sess
+		tmux send-keys -t $sess "ghci $1" C-m
+		tmux select-pane -t $sess -l
+		tmux resize-pane -t $sess -D 20
+		tmux attach -t $sess
+	fi
+}
+
 # Vim addiction
-:w() {
-	print "You're not in vi!"
-}
+vimIsAwesome() { print "You're not in vim!"; }
+:w() { vimIsAwesome; }
+:wq() { vimIsAwesome; }
+:q() { vimIsAwesome; }
 
-:wq() {
-	print "You're not in vi!"
-}
-
-q() {
-	print "You're not in vi!"
-}
 
 ### Cosmetic stuff
 # change title to current directory
@@ -284,7 +319,7 @@ if [ -f $localfile ]; then
 	source $localfile
 fi
 
-export GPGKEY=11076BD2
+export GPGKEY=290BBA85
 
 if [ $TOPICSTART ]; then
 	ls
