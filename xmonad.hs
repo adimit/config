@@ -28,6 +28,7 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
+import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
@@ -46,7 +47,11 @@ promptConfig = defaultXPConfig { position          = Top
                                , fgColor           = myFG
                                , fgHLight          = myBG
                                , bgHLight          = myHL
+                               , promptKeymap      = defaultXPKeymap' wordSep
                                , promptBorderWidth = 0 }
+
+wordSep :: Char -> Bool
+wordSep c = isSpace c || c == '/'
 
 myFont, myBG, myFG, myHL, myHLBG, myTerminal :: String
 myFont     = "xft:Droid Sans Mono:size=8"
