@@ -447,7 +447,7 @@ autocmd Filetype tex,latex,plaintex set efm=%E!\ LaTeX\ %trror:\ %m,
 
 """ Misc
 " Set K&R indentation for certain file types
-autocmd FileType ant,xml,vim,php,perl setlocal ts=5 sw=5
+autocmd FileType c,ant,xml,vim,php,perl setlocal ts=5 sw=5
 
 " Persistent undo (since 7.3)
 if ('persistent_undo')
