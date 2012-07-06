@@ -473,6 +473,14 @@ endif
 """ Plugins
 """""""""""
 
+""" Powerline
+let g:Powerline_symbols = 'fancy'
+
+""" Syntastic
+let g:syntastic_mode_map = { 'mode' : 'active'
+                         \ , 'active_filetypes': ['latex','c']
+                         \ , 'passive_filetypes': ['haskell'] }
+
 """ Fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
