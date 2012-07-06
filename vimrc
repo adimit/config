@@ -200,7 +200,6 @@ set showmatch mat=3 " Show matching parens for 300ms
 set incsearch
 set smarttab
 set ai " No, not Artificial Intelligence...
-set nohlsearch
 
 " Make backspace delete lots of things
 set backspace=indent,eol,start
