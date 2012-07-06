@@ -411,35 +411,8 @@ nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 au BufNewFile *.tex 0read ~/.vim/skellies/tex
 let g:tex_flavor = "latex"
 autocmd FileType tex,latex,plaintex iabbrev ... \ldots{}
-autocmd FileType tex,latex,plaintex set makeprg=xelatex\ -interaction\ nonstopmode\ %
-autocmd Filetype tex,latex,plaintex set efm=%E!\ LaTeX\ %trror:\ %m,
-	\%E!\ %m,
-	\%+WLaTeX\ %.%#Warning:\ %.%#line\ %l%.%#,
-	\%+W%.%#\ at\ lines\ %l--%*\\d,
-	\%WLaTeX\ %.%#Warning:\ %m,
-	\%Cl.%l\ %m,
-	\%+C\ \ %m.,
-	\%+C%.%#-%.%#,
-	\%+C%.%#[]%.%#,
-	\%+C[]%.%#,
-	\%+C%.%#%[{}\\]%.%#,
-	\%+C<%.%#>%.%#,
-	\%C\ \ %m,
-	\%-GSee\ the\ LaTeX%m,
-	\%-GType\ \ H\ <return>%m,
-	\%-G\ ...%.%#,
-	\%-G%.%#\ (C)\ %.%#,
-	\%-G(see\ the\ transcript%.%#),
-	\%-G\\s%#,
-	\%+O(%f)%r,
-	\%+P(%f%r,
-	\%+P\ %\\=(%f%r,
-	\%+P%*[^()](%f%r,
-	\%+P[%\\d%[^()]%#(%f%r,
-	\%+Q)%r,
-	\%+Q%*[^()])%r,
-	\%+Q[%\\d%*[^()])%r
-
+set grepprg=grep\ -nH\ $*
+au FileType tex setlocal iskeyword+=:
 
 """ Shell Scripts
 " Autoexecutable Scripts:
