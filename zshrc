@@ -302,9 +302,6 @@ function zle-line-init zle-keymap-select {
     zle reset-prompt
 }
 
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-
 zle -N zle-line-init
 zle -N zle-keymap-select
 
