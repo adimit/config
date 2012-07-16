@@ -32,6 +32,28 @@ import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
+import XMonad.Util.Dzen hiding (font)
+import XMonad.Util.Run
+
+import Control.Concurrent
+import Data.Time.Clock
+import System.IO (hFlush,Handle)
+import Control.Monad (liftM,forever)
+import System.Locale
+import Data.Time.Format
+import Data.Time.LocalTime
+
+
+statusUpdate :: Handle -> TimeZone -> IO ()
+statusUpdate h tz = do
+    t <- liftM (utcToLocalTime tz) getCurrentTime
+    let date = formatTime defaultTimeLocale "%b %d" t
+        hour = formatTime defaultTimeLocale "%R" t
+        str = wrap (fg hilight) (fg') hour ++ " | " ++ wrap (fg offlight) (fg') date
+    hPutStr h $ str
+    hPutStr h "\n" >> hFlush h
+    threadDelay (1000000 * 1)
+
 layouts = smartBorders
         . desktopLayoutModifiers
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
@@ -133,5 +155,59 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , focusedBorderColor = myHL
                        , startupHook = setWMName "LG3D" }
 
+myStatusBar d w x = unwords
+    [ "/home/adimit/local/dzen/bin/dzen2"
+    , "-xs", "1" -- xinerama screen 1
+    , "-fn", "\"Ubuntu Mono for Powerline:size=10\""
+    , "-ta", d
+    , "-sa", d
+    , "-fg", "'" ++ fontcol ++ "'"
+    , "-bg", "'" ++ black ++ "'"
+    , "-w", w
+    , "-x", x
+    ]
+{- Powerline font escape codes: 
+ - solid left \11138
+ - solid right \11136
+ - hollow left \11139
+ - hollow right \11137
+ -}
+
+icon x   = "^i(/home/adimit/.xmonad/icons/"++x++".xbm)"
+fg c     = "^fg("++c++")"
+fg'      = "^fg()"
+bg c     = "^bg("++c++")"
+bg'      = "^bg()"
+fontcol  = "#A0A0A0"
+shadecol = "#505050"
+hilight  = "#afd700"
+offlight = "#ffaf00"
+black    = "#101010"
+
+myDzenPP_ h = defaultPP
+    { ppCurrent = wrap (fg hilight ++ icon "tableft" ++ fg black ++ bg hilight)
+                       (bg' ++ fg hilight ++ icon "tabright" ++ fg')
+    , ppVisible = wrap (fg offlight ++ icon "tableft"++ fg black ++ bg offlight)
+                       (bg' ++ fg offlight ++ icon "tabright"++ fg')
+    , ppHidden  = wrap (fg shadecol ++ icon "tableft"++ fg black ++ bg shadecol)
+                       (bg' ++ fg shadecol ++ icon "tabright"++ fg')
+    , ppSep = " "
+    , ppWsSep = ""
+    , ppTitle = wrap (" " ++ fg hilight) (" " ++ fg' ++ bg')
+    , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
+                            (bg' ++ fg' ++ icon "tabright") $  case l of
+                            "ResizableTall" -> icon "res-tall"
+                            "Mirror ResizableTall" -> icon "mirr-res-tall"
+                            "Full" -> icon "full"
+                            ('R':'e':'f':_) -> icon "tabbed"
+                            _ -> l
+    , ppOutput = hPutStrLn h }
+
 main :: IO ()
-main = xmonad . withNavigation2DConfig defaultNavigation2DConfig =<< xmobar myConfig
+main = do
+    dzenPipe <- spawnPipe $ myStatusBar "l" "1000" "0"
+    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1000"
+    tz <- getCurrentTimeZone
+    forkIO $ forever (statusUpdate statusPipe tz)
+    xmonad . withNavigation2DConfig defaultNavigation2DConfig $
+        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
