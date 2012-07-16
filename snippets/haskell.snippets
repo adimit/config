@@ -1,0 +1,44 @@
+# Make a qualified import
+snippet qual
+	import qualified ${1} as ${2}
+# main
+snippet main
+	main :: IO ()
+	main = do
+	    
+# fundef
+snippet f0 Define a static variable
+	${1:} :: ${2}
+	$1 = ${3}
+snippet f1 Define a simple function
+	${1:} :: ${2}
+	$1 ${3} = ${4}
+snippet f2 Define a function with 2 cases
+	${1:} :: ${2}
+	$1 ${3} = ${4}
+	$1 ${5} = ${6}
+snippet f3 Define a function with 3 cases
+	${1:} :: ${2}
+	$1 ${3} = ${4}
+	$1 ${5} = ${6}
+	$1 ${7} = ${8}
+# if
+snippet if
+	if ${1}
+	   then ${2}
+	   else ${3}
+# let
+snippet let
+	let ${1:} = ${2}
+	in  ${3:$1}
+# case
+snippet case
+	case ${1} of
+	     ${3} -> ${4}
+# data
+snippet data
+	data ${1:} = ${2:$1}
+	           deriving (${3})
+# pragma
+snippet PR
+	{-# ${1} #-}

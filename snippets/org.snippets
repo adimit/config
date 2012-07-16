@@ -1,0 +1,15 @@
+snippet agenda
+	* Done
+	* Doing
+	* To-Do
+	  - ${1}
+	* Notes
+snippet today
+	** `system("date '+%A, %h %m'")`
+	   - ${1}
+snippet tomorrow
+	** `system("date --date='tomorrow' '+%A, %h %m'")`
+	   - ${1}
+snippet yesterday
+	** `system("date --date='yesterday' '+%A, %h %m'")`
+	   - ${1}
