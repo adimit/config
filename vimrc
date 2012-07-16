@@ -27,6 +27,8 @@ map <leader>gl :Glog<CR>
 """ Environment
 """""""""""""""
 
+map ; :
+
 set nocompatible
 " Enable a nice big viminfo file
 set viminfo='1000,f1,:1000,/1000
