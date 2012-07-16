@@ -184,6 +184,10 @@ fun! PrintChars(str,f)
      return out[1:]
 endfun
 
+""" Turn the file into canonical hexadecimal display
+nnoremap <leader>xh :%!xxd<CR>
+nnoremap <leader>xH :%!xxd -r<CR>
+
 " Status bar
 set laststatus=2
 set statusline=%t\ %y
