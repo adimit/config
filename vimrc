@@ -369,6 +369,8 @@ autocmd BufEnter *.ssi set ft=html
 " au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
 au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
 
+au FileType haskell let b:ghcmod_use_basedir = getcwd()
+
 nnoremap <leader>ht :GhcModType<CR>
 nnoremap <leader>hc :GhcModTypeClear<CR>
 nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
