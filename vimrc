@@ -87,6 +87,9 @@ cnoremap <C-e> <End>
 
 set showtabline=1
 
+" Completion
+set complete=.,b,u,],i,d,w
+
 " Scroll with context"
 set scrolloff=3
 set sidescrolloff=3
@@ -232,7 +235,7 @@ set smartcase
 """ Globbing
 set wildmenu
 set wildignore=*.o,*.obj,*.bak,*.exe,*.so,*.class,*~,*.hi
-set wildmode=list:longest,full " Command line completion shows a list first
+set wildmode=longest,list:longest,full
 set suffixes=.bak,~,.o,.h,.info,.swp,.obj,.class
 
 """ Shortcuts
@@ -434,7 +437,6 @@ endif
 autocmd FileType mail,text,html,xhtml,plaintex,tex,latex setlocal textwidth=80 sw=2 " WordWrap for 'text' files @ 80
 set ignorecase
 set infercase
-set complete=.,w,k
 autocmd FileType mail,text,plaintex,tex,latex setlocal spell spelllang=en_US
 autocmd FileType mail,text nmap <F8> :set spelllang=
 
