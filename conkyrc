@@ -22,7 +22,7 @@ own_window_type override
 mpd_host 127.0.0.1
 mpd_port 6600
 
-maximum_width 245
+maximum_width 250
 
 TEXT
 ${font (Droid Sans Mono:size=64)}${time %H:%M}${font}
