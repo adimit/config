@@ -39,6 +39,7 @@ ECLIPSE_HOME=${HOME}/local/eclipse
 export TEXMFHOME=${HOME}/.texmf
 DIRSTACKSIZE=10
 
+setopt histlexwords
 setopt incappendhistory
 setopt dvorak
 setopt correct
