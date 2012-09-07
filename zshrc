@@ -13,8 +13,8 @@ if [ -d $localpath ]; then
 		if [ -d $basepath/bin ]; then
 			PATH=$basepath/bin:$PATH
 		fi
-		if [ -d $basepath/man ]; then
-			MANPATH=$basepath/man:$MANPATH
+		if [ -d $basepath/share/man ]; then
+			MANPATH=$basepath/share/man:$MANPATH
 		fi
 	done
 fi
