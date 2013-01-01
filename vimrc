@@ -90,6 +90,9 @@ if has("digraphs")
 endif
 
 " Plugins {{{1
+
+filetype plugin indent on
+
 "" Pathogen {{{2
 
 call pathogen#runtime_append_all_bundles()
@@ -209,7 +212,6 @@ set statusline+=%=                           " right align
 set statusline+=%{fugitive#statusline()}%l/%L,%c%m(%P)
 
 "" Indentation {{{2
-filetype indent on " Turn on indentation - always
 set smarttab
 set ai " No, not Artificial Intelligence...
 set ts=8 noet " we want tabs and by default they are 8 spaces long. And TABS!
