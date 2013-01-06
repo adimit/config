@@ -33,7 +33,6 @@ import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
-import XMonad.Util.Dzen hiding (font)
 import XMonad.Util.Run
 
 import Control.Concurrent
@@ -50,10 +49,10 @@ statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
     let date = formatTime defaultTimeLocale "%b %d" t
         hour = formatTime defaultTimeLocale "%R" t
-        str = wrap (fg hilight) (fg') hour ++ " | " ++ wrap (fg offlight) (fg') date
-    hPutStr h $ str
+        str = wrap (fg hilight) fg' hour ++ " | " ++ wrap (fg offlight) fg' date
+    hPutStr h str
     hPutStr h "\n" >> hFlush h
-    threadDelay (1000000 * 1)
+    threadDelay 1000000
 
 layouts = smartBorders
         . desktopLayoutModifiers
@@ -187,7 +186,7 @@ myDzenPP_ h = defaultPP
                        (bg' ++ fg shadecol ++ icon "tabright"++ fg')
     , ppSep = " "
     , ppWsSep = ""
-    , ppTitle = wrap (" " ++ fg hilight) (" " ++ fg' ++ bg')
+    , ppTitle = wrap (' ' : fg hilight) (' ' : fg' ++ bg')
     , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
                             (bg' ++ fg' ++ icon "tabright") $  case l of
                             "ResizableTall" -> icon "res-tall"
@@ -199,8 +198,8 @@ myDzenPP_ h = defaultPP
 
 main :: IO ()
 main = do
-    dzenPipe <- spawnPipe $ myStatusBar "l" "1000" "0"
-    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1000"
+    dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1080"
     tz <- getCurrentTimeZone
     home <- getEnv "HOME"
     forkIO $ forever (statusUpdate statusPipe tz)
