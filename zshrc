@@ -194,6 +194,16 @@ vimIsAwesome() { print "You're not in vim!"; }
 :wq() { vimIsAwesome; }
 :q() { vimIsAwesome; }
 
+# Automatic Recompilation
+
+autrecomp() {
+	file=$1; shift
+	command="tset"
+	if [ $1 ]; then
+		export command=$1; shift
+	fi
+	while sleep_until_modified.py $file || sleep 1; do $command $@ $file; done
+}
 
 ### Cosmetic stuff
 # change title to current directory
@@ -230,7 +240,7 @@ tset() {
 		if [ ! -d $texdir ]; then
 			mkdir $texdir
 		fi
-		$texrun -output-directory $texdir $@ \
+		$texrun -interaction nonstopmode -output-directory $texdir $@ \
 			&& $texrun -output-directory $texdir $@ \
 			&& mv -f $texdir/*{pdf,aux} .
 	else
