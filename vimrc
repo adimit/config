@@ -17,6 +17,9 @@ nmap <leader>= :call Preserve("normal gg=G")<CR>
 set mouse="a"
 set backspace=indent,eol,start
 
+" Quick write, but only if changed. I have a nervous pinky.
+nmap <CR> :update<CR>
+
 " find files in new buffer
 nnoremap gf <C-W>gf
 " open file under cursor, create if necessary
