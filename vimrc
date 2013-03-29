@@ -318,12 +318,19 @@ nnoremap <leader>hc :GhcModTypeClear<CR>
 nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
 nnoremap <leader>he :GhcModExpand<CR>
 
+au BufNewFile *.cabal 0read ~/.vim/skellies/cabal
+
 let g:ghcmod_use_basedir = getcwd()
 
 "" Fruit salad is tasty.
 let hs_highlight_all_types = 1
 let hs_highlight_debug = 1
 let hs_highlight_toplevel_fundefs = 1
+
+"" Vim2Hs {{{2
+
+let g:haskell_autotags = 1
+let g:haskell_tags_generator = 'fast-tags'
 
 "" Perl {{{2
 

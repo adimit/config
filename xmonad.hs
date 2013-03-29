@@ -27,12 +27,12 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.SetWMName
 
 import System.Info (os)
+import System.Environment (getEnv)
 
 import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
-import XMonad.Util.Dzen hiding (font)
 import XMonad.Util.Run
 
 import Control.Concurrent
@@ -49,10 +49,10 @@ statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
     let date = formatTime defaultTimeLocale "%b %d" t
         hour = formatTime defaultTimeLocale "%R" t
-        str = wrap (fg hilight) (fg') hour ++ " | " ++ wrap (fg offlight) (fg') date
-    hPutStr h $ str
+        str = wrap (fg hilight) fg' hour ++ " | " ++ wrap (fg offlight) fg' date
+    hPutStr h str
     hPutStr h "\n" >> hFlush h
-    threadDelay (1000000 * 1)
+    threadDelay 1000000
 
 layouts = smartBorders
         . desktopLayoutModifiers
@@ -75,21 +75,15 @@ promptConfig = defaultXPConfig { position          = Top
 wordSep :: Char -> Bool
 wordSep c = isSpace c || c == '/'
 
-myFont, myBG, myFG, myHL, myHLBG, myTerminal :: String
+myFont, myBG, myFG, myHL, myHLBG :: String
 myFont     = "xft:Droid Sans Mono:size=8"
 myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "urxvt"
 
-spawnShellIn :: (MonadIO m) => String -> m ()
-spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
-                        ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
-                        -- ++ myTerminal
-    where escape ('\'':xs) = "\\\"" ++ escape xs
-          escape    (x:xs) = x:escape xs
-          escape        [] = []
+myTerminal :: String -> String
+myTerminal = (++"/local/st/bin/st")
 
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
@@ -106,10 +100,10 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
                                 , ((0,xK_period), (0,-1)) ]
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
-myKeys XConfig { modMask = mask } = M.fromList $
+myKeys XConfig { terminal = t, modMask = mask } = M.fromList $
             [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
-            , ((mask              , xK_Return   ), spawnShellIn "~")
+            , ((mask              , xK_Return   ), spawn t)
             , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
             , ((mask,               xK_r        ), sendMessage Shrink)
             , ((mask,               xK_l        ), sendMessage Expand)
@@ -141,8 +135,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
 myWS :: [String]
 myWS = map show [1..9]
 
-myConfig = gnomeConfig { terminal   = myTerminal
-                       , layoutHook = layouts
+myConfig = gnomeConfig { layoutHook = layouts
                        , modMask    = if os == "darwin" then mod1Mask else mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
                        , workspaces = myWS
@@ -193,7 +186,7 @@ myDzenPP_ h = defaultPP
                        (bg' ++ fg shadecol ++ icon "tabright"++ fg')
     , ppSep = " "
     , ppWsSep = ""
-    , ppTitle = wrap (" " ++ fg hilight) (" " ++ fg' ++ bg')
+    , ppTitle = wrap (' ' : fg hilight) (' ' : fg' ++ bg')
     , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
                             (bg' ++ fg' ++ icon "tabright") $  case l of
                             "ResizableTall" -> icon "res-tall"
@@ -205,9 +198,11 @@ myDzenPP_ h = defaultPP
 
 main :: IO ()
 main = do
-    dzenPipe <- spawnPipe $ myStatusBar "l" "1000" "0"
-    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1000"
+    dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1080"
     tz <- getCurrentTimeZone
+    home <- getEnv "HOME"
     forkIO $ forever (statusUpdate statusPipe tz)
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
-        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
+        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe
+                 , terminal = myTerminal home }
