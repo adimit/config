@@ -355,7 +355,15 @@ nnoremap <Leader><S-S> :call ShowSynStack()<CR>
 nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 
 "" TeX {{{2
-au BufNewFile *.tex 0read ~/.vim/skellies/tex
+function! ReadTeXSkeleton()
+	if match(bufname("%"),'pres\.tex') >= 0
+		0read ~/.vim/skellies/pres
+	else
+		0read ~/.vim/skellies/tex
+	endif
+endfunction
+
+au BufNewFile *.tex exec ReadTeXSkeleton()
 let g:tex_flavor = "latex"
 autocmd FileType tex,latex,plaintex iabbrev ... \ldots{}
 set grepprg=grep\ -nH\ $*
