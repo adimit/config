@@ -74,6 +74,10 @@ alias ccp="rsync -rvrPua"
 alias pls='pl -s'
 alias nt='urxvt& disown %1'
 alias p='mpc toggle'
+alias o='fork mimeopen'
+alias mo='mimeopen'
+alias no='ls'
+alias on='sl'
 
 alias rm='rm -iv'
 alias mv='mv -i'
@@ -114,6 +118,19 @@ bindkey '^n' history-beginning-search-forward
 
 ## Autoload
 autoload -U zmv
+
+fork() { (setsid "$@" &); }
+
+# Move torrents to server
+mvt() {
+	TMPDIR=$HOME/var/tmp
+	WATCHDIR=watch
+	SERVER=bacon
+	ssh-add -l > /dev/null || ssh-add
+	ccp $TMPDIR/*.torrent $SERVER:$WATCHDIR \
+		&& rm -f $TMPDIR/*.torrent \
+		&& ssh $SERVER df -h
+}
 
 # create binary directories for opt
 # useful for commercial packages like gearth, gwt, firefox and others  that don't come
