@@ -27,7 +27,6 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.SetWMName
 
 import System.Info (os)
-import System.Environment (getEnv)
 
 import Data.Char (isSpace)
 import qualified Data.Map as M
@@ -75,15 +74,21 @@ promptConfig = defaultXPConfig { position          = Top
 wordSep :: Char -> Bool
 wordSep c = isSpace c || c == '/'
 
-myFont, myBG, myFG, myHL, myHLBG :: String
+myFont, myBG, myFG, myHL, myHLBG, myTerminal :: String
 myFont     = "xft:Droid Sans Mono:size=8"
 myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
+myTerminal = "urxvt"
 
-myTerminal :: String -> String
-myTerminal = (++"/local/st/bin/st")
+spawnShellIn :: (MonadIO m) => String -> m ()
+spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
+                        ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
+                        -- ++ myTerminal
+    where escape ('\'':xs) = "\\\"" ++ escape xs
+          escape    (x:xs) = x:escape xs
+          escape        [] = []
 
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
@@ -100,10 +105,10 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
                                 , ((0,xK_period), (0,-1)) ]
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
-myKeys XConfig { terminal = t, modMask = mask } = M.fromList $
+myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
             , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
-            , ((mask              , xK_Return   ), spawn t)
+            , ((mask              , xK_Return   ), spawnShellIn "~")
             , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
             , ((mask,               xK_r        ), sendMessage Shrink)
             , ((mask,               xK_l        ), sendMessage Expand)
@@ -135,7 +140,8 @@ myKeys XConfig { terminal = t, modMask = mask } = M.fromList $
 myWS :: [String]
 myWS = map show [1..9]
 
-myConfig = gnomeConfig { layoutHook = layouts
+myConfig = gnomeConfig { terminal   = myTerminal
+                       , layoutHook = layouts
                        , modMask    = if os == "darwin" then mod1Mask else mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
                        , workspaces = myWS
@@ -201,8 +207,6 @@ main = do
     dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
     statusPipe <- spawnPipe $ myStatusBar "r" "600" "1080"
     tz <- getCurrentTimeZone
-    home <- getEnv "HOME"
     forkIO $ forever (statusUpdate statusPipe tz)
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
-        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe
-                 , terminal = myTerminal home }
+        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
