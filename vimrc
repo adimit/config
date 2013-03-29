@@ -242,6 +242,15 @@ nmap <F3> :syn sync fromstart<cr>
 autocmd BufEnter * syntax sync fromstart
 
 " Languages {{{1
+"" XML {{{2
+
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
+
+" only for apertium:
+
+au BufEnter *dix set ft=xml
+
 "" JSON {{{2
 
 au! BufRead,BufNewFile *.json set filetype=json
