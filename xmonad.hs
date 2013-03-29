@@ -42,7 +42,6 @@ import System.Locale
 import Data.Time.Format
 import Data.Time.LocalTime
 
-
 statusUpdate :: Handle -> TimeZone -> IO ()
 statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
@@ -80,15 +79,10 @@ myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "urxvt"
+myTerminal = "/home/aleks/local/st/bin/st"
 
-spawnShellIn :: (MonadIO m) => String -> m ()
-spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
-                        ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
-                        -- ++ myTerminal
-    where escape ('\'':xs) = "\\\"" ++ escape xs
-          escape    (x:xs) = x:escape xs
-          escape        [] = []
+newTmuxIn :: (MonadIO m) => String -> m ()
+newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
 
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
@@ -106,13 +100,14 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig { modMask = mask } = M.fromList $
-            [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
-            , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
-            , ((mask              , xK_Return   ), spawnShellIn "~")
-            , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
-            , ((mask,               xK_r        ), sendMessage Shrink)
-            , ((mask,               xK_l        ), sendMessage Expand)
-            , ((mask,               xK_grave    ), toggleWS) ]
+            [ ((mask,                 xK_a        ), withFocused $ windows . W.sink)
+            , ((mask .|. shiftMask,   xK_Return   ), dwmpromote)
+            , ((mask,                 xK_Return   ), spawn myTerminal)
+            , ((mask .|. controlMask, xK_Return   ), newTmuxIn "$HOME")
+            , ((mask,                 xK_BackSpace), shellPromptHere promptConfig)
+            , ((mask,                 xK_r        ), sendMessage Shrink)
+            , ((mask,                 xK_l        ), sendMessage Expand)
+            , ((mask,                 xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
             ++ -- Dynamic Workspaces
@@ -135,6 +130,11 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
             , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
             , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
+              -- MPD control
+            , ((mask,               xK_F11      ), spawn "mpc toggle")
+            , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
+            , ((mask,               xK_F10      ), spawn "mpc prev")
+            , ((mask,               xK_F12      ), spawn "mpc next")
             ]
 
 myWS :: [String]
@@ -142,7 +142,7 @@ myWS = map show [1..9]
 
 myConfig = gnomeConfig { terminal   = myTerminal
                        , layoutHook = layouts
-                       , modMask    = if os == "darwin" then mod1Mask else mod4Mask
+                       , modMask    = mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
                        , workspaces = myWS
                        , manageHook = composeAll [ manageHook gnomeConfig
@@ -155,7 +155,7 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , startupHook = setWMName "LG3D" }
 
 myStatusBar d w x = unwords
-    [ "/home/adimit/local/dzen/bin/dzen2"
+    [ "/home/aleks/local/dzen/bin/dzen2"
     , "-xs", "1" -- xinerama screen 1
     , "-fn", "\"Ubuntu Mono for Powerline:size=10\""
     , "-ta", d
@@ -164,7 +164,9 @@ myStatusBar d w x = unwords
     , "-bg", "'" ++ black ++ "'"
     , "-w", w
     , "-x", x
+    , "-dock"
     ]
+
 {- Powerline font escape codes: 
  - solid left \11138
  - solid right \11136
@@ -172,7 +174,7 @@ myStatusBar d w x = unwords
  - hollow right \11137
  -}
 
-icon x   = "^i(/home/adimit/.xmonad/icons/"++x++".xbm)"
+icon x   = "^i(/home/aleks/.xmonad/icons/"++x++".xbm)"
 fg c     = "^fg("++c++")"
 fg'      = "^fg()"
 bg c     = "^bg("++c++")"
