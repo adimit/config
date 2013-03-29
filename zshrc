@@ -254,6 +254,7 @@ updong() {
 }
 
 disco() {
+	mpc update --wait
 	mpc clear
 	cd ~music
 	find -mindepth 2 -type d -mtime $1 -print | while read FNAME; do mpc add "$FNAME[3,-1]"; done
