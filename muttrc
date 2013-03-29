@@ -32,21 +32,24 @@ set pgp_use_gpg_agent
 folder-hook '.*' 'push <esc>V'
 
 # PRETTY
-color status white black
-color normal white default
-color tree color12 default
-color indicator white black
-color hdrdefault color22 black
+color status black color65
+color normal color250 default
+color tree color104 default
+color indicator white color234
+color hdrdefault color65 color236
+color attachment color65 default
+color quoted color107 default
+color signature color95  default
 
 color tilde default default
 color markers color9 default
 
-color index black color10 '~N'
-color index black color12 '~O'
+color index black color71 '~N'
+color index black color67 '~O'
 color index black color11 '~F'
-color index white color9 '~D'
+color index white color88 '~D'
 
-color index color12 default '~T'
+color index color70 default '~T'
 
 color index color9 default '~z >1M'
 
