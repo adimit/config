@@ -26,8 +26,6 @@ nnoremap gf <C-W>gf
 nnoremap gF :view <cfile><cr>
 
 set pastetoggle=<F11>
-nmap <C-p> :tabprevious<cr>
-nmap <C-n> :tabnext<cr>
 nmap <F12> :tabnew 
 imap <C-z>n <Esc>:tabnext<cr>
 imap <C-z>p <Esc>:tabprev<cr>
