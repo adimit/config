@@ -311,6 +311,9 @@ au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
 
 au FileType haskell let b:ghcmod_use_basedir = getcwd()
 
+au FileType lhaskell nnoremap <leader>h1 yyp:s/./=/<CR>
+au FileType lhaskell nnoremap <leader>h2 yyp:s/./-/<CR>
+
 nnoremap <leader>ht :GhcModType<CR>
 nnoremap <leader>hc :GhcModTypeClear<CR>
 nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
