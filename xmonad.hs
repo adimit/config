@@ -61,8 +61,10 @@ layouts = smartBorders
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
         . layoutHintsToCenter
-        $ resizableTiled ||| reflectHoriz (simpleTabbed *|* Full)
-    where resizableTiled = ResizableTall 1 (3/100) (1/2) []
+        $ resizableTiled ||| tabbed shrinkText myTabbedTheme
+    where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
+          myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
+                                       , decoHeight = 15 }
 
 promptConfig :: XPConfig
 promptConfig = defaultXPConfig { position          = Top
@@ -156,6 +158,7 @@ myConfig = gnomeConfig { terminal   = myTerminal
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
+                       , borderWidth = 2
                        , startupHook = setWMName "LG3D" }
 
 myStatusBar d w x = unwords
