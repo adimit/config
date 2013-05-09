@@ -60,8 +60,7 @@ layouts = smartBorders
         . desktopLayoutModifiers
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
-        . layoutHintsToCenter
-        $ resizableTiled ||| tabbed shrinkText myTabbedTheme
+        $ layoutHintsToCenter resizableTiled ||| tabbed shrinkText myTabbedTheme
     where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
           myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
                                        , decoHeight = 15 }
