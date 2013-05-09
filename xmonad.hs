@@ -11,6 +11,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.Navigation2D
 
+import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -28,12 +29,15 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
+import Data.List (isInfixOf)
+import Data.Maybe (mapMaybe)
 import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
 import XMonad.Util.Run
 
+import Control.Applicative (liftA2)
 import Control.Concurrent
 import Data.Time.Clock
 import System.IO (hFlush,Handle)
@@ -196,13 +200,20 @@ myDzenPP_ h = defaultPP
     , ppWsSep = ""
     , ppTitle = wrap (' ' : fg hilight) (' ' : fg' ++ bg')
     , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
-                            (bg' ++ fg' ++ icon "tabright") $  case l of
-                            "ResizableTall" -> icon "res-tall"
-                            "Mirror ResizableTall" -> icon "mirr-res-tall"
-                            "Full" -> icon "full"
-                            ('R':'e':'f':_) -> icon "tabbed"
-                            _ -> l
+                            (bg' ++ fg' ++ icon "tabright") $ iconMap l
     , ppOutput = hPutStrLn h }
+
+iconMap :: String -> String
+iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
+                [] -> l
+                (x:_) -> x
+        where icons :: [(String -> Bool,String)]
+              icons = [ (isInfixOf "Mirror" &*& isInfixOf "ResizableTall", icon "mirr-res-tall")
+                      , (isInfixOf "ResizableTall", icon "res-tall")
+                      , (isInfixOf "Full", icon "full")
+                      , (isInfixOf "Tabbed Simplest", icon "full-tabbed") ]
+
+(&*&) = liftA2 (&&)
 
 main :: IO ()
 main = do
