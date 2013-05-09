@@ -223,6 +223,6 @@ main = do
     dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
     statusPipe <- spawnPipe $ myStatusBar "r" "600" "1080"
     tz <- getCurrentTimeZone
-    forkIO $ forever (statusUpdate statusPipe tz)
+    _ <- forkIO $ forever (statusUpdate statusPipe tz)
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
         myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
