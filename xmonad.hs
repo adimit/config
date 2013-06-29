@@ -220,8 +220,5 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 main :: IO ()
 main = do
     dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
-    statusPipe <- spawnPipe $ myStatusBar "r" "600" "1080"
-    tz <- getCurrentTimeZone
-    _ <- forkIO $ forever (statusUpdate statusPipe tz)
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
         myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
