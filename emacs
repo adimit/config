@@ -10,6 +10,7 @@
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+(define-key evil-normal-state-map ";" 'evil-ex)
 (add-to-list 'load-path "~/.emacs.d/evil-leader")
 (require 'evil-leader)
 (evil-leader/set-leader ",")
@@ -21,6 +22,48 @@
 (evil-leader/set-key "na" 'evil-numbers/inc-at-pt)
 (evil-leader/set-key "nx" 'evil-numbers/dec-at-pt)
 
+; ido
+(require 'ido)
+(ido-mode t)
+(evil-leader/set-key "b" 'ido-switch-buffer)
+(evil-leader/set-key "e" 'ido-find-file)
+
+; Spell Czech
+
+;; Switch through languages
+(let ((langs '("british" "de")))
+  (setq lang-ring (make-ring (length langs)))
+  (dolist (elem langs) (ring-insert lang-ring elem)))
+
+(defun cycle-ispell-languages ()
+  (interactive)
+  (let ((lang (ring-ref lang-ring -1)))
+    (ring-insert lang-ring lang)
+    (ispell-change-dictionary lang)))
+
+(global-set-key [f6] 'cycle-ispell-languages)
+
+; perspectives
+(add-to-list 'load-path "~/.emacs.d/perspective-el")
+(require 'perspective)
+(persp-mode)
+(evil-leader/set-key "p" 'persp-switch)
+
+; (defmacro custom-persp (name &rest body)
+;   '(let ((initialize (not (gethash 'name perspectives-hash)))
+;          (current-perspective persp-curr))
+;      (persp-switch 'name)
+;      (when initialize '@body)
+;      (setq persp-last current-perspective)))
+; 
+; (defun custom-persp/org ()
+;   (interactive)
+;   (custom-persp "@org"
+;                 (find-file (first org-agenda-files))))
+; 
+; (evil-leader/set-key "oo" 'custom-persp/org)
+         
+
 ; Interface customizations
 
 ;; Hide the bloody bars
@@ -29,8 +72,9 @@
 (menu-bar-mode -1)
 
 ;; Make it semi-pretty
-(load-theme 'wombat t)
-(set-face-attribute 'default nil :font "Dejavu Sans Mono")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(load-theme 'dovrefjell t)
+(set-face-attribute 'default nil :font "Dejavu Sans Mono:pixelsize=12")
 
 ;; All-important <RET> keyboard shortcut
 (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
@@ -71,12 +115,18 @@
 (require 'expand-region)
 (evil-leader/set-key "r" 'er/expand-region)
 
-;; Desktop save mode
-(desktop-save-mode 1)
-
 ;; ace jump mode
 (require 'ace-jump-mode)
 (evil-leader/set-key "f" 'ace-jump-mode)
+
+;; Powerline
+(add-to-list 'load-path "~/.emacs.d/powerline")
+(require 'powerline)
+(powerline-default-theme)
+
+;; Flymake
+(add-to-list 'load-path "~/.emacs.d/emacs-flymake")
+(require 'flymake)
 
 ; Language: TeX, LaTeX
 (defun latex-hook ()
@@ -96,20 +146,23 @@
   (push nil TeX-error-offset))
 
 ; Language: R
+(require 'ess-site)
 (add-hook 'inferior-ess-mode-hook
           '(lambda nil
              (define-key inferior-ess-mode-map (kbd "C-p")
                'comint-previous-matching-input-from-input)
              (define-key inferior-ess-mode-map (kbd "C-n")
-               'comint-previous-matching-input-from-input)))
+               'comint-next-matching-input-from-input)))
 
 ; Language: Haskell
-(add-to-list 'load-path "~/.emacs.d/haskell-mode")
-(require 'haskell-mode)
-(load "~/.emacs.d/haskell-mode/haskell-site-file")
+(add-to-list 'load-path "~/.emacs.d/haskell-mode/")
+(require 'haskell-mode-autoloads)
+(add-to-list 'Info-default-directory-list "~/.emacs.d/haskell-mode/")
 (setq haskell-program-name "/home/aleks/local/haskell/bin/ghci")
+(add-to-list 'exec-path "~/.cabal/bin/")
 
 (defun haskell-hook ()
+  (turn-on-haskell-doc-mode)
   (turn-on-haskell-indentation)
   (define-key haskell-mode-map [f5] 'haskell-process-load-file)
   (define-key haskell-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch)
@@ -119,9 +172,9 @@
 
   (evil-leader/set-key "ht" 'haskell-process-do-type)
   (evil-leader/set-key "hi" 'haskell-process-do-info)
-
-  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)
-  )
+  (ghc-init)
+  (flymake-mode)
+  (setq ghc-hlint-options '("--ignore=Use camelCase")))
 
 (defun haskell-cabal-hook ()
   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
@@ -129,14 +182,19 @@
   (define-key haskell-cabal-mode-map (kbd "C-`") 'haskell-interactive-bring)
   (define-key haskell-cabal-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch))
 
+(defun haskell-interactive-hook ()
+  (define-key haskell-interactive-mode-map (kbd "C-p")
+    '(lambda () (interactive) (haskell-interactive-mode-history-toggle 1)))
+  (define-key haskell-interactive-mode-map (kbd "C-p")
+    '(lambda () (interactive) (haskell-interactive-mode-history-toggle -1))))
+
 (add-hook 'haskell-mode-hook 'haskell-hook)
 (add-hook 'haskell-cabal-mode-hook 'haskell-cabal-hook)
+(add-hook 'haskell-interactive-mode-hook 'haskell-interactive-hook)
 
 ;; ghc-mod
-; (add-to-list 'load-path "~/.emacs.d/ghc-mod")
-; (add-to-list 'exec-path "~/.cabal/bin/")
-; (autoload 'ghc-init "ghc" nil t)
-; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(add-to-list 'load-path "~/.emacs.d/ghc-mod")
+(autoload 'ghc-init "ghc" nil t)
 
 ; Language: Markdown/Pandoc
 (require 'pandoc-mode)
@@ -219,7 +277,7 @@
  '(haskell-process-type (quote cabal-dev))
  '(haskell-tags-on-save t)
  '(inhibit-startup-screen t)
- '(org-agenda-files (quote ("~/doc/work.org" "~/doc/uni/lrs/tp1/lrs.org" "~/doc/org/main.org"))))
+ '(org-agenda-files (quote ("~/doc/org/work.org" "~/doc/uni/lrs/tp1/lrs.org" "~/doc/org/main.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
