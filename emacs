@@ -105,6 +105,11 @@
 (require 'powerline)
 (powerline-default-theme)
 
+;; Minimap (sublime-style)
+(require 'minimap)
+(evil-leader/set-key "mo" 'minimap-create)
+(evil-leader/set-key "mc" 'minimap-kill)
+
 ;; Flymake
 (add-to-list 'load-path "~/.emacs.d/emacs-flymake")
 (require 'flymake)
