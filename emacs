@@ -254,6 +254,10 @@
 (require 'magit)
 (evil-leader/set-key "gs" 'magit-status)
 
+; Git-gutter
+
+(global-git-gutter-mode t)
+
 (require 'undo-tree)
 
 (custom-set-variables
