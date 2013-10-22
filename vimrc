@@ -130,9 +130,9 @@ endif
 let g:Powerline_symbols = 'fancy'
 
 "" Syntastic {{{2
-let g:syntastic_mode_map = { 'mode' : 'active'
+let g:syntastic_mode_map = { 'mode' : 'passive'
                          \ , 'active_filetypes': ['latex','c']
-                         \ , 'passive_filetypes': ['haskell'] }
+                         \ , 'passive_filetypes': ['haskell,java'] }
 
 "" GUndo {{{2
 nmap <F5> :GundoToggle<CR>
@@ -275,20 +275,13 @@ autocmd FileType java set sw=5 ts=5
 """ Eclim {{{3
 let g:EclimBrowser='firefox'
 
-if filereadable("/mach_kernel") " in which case we're on the Mac
-     let g:EclimHome = '/Users/aleks/local/eclipse/plugins/org.eclim_1.6.1'
-     let g:EclimEclipseHome = '/Users/aleks/local/eclipse'
-endif
-
 autocmd FileType java nmap <leader>i :JavaImport<CR>
 autocmd FileType java nmap <leader>d :JavaDocSearch<CR>
 autocmd FileType java nmap <Leader>c :JavaCorrect<CR>
-autocmd FileType java nnoremap <silent> <buffer> <CR> :JavaSearchContext<CR>
+autocmd FileType java nnoremap <silent> <buffer> <Leader><CR> :JavaSearchContext<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>j :lne<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
 autocmd FileType java nnoremap <silent> <buffer> <Leader><Space> :lopen<CR>
-autocmd FileType java nnoremap <silent> <buffer> <Tab> :call eclim#util#FillTemplate("${", "}")<cr>
-autocmd FileType java nnoremap <silent> <buffer> <F11> :Sign<CR>
 
 "" Lua {{{2
 
