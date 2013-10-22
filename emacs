@@ -144,6 +144,7 @@
 ; Language: Haskell
 (add-to-list 'load-path "~/.emacs.d/haskell-mode/")
 (require 'haskell-mode-autoloads)
+(require 'haskell-unicode-input-method)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/haskell-mode/")
 (setq haskell-program-name "/home/aleks/local/haskell/bin/ghci")
 (add-to-list 'exec-path "~/.cabal/bin/")
@@ -151,6 +152,7 @@
 (defun haskell-hook ()
   (turn-on-haskell-doc-mode)
   (turn-on-haskell-indentation)
+  (set-input-method "haskell-unicode")
   (define-key haskell-mode-map [f5] 'haskell-process-load-file)
   (define-key haskell-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch)
   (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
