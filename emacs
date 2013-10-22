@@ -43,26 +43,7 @@
 
 (global-set-key [f6] 'cycle-ispell-languages)
 
-; perspectives
-(add-to-list 'load-path "~/.emacs.d/perspective-el")
-(require 'perspective)
-(persp-mode)
-(evil-leader/set-key "p" 'persp-switch)
-
-; (defmacro custom-persp (name &rest body)
-;   '(let ((initialize (not (gethash 'name perspectives-hash)))
-;          (current-perspective persp-curr))
-;      (persp-switch 'name)
-;      (when initialize '@body)
-;      (setq persp-last current-perspective)))
-; 
-; (defun custom-persp/org ()
-;   (interactive)
-;   (custom-persp "@org"
-;                 (find-file (first org-agenda-files))))
-; 
-; (evil-leader/set-key "oo" 'custom-persp/org)
-         
+(require 'epa-file)
 
 ; Interface customizations
 
