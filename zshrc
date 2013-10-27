@@ -13,8 +13,8 @@ if [ -d $localpath ]; then
 		if [ -d $basepath/bin ]; then
 			PATH=$basepath/bin:$PATH
 		fi
-		if [ -d $basepath/man ]; then
-			MANPATH=$basepath/man:$MANPATH
+		if [ -d $basepath/share/man ]; then
+			MANPATH=$basepath/share/man:$MANPATH
 		fi
 	done
 fi
@@ -39,6 +39,7 @@ ECLIPSE_HOME=${HOME}/local/eclipse
 export TEXMFHOME=${HOME}/.texmf
 DIRSTACKSIZE=10
 
+setopt histlexwords
 setopt incappendhistory
 setopt dvorak
 setopt correct
@@ -69,10 +70,14 @@ alias vim='vim -p'
 alias gvim='gvim  -p'
 alias scp='scp -r'
 alias mpc="mpc --format '%artist% - %album% - %title%'"
-alias ccp="rsync -rvr --progress"
+alias ccp="rsync -rvrPua"
 alias pls='pl -s'
 alias nt='urxvt& disown %1'
 alias p='mpc toggle'
+alias o='fork mimeopen'
+alias mo='mimeopen'
+alias no='ls'
+alias on='sl'
 
 alias rm='rm -iv'
 alias mv='mv -i'
@@ -113,6 +118,19 @@ bindkey '^n' history-beginning-search-forward
 
 ## Autoload
 autoload -U zmv
+
+fork() { (setsid "$@" &); }
+
+# Move torrents to server
+mvt() {
+	TMPDIR=$HOME/var/tmp
+	WATCHDIR=watch
+	SERVER=bacon
+	ssh-add -l > /dev/null || ssh-add
+	ccp $TMPDIR/*.torrent $SERVER:$WATCHDIR \
+		&& rm -f $TMPDIR/*.torrent \
+		&& ssh $SERVER df -h
+}
 
 # create binary directories for opt
 # useful for commercial packages like gearth, gwt, firefox and others  that don't come
@@ -193,6 +211,16 @@ vimIsAwesome() { print "You're not in vim!"; }
 :wq() { vimIsAwesome; }
 :q() { vimIsAwesome; }
 
+# Automatic Recompilation
+
+autrecomp() {
+	file=$1; shift
+	command="tset"
+	if [ $1 ]; then
+		export command=$1; shift
+	fi
+	while sleep_until_modified.py $file || sleep 1; do $command $@ $file; done
+}
 
 ### Cosmetic stuff
 # change title to current directory
@@ -229,7 +257,7 @@ tset() {
 		if [ ! -d $texdir ]; then
 			mkdir $texdir
 		fi
-		$texrun -output-directory $texdir $@ \
+		$texrun -interaction nonstopmode -output-directory $texdir $@ \
 			&& $texrun -output-directory $texdir $@ \
 			&& mv -f $texdir/*{pdf,aux} .
 	else
@@ -243,6 +271,7 @@ updong() {
 }
 
 disco() {
+	mpc update --wait
 	mpc clear
 	cd ~music
 	find -mindepth 2 -type d -mtime $1 -print | while read FNAME; do mpc add "$FNAME[3,-1]"; done

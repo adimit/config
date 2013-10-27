@@ -1,0 +1,32 @@
+% Aleksandar Dimitrov
+% Commonly used commands for typesetting my documents
+%
+% Created on: Thu Jan  5 14:23:14 CET 2012, as a revival of a previously lost
+% style file dating back to somewhere in 2007
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lhaskell}
+\RequirePackage{listings}
+
+\newcommand{\fun}[1]{\lstinline{#1}}
+
+\lstloadlanguages{Haskell}
+\lstnewenvironment{code}
+    {\lstset{}%
+      \csname lst@SetFirstLabel\endcsname}
+    {\csname lst@SaveFirstLabel\endcsname}
+    \lstset{
+      basicstyle=\small\ttfamily,
+      flexiblecolumns=false,
+      basewidth={0.5em,0.45em},
+      literate={+}{{$+$}}1 {/}{{$/$}}1 {*}{{$*$}}1 {=}{{$=$}}1
+               {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1
+               {\\\\}{{\char`\\\char`\\}}1
+               {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
+               {<=}{{$\leq$}}2 {=>}{{$\Rightarrow$}}2
+               {<=>}{{$\color{red}\Leftrightarrow$}}3
+               {==>}{{$\color{red}\Rightarrow$}}3
+               {\ .}{{$\circ$}}2 {\ .\ }{{$\circ$}}2
+               {>>}{{>>}}2 {>>=}{{>>=}}2
+               {|}{{$\mid$}}1
+    }

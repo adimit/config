@@ -11,6 +11,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.Navigation2D
 
+import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -28,17 +29,41 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
+import Data.List (isInfixOf)
+import Data.Maybe (mapMaybe)
 import Data.Char (isSpace)
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
+
+import XMonad.Util.Run
+
+import Control.Applicative (liftA2)
+import Control.Concurrent
+import Data.Time.Clock
+import System.IO (hFlush,Handle)
+import Control.Monad (liftM,forever)
+import System.Locale
+import Data.Time.Format
+import Data.Time.LocalTime
+
+statusUpdate :: Handle -> TimeZone -> IO ()
+statusUpdate h tz = do
+    t <- liftM (utcToLocalTime tz) getCurrentTime
+    let date = formatTime defaultTimeLocale "%b %d" t
+        hour = formatTime defaultTimeLocale "%R" t
+        str = wrap (fg hilight) fg' hour ++ " | " ++ wrap (fg offlight) fg' date
+    hPutStr h str
+    hPutStr h "\n" >> hFlush h
+    threadDelay 1000000
 
 layouts = smartBorders
         . desktopLayoutModifiers
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
-        . layoutHintsToCenter
-        $ resizableTiled ||| reflectHoriz (simpleTabbed *|* Full)
-    where resizableTiled = ResizableTall 1 (3/100) (1/2) []
+        $ layoutHintsToCenter resizableTiled ||| tabbed shrinkText myTabbedTheme
+    where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
+          myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
+                                       , decoHeight = 15 }
 
 promptConfig :: XPConfig
 promptConfig = defaultXPConfig { position          = Top
@@ -59,15 +84,10 @@ myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "urxvt"
+myTerminal = "/home/aleks/local/st/bin/st"
 
-spawnShellIn :: (MonadIO m) => String -> m ()
-spawnShellIn dir = spawn $ myTerminal ++ " -cd \"" ++ escape dir ++ "\" || "
-                        ++ "FAILED_CHDIR='"++escape dir++"' " ++myTerminal
-                        -- ++ myTerminal
-    where escape ('\'':xs) = "\\\"" ++ escape xs
-          escape    (x:xs) = x:escape xs
-          escape        [] = []
+newTmuxIn :: (MonadIO m) => String -> m ()
+newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
 
 myGSConfig :: HasColorizer a => GSConfig a
 myGSConfig = defaultGSConfig { gs_cellheight  = 25
@@ -85,13 +105,14 @@ myGSConfig = defaultGSConfig { gs_cellheight  = 25
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig { modMask = mask } = M.fromList $
-            [ ((mask,               xK_a        ), withFocused $ windows . W.sink)
-            , ((mask .|. shiftMask, xK_Return   ), dwmpromote)
-            , ((mask              , xK_Return   ), spawnShellIn "~")
-            , ((mask,               xK_BackSpace), shellPromptHere promptConfig)
-            , ((mask,               xK_r        ), sendMessage Shrink)
-            , ((mask,               xK_l        ), sendMessage Expand)
-            , ((mask,               xK_grave    ), toggleWS) ]
+            [ ((mask,                 xK_a        ), withFocused $ windows . W.sink)
+            , ((mask .|. shiftMask,   xK_Return   ), dwmpromote)
+            , ((mask,                 xK_Return   ), spawn myTerminal)
+            , ((mask .|. controlMask, xK_Return   ), newTmuxIn "$HOME")
+            , ((mask,                 xK_BackSpace), shellPromptHere promptConfig)
+            , ((mask,                 xK_r        ), sendMessage Shrink)
+            , ((mask,                 xK_l        ), sendMessage Expand)
+            , ((mask,                 xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
             ++ -- Dynamic Workspaces
@@ -114,6 +135,11 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
             , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
             , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
+              -- MPD control
+            , ((mask,               xK_F11      ), spawn "mpc toggle")
+            , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
+            , ((mask,               xK_F10      ), spawn "mpc prev")
+            , ((mask,               xK_F12      ), spawn "mpc next")
             ]
 
 myWS :: [String]
@@ -121,7 +147,7 @@ myWS = map show [1..9]
 
 myConfig = gnomeConfig { terminal   = myTerminal
                        , layoutHook = layouts
-                       , modMask    = if os == "darwin" then mod1Mask else mod4Mask
+                       , modMask    = mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
                        , workspaces = myWS
                        , manageHook = composeAll [ manageHook gnomeConfig
@@ -131,7 +157,68 @@ myConfig = gnomeConfig { terminal   = myTerminal
                                                  , isFullscreen --> doFullFloat ]
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
+                       , borderWidth = 2
                        , startupHook = setWMName "LG3D" }
 
+myStatusBar d w x = unwords
+    [ "/home/aleks/local/dzen/bin/dzen2"
+    , "-xs", "1" -- xinerama screen 1
+    , "-fn", "\"Ubuntu Mono for Powerline:size=10\""
+    , "-ta", d
+    , "-sa", d
+    , "-fg", "'" ++ fontcol ++ "'"
+    , "-bg", "'" ++ black ++ "'"
+    , "-w", w
+    , "-x", x
+    , "-dock"
+    ]
+
+{- Powerline font escape codes: 
+ - solid left \11138
+ - solid right \11136
+ - hollow left \11139
+ - hollow right \11137
+ -}
+
+icon x   = "^i(/home/aleks/.xmonad/icons/"++x++".xbm)"
+fg c     = "^fg("++c++")"
+fg'      = "^fg()"
+bg c     = "^bg("++c++")"
+bg'      = "^bg()"
+fontcol  = "#A0A0A0"
+shadecol = "#505050"
+hilight  = "#afd700"
+offlight = "#ffaf00"
+black    = "#101010"
+
+myDzenPP_ h = defaultPP
+    { ppCurrent = wrap (fg hilight ++ icon "tableft" ++ fg black ++ bg hilight)
+                       (bg' ++ fg hilight ++ icon "tabright" ++ fg')
+    , ppVisible = wrap (fg offlight ++ icon "tableft"++ fg black ++ bg offlight)
+                       (bg' ++ fg offlight ++ icon "tabright"++ fg')
+    , ppHidden  = wrap (fg shadecol ++ icon "tableft"++ fg black ++ bg shadecol)
+                       (bg' ++ fg shadecol ++ icon "tabright"++ fg')
+    , ppSep = " "
+    , ppWsSep = ""
+    , ppTitle = wrap (' ' : fg hilight) (' ' : fg' ++ bg')
+    , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
+                            (bg' ++ fg' ++ icon "tabright") $ iconMap l
+    , ppOutput = hPutStrLn h }
+
+iconMap :: String -> String
+iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
+                [] -> l
+                (x:_) -> x
+        where icons :: [(String -> Bool,String)]
+              icons = [ (isInfixOf "Mirror" &*& isInfixOf "ResizableTall", icon "mirr-res-tall")
+                      , (isInfixOf "ResizableTall", icon "res-tall")
+                      , (isInfixOf "Full", icon "full")
+                      , (isInfixOf "Tabbed Simplest", icon "full-tabbed") ]
+
+(&*&) = liftA2 (&&)
+
 main :: IO ()
-main = xmonad . withNavigation2DConfig defaultNavigation2DConfig =<< xmobar myConfig
+main = do
+    dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    xmonad . withNavigation2DConfig defaultNavigation2DConfig $
+        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}

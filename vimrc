@@ -1,3 +1,4 @@
+" vim: foldmethod=marker foldcolumn=3
 " .vimrc
 " Aleksandar Dimitrov
 "
@@ -6,40 +7,74 @@
 " Remove all existing autocmds
 autocmd!
 
+" Keymappings {{{1
+"" Misc {{{2
 let mapleader = ","
+map ; :
+nmap <F9> :diffup<CR>
+nmap <leader>$ :call Preserve("%s/\\s\\+$//e")<CR>
+nmap <leader>= :call Preserve("normal gg=G")<CR>
+set mouse="a"
+set backspace=indent,eol,start
 
-"" Pathogen
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+" Quick write, but only if changed. I have a nervous pinky.
+nmap <CR> :update<CR>
 
-" open files in same directory (courtesy to vimcasts.org)
+" find files in new buffer
+nnoremap gf <C-W>gf
+" open file under cursor, create if necessary
+nnoremap gF :view <cfile><cr>
+
+set pastetoggle=<F11>
+nmap <F12> :tabnew 
+imap <C-z>n <Esc>:tabnext<cr>
+imap <C-z>p <Esc>:tabprev<cr>
+" Insert a single character and go back to command mode
+noremap S i<Space><Esc>r
+" Make Y behave like other capitals
+map Y y$
+
+map K k
+
+""" Vim Help Files: make [Return] follow a link
+autocmd FileType help nmap <buffer> <Return> <C-]>
+
+"" Abbreviations {{{2
+
+cabbrev Wq wq
+cabbrev Q q
+cabbrev W w
+cabbrev mke make
+cabbrev maek make
+cabbrev ant Ant
+cabbrev want :w<CR>:Ant
+
+abbreviate teh the
+
+"" Turn the file into canonical hexadecimal display {{{2
+nnoremap <leader>xh :%!xxd<CR>
+nnoremap <leader>xH :%!xxd -r<CR>
+
+
+"" open files in same directory (vimcasts.org) {{{2
 map <leader>ee :e <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
 map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-" easier use of fugitive
-map <leader>gd :Gdiff<CR>
-map <leader>gc :Gcommit<CR>
-map <leader>gs :Gstatus<CR>
-map <leader>gw :Gwrite<CR>
-map <leader>gl :Glog<CR>
+"" better ex line editing {{{2
+cnoremap <C-j> <t_kd>
+cnoremap <C-k> <t_ku>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
 
-""" Environment
-"""""""""""""""
+"" Search {{{2
 
-set nocompatible
-" Enable a nice big viminfo file
-set viminfo='1000,f1,:1000,/1000
-set history=500
-set noerrorbells " No concerts, please
-set backup
-set lazyredraw
-
-""" Interface
-"""""""""""""
+set gdefault  " by default, substitute everything on a line for s//
+set smartcase
+set incsearch
 
 "" Don't hlsearch, but when I do search for something set hlsearch, then
-"" remove it when entering insert mode
+"" remove it when entering insert mode 
 set nohlsearch
 noremap <leader>sss /
 map / :set hlsearch<CR><leader>sss
@@ -50,7 +85,80 @@ noremap <leader>NNN N
 map n :set hlsearch<CR><leader>nnn
 map N :set hlsearch<CR><leader>NNN
 
+"" Digraphs {{{2
+if has("digraphs")
+     digraph ., 8230
+endif
+
+" Plugins {{{1
+
+filetype plugin indent on
+
+"" Pathogen {{{2
+
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+"" Fugitive {{{2
+
+"" Fugitive
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
+map <leader>gd :Gdiff<CR>
+map <leader>gc :Gcommit<CR>
+map <leader>gs :Gstatus<CR>
+map <leader>gw :Gwrite<CR>
+map <leader>gl :Glog<CR>
+
+"" Tagbar {{{2
+
+set showfulltag
+set tags=tags;/
+
+nnoremap <silent> <F8> :TagbarToggle<CR>
+let g:tagbar_width=25
+let g:tagbar_compact=1
+
+"" Tabularize {{{2
+
+if exists(":Tabularize")
+	nmap <Leader>t= :Tabularize /=<CR>
+	vmap <Leader>t= :Tabularize /=<CR>
+endif
+
+"" Powerline {{{2
+let g:Powerline_symbols = 'fancy'
+
+"" Syntastic {{{2
+let g:syntastic_mode_map = { 'mode' : 'passive'
+                         \ , 'active_filetypes': ['latex','c']
+                         \ , 'passive_filetypes': ['haskell,java'] }
+
+"" GUndo {{{2
+nmap <F5> :GundoToggle<CR>
+
+" Interface {{{1
+"" Misc {{{2
+"
+" Scroll with context"
+set scrolloff=3
+set sidescrolloff=3
+
+if ((has('syntax') && (&t_Co > 2)) || has('gui_running'))
+     syntax on
+endif
+
+set showmatch mat=3 " Show matching parens for 300ms
+colorscheme lucius
+set background=dark
+set showcmd
+set ruler
+
+
+set lazyredraw
 set shortmess=ilmnrwxIat
+set nocompatible
+set cursorline
 
 if &term =~ "rxvt-unicode"
      if (&termencoding == "")
@@ -63,6 +171,14 @@ if &term =~ "rxvt-unicode"
      endif
 endif
 
+
+"" Tabbing {{{2
+if exists("&showtabline")
+	set showtabline=2 " always show a tabline
+	set switchbuf=usetab
+endif
+
+"" Line numbers {{{2
 set rnu
 au InsertEnter * :set nu
 au InsertLeave * :set rnu
@@ -77,22 +193,7 @@ function! g:ToggleNuMode()
      endif
 endfun
 
-" better command line editing
-cnoremap <C-j> <t_kd>
-cnoremap <C-k> <t_ku>
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-
-set showtabline=1
-
-" Scroll with context"
-set scrolloff=3
-set sidescrolloff=3
-
-""" Graphics
-
-set cursorline
-
+"" Listchars {{{2
 " Stolen from http://docs.google.com/View?docid=dfkkkxv5_65d5p3nk
 " This enables you to see tab characters and stray whitespace
 
@@ -105,6 +206,198 @@ endif
 
 nmap <leader>l :set list!<CR>
 
+"" Status bar {{{2
+set laststatus=2
+set statusline=%t\ %y
+set statusline+=%=                           " right align
+set statusline+=%{fugitive#statusline()}%l/%L,%c%m(%P)
+
+"" Indentation {{{2
+set smarttab
+set ai " No, not Artificial Intelligence...
+set ts=8 noet " we want tabs and by default they are 8 spaces long. And TABS!
+set cinoptions+=(0,u0 " paren indentation
+
+"" Globbing {{{2
+set wildmenu
+set wildignore=*.o,*.obj,*.bak,*.exe,*.so,*.class,*~,*.hi
+set wildmode=longest,list:longest,full
+set suffixes=.bak,~,.o,.h,.info,.swp,.obj,.class
+
+"" Folding {{{2
+
+set foldmethod=syntax
+nmap <space> za
+vmap <space> zf
+
+set foldtext=MyFoldText()
+
+" Folds preserving indentation and without clutter
+function! MyFoldText()
+     let i = indent(v:foldstart)
+     return repeat(' ', i) . substitute(getline(v:foldstart), '^\s\+', '', '')
+endfunction
+
+" Reload folding and syntax (on entering the buffer)
+nmap <F3> :syn sync fromstart<cr>
+autocmd BufEnter * syntax sync fromstart
+
+" Languages {{{1
+"" XML {{{2
+
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
+
+" only for apertium:
+
+au BufEnter *dix set ft=xml
+
+"" JSON {{{2
+
+au! BufRead,BufNewFile *.json set filetype=json
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
+augroup END
+
+"" Java {{{2
+let java_highlight_all = 1
+" Anonymous classes
+set cinoptions+=j1
+
+autocmd FileType java set sw=5 ts=5
+
+""" Eclim {{{3
+let g:EclimBrowser='firefox'
+
+autocmd FileType java nmap <leader>i :JavaImport<CR>
+autocmd FileType java nmap <leader>d :JavaDocSearch<CR>
+autocmd FileType java nmap <Leader>c :JavaCorrect<CR>
+autocmd FileType java nnoremap <silent> <buffer> <Leader><CR> :JavaSearchContext<CR>
+autocmd FileType java nnoremap <silent> <buffer> <Leader>j :lne<CR>
+autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
+autocmd FileType java nnoremap <silent> <buffer> <Leader><Space> :lopen<CR>
+
+"" Lua {{{2
+
+autocmd FileType lua set sw=5 ts=5
+
+"" Prolog {{{2
+
+hi Flicker ctermfg=white cterm=bold
+au BufNewFile,BufRead *.pl set filetype=prolog "Perl sucks anyway
+au FileType prolog au CursorMoved * exe 'match Flicker /\V\<'.escape(expand('<cword>'), '/').'\>/'
+au FileType prolog setlocal suffixesadd=.pl,.plt
+
+"" Haskell {{{2
+
+""" Haskell
+" WARNING: this seems to fail in Haskell code when you move around the string
+" (\()
+" au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
+au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
+
+au FileType haskell let b:ghcmod_use_basedir = getcwd()
+
+au FileType lhaskell nnoremap <leader>h1 yyp:s/./=/<CR>
+au FileType lhaskell nnoremap <leader>h2 yyp:s/./-/<CR>
+
+nnoremap <leader>ht :GhcModType<CR>
+nnoremap <leader>hc :GhcModTypeClear<CR>
+nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
+nnoremap <leader>he :GhcModExpand<CR>
+
+au BufNewFile *.cabal 0read ~/.vim/skellies/cabal
+
+let g:ghcmod_use_basedir = getcwd()
+
+"" Fruit salad is tasty.
+let hs_highlight_all_types = 1
+let hs_highlight_debug = 1
+let hs_highlight_toplevel_fundefs = 1
+
+"" Vim2Hs {{{2
+
+let g:haskell_autotags = 1
+let g:haskell_tags_generator = 'fast-tags'
+
+"" Perl {{{2
+
+let perl_extended_vars=1 " highlight advanced perl vars inside strings
+
+"" C, C++ {{{2
+autocmd BufEnter  *.c,*.h	abbr FOR for (i = 0; i < 3; ++i)<CR>{<CR>}<Esc>O
+autocmd BufLeave  *.c,*.h	unabbr FOR
+
+au BufEnter *.c,*.h set shiftwidth=5 tabstop=5
+
+"" PHP {{{2
+
+autocmd FileType php let php_folding=1
+
+"" Vimscript {{{2
+
+let g:vimsyn_folding='af'
+
+function! ShowSynStack()
+	for id in synstack(line("."), col("."))
+		echo synIDattr(id, "name")
+	endfor
+endfunction
+
+
+"" Helper functions for writing syntax highlighting code for Vim
+nnoremap <Leader><S-S> :call ShowSynStack()<CR>
+nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
+
+"" TeX {{{2
+function! ReadTeXSkeleton()
+	if match(bufname("%"),'pres\.tex') >= 0
+		0read ~/.vim/skellies/pres
+	else
+		0read ~/.vim/skellies/tex
+	endif
+endfunction
+
+au BufNewFile *.tex exec ReadTeXSkeleton()
+let g:tex_flavor = "latex"
+autocmd FileType tex,latex,plaintex iabbrev ... \ldots{}
+set grepprg=grep\ -nH\ $*
+au FileType tex setlocal iskeyword+=:
+
+"" Text files {{{2
+autocmd FileType mail,text,html,xhtml,plaintex,tex,latex setlocal textwidth=80 sw=2 " WordWrap for 'text' files @ 80
+set ignorecase
+set infercase
+autocmd FileType mail,text,plaintex,tex,latex setlocal spell spelllang=en_US
+autocmd FileType mail,text nmap <F8> :set spelllang=
+
+" Misc {{{1
+
+" Persistent undo (since 7.3)
+if ('persistent_undo')
+	set undofile
+	set undodir=~/.vim/undo
+endif
+
+" Enable a nice big viminfo file
+set viminfo='1000,f1,:1000,/1000
+set history=500
+set noerrorbells " No concerts, please
+set backup
+set complete=.,b,u,],i,d,w
+
+" Save and return to normal mode on FocusLost
+au FocusLost * :silent! wall " save
+au FocusLost * call feedkeys("\<C-\>\<C-n>") " return to normal mode
+
+" Functions {{{1
+" Exec command, preserving search pattern and cursor position. {{{2
 function! Preserve(command)
      " Preparation: save last search, and cursor position.
      let _s=@/
@@ -116,29 +409,8 @@ function! Preserve(command)
      let @/=_s
      call cursor(l, c)
 endfunction
-nmap <leader>$ :call Preserve("%s/\\s\\+$//e")<CR>
-nmap <leader>= :call Preserve("normal gg=G")<CR>
 
-nmap <F9> :diffup<CR>
-
-if ((has('syntax') && (&t_Co > 2)) || has('gui_running'))
-     syntax on
-endif
-
-" Custom digraphs. See all with :digraphs
-if has("digraphs")
-     digraph ., 8230
-endif
-
-set mouse="a"
-
-colorscheme lucius
-set background=dark
-
-set showcmd
-set ruler
-
-""" Utility Functions:
+"" Number conversion functions {{{2
 "" Print decimal number in Binary
 fun! Dec2Bin(nr)
      return Dec2Base(a:nr,2)
@@ -179,297 +451,3 @@ fun! PrintChars(str,f)
      return out[1:]
 endfun
 
-" Status bar
-set laststatus=2
-set statusline=%t\ %y
-set statusline+=%=                           " right align
-set statusline+=%{fugitive#statusline()}%l/%L,%c%m(%P)
-
-""" Tabbing
-if exists("&showtabline")
-	set showtabline=2 " always show a tabline
-	set switchbuf=usetab
-endif
-" find files in new buffer
-nnoremap gf <C-W>gf
-" open file under cursor, create if necessary
-nnoremap gF :view <cfile><cr>
-
-""" Basic editing
-set showmatch mat=3 " Show matching parens for 300ms
-set incsearch
-set smarttab
-set ai " No, not Artificial Intelligence...
-
-" Make backspace delete lots of things
-set backspace=indent,eol,start
-
-""" Advanced editing
-
-" so far not used.
-fun! SwitchTo(f, split) abort
-     if ! filereadable(a:f)
-	  echoerr "File '" . a:f . "' does not exist"
-     else
-	  if a:split
-	       new
-	  endif
-	  if bufexists(a:f) != 0
-	       exec ':buffer ' . bufnr(a:f)
-	  else
-	       exec ':edit ' . a:f
-	  endif
-     endif
-endfun
-"noremap <F12> :call SwitchTo(, a:split)
-
-""" Searching
-set gdefault  " by default, substitute everything on a line for s//
-set smartcase
-
-""" Globbing
-set wildmenu
-set wildignore=*.o,*.obj,*.bak,*.exe,*.so,*.class,*~,*.hi
-set wildmode=list:longest,full " Command line completion shows a list first
-set suffixes=.bak,~,.o,.h,.info,.swp,.obj,.class
-
-""" Shortcuts
-set pastetoggle=<F11>
-nmap <C-p> :tabprevious<cr>
-nmap <C-n> :tabnext<cr>
-nmap <F12> :tabnew 
-imap <C-z>n <Esc>:tabnext<cr>
-imap <C-z>p <Esc>:tabprev<cr>
-" Insert a single character and go back to command mode
-noremap S i<Space><Esc>r
-
-" Make Y behave like other capitals
-map Y y$
-
-""" General Abbreviations
-" Command Typos
-cabbrev Wq wq
-cabbrev Q q
-cabbrev W w
-cabbrev mke make
-cabbrev maek make
-cabbrev ant Ant
-cabbrev want :w<CR>:Ant
-map K k
-
-
-" Spelling mistakes
-abbreviate teh the
-
-""" Code
-""""""""
-
-""" Indentation
-set ts=8 noet " we want tabs and by default they are 8 spaces long. And TABS!
-filetype indent on " Turn on indentation - always
-" paren indentation
-set cinoptions+=(0,u0
-
-""" Path
-set path=$PWD/**
-
-""" Misc
-set makeef=##error.log " Generate unique error files for make
-
-""" Folding
-set foldmethod=syntax
-nmap <space> za
-vmap <space> zf
-
-set foldtext=MyFoldText()
-
-" Folds preserving indentation and without clutter
-function! MyFoldText()
-     let i = indent(v:foldstart)
-     return repeat(' ', i) . substitute(getline(v:foldstart), '^\s\+', '', '')
-endfunction
-
-" Reload folding and syntax (on entering the buffer)
-nmap <F3> :syn sync fromstart<cr>
-autocmd BufEnter * syntax sync fromstart
-
-" Save and return to normal mode on FocusLost
-au FocusLost * :silent! wall " save
-au FocusLost * call feedkeys("\<C-\>\<C-n>") " return to normal mode
-
-""" Tags & Tagbar
-set showfulltag
-set tags=tags;/
-
-nnoremap <silent> <F8> :TagbarToggle<CR>
-let g:tagbar_width=25
-let g:tagbar_compact=1
-
-""" Vim Help Files: make [Return] follow a link
-autocmd FileType help nmap <buffer> <Return> <C-]>
-
-""" JSON
-
-au! BufRead,BufNewFile *.json set filetype=json 
-augroup json_autocmd
-  autocmd!
-  autocmd FileType json set autoindent
-  autocmd FileType json set formatoptions=tcq2l
-  autocmd FileType json set textwidth=78 shiftwidth=2
-  autocmd FileType json set softtabstop=2 tabstop=8
-  autocmd FileType json set expandtab
-  autocmd FileType json set foldmethod=syntax
-augroup END
-
-""" Java
-""autocmd filetype java nmap <F9> :Ant<cr>
-let java_highlight_all = 1
-" Anonymous classes
-set cinoptions+=j1
-
-autocmd FileType java nmap <leader>i :JavaImport<CR>
-autocmd FileType java nmap <leader>d :JavaDocSearch<CR>
-autocmd FileType java nmap <Leader>c :JavaCorrect<CR>
-autocmd FileType java nnoremap <silent> <buffer> <CR> :JavaSearchContext<CR>
-autocmd FileType java nnoremap <silent> <buffer> <Leader>j :lne<CR>
-autocmd FileType java nnoremap <silent> <buffer> <Leader>k :lpre<CR>
-autocmd FileType java nnoremap <silent> <buffer> <Leader><Space> :lopen<CR>
-autocmd FileType java nnoremap <silent> <buffer> <Tab> :call eclim#util#FillTemplate("${", "}")<cr>
-autocmd FileType java nnoremap <silent> <buffer> <F11> :Sign<CR>
-
-autocmd FileType java set sw=5 ts=5
-
-filetype plugin on
-filetype indent on
-
-""" Lua
-autocmd FileType lua set sw=5 ts=5
-
-""" Prolog
-hi Flicker ctermfg=white cterm=bold
-au BufNewFile,BufRead *.pl set filetype=prolog "Perl sucks anyway
-au FileType prolog au CursorMoved * exe 'match Flicker /\V\<'.escape(expand('<cword>'), '/').'\>/'
-au FileType prolog setlocal suffixesadd=.pl,.plt
-
-""" SfS Website
-autocmd BufEnter *.ssi set ft=html
-
-""" Haskell
-" WARNING: this seems to fail in Haskell code when you move around the string
-" (\()
-" au FileType haskell au CursorMoved * exe 'match ModeMsg /\V\<'.escape(expand('<cword>'), '/').'\>/'
-au BufEnter *.cabal,*.hs set expandtab shiftwidth=4
-
-nnoremap <leader>ht :GhcModType<CR>
-nnoremap <leader>hc :GhcModTypeClear<CR>
-nnoremap <leader>hw :GhcModCheckAndLintAsync<CR>
-nnoremap <leader>he :GhcModExpand<CR>
-
-let g:ghcmod_use_basedir = getcwd()
-
-"" Fruit salad is tasty.
-let hs_highlight_all_types = 1
-let hs_highlight_debug = 1
-let hs_highlight_toplevel_fundefs = 1
-
-let g:scion_connection_setting = [ 'scion' , '/home/adimit/.cabal/bin/scion-server']
-set runtimepath+=/home/adimit/.cabal/share/scion
-
-" Using Claus Reinke's Haskell mode (http://projects.haskell.org/haskellmode-vim/)
-" au BufEnter *.hs compiler ghc
-" let g:haddock_browser = "/usr/bin/iceweasel"
-" let g:haddock_indexfiledir = "/home/adimit/.vim/haddock/"
-" WriteAndGHC writes the file and reloads tags and type information
-
-""" Perl
-let perl_extended_vars=1 " highlight advanced perl vars inside strings
-
-""" C, C++
-autocmd BufEnter  *.c,*.h	abbr FOR for (i = 0; i < 3; ++i)<CR>{<CR>}<Esc>O
-autocmd BufLeave  *.c,*.h	unabbr FOR
-
-au BufEnter *.c,*.h set shiftwidth=5 tabstop=5
-
-""" PHP
-autocmd FileType php let php_folding=1
-
-""" Vim
-let g:vimsyn_folding='af'
-
-" function! ShowSynStack()
-" 	for id in synstack(line("."), col("."))
-" 		echo synIDattr(id, "name")
-" 	endfor
-" endfunction
-
-
-"" Helper functions for writing syntax highlighting code for Vim
-nnoremap <Leader><S-S> :call ShowSynStack()<CR>
-nnoremap <Leader>s :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
-
-""" TeX
-au BufNewFile *.tex 0read ~/.vim/skellies/tex
-let g:tex_flavor = "latex"
-autocmd FileType tex,latex,plaintex iabbrev ... \ldots{}
-set grepprg=grep\ -nH\ $*
-au FileType tex setlocal iskeyword+=:
-
-""" Shell Scripts
-" Autoexecutable Scripts:
-" au BufWritePost * if getline(1) =~ "^#!" | silent !chmod a+x <afile>  | endif
-
-""" Misc
-" Set K&R indentation for certain file types
-autocmd FileType c,ant,xml,vim,php,perl setlocal ts=5 sw=5
-
-" Persistent undo (since 7.3)
-if ('persistent_undo')
-	set undofile
-	set undodir=~/.vim/undo
-endif
-
-""" Text files
-autocmd FileType mail,text,html,xhtml,plaintex,tex,latex setlocal textwidth=80 sw=2 " WordWrap for 'text' files @ 80
-set ignorecase
-set infercase
-set complete=.,w,k
-autocmd FileType mail,text,plaintex,tex,latex setlocal spell spelllang=en_US
-autocmd FileType mail,text nmap <F8> :set spelllang=
-
-""" Tabularize (from vimcasts.org)
-
-if exists(":Tabularize")
-	nmap <Leader>t= :Tabularize /=<CR>
-	vmap <Leader>t= :Tabularize /=<CR>
-endif
-
-""" Plugins
-"""""""""""
-
-""" Powerline
-let g:Powerline_symbols = 'fancy'
-
-""" Syntastic
-let g:syntastic_mode_map = { 'mode' : 'active'
-                         \ , 'active_filetypes': ['latex','c']
-                         \ , 'passive_filetypes': ['haskell'] }
-
-""" Fugitive
-autocmd BufReadPost fugitive://* set bufhidden=delete
-
-""" GUndo
-nmap <F5> :GundoToggle<CR>
-
-""" Eclim
-let g:EclimBrowser='firefox'
-
-if filereadable("/mach_kernel") " in which case we're on the Mac
-     let g:EclimHome = '/Users/aleks/local/eclipse/plugins/org.eclim_1.6.1'
-     let g:EclimEclipseHome = '/Users/aleks/local/eclipse'
-endif
-
-""" Man pages
-runtime! ftplugin/man.vim
-
-" autoreloading of vim config when saving it
-autocmd! bufwritepost .vimrc source ~/.vimrc
