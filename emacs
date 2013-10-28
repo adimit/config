@@ -162,7 +162,7 @@
 
 ;; Minimap (sublime-style)
 (require 'minimap)
-(evil-leader/set-key "mo" 'minimap-create)
+(evil-leader/set-key "mm" 'minimap-create)
 (evil-leader/set-key "mc" 'minimap-kill)
 
 ;; Flymake
