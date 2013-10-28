@@ -105,12 +105,52 @@
 ;;;(add-to-list 'default-frame-alist '(cursor-color . "white"))
 ;;;(set-cursor-color "white")
 
+(defface mode-line-file-face
+  '()
+  "The face used to display the currently opened file in the modeline")
+(defface mode-line-mode-face
+  '()
+  "The face used to display the currently active mode in the modeline")
+(defface mode-line-position-face
+  '()
+  "The face used to display the current position in the modeline")
+
 ;; mode line
-(setq mode-line-format
+(setq aleks-mode-line-position
+      (propertize " (%l-%c) " 'face 'mode-line-position-face))
+(setq aleks-mode-line-buffer-name
       (list
-       (propertize " %b%+ " 'face 'mode-line-file-face)
-       (propertize " %m " 'face 'mode-line-mode-face)
-       (propertize " %c-%l ")))
+       (propertize " " 'face 'mode-line-file-face)
+       (propertize (eval (shorten-directory (concat default-directory "%b") 30)) 'face 'mode-line-file-face)
+       (propertize "%+ (%p) " 'face 'mode-line-file-face)))
+(setq aleks-mode-line-mode
+      (propertize " %m " 'face 'mode-line-mode-face))
+
+(defun shorten-directory (path max-length)
+  "Show up to `max-length' characters of a path `path'."
+  (let ((path (reverse (split-string (abbreviate-file-name path) "/")))
+        (output ""))
+    ; chop off head of path list if it's empty
+    (when (and path (equal "" (car path)))
+      (setq path (cdr path)))
+    ; first segment is the file; show it, and delete it from the segment list.
+    (setq output (car path))
+    (setq path (cdr path))
+    ; while we still have space, conjoin the path segments, and shorten the path list
+    (while (and path (< (length output) (- max-length 4)))
+      (setq output (concat (car path) "/" output))
+      (setq path (cdr path)))
+    ; after we've ran out of space, if we haven't run out of segments, display placeholder
+    (when path
+      (setq output (concat ".../" output)))
+    output))
+
+(setq
+ mode-line-format
+ (list
+   aleks-mode-line-mode
+   aleks-mode-line-buffer-name
+   aleks-mode-line-position))
 
 ;; Expand Region
 (require 'expand-region)
