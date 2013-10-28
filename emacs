@@ -258,11 +258,11 @@
       '("~/.emacs.d/snippets"))
 (yas-global-mode 1)
 
-; Multiple cursors
-(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el")
-(require 'multiple-cursors)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+; ; Multiple cursors
+; (add-to-list 'load-path "~/.emacs.d/multiple-cursors.el")
+; (require 'multiple-cursors)
+; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 ; Magit
 (require 'magit)
