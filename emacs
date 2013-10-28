@@ -133,7 +133,6 @@
 
 ; Language: R
 (require 'ess-site)
-(setq ess-swv-processing-command "%s(%s, envir=globalenv())")
 (add-hook 'inferior-ess-mode-hook
           '(lambda nil
              (define-key inferior-ess-mode-map (kbd "C-p")
