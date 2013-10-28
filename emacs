@@ -8,6 +8,17 @@
 	     '("melpa" . "http://melpa.milkbox.net/packages/"))
 (package-initialize)
 
+; set some global variables
+(setq
+ ; don't show startup screen
+ inhibit-startup-message t
+ ; paste at cursor, not at mouse pointer position
+ mouse-yank-at-point t
+ ; vim does this automatically…
+ require-final-newline t
+ ; don't ask before following symlinks
+ vc-follow-symlinks t)
+
 ; require evil
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
