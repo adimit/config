@@ -92,6 +92,13 @@
 ;;;(add-to-list 'default-frame-alist '(cursor-color . "white"))
 ;;;(set-cursor-color "white")
 
+;; mode line
+(setq mode-line-format
+      (list
+       (propertize " %b%+ " 'face 'mode-line-file-face)
+       (propertize " %m " 'face 'mode-line-mode-face)
+       (propertize " %c-%l ")))
+
 ;; Expand Region
 (require 'expand-region)
 (evil-leader/set-key "r" 'er/expand-region)
@@ -99,11 +106,6 @@
 ;; ace jump mode
 (require 'ace-jump-mode)
 (evil-leader/set-key "f" 'ace-jump-mode)
-
-;; Powerline
-(add-to-list 'load-path "~/.emacs.d/powerline")
-(require 'powerline)
-(powerline-default-theme)
 
 ;; Minimap (sublime-style)
 (require 'minimap)
