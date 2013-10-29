@@ -115,17 +115,6 @@
   '()
   "The face used to display the current position in the modeline")
 
-;; mode line
-(setq aleks-mode-line-position
-      (propertize " (%l-%c) " 'face 'mode-line-position-face))
-(setq aleks-mode-line-buffer-name
-      (list
-       (propertize " " 'face 'mode-line-file-face)
-       (propertize (eval (shorten-directory (concat default-directory "%b") 30)) 'face 'mode-line-file-face)
-       (propertize "%+ (%p) " 'face 'mode-line-file-face)))
-(setq aleks-mode-line-mode
-      (propertize " %m " 'face 'mode-line-mode-face))
-
 (defun shorten-directory (path max-length)
   "Show up to `max-length' characters of a path `path'."
   (let ((path (reverse (split-string (abbreviate-file-name path) "/")))
@@ -145,11 +134,23 @@
       (setq output (concat ".../" output)))
     output))
 
-(setq
+;; mode line
+(setq aleks-mode-line-position
+      (list
+      (propertize " (%l-%2c) " 'face 'mode-line-position-face)))
+(setq aleks-mode-line-buffer-name
+      (list
+       (propertize " " 'face 'mode-line-file-face)
+       (propertize (eval (shorten-directory (concat default-directory "%b") 30)) 'face 'mode-line-file-face)
+       (propertize "%+ (%p) " 'face 'mode-line-file-face)))
+(setq aleks-mode-line-mode
+      (propertize " %m " 'face 'mode-line-mode-face))
+
+(setq-default
  mode-line-format
  (list
-   aleks-mode-line-mode
    aleks-mode-line-buffer-name
+   aleks-mode-line-mode
    aleks-mode-line-position))
 
 ;; Expand Region
@@ -168,6 +169,12 @@
 ;; Flymake
 (add-to-list 'load-path "~/.emacs.d/emacs-flymake")
 (require 'flymake)
+
+; Language: Java
+(defun java-hook ()
+  (setq tab-width 4))
+
+(add-hook 'java-mode-hook 'java-hook)
 
 ; Language: TeX, LaTeX
 (defun latex-hook ()
