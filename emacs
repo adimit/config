@@ -172,7 +172,8 @@
 
 ; Language: Java
 (defun java-hook ()
-  (setq tab-width 4))
+  (setq tab-width 4)
+  (setq indent-tabs-mode t))
 
 (add-hook 'java-mode-hook 'java-hook)
 
