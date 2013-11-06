@@ -155,7 +155,7 @@
 
 ;; Expand Region
 (require 'expand-region)
-(evil-leader/set-key "r" 'er/expand-region)
+(define-key evil-normal-state-map (kbd "SPC") 'er/expand-region)
 
 ;; ace jump mode
 (require 'ace-jump-mode)
