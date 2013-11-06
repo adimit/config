@@ -59,6 +59,7 @@ else
 	alias ls='ls -GFBC'
 fi
 ### Simple command aliases
+alias ec='emacsclient'
 alias wee='weechat-curses'
 alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
