@@ -31,9 +31,12 @@
 (require 'surround)
 (global-surround-mode 1)
 (add-to-list 'load-path "~/.emacs.d/evil-numbers")
-(require 'evil-numbers)
-(evil-leader/set-key "na" 'evil-numbers/inc-at-pt)
-(evil-leader/set-key "nx" 'evil-numbers/dec-at-pt)
+(evil-leader/set-key "n" 'server-edit)
+
+; whitespace
+(require 'whitespace)
+(setq whitespace-style '(face trailing tabs tab-mark))
+(whitespace-mode)
 
 ; ido
 (require 'ido)
@@ -72,6 +75,14 @@
 
 ;; All-important <RET> keyboard shortcut
 (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
+
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactive-mark t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
 
 ;; Escape quits everything (just like in Vim)
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
@@ -187,6 +198,14 @@
   (evil-leader/set-key "c" 'reftex-citation))
 
 (add-hook 'LaTeX-mode-hook 'latex-hook)
+
+; We enable -shell-escape so that minted can be used. This is a security risk, though
+(eval-after-load "tex"
+  '(setcdr (assoc "LaTeX" TeX-command-list)
+           '("%`%l%(mode) -shell-escape%' %t"
+             TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+           )
+  )
 
 ; This is a nasty hack around the blank window problem with TeX-next-error. I
 ; have no idea how it works.
@@ -336,4 +355,5 @@
  ;; If there is more than one, they won't work right.
  '(ess-swv-pdflatex-commands (quote ("pdflatex" "texi2pdf" "make")))
  '(ess-swv-processor (quote knitr))
+ '(haskell-process-type (quote cabal-repl))
  '(inhibit-startup-screen t))
