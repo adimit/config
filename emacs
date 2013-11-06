@@ -3,9 +3,9 @@
 ; package
 (require 'package)
 (add-to-list 'package-archives
-	     '("marmalade" . "http://marmalade-repo.org/packages/"))
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
 (package-initialize)
 
 ; set some global variables
@@ -224,8 +224,9 @@
 
 ; Language: Haskell
 (add-to-list 'load-path "~/.emacs.d/haskell-mode/")
+(add-to-list 'load-path "~/config/")
 (require 'haskell-mode-autoloads)
-(require 'haskell-unicode-input-method)
+(require 'haskell-unicode-light)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/haskell-mode/")
 (setq haskell-program-name "/home/aleks/local/haskell/bin/ghci")
 (add-to-list 'exec-path "~/.cabal/bin/")
@@ -233,7 +234,7 @@
 (defun haskell-hook ()
   (turn-on-haskell-doc-mode)
   (turn-on-haskell-indentation)
-  (set-input-method "haskell-unicode")
+  (turn-on-haskell-unicode-light-input-method)
   (define-key haskell-mode-map [f5] 'haskell-process-load-file)
   (define-key haskell-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch)
   (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
@@ -242,9 +243,12 @@
 
   (evil-leader/set-key "ht" 'haskell-process-do-type)
   (evil-leader/set-key "hi" 'haskell-process-do-info)
+
+  ; ghc-mod
   (ghc-init)
   (flymake-mode)
-  (setq ghc-hlint-options '("--ignore=Use camelCase")))
+  (setq ghc-hlint-options '("--ignore=Use camelCase"))
+  (define-key haskell-mode-map (kbd "C-SPC") 'ghc-complete))
 
 (defun haskell-cabal-hook ()
   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
@@ -298,17 +302,16 @@
 (defun org-mode-reftex-setup ()
   (load-library "reftex")
   (and (buffer-file-name) (file-exists-p (buffer-file-name))
-       (progn
-	 ;enable auto-revert-mode to update reftex when bibtex file changes on disk
-	 (global-auto-revert-mode t)
-	 (reftex-parse-all)
-	 (reftex-set-cite-format
-	  '((?b . "[[bib:%l][%l-bib]]")
-	    (?n . "[[notes:%l][%l-notes]]")
-	    (?p . "[[papers:%l][%l-paper]]")
-	    (?t . "%t")
-	    (?P . "[[papers:%l][%2a (%y)]]")
-	    (?h . "*** %2a (%y) \"%t\"\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
+       (progn ;enable auto-revert-mode to update reftex when bibtex file changes on disk
+         (global-auto-revert-mode t)
+         (reftex-parse-all)
+         (reftex-set-cite-format
+          '((?b . "[[bib:%l][%l-bib]]")
+            (?n . "[[notes:%l][%l-notes]]")
+            (?p . "[[papers:%l][%l-paper]]")
+            (?t . "%t")
+            (?P . "[[papers:%l][%2a (%y)]]")
+            (?h . "*** %2a (%y) \"%t\"\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
   (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
   (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
 
@@ -316,8 +319,8 @@
 
 (setq org-link-abbrev-alist
       '(("bib" . "~/doc/lib/bib/main.bib::%s")
-	("notes" . "~/doc/lib/bib/notes.org::#%s")
-	("papers" . "~/doc/lib/%s.pdf")))
+        ("notes" . "~/doc/lib/bib/notes.org::#%s")
+        ("papers" . "~/doc/lib/%s.pdf")))
 
 ; Snippets
 (require 'yasnippet)
