@@ -347,4 +347,5 @@
  ;; If there is more than one, they won't work right.
  '(ess-swv-pdflatex-commands (quote ("pdflatex" "texi2pdf" "make")))
  '(ess-swv-processor (quote knitr))
+ '(haskell-process-type (quote cabal-repl))
  '(inhibit-startup-screen t))
