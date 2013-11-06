@@ -33,6 +33,11 @@
 (add-to-list 'load-path "~/.emacs.d/evil-numbers")
 (evil-leader/set-key "n" 'server-edit)
 
+; whitespace
+(require 'whitespace)
+(setq whitespace-style '(face trailing tabs tab-mark))
+(whitespace-mode)
+
 ; ido
 (require 'ido)
 (ido-mode t)
