@@ -76,6 +76,14 @@
 ;; All-important <RET> keyboard shortcut
 (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
 
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactive-mark t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+
 ;; Escape quits everything (just like in Vim)
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
 (define-key evil-visual-state-map [escape] 'keyboard-quit)
