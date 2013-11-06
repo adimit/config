@@ -199,6 +199,14 @@
 
 (add-hook 'LaTeX-mode-hook 'latex-hook)
 
+; We enable -shell-escape so that minted can be used. This is a security risk, though
+(eval-after-load "tex"
+  '(setcdr (assoc "LaTeX" TeX-command-list)
+           '("%`%l%(mode) -shell-escape%' %t"
+             TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+           )
+  )
+
 ; This is a nasty hack around the blank window problem with TeX-next-error. I
 ; have no idea how it works.
 (defadvice TeX-parse-reset (after make-master-file-default () activate)
