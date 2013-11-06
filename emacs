@@ -31,9 +31,7 @@
 (require 'surround)
 (global-surround-mode 1)
 (add-to-list 'load-path "~/.emacs.d/evil-numbers")
-(require 'evil-numbers)
-(evil-leader/set-key "na" 'evil-numbers/inc-at-pt)
-(evil-leader/set-key "nx" 'evil-numbers/dec-at-pt)
+(evil-leader/set-key "n" 'server-edit)
 
 ; ido
 (require 'ido)
