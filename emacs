@@ -71,7 +71,18 @@
 ;; Make it semi-pretty
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dovrefjell t)
-(set-face-attribute 'default nil :font "Dejavu Sans Mono:pixelsize=12")
+
+(defun get-hostname ()
+  "Get current machine's host name as returned by the 'hostname' command."
+  (substring (with-temp-buffer
+               (call-process-shell-command "hostname" nil (current-buffer))
+               (buffer-string))
+             0 -1))
+
+; Make the font bigger on boo, but not on my other machines.
+(if (string-equal (get-hostname) "boo")
+    (set-face-attribute 'default nil :font "Dejavu Sans Mono:size=14")
+    (set-face-attribute 'default nil :font "Dejavu Sans Mono:size=12"))
 
 ;; All-important <RET> keyboard shortcut
 (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
