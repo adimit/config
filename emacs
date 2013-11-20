@@ -370,4 +370,5 @@
  '(ess-swv-pdflatex-commands (quote ("pdflatex" "texi2pdf" "make")))
  '(ess-swv-processor (quote knitr))
  '(haskell-process-type (quote cabal-repl))
- '(inhibit-startup-screen t))
+ '(inhibit-startup-screen t)
+ '(org-agenda-files (quote ("~/src/rsrl/rsrl.org" "~/doc/org/new.org"))))
