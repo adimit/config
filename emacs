@@ -36,7 +36,7 @@
 ; whitespace
 (require 'whitespace)
 (setq whitespace-style '(face trailing tabs tab-mark))
-(whitespace-mode)
+(global-whitespace-mode)
 
 ; ido
 (require 'ido)
