@@ -11,6 +11,9 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.Navigation2D
 
+import XMonad.Config.Xfce
+import XMonad.Hooks.EwmhDesktops
+
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MultiToggle
@@ -145,7 +148,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
 myWS :: [String]
 myWS = map show [1..9]
 
-myConfig = gnomeConfig { terminal   = myTerminal
+myConfig = xfceConfig { terminal   = myTerminal
                        , layoutHook = layouts
                        , modMask    = mod4Mask
                        , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
@@ -158,7 +161,7 @@ myConfig = gnomeConfig { terminal   = myTerminal
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
                        , borderWidth = 2
-                       , startupHook = setWMName "LG3D" }
+                       , startupHook = ewmhDesktopsStartup }
 
 myStatusBar d w x = unwords
     [ "/home/aleks/local/dzen/bin/dzen2"
@@ -219,6 +222,6 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 
 main :: IO ()
 main = do
-    dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    --dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
-        myConfig { logHook = dynamicLogWithPP $ myDzenPP_ dzenPipe}
+        myConfig { logHook = ewmhDesktopsLogHook }
