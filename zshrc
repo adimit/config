@@ -113,10 +113,16 @@ autoload -U zmv
 ### Keybindings
 ###############
 
+# history
+
 bindkey '^p' history-beginning-search-backward
 bindkey '^n' history-beginning-search-forward
 bindkey '^r' history-incremental-pattern-search-backward
 bindkey -M vicmd '?' history-incremental-search-backward
+
+# undo
+bindkey -a u undo
+bindkey -M vicmd '^R' redo
 
 ### Functions
 
