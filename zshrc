@@ -114,6 +114,8 @@ autoload -U zmv
 
 bindkey '^p' history-beginning-search-backward
 bindkey '^n' history-beginning-search-forward
+bindkey '^r' history-incremental-pattern-search-backward
+bindkey -M vicmd '?' history-incremental-search-backward
 
 ### Functions
 
@@ -211,6 +213,15 @@ vimIsAwesome() { print "You're not in vim!"; }
 :w() { vimIsAwesome; }
 :wq() { vimIsAwesome; }
 :q() { vimIsAwesome; }
+
+# Make ESC idempotent in vi mode
+# Note: vicmd (vi command mode) in zsh doesn't have ESC bound at all, so it
+# gets handed to zle, which does unexpected things with it (i.e. it expects
+# another key stroke.)
+
+noop () { }
+zle -N noop
+bindkey -M vicmd '\e' noop
 
 # Automatic Recompilation
 
