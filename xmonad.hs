@@ -176,7 +176,7 @@ myStatusBar d w x = unwords
     , "-dock"
     ]
 
-{- Powerline font escape codes: 
+{- Powerline font escape codes:
  - solid left \11138
  - solid right \11136
  - hollow left \11139
