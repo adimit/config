@@ -161,7 +161,7 @@ myConfig = xfceConfig { terminal   = myTerminal
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
                        , borderWidth = 2
-                       , startupHook = ewmhDesktopsStartup }
+                       , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" }
 
 myStatusBar d w x = unwords
     [ "/home/aleks/local/dzen/bin/dzen2"
