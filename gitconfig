@@ -28,3 +28,8 @@
 	dump = cat-file -p
 [push]
 	default = simple
+[sendmail]
+	smtpencryption = tls
+	smtpserver = smtp.gmail.com
+	smtpuser = aleks.dimitrov@gmail.com
+	smtpserverport = 587
