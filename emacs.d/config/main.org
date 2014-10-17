@@ -1,0 +1,319 @@
+* Notes
+  Initialization file ~/.emacs.d/init.el required to make this work. The
+  following MELPA packages are also required:
+  - auctex
+  - company
+  - company-ghc
+  - ess
+  - evil
+  - evil-leader
+  - evil-surround
+  - ghc (ghc-mod)
+  - git-gutter
+  - haskell-mode
+  - magit
+  - markdown-mode
+  - pandoc
+  - sublime-themes
+  - yasnippet
+  Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
+* Interface
+** Basic Interface Functions
+*** Get Hostname
+    Helper function to determine the current host name. Used for
+    switching certain variables according to which host emacs is
+    running on.
+#+begin_src emacs-lisp
+  (defun get-hostname ()
+    "Get current machine's host name as returned by the 'hostname' command."
+    (substring (with-temp-buffer
+                 (call-process-shell-command "hostname" nil (current-buffer))
+                 (buffer-string))
+               0 -1))
+#+end_src
+*** Minibuffer Escape function
+    Used to get out of minibuffer and visual mode with just ESC.
+#+begin_src emacs-lisp
+  (defun minibuffer-keyboard-quit ()
+    "Abort recursive edit."
+    (interactive)
+    (if (and delete-selection-mode transient-mark-mode mark-active)
+        (setq deactive-mark t)
+      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+      (abort-recursive-edit)))
+#+end_src
+*** Copy to end of line (bind to Y)
+#+begin_src emacs-lisp
+  (defun copy-to-end-of-line ()
+      (interactive)
+      (evil-yank (point) (point-at-eol))
+      (message "Yanked rest of line"))
+#+end_src
+*** Open a tab in a running firefox instance
+#+begin_src emacs-lisp
+  (defun open-url-in-running-firefox (url &optional new-window)
+    "Open a URL in a new Firefox tab, or window."
+    (interactive (browse-url-interactive-arg "URL: "))
+    (let* ((arg1 (if new-window ", new-window" ", new-tab"))
+           (args (concat "openURL(" url arg1 ")"))
+           (tab-or-window (if new-window "window" "tab")))
+      (message (concat "Opening '" url "' in new firefox " tab-or-window "."))
+      (start-process "firefox" nil "mozilla-xremote-client" args)))
+#+end_src
+** Browsing
+#+begin_src emacs-lisp
+  (setq browse-url-browser-function 'open-url-in-running-firefox)
+#+end_src
+** Cursor
+#+begin_src emacs-lisp
+  (blink-cursor-mode 0)
+#+end_src
+
+** Ido
+#+begin_src emacs-lisp
+  (ido-mode t)
+  (require 'ido)
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (setq ido-create-new-buffer 'always)
+  (setq ido-file-extensions-order
+        '(".hs" ".cabal" ".tex" ".Rnw" ".org"))
+  (setq ido-ignore-directories
+        '(".cabal-sandbox" "dist"))
+#+end_src
+
+** Evil
+#+begin_src emacs-lisp
+  (require 'evil)
+  (require 'evil-leader)
+  (require 'evil-surround)
+  (evil-mode 1)
+  (global-evil-leader-mode)
+  (global-evil-surround-mode 1)
+#+end_src
+
+** Global Keyboard Setup
+*** Frame-splitting like tmux
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-w \"") 'split-window-below)
+  (define-key evil-normal-state-map (kbd "C-w %") 'split-window-horizontally)
+#+end_src
+*** Global Evil Shortcuts
+#+begin_src emacs-lisp
+  (evil-leader/set-leader ",")
+  (define-key evil-normal-state-map ";" 'evil-ex)
+  (define-key evil-normal-state-map "Y" 'copy-to-end-of-line)
+  (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
+  (evil-leader/set-key
+   "ee" 'ido-find-file
+   "ef" 'ido-find-file-other-frame
+   "ew" 'ido-find-file-other-window
+   "b"  'ido-switch-buffer
+   "k"  'kill-buffer)
+#+end_src
+
+*** Reload init.el/main.org with F12
+#+begin_src emacs-lisp
+  (global-set-key [f12]
+   '(lambda () (interactive) (org-babel-load-file
+     (expand-file-name "config/main.org" dotfiles-dir))))
+#+end_src
+*** Save with RET in Normal Mode
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
+#+end_src
+** Global Variables
+#+begin_src emacs-lisp
+(setq
+ ; don't show startup screen
+ inhibit-startup-message t
+ ; paste at cursor, not at mouse pointer position
+ mouse-yank-at-point t
+ ; vim does this automatically…
+ require-final-newline t
+ ; don't ask before following symlinks
+ vc-follow-symlinks t)
+#+end_src
+** Hide UI Elements
+#+begin_src emacs-lisp
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
+#+end_src
+** Whitespace
+#+begin_src emacs-lisp
+  (require 'whitespace)
+  (setq whitespace-style '(face trailing tabs tab-mark))
+  (global-whitespace-mode)
+#+end_src
+** Font Size
+#+begin_src emacs-lisp
+  ; Make the font bigger on boo, but not on my other machines
+  ; and only meddle with fonts if you're running a GUI.
+  (cond (window-system
+         (if (string-equal (get-hostname) "boo")
+             (set-face-attribute 'default nil :font "Dejavu Sans Mono:size=14")
+             (set-face-attribute 'default nil :font "Dejavu Sans Mono:size=14"))))
+#+end_src
+** Indentation
+#+begin_src emacs-lisp
+;; Use auto-fill to 80 in text buffers
+(setq-default fill-column 80)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;; Don't use tabs for indentation (maybe limit this to Haskell?)
+(setq-default indent-tabs-mode nil)
+#+end_src
+** Highlight Line mode
+#+begin_src emacs-lisp
+(global-hl-line-mode 1)
+(set-face-background 'highlight "#EEEEEE")
+(set-face-foreground 'highlight nil)
+(set-face-underline-p 'highlight nil)
+#+end_src
+** Theme
+#+begin_src emacs-lisp
+  (require 'sublime-themes)
+  (load-theme 'dorsey t)
+#+end_src
+* Extensions
+** Company Mode
+#+begin_src emacs-lisp
+  (company-mode)
+  (add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+** Emacs Server
+*** Start Server
+#+begin_src emacs-lisp
+  (server-start)
+#+end_src
+*** Keyboard Setup
+#+begin_src emacs-lisp
+(evil-leader/set-key "n" 'server-edit)
+#+end_src
+
+** Flymake
+#+begin_src emacs-lisp
+(require 'flymake)
+#+end_src
+
+** YASnippet
+#+begin_src emacs-lisp
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '("/home/aleks/.emacs.d/snippets"))
+(yas-global-mode 1)
+(setq-default yas-prompt-functions '(yas-ido-prompt yas-dropdown-prompt))
+#+end_src
+** Magit
+*** Require
+#+begin_src emacs-lisp
+(require 'magit)
+#+end_src
+*** Keyboard Setup
+#+begin_src emacs-lisp
+(evil-leader/set-key "gs" 'magit-status)
+#+end_src
+** Git-gutter
+#+begin_src emacs-lisp
+(global-git-gutter-mode t)
+#+end_src
+** Org
+*** Babel
+#+begin_src emacs-lisp
+  (evil-define-key 'normal org-src-mode-map (kbd "<RET>") 'org-edit-src-exit)
+  (evil-define-key 'normal org-src-mode-map (kbd "<backspace>") 'org-edit-src-abort)
+  ; We need to give Evil a nudge to actually be in the normal-state map so RET and
+  ; backspace work immediately
+  (add-hook 'org-src-mode-hook (lambda () (evil-normal-state)))
+#+end_src
+* Languages
+** Haskell
+*** Setup
+#+begin_src emacs-lisp
+  (autoload 'ghc-init "ghc" nil t)
+  (autoload 'ghc-debug "ghc" nil t)
+  (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+  (setq haskell-process-type (quote cabal-repl))
+#+end_src
+*** Hook
+**** Initialization
+#+begin_src emacs-lisp
+  (defun haskell-hook-initialization ()
+    (progn
+      (add-to-list 'exec-path "~/.cabal/bin/")
+      (setenv "PATH" (concat "~/.cabal/bin:" (getenv "PATH")))
+      (add-to-list 'company-backends 'company-ghc)
+      (turn-on-haskell-doc-mode)
+      (turn-on-haskell-indentation)
+      (setq company-ghc-show-info t
+            company-ghc-autoscan t)
+      (setq ghc-hlint-options '("--ignore=Use camelCase"))))
+#+end_src
+**** Keyboard Setup
+#+begin_src emacs-lisp
+  (defun haskell-hook-keyboard-setup ()
+    (progn
+      (define-key haskell-mode-map [f5] 'haskell-process-load-file)
+      (evil-leader/set-key "ht" 'ghc-show-type)
+      (evil-leader/set-key "hi" 'ghc-show-info)
+      (evil-leader/set-key "hn" 'hask-goto-next-error)
+      (evil-leader/set-key "hh" 'haskell-hoogle)))
+#+end_src
+**** Execute Hook
+#+begin_src emacs-lisp
+  (add-hook 'haskell-mode-hook 'haskell-hook-keyboard-setup)
+  (add-hook 'haskell-mode-hook 'haskell-hook-initialization)
+#+end_src
+** TeX, LaTeX
+*** Set PDF viewer
+    #+begin_src emacs-lisp
+      (setq TeX-view-program-list '(("zathura" "zathura %o")))
+      (setq TeX-view-program-selection '((output-pdf "zathura")))
+    #+end_src
+*** Hook
+#+begin_src emacs-lisp
+; Language: TeX, LaTeX
+(defun latex-hook ()
+  (reftex-mode)
+  (turn-on-auto-fill)
+  (TeX-PDF-mode)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (evil-leader/set-key "c" 'reftex-citation))
+
+(add-hook 'LaTeX-mode-hook 'latex-hook)
+#+end_src
+*** Fix blank window problem
+    This is a nasty hack around the blank window problem with TeX-next-error. I
+    have no idea how it works.
+#+begin_src emacs-lisp
+(defadvice TeX-parse-reset (after make-master-file-default () activate)
+  (push (concat (substring (buffer-name) 1 (- (length (buffer-name)) 8)) "." TeX-default-extension) TeX-error-file)
+  (push nil TeX-error-offset))
+#+end_src
+** Pandoc
+#+begin_src emacs-lisp
+(require 'pandoc-mode)
+(require 'markdown-mode)
+
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+(add-hook 'markdown-mode-hook 'turn-on-pandoc)
+(add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+#+end_src
+** R
+#+begin_src emacs-lisp
+  (require 'ess-site)
+  (add-hook 'inferior-ess-mode-hook
+            '(lambda nil
+               (define-key inferior-ess-mode-map (kbd "C-p")
+                 'comint-previous-matching-input-from-input)
+               (define-key inferior-ess-mode-map (kbd "C-n")
+                 'comint-next-matching-input-from-input)))
+  (setq ess-swv-pdflatex-commands (quote ("pdflatex"))
+        ess-swv-processor (quote knitr)
+        ess-pdf-viewer-pref "zathura")
+#+end_src
+

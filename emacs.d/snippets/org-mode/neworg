@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: neworg
+# key: neworg
+# binding: direct-keybinding
+# --
+#+LINK: note rtcite:~/doc/lib/bib/notes.org::#%s
+#+LINK: bib rtcite:~/doc/lib/bib/main.bib::%s
+#+TODO: TODO(t) NEXT(n) WAITING(w) SOMEDAY(s) DELEGATED(d) PROJ(p) | DONE(d) FORWARDED(f) CANCELLED(c)
+
+#+title: ${1:title}
+#+author: Aleksandar Dimitrov
+
+# \bibliography{/home/aleks/doc/lib/bib/main}
+
+* $0

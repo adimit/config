@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: tex-environment
+# key: begin
+# --
+\begin{${1:itemize}}
+  $0
+\end{$1}
