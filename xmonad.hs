@@ -87,7 +87,7 @@ myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "/home/aleks/local/st/bin/st"
+myTerminal = "/usr/bin/urxvt"
 
 newTmuxIn :: (MonadIO m) => String -> m ()
 newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
@@ -222,6 +222,6 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 
 main :: IO ()
 main = do
-    --dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    -- dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
     xmonad . withNavigation2DConfig defaultNavigation2DConfig $
         myConfig { logHook = ewmhDesktopsLogHook }
