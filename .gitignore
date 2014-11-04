@@ -2,3 +2,4 @@
 .*.swp
 .*.swo
 ls-R
+emacs.d/session*
