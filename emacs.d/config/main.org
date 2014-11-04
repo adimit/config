@@ -1,22 +1,24 @@
 * Notes
-  Initialization file ~/.emacs.d/init.el required to make this work. The
-  following MELPA packages are also required:
-  - auctex
-  - company
-  - company-ghc
-  - ess
-  - evil
-  - evil-leader
-  - evil-surround
-  - ghc (ghc-mod)
-  - git-gutter
-  - haskell-mode
-  - magit
-  - markdown-mode
-  - pandoc
-  - sublime-themes
-  - yasnippet
-  Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
+** Requirements
+   Initialization file ~/.emacs.d/init.el required to make this work. The
+   following MELPA packages are also required:
+    - auctex
+    - company
+    - company-ghc
+    - ess
+    - evil
+    - evil-leader
+    - evil-surround
+    - ghc (ghc-mod)
+    - git-gutter
+    - haskell-mode
+    - magit
+    - markdown-mode
+    - pandoc
+    - paredit
+    - sublime-themes
+    - yasnippet
+   Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
 * Interface
 ** Basic Interface Functions
 *** Get Hostname
