@@ -324,3 +324,14 @@
         ess-pdf-viewer-pref "zathura")
 #+end_src
 
+** Elisp
+*** Keyboard Setup
+#+begin_src emacs-lisp
+  (defun elisp-mode-evil-keys ())
+#+end_src
+*** Hooks
+#+begin_src emacs-lisp
+  (autoload 'enable-paredit-mode "paredit" "Documentation is for pussies." t)
+  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+  (add-hook 'emacs-lisp-mode-hook 'elisp-mode-evil-keys)
+#+end_src
