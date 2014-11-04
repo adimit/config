@@ -7,8 +7,10 @@
     - company-ghc
     - ess
     - evil
+    - evil-exchange
     - evil-leader
     - evil-surround
+    - evil-visualstar
     - ghc (ghc-mod)
     - git-gutter
     - haskell-mode
@@ -84,9 +86,12 @@
   (require 'evil)
   (require 'evil-leader)
   (require 'evil-surround)
+  (require 'evil-exchange)
+  (require 'evil-visualstar)
   (evil-mode 1)
   (global-evil-leader-mode)
   (global-evil-surround-mode 1)
+  (evil-exchange-install)
 #+end_src
 
 ** Cursor
