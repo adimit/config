@@ -66,11 +66,6 @@
 #+begin_src emacs-lisp
   (setq browse-url-browser-function 'open-url-in-running-firefox)
 #+end_src
-** Cursor
-#+begin_src emacs-lisp
-  (blink-cursor-mode 0)
-#+end_src
-
 ** Ido
 #+begin_src emacs-lisp
   (ido-mode t)
@@ -92,6 +87,16 @@
   (evil-mode 1)
   (global-evil-leader-mode)
   (global-evil-surround-mode 1)
+#+end_src
+
+** Cursor
+#+begin_src emacs-lisp
+  (blink-cursor-mode 0)
+  (setq evil-emacs-state-cursor '("red" box))
+  (setq evil-normal-state-cursor '("white" box))
+  (setq evil-insert-state-cursor '("white" bar))
+  (setq evil-visual-state-cursor '("#A0F1E0" box))
+  (setq evil-operator-state-cursor '("white" hollow))
 #+end_src
 
 ** Global Keyboard Setup
