@@ -240,6 +240,39 @@
   (add-hook 'org-src-mode-hook (lambda () (evil-normal-state)))
 #+end_src
 * Languages
+** Org-Mode
+*** Keyboard setup
+#+begin_src emacs-lisp
+  (defun org-mode-reftex-keybindings-setup ()
+    (evil-leader/set-key "c" 'reftex-citation)
+    (evil-leader/set-key "r" 'org-open-at-point))
+#+end_src
+
+*** Setup hook
+#+begin_src emacs-lisp
+  (defun org-mode-reftex-setup ()
+    (load-library "reftex")
+    (and (buffer-file-name) (file-exists-p (buffer-file-name))
+         (progn ;enable auto-revert-mode to update reftex when bibtex file changes on disk
+           (global-auto-revert-mode t)
+           (reftex-parse-all)
+           (reftex-set-cite-format
+            '((?b . "[[bib:%l][%l-bib]]")
+              (?P . "[[papers:%l][%l-paper]]")
+              (?t . "%t")
+              (?p . "[[papers:%l][%2a (%y)]]")
+              (?h . "*** %2a (%y) \"%t\"\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
+    (org-mode-reftex-keybindings-setup))
+#+end_src
+
+*** Execute hooks
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+  (setq org-link-abbrev-alist
+        '(("bib" . "~/doc/lib/bib/main.bib::%s")
+          ("papers" . "~/doc/lib/%s.pdf")))
+#+end_src
+
 ** Haskell
 *** Setup
 #+begin_src emacs-lisp
