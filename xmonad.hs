@@ -67,18 +67,18 @@ layouts = smartBorders
         . mkToggle(single MIRROR)
         $ emptyBSP ||| tabbed shrinkText myTabbedTheme ||| layoutHintsToCenter resizableTiled
     where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
-          myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
-                                       , decoHeight = 15 }
+          myTabbedTheme = def { fontName = "xft:Dejavu Sans Mono:size=8"
+                              , decoHeight = 15 }
 
 promptConfig :: XPConfig
-promptConfig = defaultXPConfig { position          = Top
-                               , font              = myFont
-                               , bgColor           = myHLBG
-                               , fgColor           = myFG
-                               , fgHLight          = myBG
-                               , bgHLight          = myHL
-                               , promptKeymap      = defaultXPKeymap' wordSep
-                               , promptBorderWidth = 0 }
+promptConfig = def { position          = Top
+                   , font              = myFont
+                   , bgColor           = myHLBG
+                   , fgColor           = myFG
+                   , fgHLight          = myBG
+                   , bgHLight          = myHL
+                   , promptKeymap      = defaultXPKeymap' wordSep
+                   , promptBorderWidth = 0 }
 
 wordSep :: Char -> Bool
 wordSep c = isSpace c || c == '/'
@@ -95,18 +95,11 @@ newTmuxIn :: (MonadIO m) => String -> m ()
 newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
 
 myGSConfig :: HasColorizer a => GSConfig a
-myGSConfig = defaultGSConfig { gs_cellheight  = 25
-                             , gs_cellwidth   = 100
-                             -- , gs_navigate    = M.unions [ reset, fpsKeys ]
-                             , gs_font        = myFont
-                             , gs_cellpadding = 4 }
-    where (a,b) <+> (x,y) = (a+x,b+y)
-          reset   = M.singleton (0,xK_space) (const (0,0))
-          fpsKeys = M.map (<+>) $ M.fromList
-                                [ ((0,xK_e),      (0,1))
-                                , ((0,xK_o),      (-1,0))
-                                , ((0,xK_u),      (1,0))
-                                , ((0,xK_period), (0,-1)) ]
+myGSConfig = def { gs_cellheight  = 25
+                 , gs_cellwidth   = 100
+              -- , gs_navigate    = M.unions [ reset, fpsKeys ]
+                 , gs_font        = myFont
+                 , gs_cellpadding = 4 }
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig { modMask = mask } = M.fromList $
@@ -209,7 +202,7 @@ hilight  = "#afd700"
 offlight = "#ffaf00"
 black    = "#101010"
 
-myDzenPP_ h = defaultPP
+myDzenPP_ h = def
     { ppCurrent = wrap (fg hilight ++ icon "tableft" ++ fg black ++ bg hilight)
                        (bg' ++ fg hilight ++ icon "tabright" ++ fg')
     , ppVisible = wrap (fg offlight ++ icon "tableft"++ fg black ++ bg offlight)
@@ -238,5 +231,5 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 main :: IO ()
 main = do
     -- dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
-    xmonad . withNavigation2DConfig defaultNavigation2DConfig $
+    xmonad . withNavigation2DConfig def $
         myConfig { logHook = ewmhDesktopsLogHook }
