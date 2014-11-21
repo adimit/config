@@ -32,7 +32,7 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
-import Data.List (isInfixOf)
+import Data.List (isInfixOf,isPrefixOf)
 import Data.Maybe (mapMaybe)
 import Data.Char (isSpace)
 import qualified Data.Map as M
@@ -49,6 +49,8 @@ import System.Locale
 import Data.Time.Format
 import Data.Time.LocalTime
 
+import XMonad.Layout.BinarySpacePartition
+
 statusUpdate :: Handle -> TimeZone -> IO ()
 statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
@@ -63,7 +65,7 @@ layouts = smartBorders
         . desktopLayoutModifiers
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
-        $ layoutHintsToCenter resizableTiled ||| tabbed shrinkText myTabbedTheme
+        $ emptyBSP ||| tabbed shrinkText myTabbedTheme ||| layoutHintsToCenter resizableTiled
     where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
           myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
                                        , decoHeight = 15 }
@@ -113,8 +115,6 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask,                 xK_Return   ), spawn myTerminal)
             , ((mask .|. controlMask, xK_Return   ), newTmuxIn "$HOME")
             , ((mask,                 xK_BackSpace), shellPromptHere promptConfig)
-            , ((mask,                 xK_r        ), sendMessage Shrink)
-            , ((mask,                 xK_l        ), sendMessage Expand)
             , ((mask,                 xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
@@ -132,18 +132,33 @@ myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask              , xK_h        ), windowGo L True)
             , ((mask              , xK_s        ), windowGo R True)
             , ((mask              , xK_n        ), windowGo U True)
-            , ((mask              , xK_t        ), windowGo D True)
-              -- Resize
-            , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
-            , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
-            , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
-            , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
-              -- MPD control
-            , ((mask,               xK_F11      ), spawn "mpc toggle")
+            , ((mask              , xK_t        ), windowGo D True) ]
+            -- ++ -- Resize
+            -- , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
+            -- , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
+            -- , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
+            -- , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
+            ++ -- Resize with BinarySpacePartition
+            [ ((mask .|. shiftMask, xK_s        ), ExpandTowards R `bsplitOr` Expand)
+            , ((mask .|. shiftMask, xK_h        ), ExpandTowards L `bsplitOr` Shrink)
+            , ((mask .|. shiftMask, xK_n        ), ExpandTowards U `bsplitOr` MirrorShrink)
+            , ((mask .|. shiftMask, xK_t        ), ExpandTowards D `bsplitOr` MirrorExpand)
+            , ((mask .|. shiftMask, xK_r        ), sendMessage $ Swap)
+            , ((mask              , xK_r        ), sendMessage $ Rotate)]
+            ++ -- MPD control
+            [ ((mask,               xK_F11      ), spawn "mpc toggle")
             , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
             , ((mask,               xK_F10      ), spawn "mpc prev")
-            , ((mask,               xK_F12      ), spawn "mpc next")
-            ]
+            , ((mask,               xK_F12      ), spawn "mpc next")]
+
+bsplitOr :: (Message a, Message b) => a -> b -> X ()
+bsplitOr m1 m2 = do
+  currentLayout <- liftM (description . getCurrentLayout)  get
+  if "BSP" `isPrefixOf` currentLayout
+     then sendMessage m1 else sendMessage m2
+
+getCurrentLayout :: XState -> Layout Window
+getCurrentLayout = W.layout . W.workspace . W.current . windowset
 
 myWS :: [String]
 myWS = map show [1..9]
