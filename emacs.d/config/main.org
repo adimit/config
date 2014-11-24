@@ -329,6 +329,11 @@
 
 (add-hook 'LaTeX-mode-hook 'latex-hook)
 #+end_src
+*** Set default bibliogarphy
+#+begin_src emacs-lisp
+  (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
+#+end_src
+
 *** Fix blank window problem
     This is a nasty hack around the blank window problem with TeX-next-error. I
     have no idea how it works.
