@@ -88,8 +88,8 @@
   (require 'evil-surround)
   (require 'evil-exchange)
   (require 'evil-visualstar)
-  (evil-mode 1)
   (global-evil-leader-mode)
+  (evil-mode 1)
   (global-evil-surround-mode 1)
   (evil-exchange-install)
 #+end_src
