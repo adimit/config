@@ -32,7 +32,7 @@ import XMonad.Hooks.SetWMName
 
 import System.Info (os)
 
-import Data.List (isInfixOf)
+import Data.List (isInfixOf,isPrefixOf)
 import Data.Maybe (mapMaybe)
 import Data.Char (isSpace)
 import qualified Data.Map as M
@@ -49,6 +49,8 @@ import System.Locale
 import Data.Time.Format
 import Data.Time.LocalTime
 
+import XMonad.Layout.BinarySpacePartition
+
 statusUpdate :: Handle -> TimeZone -> IO ()
 statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
@@ -63,20 +65,20 @@ layouts = smartBorders
         . desktopLayoutModifiers
         . mkToggle(NOBORDERS ?? FULL ?? EOT)
         . mkToggle(single MIRROR)
-        $ layoutHintsToCenter resizableTiled ||| tabbed shrinkText myTabbedTheme
+        $ emptyBSP ||| tabbed shrinkText myTabbedTheme ||| layoutHintsToCenter resizableTiled
     where resizableTiled = smartSpacing 5 $ ResizableTall 1 (3/100) (1/2) []
-          myTabbedTheme = defaultTheme { fontName = "xft:Dejavu Sans Mono:size=8"
-                                       , decoHeight = 15 }
+          myTabbedTheme = def { fontName = "xft:Dejavu Sans Mono:size=8"
+                              , decoHeight = 15 }
 
 promptConfig :: XPConfig
-promptConfig = defaultXPConfig { position          = Top
-                               , font              = myFont
-                               , bgColor           = myHLBG
-                               , fgColor           = myFG
-                               , fgHLight          = myBG
-                               , bgHLight          = myHL
-                               , promptKeymap      = defaultXPKeymap' wordSep
-                               , promptBorderWidth = 0 }
+promptConfig = def { position          = Top
+                   , font              = myFont
+                   , bgColor           = myHLBG
+                   , fgColor           = myFG
+                   , fgHLight          = myBG
+                   , bgHLight          = myHL
+                   , promptKeymap      = defaultXPKeymap' wordSep
+                   , promptBorderWidth = 0 }
 
 wordSep :: Char -> Bool
 wordSep c = isSpace c || c == '/'
@@ -87,24 +89,17 @@ myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "/home/aleks/local/st/bin/st"
+myTerminal = "/usr/bin/urxvt"
 
 newTmuxIn :: (MonadIO m) => String -> m ()
 newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
 
 myGSConfig :: HasColorizer a => GSConfig a
-myGSConfig = defaultGSConfig { gs_cellheight  = 25
-                             , gs_cellwidth   = 100
-                             -- , gs_navigate    = M.unions [ reset, fpsKeys ]
-                             , gs_font        = myFont
-                             , gs_cellpadding = 4 }
-    where (a,b) <+> (x,y) = (a+x,b+y)
-          reset   = M.singleton (0,xK_space) (const (0,0))
-          fpsKeys = M.map (<+>) $ M.fromList
-                                [ ((0,xK_e),      (0,1))
-                                , ((0,xK_o),      (-1,0))
-                                , ((0,xK_u),      (1,0))
-                                , ((0,xK_period), (0,-1)) ]
+myGSConfig = def { gs_cellheight  = 25
+                 , gs_cellwidth   = 100
+              -- , gs_navigate    = M.unions [ reset, fpsKeys ]
+                 , gs_font        = myFont
+                 , gs_cellpadding = 4 }
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig { modMask = mask } = M.fromList $
@@ -113,8 +108,6 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask,                 xK_Return   ), spawn myTerminal)
             , ((mask .|. controlMask, xK_Return   ), newTmuxIn "$HOME")
             , ((mask,                 xK_BackSpace), shellPromptHere promptConfig)
-            , ((mask,                 xK_r        ), sendMessage Shrink)
-            , ((mask,                 xK_l        ), sendMessage Expand)
             , ((mask,                 xK_grave    ), toggleWS) ]
             ++ -- GridSelect
             [ ((mask              , xK_g        ), goToSelected myGSConfig) ]
@@ -132,18 +125,33 @@ myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask              , xK_h        ), windowGo L True)
             , ((mask              , xK_s        ), windowGo R True)
             , ((mask              , xK_n        ), windowGo U True)
-            , ((mask              , xK_t        ), windowGo D True)
-              -- Resize
-            , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
-            , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
-            , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
-            , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
-              -- MPD control
-            , ((mask,               xK_F11      ), spawn "mpc toggle")
+            , ((mask              , xK_t        ), windowGo D True) ]
+            -- ++ -- Resize
+            -- , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
+            -- , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
+            -- , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
+            -- , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
+            ++ -- Resize with BinarySpacePartition
+            [ ((mask .|. shiftMask, xK_s        ), ExpandTowards R `bsplitOr` Expand)
+            , ((mask .|. shiftMask, xK_h        ), ExpandTowards L `bsplitOr` Shrink)
+            , ((mask .|. shiftMask, xK_n        ), ExpandTowards U `bsplitOr` MirrorShrink)
+            , ((mask .|. shiftMask, xK_t        ), ExpandTowards D `bsplitOr` MirrorExpand)
+            , ((mask .|. shiftMask, xK_r        ), sendMessage $ Swap)
+            , ((mask              , xK_r        ), sendMessage $ Rotate)]
+            ++ -- MPD control
+            [ ((mask,               xK_F11      ), spawn "mpc toggle")
             , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
             , ((mask,               xK_F10      ), spawn "mpc prev")
-            , ((mask,               xK_F12      ), spawn "mpc next")
-            ]
+            , ((mask,               xK_F12      ), spawn "mpc next")]
+
+bsplitOr :: (Message a, Message b) => a -> b -> X ()
+bsplitOr m1 m2 = do
+  currentLayout <- liftM (description . getCurrentLayout)  get
+  if "BSP" `isPrefixOf` currentLayout
+     then sendMessage m1 else sendMessage m2
+
+getCurrentLayout :: XState -> Layout Window
+getCurrentLayout = W.layout . W.workspace . W.current . windowset
 
 myWS :: [String]
 myWS = map show [1..9]
@@ -161,7 +169,7 @@ myConfig = xfceConfig { terminal   = myTerminal
                        , normalBorderColor  = myBG
                        , focusedBorderColor = myHL
                        , borderWidth = 2
-                       , startupHook = ewmhDesktopsStartup }
+                       , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" }
 
 myStatusBar d w x = unwords
     [ "/home/aleks/local/dzen/bin/dzen2"
@@ -176,7 +184,7 @@ myStatusBar d w x = unwords
     , "-dock"
     ]
 
-{- Powerline font escape codes: 
+{- Powerline font escape codes:
  - solid left \11138
  - solid right \11136
  - hollow left \11139
@@ -194,7 +202,7 @@ hilight  = "#afd700"
 offlight = "#ffaf00"
 black    = "#101010"
 
-myDzenPP_ h = defaultPP
+myDzenPP_ h = def
     { ppCurrent = wrap (fg hilight ++ icon "tableft" ++ fg black ++ bg hilight)
                        (bg' ++ fg hilight ++ icon "tabright" ++ fg')
     , ppVisible = wrap (fg offlight ++ icon "tableft"++ fg black ++ bg offlight)
@@ -222,6 +230,6 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 
 main :: IO ()
 main = do
-    --dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
-    xmonad . withNavigation2DConfig defaultNavigation2DConfig $
+    -- dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
+    xmonad . withNavigation2DConfig def $
         myConfig { logHook = ewmhDesktopsLogHook }

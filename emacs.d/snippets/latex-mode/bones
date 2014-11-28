@@ -1,0 +1,53 @@
+# -*- mode: snippet -*-
+# name: TeX-Skeleton
+# key: bones
+# --
+\documentclass{article}
+
+\usepackage{acronym}
+\usepackage{amsmath,amsthm}
+\usepackage[round]{natbib}
+\usepackage{aleks}
+\usepackage{graphicx}
+\usepackage[english=british,german=quotes]{csquotes}
+\MakeAutoQuote{«}{»}
+
+% % pdflatex
+% \usepackage[utf8]{inputenc}
+% \usepackage[english]{babel}
+% \usepackage{fourier}
+% \usepackage{mathpazo}
+% % end pdflatex
+
+% xelatex
+\usepackage{fontspec}
+\usepackage{microtype}
+\usepackage[babelshorthands]{polyglossia}
+\setdefaultlanguage{english}
+%\setotherlanguages{bulgarian,german}
+\defaultfontfeatures{RawFeature={+calt,%+clig,
++tlig,+ccmp,+cv06}}
+\setmainfont{EB Garamond}
+% end xelatex
+
+\usepackage[breaklinks,colorlinks,citecolor=blue]{hyperref}
+\usepackage{color}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+
+\author{Aleksandar Dimitrov}
+
+\begin{document}
+\bibliographystyle{plainnat}
+
+$0
+
+\bibliography{/home/aleks/doc/lib/bib/main}
+\end{document}
+
+%%% Local Variables: 
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-engine: xetex
+%%% End: 
