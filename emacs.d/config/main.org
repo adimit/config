@@ -146,6 +146,11 @@
  ; don't ask before following symlinks
  vc-follow-symlinks t)
 #+end_src
+** Gutter-Indicators
+  #+begin_src emacs-lisp
+    (setq-default indicate-buffer-boundaries 'left)
+  #+end_src
+
 ** Hide UI Elements
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
