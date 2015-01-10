@@ -6,28 +6,34 @@
 
 set -o vi
 
-# Standard pathfinding; put it in zshrc.local, if needed
-#  localpath=$HOME/local
-#  if [ -d $localpath ]; then
-#  	for i in $(ls -1 $localpath); do
-#  		basepath=$localpath/$i
-#  		if [ -d $basepath/bin ]; then
-#  			PATH=$basepath/bin:$PATH
-#  		fi
-#  		if [ -d $basepath/share/man ]; then
-#  			MANPATH=$basepath/share/man:$MANPATH
-#  		fi
-#  	done
-#  fi
-#  
-#  cabalpath=${HOME}/.cabal/bin
-#  if [ -d $cabalpath ]; then
-#  	export PATH=$cabalpath:$PATH
-#  fi
-#  
-#  if [ -d $HOME/bin ]; then
-#  	export PATH=$HOME/bin:$PATH
-#  fi
+# Path finding for /opt-like installations
+function ScanDirs {
+	localpath=$1
+	if [ -d $localpath ]; then
+		for i in $(ls -1 $localpath); do
+			basepath=$localpath/$i
+			if [ -d $basepath/bin ]; then
+				path+=$basepath/bin
+			fi
+			if [ -d $basepath/share/man ]; then
+				manpath+=$basepath/share/man
+			fi
+		done
+	fi
+}
+
+function addToPath {
+	if [ -d $1 ]; then
+		path+=$1
+	fi
+}
+
+ScanDirs $HOME/local
+ScanDirs /opt
+
+addToPath $HOME/bin
+addToPath $HOME/.cabal/bin
+addToPath $HOME/.gems/bin
 
 ### Environment
 
@@ -80,6 +86,7 @@ alias o='fork mimeopen'
 alias mo='mimeopen'
 alias no='ls'
 alias on='sl'
+alias node=nodejs
 
 alias rm='rm -iv'
 alias mv='mv -i'
