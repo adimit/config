@@ -33,3 +33,5 @@
 	smtpserver = smtp.gmail.com
 	smtpuser = aleks.dimitrov@gmail.com
 	smtpserverport = 587
+[core]
+	excludesfile = /home/aleks/.gitignore

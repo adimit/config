@@ -1,0 +1,13 @@
+.idea
+.*.swo
+.*.swp
+*~
+*.log
+*.hi
+*.o
+*.zip
+*.tar
+*.jar
+*.sqlite
+*.sql
+\#*\#
