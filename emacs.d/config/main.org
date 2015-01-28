@@ -316,6 +316,11 @@
   (add-hook 'haskell-mode-hook 'haskell-hook-initialization)
 #+end_src
 ** TeX, LaTeX
+*** Settings
+#+begin_src emacs-lisp
+  (setq TeX-parse-self t ; enable parse on load
+        TeX-auto-save t) ; enable parse on save
+#+end_src
 *** Set PDF viewer
     #+begin_src emacs-lisp
       (setq TeX-view-program-list '(("zathura" "zathura %o")))
@@ -323,16 +328,18 @@
     #+end_src
 *** Hook
 #+begin_src emacs-lisp
-; Language: TeX, LaTeX
-(defun latex-hook ()
-  (reftex-mode)
-  (turn-on-auto-fill)
-  (TeX-PDF-mode)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (evil-leader/set-key "c" 'reftex-citation))
-
-(add-hook 'LaTeX-mode-hook 'latex-hook)
+  ; Language: TeX, LaTeX
+  (defun latex-hook ()
+    (reftex-mode)
+    (turn-on-auto-fill)
+    (TeX-PDF-mode)
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (evil-leader/set-key "c" 'reftex-citation)
+    (flyspell-mode 1)
+    (LaTeX-math-mode)
+    (TeX-fold-mode 1))
+  (add-hook 'LaTeX-mode-hook 'latex-hook)
 #+end_src
 *** Set default bibliogarphy
 #+begin_src emacs-lisp
@@ -347,6 +354,20 @@
   (push (concat (substring (buffer-name) 1 (- (length (buffer-name)) 8)) "." TeX-default-extension) TeX-error-file)
   (push nil TeX-error-offset))
 #+end_src
+*** Set csquotes
+#+begin_src emacs-lisp
+  (setq LaTeX-csquotes-open-quote "\\enquote{"
+        LaTeX-csquotes-close-quote "}")
+#+end_src
+
+*** Language hooks
+#+begin_src emacs-lisp
+  (add-hook 'TeX-language-de-hook
+            (lambda () (ispell-change-dictionary "german")))
+  (add-hook 'TeX-language-en-hook
+            (lambda () (ispell-change-dictionary "english")))
+#+end_src
+
 ** Pandoc
 #+begin_src emacs-lisp
 (require 'pandoc-mode)
