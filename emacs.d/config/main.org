@@ -62,7 +62,7 @@
            (args (concat "openURL(" url arg1 ")"))
            (tab-or-window (if new-window "window" "tab")))
       (message (concat "Opening '" url "' in new firefox " tab-or-window "."))
-      (start-process "firefox" nil "mozilla-xremote-client" args)))
+      (start-process "firefox" nil "/usr/lib/iceweasel/mozilla-xremote-client" args)))
 #+end_src
 ** Browsing
 #+begin_src emacs-lisp
