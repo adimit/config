@@ -126,16 +126,11 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask              , xK_s        ), windowGo R True)
             , ((mask              , xK_n        ), windowGo U True)
             , ((mask              , xK_t        ), windowGo D True) ]
-            -- ++ -- Resize
-            -- , ((mask .|. shiftMask, xK_h        ), sendMessage Shrink)
-            -- , ((mask .|. shiftMask, xK_s        ), sendMessage Expand)
-            -- , ((mask .|. shiftMask, xK_n        ), sendMessage MirrorExpand)
-            -- , ((mask .|. shiftMask, xK_t        ), sendMessage MirrorShrink)
             ++ -- Resize with BinarySpacePartition
-            [ ((mask .|. shiftMask, xK_s        ), ExpandTowards R `bsplitOr` Expand)
-            , ((mask .|. shiftMask, xK_h        ), ExpandTowards L `bsplitOr` Shrink)
-            , ((mask .|. shiftMask, xK_n        ), ExpandTowards U `bsplitOr` MirrorShrink)
-            , ((mask .|. shiftMask, xK_t        ), ExpandTowards D `bsplitOr` MirrorExpand)
+            [ ((mask .|. shiftMask, xK_s        ), MoveSplit R `bsplitOr` Expand)
+            , ((mask .|. shiftMask, xK_h        ), MoveSplit L `bsplitOr` Shrink)
+            , ((mask .|. shiftMask, xK_n        ), MoveSplit U `bsplitOr` MirrorShrink)
+            , ((mask .|. shiftMask, xK_t        ), MoveSplit D `bsplitOr` MirrorExpand)
             , ((mask .|. shiftMask, xK_r        ), sendMessage $ Swap)
             , ((mask              , xK_r        ), sendMessage $ Rotate)]
             ++ -- MPD control
@@ -144,6 +139,8 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask,               xK_F10      ), spawn "mpc prev")
             , ((mask,               xK_F12      ), spawn "mpc next")]
 
+-- If we're currently in the BinarySpacePartition layout, send the left message,
+-- else send the right message.
 bsplitOr :: (Message a, Message b) => a -> b -> X ()
 bsplitOr m1 m2 = do
   currentLayout <- liftM (description . getCurrentLayout)  get
