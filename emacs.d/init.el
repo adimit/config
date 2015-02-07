@@ -9,10 +9,10 @@
 (package-initialize)
 
 (setq dotfiles-dir (file-name-directory
-		    (or (buffer-file-name) load-file-name)))
+                    (or (buffer-file-name) load-file-name)))
 (add-to-list 'load-path (expand-file-name
-			 "lisp" (expand-file-name
-				 "org-mode" dotfiles-dir)))
+                         "lisp" (expand-file-name
+                                 "org-mode" dotfiles-dir)))
 
 (require 'org)
 (org-babel-load-file (expand-file-name "config/main.org" dotfiles-dir))
