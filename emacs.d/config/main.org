@@ -363,6 +363,7 @@
     (LaTeX-math-mode)
     (TeX-fold-mode 1))
   (add-hook 'LaTeX-mode-hook 'latex-hook)
+  (add-hook 'LaTeX-mode-hook 'latex-keyboard-hook)
 #+end_src
 *** Set default bibliogarphy
 #+begin_src emacs-lisp
@@ -386,7 +387,7 @@
 *** Language hooks
 #+begin_src emacs-lisp
   (add-hook 'TeX-language-de-hook
-            (lambda () (ispell-change-dictionary "german")))
+            (lambda () (ispell-change-dictionary "de")))
   (add-hook 'TeX-language-en-hook
             (lambda () (ispell-change-dictionary "english")))
 #+end_src
