@@ -4,17 +4,17 @@ urxvt.font: xft:DejaVu Sans Mono:pixelsize=14:autohint=true:antialias=true
 urxvt.perl-lib: /usr/lib/urxvt/perl
 urxvt.perl-ext.common: default
 urxvt.perl-ext: font-size,matcher
-urxvt.urlLauncher: /home/aleks/local/firefox/bin/firefox
+urxvt.urlLauncher: /usr/bin/firefox
 urxvt.matcher.button: 1
 urxvt.keysym.Control-Up: perl:font-size:increase
 urxvt.keysym.Control-Down: perl:font-size:decrease
 
-! urxvt.depth: 32
+urxvt.depth: 32
 urxvt.foreground: #ffffff
-! urxvt.background: rgba:1000/1000/1000/DDDD
+urxvt.background: rgba:1000/1000/1000/DDDD
 
-urxvt.transparent: true
-urxvt.shading: 20
+! urxvt.transparent: true
+! urxvt.shading: 20
 
 ! Without this, urxvt kerns badly (too much space)
 URxvt*letterSpace:                    -1
