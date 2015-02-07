@@ -88,12 +88,11 @@
   (require 'evil-surround)
   (require 'evil-exchange)
   (require 'evil-visualstar)
-  (global-evil-leader-mode)
+  (global-evil-leader-mode 1)
   (evil-mode 1)
   (global-evil-surround-mode 1)
   (evil-exchange-install)
 #+end_src
-
 ** Cursor
 #+begin_src emacs-lisp
   (blink-cursor-mode 0)
@@ -126,9 +125,12 @@
 
 *** Reload init.el/main.org with F12
 #+begin_src emacs-lisp
-  (global-set-key [f12]
-   '(lambda () (interactive) (org-babel-load-file
-     (expand-file-name "config/main.org" dotfiles-dir))))
+  (evil-leader/set-key "zz"
+    '(lambda () (interactive)
+       (progn
+         (org-babel-load-file (expand-file-name "config/main.org" dotfiles-dir))
+         ; for some reason, reloading always disables evil-leader-mode (locally)
+         (evil-leader-mode 1))))
 #+end_src
 *** Save with RET in Normal Mode
 #+begin_src emacs-lisp
@@ -196,6 +198,18 @@
   ; Alternatives:
   ; (color-theme-sanityinc-tomorrow-eighties)
   ; (load-theme 'ample t)
+#+end_src
+** Hexl-mode
+*** Keyboard setup
+#+begin_src emacs-lisp
+  (evil-leader/set-key "x" 'hexl-mode)
+#+end_src
+** Reload init.el/main.org with F12
+#+begin_src emacs-lisp
+  (global-set-key [f12]
+                  '(lambda () (interactive)
+                     (org-babel-load-file
+                      (expand-file-name "config/main.org" dotfiles-dir))))
 #+end_src
 * Extensions
 ** Company Mode
