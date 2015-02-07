@@ -66,6 +66,7 @@ else
 	alias ls='ls -GFBC'
 fi
 ### Simple command aliases
+alias anki='fork anki -b $HOME/doc/Anki'
 alias ec='emacsclient'
 alias wee='weechat-curses'
 alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
