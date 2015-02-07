@@ -2,3 +2,5 @@ auto-save-list/
 elpa/
 config/main.el
 .yas-compiled-snippets.el
+lib/
+tramp
