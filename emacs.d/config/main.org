@@ -227,11 +227,6 @@
 (evil-leader/set-key "n" 'server-edit)
 #+end_src
 
-** Flymake
-#+begin_src emacs-lisp
-(require 'flymake)
-#+end_src
-
 ** YASnippet
 #+begin_src emacs-lisp
 (require 'yasnippet)
@@ -297,38 +292,42 @@
 #+end_src
 
 ** Haskell
-*** Setup
-#+begin_src emacs-lisp
-  (autoload 'ghc-init "ghc" nil t)
-  (autoload 'ghc-debug "ghc" nil t)
-  (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-  (setq haskell-process-type (quote cabal-repl))
-#+end_src
-*** Hook
-**** Initialization
+*** Initialization
 #+begin_src emacs-lisp
   (defun haskell-hook-initialization ()
     (progn
+      ; (autoload 'ghc-init "ghc" nil t)
+      ; (autoload 'ghc-debug "ghc" nil t)
+      ; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+      (setq haskell-process-type (quote cabal-repl))
+      (setq haskell-process-args-cabal-repl
+            '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
+      (setq haskell-process-path-ghci "ghci-ng")
       (add-to-list 'exec-path "~/.cabal/bin/")
-      (setenv "PATH" (concat "~/.cabal/bin:" (getenv "PATH")))
+      (add-to-list 'exec-path "~/local/haskell/")
+      (setenv "PATH" (concat "~/.cabal/bin:~/local/haskell" (getenv "PATH")))
       (add-to-list 'company-backends 'company-ghc)
       (turn-on-haskell-doc-mode)
       (turn-on-haskell-indentation)
       (setq company-ghc-show-info t
             company-ghc-autoscan t)
-      (setq ghc-hlint-options '("--ignore=Use camelCase"))))
+      (setq ghc-hlint-options '("--ignore=Use camelCase"))
+      (add-to-list 'load-path "~/.emacs.d/lib/haskell-flycheck/")
+      (require 'haskell-flycheck)
+      (flycheck-mode 1)
+      (add-to-list 'Info-default-directory-list "~/.emacs.d/lib/haskell-flycheck/" )
+      (add-to-list 'post-command-hook #'check-for-current-usage)))
 #+end_src
-**** Keyboard Setup
+*** Keyboard Setup
 #+begin_src emacs-lisp
   (defun haskell-hook-keyboard-setup ()
     (progn
-      (define-key haskell-mode-map [f5] 'haskell-process-load-file)
-      (evil-leader/set-key "ht" 'ghc-show-type)
-      (evil-leader/set-key "hi" 'ghc-show-info)
-      (evil-leader/set-key "hn" 'hask-goto-next-error)
-      (evil-leader/set-key "hh" 'haskell-hoogle)))
+      (evil-define-key 'normal haskell-mode-map (kbd "gd") 'haskell-mode-goto-loc)
+      (evil-define-key 'normal haskell-mode-map (kbd "gt") 'haskell-mode-show-type-at)
+      (evil-leader/set-key-for-mode 'haskell-mode "." 'haskell-mode-find-uses)
+      (define-key haskell-mode-map [f5] 'haskell-process-load-file)))
 #+end_src
-**** Execute Hook
+*** Execute Hook
 #+begin_src emacs-lisp
   (add-hook 'haskell-mode-hook 'haskell-hook-keyboard-setup)
   (add-hook 'haskell-mode-hook 'haskell-hook-initialization)
@@ -344,6 +343,12 @@
       (setq TeX-view-program-list '(("zathura" "zathura %o")))
       (setq TeX-view-program-selection '((output-pdf "zathura")))
     #+end_src
+*** Keyboard Setup
+#+begin_src emacs-lisp
+  (defun latex-keyboard-hook ()
+    (evil-leader/set-key-for-mode 'latex-mode "t" 'reftex-toc))
+#+end_src
+
 *** Hook
 #+begin_src emacs-lisp
   ; Language: TeX, LaTeX
