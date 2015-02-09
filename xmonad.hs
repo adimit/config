@@ -51,6 +51,8 @@ import Data.Time.LocalTime
 
 import XMonad.Layout.BinarySpacePartition
 
+import qualified XMonad.Actions.Drag as Drag
+
 statusUpdate :: Handle -> TimeZone -> IO ()
 statusUpdate h tz = do
     t <- liftM (utcToLocalTime tz) getCurrentTime
@@ -131,13 +133,16 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask .|. shiftMask, xK_h        ), MoveSplit L `bsplitOr` Shrink)
             , ((mask .|. shiftMask, xK_n        ), MoveSplit U `bsplitOr` MirrorShrink)
             , ((mask .|. shiftMask, xK_t        ), MoveSplit D `bsplitOr` MirrorExpand)
-            , ((mask .|. shiftMask, xK_r        ), sendMessage $ Swap)
-            , ((mask              , xK_r        ), sendMessage $ Rotate)]
+            , ((mask .|. shiftMask, xK_r        ), sendMessage Swap)
+            , ((mask              , xK_r        ), sendMessage Rotate) ]
+            ++ -- Drag and Drop
+            [ ((mask              , xK_w        ), Drag.dragOrDrop Drag.Swap)
+            , ((mask .|. shiftMask, xK_w        ), Drag.dragOrDrop Drag.Drop) ]
             ++ -- MPD control
             [ ((mask,               xK_F11      ), spawn "mpc toggle")
             , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
             , ((mask,               xK_F10      ), spawn "mpc prev")
-            , ((mask,               xK_F12      ), spawn "mpc next")]
+            , ((mask,               xK_F12      ), spawn "mpc next") ]
 
 -- If we're currently in the BinarySpacePartition layout, send the left message,
 -- else send the right message.
