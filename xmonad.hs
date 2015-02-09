@@ -158,20 +158,22 @@ getCurrentLayout = W.layout . W.workspace . W.current . windowset
 myWS :: [String]
 myWS = map show [1..9]
 
-myConfig = xfceConfig { terminal   = myTerminal
-                       , layoutHook = layouts
-                       , modMask    = mod4Mask
-                       , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
-                       , workspaces = myWS
-                       , manageHook = composeAll [ manageHook gnomeConfig
-                                                 , manageSpawn
-                                                 , className =? "Conky" --> doIgnore
-                                                 , className =? "Wine" --> doFloat
-                                                 , isFullscreen --> doFullFloat ]
-                       , normalBorderColor  = myBG
-                       , focusedBorderColor = myHL
-                       , borderWidth = 2
-                       , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" }
+myConfig = ewmh $ xfceConfig
+   { terminal   = myTerminal
+   , layoutHook = layouts
+   , modMask    = mod4Mask
+   , keys       = \c -> myKeys c `M.union` keys gnomeConfig c
+   , workspaces = myWS
+   , manageHook = composeAll [ manageHook gnomeConfig
+                             , manageSpawn
+                             , className =? "Conky" --> doIgnore
+                             , className =? "Wine" --> doFloat
+                             , isFullscreen --> doFullFloat ]
+   , normalBorderColor  = myBG
+   , focusedBorderColor = myHL
+   , borderWidth = 2
+   , handleEventHook = fullscreenEventHook
+   , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" }
 
 myStatusBar d w x = unwords
     [ "/home/aleks/local/dzen/bin/dzen2"
@@ -214,8 +216,8 @@ myDzenPP_ h = def
     , ppSep = " "
     , ppWsSep = ""
     , ppTitle = wrap (' ' : fg hilight) (' ' : fg' ++ bg')
-    , ppLayout = \l -> wrap (icon "tableft" ++ fg black ++ bg fontcol)
-                            (bg' ++ fg' ++ icon "tabright") $ iconMap l
+    , ppLayout = wrap (icon "tableft" ++ fg black ++ bg fontcol)
+                      (bg' ++ fg' ++ icon "tabright") . iconMap
     , ppOutput = hPutStrLn h }
 
 iconMap :: String -> String
@@ -231,7 +233,7 @@ iconMap l = case mapMaybe (\(s,i) -> if s l then Just i else Nothing) icons of
 (&*&) = liftA2 (&&)
 
 main :: IO ()
-main = do
+main =
     -- dzenPipe <- spawnPipe $ myStatusBar "l" "1080" "0"
     xmonad . withNavigation2DConfig def $
         myConfig { logHook = ewmhDesktopsLogHook }
