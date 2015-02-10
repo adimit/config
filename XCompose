@@ -1,0 +1,27 @@
+include "%S/en_US.UTF-8/Compose"
+
+<Multi_key> <i> <n> : "∈"
+<Multi_key> <n> <i> : "∉"
+<Multi_key> <s> <q> : "⊑"
+
+<Multi_key> <asterisk> <asterisk> : "•"
+
+<Multi_key> <o> <r> : "∨"
+<Multi_key> <a> <n> : "∧"
+
+<Multi_key> <s> <b> : "⊆"
+<Multi_key> <s> <p> : "⊇"
+
+<Multi_key> <l> <l> : "⟨"
+<Multi_key> <r> <r> : "⟩"
+
+<Multi_key> <colon> <colon> : "∷"
+
+<Multi_key> <w> <asterisk> : "ω"
+<Multi_key> <W> <asterisk> : "Ω"
+<Multi_key> <l> <asterisk> : "λ"
+<Multi_key> <L> <asterisk> : "Λ"
+<Multi_key> <S> <asterisk> : "Σ"
+<Multi_key> <s> <asterisk> : "σ"
+<Multi_key> <a> <asterisk> : "α"
+<Multi_key> <A> <asterisk> : "Α"
