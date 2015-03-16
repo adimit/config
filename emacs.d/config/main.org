@@ -262,8 +262,8 @@
 *** Keyboard setup
 #+begin_src emacs-lisp
   (defun org-mode-reftex-keybindings-setup ()
-    (evil-leader/set-key "c" 'reftex-citation)
-    (evil-leader/set-key "r" 'org-open-at-point))
+    (evil-leader/set-key-for-mode 'org-mode "c" 'reftex-citation)
+    (evil-leader/set-key-for-mode 'org-mode "r" 'org-open-at-point))
 #+end_src
 
 *** Setup hook
@@ -414,7 +414,9 @@
                  'comint-next-matching-input-from-input)))
   (setq ess-swv-pdflatex-commands (quote ("pdflatex"))
         ess-swv-processor (quote knitr)
-        ess-pdf-viewer-pref "zathura")
+        ess-pdf-viewer-pref "true")
+  (evil-leader/set-key-for-mode 'latex-mode "rk" 'ess-swv-knit)
+  (evil-leader/set-key-for-mode 'latex-mode "rc" 'ess-swv-PDF)
 #+end_src
 
 ** Elisp
