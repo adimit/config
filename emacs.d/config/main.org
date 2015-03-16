@@ -428,3 +428,8 @@
   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'elisp-mode-evil-keys)
 #+end_src
+** C
+#+begin_src emacs-lisp
+  (setq c-default-style "linux"
+        c-basic-offest 4)
+#+end_src
