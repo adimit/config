@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # Fancy new zsh!
 #
 # Thu Sep 27 02:00:44 CEST 2007
@@ -67,7 +68,8 @@ else
 fi
 ### Simple command aliases
 alias anki='fork anki -b $HOME/doc/Anki'
-alias ec='emacsclient'
+alias ec='emacsclient -n'
+alias ecc='ec -c'
 alias wee='weechat-curses'
 alias ll='ls -lh' la='ls -A' lsd='ls -d' l='ls'
 alias vi=vim
