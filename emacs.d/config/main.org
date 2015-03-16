@@ -121,9 +121,10 @@
    "ew" 'ido-find-file-other-window
    "b"  'ido-switch-buffer
    "k"  'kill-buffer)
+  (evil-leader/set-key "ec" '(lambda () (interactive) (find-file "~/.emacs.d/config/main.org")))
 #+end_src
 
-*** Reload init.el/main.org with F12
+*** Reload init.el/main.org with <leader>zz
 #+begin_src emacs-lisp
   (evil-leader/set-key "zz"
     '(lambda () (interactive)
@@ -203,13 +204,6 @@
 *** Keyboard setup
 #+begin_src emacs-lisp
   (evil-leader/set-key "x" 'hexl-mode)
-#+end_src
-** Reload init.el/main.org with F12
-#+begin_src emacs-lisp
-  (global-set-key [f12]
-                  '(lambda () (interactive)
-                     (org-babel-load-file
-                      (expand-file-name "config/main.org" dotfiles-dir))))
 #+end_src
 * Extensions
 ** Company Mode
