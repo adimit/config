@@ -3,22 +3,31 @@
    Initialization file ~/.emacs.d/init.el required to make this work. The
    following MELPA packages are also required:
     - auctex
+    - auto-complete
+    - ac-haskell-process
     - ess
     - evil
     - evil-exchange
     - evil-leader
     - evil-surround
     - evil-visualstar
+    - flycheck
     - ghc (ghc-mod)
     - git-gutter+
+    - git-gutter-fringe+
     - haskell-mode
+    - helm
+    - helm-ls-git
+    - helm-projectile
+    - lua-mode
     - magit
     - markdown-mode
-    - pandoc
+    - pandoc-mode
     - paredit
-    - sublime-themes
+    - php-mode
+    - projectile
     - yasnippet
-   Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
+    Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
 * Interface
 ** Basic Interface Functions
 *** Get Hostname
