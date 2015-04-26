@@ -256,6 +256,49 @@
   ; backspace work immediately
   (add-hook 'org-src-mode-hook (lambda () (evil-normal-state)))
 #+end_src
+    Don't prompt before executing code in Org-Babel
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+    Inline images!
+#+begin_src emacs-lisp
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+  (add-hook 'org-mode-hook 'org-display-inline-images)
+#+end_src
+*** LaTeX
+    This uses minted and pygments to set source code written in Babel. The
+    =-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
+    set arbitrary downloaded TeX-documents with it.
+    It also sets our TeX processing engine to XeLaTeX, which is as it should be.
+#+begin_src emacs-lisp
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
+    The default preamble includes stuff that is not very compatible wiht XeLaTeX,
+    so we overwrite the it.
+#+begin_src emacs-lisp
+  (setq org-latex-default-packages-alist
+        '(("" "fontspec" t)
+          ; Default content of this variable
+          ("" "fixltx2e" nil)
+          ("" "graphicx" t)
+          ("" "longtable" nil)
+          ("" "float" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "textcomp" t)
+          ("" "marvosym" t)
+          ("" "wasysym" t)
+          ("" "amssymb" t)
+          ("" "hyperref" nil)
+          "\\tolerance=1000"))
+#+end_src
+
 ** Helm
 #+begin_src emacs-lisp
   (require 'helm-config)
