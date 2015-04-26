@@ -13,8 +13,6 @@
     - evil-visualstar
     - flycheck
     - ghc (ghc-mod)
-    - git-gutter+
-    - git-gutter-fringe+
     - haskell-mode
     - helm
     - helm-ls-git
@@ -156,11 +154,6 @@
  ; don't ask before following symlinks
  vc-follow-symlinks t)
 #+end_src
-** Gutter-Indicators
-  #+begin_src emacs-lisp
-    (setq-default indicate-buffer-boundaries 'left)
-  #+end_src
-
 ** Hide UI Elements
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
@@ -246,14 +239,21 @@
   (setq magit-last-seen-setup-instructions "1.4.0")
 #+end_src
 
-** Git-gutter
-#+begin_src emacs-lisp
-  (require 'git-gutter-fringe+)
-  (git-gutter+-mode)
-  (git-gutter-fr+-minimal)
-#+end_src
 ** Org
 *** Babel
+    Fontify source code in source blocks.
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively t)
+#+end_src
+    Load languages for babel
+#+begin_src emacs-lisp
+  (require 'ob-R)
+  (require 'ob-haskell)
+  (require 'ob-latex)
+  (require 'ob-js)
+  (require 'ob-dot)
+#+end_src
+    Set useful keybindings for editing code blocks.
 #+begin_src emacs-lisp
   (evil-define-key 'normal org-src-mode-map (kbd "<RET>") 'org-edit-src-exit)
   (evil-define-key 'normal org-src-mode-map (kbd "<backspace>") 'org-edit-src-abort)
