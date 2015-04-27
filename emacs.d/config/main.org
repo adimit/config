@@ -3,24 +3,29 @@
    Initialization file ~/.emacs.d/init.el required to make this work. The
    following MELPA packages are also required:
     - auctex
-    - company
-    - company-ghc
+    - auto-complete
+    - ac-haskell-process
     - ess
     - evil
     - evil-exchange
     - evil-leader
     - evil-surround
     - evil-visualstar
+    - flycheck
     - ghc (ghc-mod)
-    - git-gutter
     - haskell-mode
+    - helm
+    - helm-ls-git
+    - helm-projectile
+    - lua-mode
     - magit
     - markdown-mode
-    - pandoc
+    - pandoc-mode
     - paredit
-    - sublime-themes
+    - php-mode
+    - projectile
     - yasnippet
-   Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
+    Emacs 24 or higher required (org-mode and ido-mode is already part of that.)
 * Interface
 ** Basic Interface Functions
 *** Get Hostname
@@ -149,11 +154,6 @@
  ; don't ask before following symlinks
  vc-follow-symlinks t)
 #+end_src
-** Gutter-Indicators
-  #+begin_src emacs-lisp
-    (setq-default indicate-buffer-boundaries 'left)
-  #+end_src
-
 ** Hide UI Elements
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
@@ -193,12 +193,7 @@
 #+end_src
 ** Theme
 #+begin_src emacs-lisp
-  (load-theme 'ample t)
-  ; (require 'color-theme-sanityinc-tomorrow)
-  ; (color-theme-sanityinc-tomorrow-night)
-  ; Alternatives:
-  ; (color-theme-sanityinc-tomorrow-eighties)
-  ; (load-theme 'ample t)
+  (load-theme 'leuven t)
 #+end_src
 ** Hexl-mode
 *** Keyboard setup
@@ -206,11 +201,6 @@
   (evil-leader/set-key "x" 'hexl-mode)
 #+end_src
 * Extensions
-** Company Mode
-#+begin_src emacs-lisp
-  (company-mode)
-  (add-hook 'after-init-hook 'global-company-mode)
-#+end_src
 ** Emacs Server
 *** Start Server
 #+begin_src emacs-lisp
@@ -237,13 +227,28 @@
 *** Keyboard Setup
 #+begin_src emacs-lisp
 (evil-leader/set-key "gs" 'magit-status)
+(evil-leader/set-key "gb" 'magit-blame-mode)
 #+end_src
-** Git-gutter
+*** Don't pester me
 #+begin_src emacs-lisp
-(global-git-gutter-mode t)
+  (setq magit-last-seen-setup-instructions "1.4.0")
 #+end_src
+
 ** Org
 *** Babel
+    Fontify source code in source blocks.
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively t)
+#+end_src
+    Load languages for babel
+#+begin_src emacs-lisp
+  (require 'ob-R)
+  (require 'ob-haskell)
+  (require 'ob-latex)
+  (require 'ob-js)
+  (require 'ob-dot)
+#+end_src
+    Set useful keybindings for editing code blocks.
 #+begin_src emacs-lisp
   (evil-define-key 'normal org-src-mode-map (kbd "<RET>") 'org-edit-src-exit)
   (evil-define-key 'normal org-src-mode-map (kbd "<backspace>") 'org-edit-src-abort)
@@ -251,6 +256,102 @@
   ; backspace work immediately
   (add-hook 'org-src-mode-hook (lambda () (evil-normal-state)))
 #+end_src
+    Don't prompt before executing code in Org-Babel
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+    Inline images!
+#+begin_src emacs-lisp
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+  (add-hook 'org-mode-hook 'org-display-inline-images)
+#+end_src
+*** LaTeX
+    This uses minted and pygments to set source code written in Babel. The
+    =-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
+    set arbitrary downloaded TeX-documents with it.
+    It also sets our TeX processing engine to XeLaTeX, which is as it should be.
+#+begin_src emacs-lisp
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
+    The default preamble includes stuff that is not very compatible wiht XeLaTeX,
+    so we overwrite the it.
+#+begin_src emacs-lisp
+  (setq org-latex-default-packages-alist
+        '(("" "fontspec" t)
+          ; Default content of this variable
+          ("" "fixltx2e" nil)
+          ("" "graphicx" t)
+          ("" "longtable" nil)
+          ("" "float" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "textcomp" t)
+          ("" "marvosym" t)
+          ("" "wasysym" t)
+          ("" "amssymb" t)
+          ("" "hyperref" nil)
+          "\\tolerance=1000"))
+#+end_src
+
+** Helm
+#+begin_src emacs-lisp
+  (require 'helm-config)
+  (helm-mode 1)
+#+end_src
+** Projectile
+#+begin_src emacs-lisp
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm)
+  (helm-projectile-on)
+#+end_src
+*** Keybindings
+    These completely reimplement the helm C-c p style keybinds with evil-leader (<leader>p)
+    See http://tuhdo.github.io/helm-projectile.html
+#+begin_src emacs-lisp
+  ; Helm interface to projectile
+  (evil-leader/set-key "ph" 'helm-projectile)
+  ; Switches to another projectile project
+  (evil-leader/set-key "pp" 'helm-projectile-switch-project)
+  ; Lists all files in a project
+  (evil-leader/set-key "pf" 'helm-projectile-find-file)
+  ; Find file in all known projects
+  (evil-leader/set-key "pF" 'helm-projectile-find-file-in-known-projects)
+  ; Find file based on context at point
+  (evil-leader/set-key "pg" 'helm-projectile-find-file-dwim)
+  ; Lists available directories in current project
+  (evil-leader/set-key "pd" 'helm-projectile-find-dir)
+  ; Lists recently opened files in current project
+  (evil-leader/set-key "pe" 'helm-projectile-find-recentf)
+  ; Switch between files with same name but different extensions
+  (evil-leader/set-key "pa" 'helm-projectile-find-other-file)
+  ; Invalidate cache
+  (evil-leader/set-key "pi" 'projectile-invalidate-cache)
+  ; Add the file of current selected buffer to cache
+  (evil-leader/set-key "pz" 'projectile-cache-current-file)
+  ; List all open buffers in current project
+  (evil-leader/set-key "pb" 'helm-projectile-switch-to-buffer)
+  ; Searches for symbol starting from project root
+  (evil-leader/set-key "ps" 'helm-projectile-grep)
+#+end_src
+
+** Speedbar
+#+begin_src emacs-lisp
+  (require 'speedbar)
+  (speedbar-add-supported-extension ".hs")
+#+end_src
+
+** Auto-Complete
+#+begin_src emacs-lisp
+  (require 'auto-complete-config)
+  (ac-config-default)
+#+end_src
+
 * Languages
 ** Org-Mode
 *** Keyboard setup
@@ -300,11 +401,8 @@
       (add-to-list 'exec-path "~/.cabal/bin/")
       (add-to-list 'exec-path "~/local/haskell/")
       (setenv "PATH" (concat "~/.cabal/bin:~/local/haskell" (getenv "PATH")))
-      (add-to-list 'company-backends 'company-ghc)
       (turn-on-haskell-doc-mode)
       (turn-on-haskell-indentation)
-      (setq company-ghc-show-info t
-            company-ghc-autoscan t)
       (setq ghc-hlint-options '("--ignore=Use camelCase"))
       (add-to-list 'load-path "~/.emacs.d/lib/haskell-flycheck/")
       (require 'haskell-flycheck)
@@ -321,11 +419,40 @@
       (evil-leader/set-key-for-mode 'haskell-mode "." 'haskell-mode-find-uses)
       (define-key haskell-mode-map [f5] 'haskell-process-load-file)))
 #+end_src
+
+    Hoogle-based documentation popus with auto-complete
+
+#+begin_src emacs-lisp
+  (eval-after-load 'haskell-mode
+    '(evil-leader/set-key-for-mode 'haskell-mode "hd" 'ac-haskell-process-popup-doc))
+#+end_src
+
 *** Execute Hook
 #+begin_src emacs-lisp
   (add-hook 'haskell-mode-hook 'haskell-hook-keyboard-setup)
   (add-hook 'haskell-mode-hook 'haskell-hook-initialization)
 #+end_src
+*** Auto-Complete
+    Add Haskell auto-complete backend into the neccessary hooks
+
+#+begin_src emacs-lisp
+  (add-hook 'interactive-haskell-mode-hook 'ac-haskell-process-setup)
+  (add-hook 'haskell-interactive-mode-hook 'ac-haskell-process-setup)
+  (eval-after-load "auto-complete"
+    '(add-to-list 'ac-modes 'haskell-interactive-mode))
+#+end_src
+
+    We want auto-complete in REPL buffers with TAB
+
+#+begin_src emacs-lisp
+  (defun set-auto-complete-as-completion-at-point-function ()
+    (add-to-list 'completion-at-point-functions 'auto-complete))
+  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-to-list 'ac-modes 'haskell-interactive-mode)
+  (add-hook 'haskell-interactive-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook 'haskell-mode-hook 'set-auto-complete-as-completion-at-point-function)
+#+end_src
+
 ** TeX, LaTeX
 *** Settings
 #+begin_src emacs-lisp

@@ -26,6 +26,7 @@
 	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
 	type = cat-file -t
 	dump = cat-file -p
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
 [push]
 	default = simple
 [sendmail]
