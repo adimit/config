@@ -357,38 +357,74 @@
   (ac-config-default)
 #+end_src
 
+** Smartparens
+#+begin_src emacs-lisp
+  (require 'smartparens-config)
+  (smartparens-global-mode t)
+#+end_src
+   Make it work nicely with evil
+#+begin_src emacs-lisp
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+#+end_src
 * Languages
 ** Org-Mode
 *** Keyboard setup
 #+begin_src emacs-lisp
   (defun org-mode-reftex-keybindings-setup ()
     (evil-leader/set-key-for-mode 'org-mode "c" 'reftex-citation)
+    (evil-leader/set-key-for-mode 'org-mode "o" 'org-reftex-citation)
     (evil-leader/set-key-for-mode 'org-mode "r" 'org-open-at-point))
 #+end_src
 
-*** Setup hook
+*** Citations
 #+begin_src emacs-lisp
+  (setq org-link-abbrev-alist
+        '(("bib" . "~/doc/lib/bib/main.bib::%s")))
+
+  (setq org-cite-link-pdf-program "zathura")
+  (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
+
+  (defun open-pdf-from-library (path)
+    "Open a pdf from a bibtex identifier. This is a hack, and should probably be
+  done differently, but it works for now."
+    
+    (let* ((full-path (format org-cite-link-library path)))
+      (if (file-exists-p full-path)
+          (progn
+            (start-process (format "%s-%s" org-cite-link-pdf-program path)
+                           (format "*%s-process*" org-cite-link-pdf-program)
+                           (format "/usr/bin/%s" org-cite-link-pdf-program)
+                           full-path)
+            (message "Viewing %s" path))
+        (user-error (format "Couldn't find reference: '%s'" full-path)))))
+
+  (defun org-cite-link-export (command path desc format)
+    (cond
+     ((eq format 'latex) (format "\\%s{%s}" command path))))
+
+  (org-add-link-type "citet" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citet" path desc format)))
+  (org-add-link-type "citep" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citep" path desc format)))
+
   (defun org-mode-reftex-setup ()
+    (message "Loading org mode reftex setup.")
     (load-library "reftex")
     (and (buffer-file-name) (file-exists-p (buffer-file-name))
          (progn ;enable auto-revert-mode to update reftex when bibtex file changes on disk
            (global-auto-revert-mode t)
            (reftex-parse-all)
            (reftex-set-cite-format
-            '((?b . "[[bib:%l][%l-bib]]")
-              (?P . "[[papers:%l][%l-paper]]")
-              (?t . "%t")
-              (?p . "[[papers:%l][%2a (%y)]]")
-              (?h . "*** %2a (%y) \"%t\"\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
-    (org-mode-reftex-keybindings-setup))
+            '((?p . "[[citep:%l][(%2a %y)]]")
+              (?t . "[[citet:%l][%2a (%y)]]"))))))
 #+end_src
 
 *** Execute hooks
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-  (setq org-link-abbrev-alist
-        '(("bib" . "~/doc/lib/bib/main.bib::%s")
-          ("papers" . "~/doc/lib/%s.pdf")))
+  (add-hook 'org-mode-hook 'org-mode-reftex-keybindings-setup)
 #+end_src
 
 ** Haskell
