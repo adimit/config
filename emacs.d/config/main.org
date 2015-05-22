@@ -584,16 +584,37 @@
 ** Elisp
 *** Keyboard Setup
 #+begin_src emacs-lisp
-  (defun elisp-mode-evil-keys ())
+  (evil-leader/set-key-for-mode 'lisp-interaction-mode "j" 'eval-last-sexp)
 #+end_src
 *** Hooks
 #+begin_src emacs-lisp
   (autoload 'enable-paredit-mode "paredit" "Documentation is for pussies." t)
   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'elisp-mode-evil-keys)
 #+end_src
 ** C
 #+begin_src emacs-lisp
   (setq c-default-style "linux"
         c-basic-offest 4)
+#+end_src
+
+** Web mode
+#+begin_src emacs-lisp
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+#+end_src
+   Make it work with smartparens
+#+begin_src emacs-lisp
+  (defun my-web-mode-hook ()
+    (setq web-mode-enable-auto-pairing nil))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+  (defun sp-web-mode-is-code-context (id action context)
+    (when (and (eq action 'insert)
+               (not (or (get-text-property (point) 'part-side)
+                        (get-text-property (point) 'block-side))))
+      t))
+
+  (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
 #+end_src
