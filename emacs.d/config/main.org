@@ -282,8 +282,8 @@
 #+begin_src emacs-lisp
   (setq org-latex-default-packages-alist
         '(("" "fontspec" t)
+          ("" "csquotes" t)
           ; Default content of this variable
-          ("" "fixltx2e" nil)
           ("" "graphicx" t)
           ("" "longtable" nil)
           ("" "float" nil)
@@ -291,12 +291,17 @@
           ("" "rotating" nil)
           ("normalem" "ulem" t)
           ("" "amsmath" t)
-          ("" "textcomp" t)
           ("" "marvosym" t)
           ("" "wasysym" t)
           ("" "amssymb" t)
           ("" "hyperref" nil)
-          "\\tolerance=1000"))
+          "\\tolerance=1000"
+          ("" "polyglossia")
+          ; there's a bug in polyglossia that makes \sffamily fragile.
+          ; See https://github.com/reutenauer/polyglossia/issues/90
+          "\\typeout{\\meaning\\sffamily}"
+          "\\protected\\edef\\sffamily{\\expandafter\\unexpanded\\expandafter{\\sffamily}}"
+          "\\typeout{\\meaning\\sffamily}"))
 #+end_src
 
 ** Helm
