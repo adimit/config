@@ -29,6 +29,8 @@ function addToPath {
 	fi
 }
 
+addToPath $HOME/.local/bin
+
 ScanDirs $HOME/local
 ScanDirs /opt
 
