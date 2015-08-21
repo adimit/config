@@ -201,6 +201,30 @@
 #+begin_src emacs-lisp
   (evil-leader/set-key "x" 'hexl-mode)
 #+end_src
+** Winner mode
+#+begin_src emacs-lisp
+  (winner-mode 1)
+  (evil-leader/set-key "wh" 'winner-undo)
+  (evil-leader/set-key "wl" 'winner-redo)
+#+end_src
+
+** Telephone line (powerline)
+#+begin_src emacs-lisp
+  (require 'telephone-line)
+  (telephone-line-mode 1)
+  (setq telephone-line-lhs
+          '((evil   . (telephone-line-evil-tag-segment))
+            (accent . (telephone-line-vc-segment
+                       telephone-line-erc-modified-channels-segment
+                       telephone-line-process-segment))
+            (nil    . (telephone-line-minor-mode-segment
+                       telephone-line-buffer-segment))))
+  (setq telephone-line-rhs
+          '((evil   . (telephone-line-airline-position-segment))
+            (accent . (telephone-line-major-mode-segment))
+            (nil    . (telephone-line-misc-info-segment))))
+
+#+end_src
 * Extensions
 ** Emacs Server
 *** Start Server
