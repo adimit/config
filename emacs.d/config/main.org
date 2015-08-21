@@ -414,7 +414,6 @@
 #+begin_src emacs-lisp
   (defun org-mode-reftex-keybindings-setup ()
     (evil-leader/set-key-for-mode 'org-mode "c" 'reftex-citation)
-    (evil-leader/set-key-for-mode 'org-mode "o" 'org-reftex-citation)
     (evil-leader/set-key-for-mode 'org-mode "r" 'org-open-at-point))
 #+end_src
 
@@ -450,6 +449,12 @@
   (org-add-link-type "citep" 'open-pdf-from-library
                      (lambda (path desc format)
                        (org-cite-link-export "citep" path desc format)))
+  (org-add-link-type "autocite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "autocite" path desc format)))
+  (org-add-link-type "textcite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "textcite" path desc format)))
 
   (defun org-mode-reftex-setup ()
     (message "Loading org mode reftex setup.")
@@ -460,7 +465,9 @@
            (reftex-parse-all)
            (reftex-set-cite-format
             '((?p . "[[citep:%l][(%2a %y)]]")
-              (?t . "[[citet:%l][%2a (%y)]]"))))))
+              (?t . "[[citet:%l][%2a (%y)]]")
+              (?a . "[[autocite:%l][(%2a %y)]]")
+              (?c . "[[textcite:%l][%2a (%y)]]"))))))
 #+end_src
 
 *** Execute hooks
