@@ -358,7 +358,7 @@ PS1="$TEMPPS1$PROMPTCHAR "
 
 function zle-line-init zle-keymap-select {
     PS1="$TEMPPS1${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
-    PS2=$PS1
+    PS2="$(color 'blue')%_ ${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
     zle reset-prompt
 }
 
