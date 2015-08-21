@@ -127,6 +127,7 @@
    "b"  'ido-switch-buffer
    "k"  'kill-buffer)
   (evil-leader/set-key "ec" '(lambda () (interactive) (find-file "~/.emacs.d/config/main.org")))
+  (evil-leader/set-key "eo" '(lambda () (interactive) (find-file "~/doc/org/main.org")))
 #+end_src
 
 *** Reload init.el/main.org with <leader>zz
