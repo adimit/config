@@ -260,6 +260,11 @@
 #+end_src
 
 ** Org
+*** Key bindings
+#+begin_src emacs-lisp
+  (evil-leader/set-key-for-mode 'org-mode "oe" 'org-export-dispatch)
+#+end_src
+
 *** Babel
     Fontify source code in source blocks.
 #+begin_src emacs-lisp
