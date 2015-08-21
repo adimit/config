@@ -402,6 +402,13 @@
 #+end_src
 
 * Languages
+** Haskell-built tools
+   Add tools built by Haskell into the executable paths. (Needed by Elm and Haskell.)
+#+begin_src emacs-lisp
+  (add-to-list 'exec-path "~/.cabal/bin/")
+  (add-to-list 'exec-path "~/local/haskell/bin")
+  (setenv "PATH" (concat ":~/.cabal/bin:~/local/haskell" (getenv "PATH")))
+#+end_src
 ** Org-Mode
 *** Keyboard setup
 #+begin_src emacs-lisp
@@ -474,9 +481,6 @@
       (setq haskell-process-args-cabal-repl
             '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
       (setq haskell-process-path-ghci "ghci-ng")
-      (add-to-list 'exec-path "~/.cabal/bin/")
-      (add-to-list 'exec-path "~/local/haskell/")
-      (setenv "PATH" (concat "~/.cabal/bin:~/local/haskell" (getenv "PATH")))
       (turn-on-haskell-doc-mode)
       (turn-on-haskell-indentation)
       (setq ghc-hlint-options '("--ignore=Use camelCase"))
