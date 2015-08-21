@@ -396,6 +396,11 @@
 #+begin_src emacs-lisp
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 #+end_src
+** HL-Mode
+#+begin_src emacs-lisp
+  (global-diff-hl-mode)
+#+end_src
+
 * Languages
 ** Org-Mode
 *** Keyboard setup
