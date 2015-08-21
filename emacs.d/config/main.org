@@ -324,7 +324,7 @@
           ("" "marvosym" t)
           ("" "wasysym" t)
           ("" "amssymb" t)
-          ("" "hyperref" nil)
+          ("breaklinks,colorlinks,citecolor=blue" "hyperref" nil)
           "\\tolerance=1000"
           ("" "polyglossia")
           ; there's a bug in polyglossia that makes \sffamily fragile.
