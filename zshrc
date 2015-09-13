@@ -146,8 +146,8 @@ fork() { (setsid "$@" &); }
 # Move torrents to server
 mvt() {
 	TMPDIR=$HOME/var/tmp
-	WATCHDIR=watch
-	SERVER=bacon
+	WATCHDIR=torrent/watch
+	SERVER=beelzebran
 	ssh-add -l > /dev/null || ssh-add
 	ccp $TMPDIR/*.torrent $SERVER:$WATCHDIR \
 		&& rm -f $TMPDIR/*.torrent \
