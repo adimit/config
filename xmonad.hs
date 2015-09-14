@@ -173,7 +173,7 @@ myConfig = ewmh $ xfceConfig
    , focusedBorderColor = myHL
    , borderWidth = 2
    , handleEventHook = fullscreenEventHook
-   , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" }
+   , startupHook = ewmhDesktopsStartup }
 
 myStatusBar d w x = unwords
     [ "/home/aleks/local/dzen/bin/dzen2"

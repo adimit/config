@@ -29,6 +29,8 @@ function addToPath {
 	fi
 }
 
+addToPath $HOME/.local/bin
+
 ScanDirs $HOME/local
 ScanDirs /opt
 
@@ -81,7 +83,7 @@ alias vim='vim -p'
 alias gvim='gvim  -p'
 alias scp='scp -r'
 alias mpc="mpc --format '%position%: %artist% - %album% - %title%'"
-alias ccp="rsync -rvrPua"
+alias ccp="rsync -rvau --info=progress2"
 alias pls='pl -s'
 alias nt='urxvt& disown %1'
 alias p='mpc toggle'
@@ -144,8 +146,8 @@ fork() { (setsid "$@" &); }
 # Move torrents to server
 mvt() {
 	TMPDIR=$HOME/var/tmp
-	WATCHDIR=watch
-	SERVER=bacon
+	WATCHDIR=torrent/watch
+	SERVER=beelzebran
 	ssh-add -l > /dev/null || ssh-add
 	ccp $TMPDIR/*.torrent $SERVER:$WATCHDIR \
 		&& rm -f $TMPDIR/*.torrent \
@@ -356,7 +358,7 @@ PS1="$TEMPPS1$PROMPTCHAR "
 
 function zle-line-init zle-keymap-select {
     PS1="$TEMPPS1${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
-    PS2=$PS1
+    PS2="$(color 'blue')%_ ${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
     zle reset-prompt
 }
 

@@ -127,6 +127,7 @@
    "b"  'ido-switch-buffer
    "k"  'kill-buffer)
   (evil-leader/set-key "ec" '(lambda () (interactive) (find-file "~/.emacs.d/config/main.org")))
+  (evil-leader/set-key "eo" '(lambda () (interactive) (find-file "~/doc/org/main.org")))
 #+end_src
 
 *** Reload init.el/main.org with <leader>zz
@@ -200,6 +201,30 @@
 #+begin_src emacs-lisp
   (evil-leader/set-key "x" 'hexl-mode)
 #+end_src
+** Winner mode
+#+begin_src emacs-lisp
+  (winner-mode 1)
+  (evil-leader/set-key "wh" 'winner-undo)
+  (evil-leader/set-key "wl" 'winner-redo)
+#+end_src
+
+** Telephone line (powerline)
+#+begin_src emacs-lisp
+  (require 'telephone-line)
+  (telephone-line-mode 1)
+  (setq telephone-line-lhs
+          '((evil   . (telephone-line-evil-tag-segment))
+            (accent . (telephone-line-vc-segment
+                       telephone-line-erc-modified-channels-segment
+                       telephone-line-process-segment))
+            (nil    . (telephone-line-minor-mode-segment
+                       telephone-line-buffer-segment))))
+  (setq telephone-line-rhs
+          '((evil   . (telephone-line-airline-position-segment))
+            (accent . (telephone-line-major-mode-segment))
+            (nil    . (telephone-line-misc-info-segment))))
+
+#+end_src
 * Extensions
 ** Emacs Server
 *** Start Server
@@ -235,6 +260,11 @@
 #+end_src
 
 ** Org
+*** Key bindings
+#+begin_src emacs-lisp
+  (evil-leader/set-key-for-mode 'org-mode "oe" 'org-export-dispatch)
+#+end_src
+
 *** Babel
     Fontify source code in source blocks.
 #+begin_src emacs-lisp
@@ -282,8 +312,8 @@
 #+begin_src emacs-lisp
   (setq org-latex-default-packages-alist
         '(("" "fontspec" t)
+          ("" "csquotes" t)
           ; Default content of this variable
-          ("" "fixltx2e" nil)
           ("" "graphicx" t)
           ("" "longtable" nil)
           ("" "float" nil)
@@ -291,12 +321,17 @@
           ("" "rotating" nil)
           ("normalem" "ulem" t)
           ("" "amsmath" t)
-          ("" "textcomp" t)
           ("" "marvosym" t)
           ("" "wasysym" t)
           ("" "amssymb" t)
-          ("" "hyperref" nil)
-          "\\tolerance=1000"))
+          ("breaklinks,colorlinks,citecolor=blue" "hyperref" nil)
+          "\\tolerance=1000"
+          ("" "polyglossia")
+          ; there's a bug in polyglossia that makes \sffamily fragile.
+          ; See https://github.com/reutenauer/polyglossia/issues/90
+          "\\typeout{\\meaning\\sffamily}"
+          "\\protected\\edef\\sffamily{\\expandafter\\unexpanded\\expandafter{\\sffamily}}"
+          "\\typeout{\\meaning\\sffamily}"))
 #+end_src
 
 ** Helm
@@ -352,7 +387,28 @@
   (ac-config-default)
 #+end_src
 
+** Smartparens
+#+begin_src emacs-lisp
+  (require 'smartparens-config)
+  (smartparens-global-mode t)
+#+end_src
+   Make it work nicely with evil
+#+begin_src emacs-lisp
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+#+end_src
+** HL-Mode
+#+begin_src emacs-lisp
+  (global-diff-hl-mode)
+#+end_src
+
 * Languages
+** Haskell-built tools
+   Add tools built by Haskell into the executable paths. (Needed by Elm and Haskell.)
+#+begin_src emacs-lisp
+  (add-to-list 'exec-path "~/.cabal/bin/")
+  (add-to-list 'exec-path "~/local/haskell/bin")
+  (setenv "PATH" (concat ":~/.cabal/bin:~/local/haskell" (getenv "PATH")))
+#+end_src
 ** Org-Mode
 *** Keyboard setup
 #+begin_src emacs-lisp
@@ -361,29 +417,63 @@
     (evil-leader/set-key-for-mode 'org-mode "r" 'org-open-at-point))
 #+end_src
 
-*** Setup hook
+*** Citations
 #+begin_src emacs-lisp
+  (setq org-link-abbrev-alist
+        '(("bib" . "~/doc/lib/bib/main.bib::%s")))
+
+  (setq org-cite-link-pdf-program "zathura")
+  (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
+
+  (defun open-pdf-from-library (path)
+    "Open a pdf from a bibtex identifier. This is a hack, and should probably be
+  done differently, but it works for now."
+    
+    (let* ((full-path (format org-cite-link-library path)))
+      (if (file-exists-p full-path)
+          (progn
+            (start-process (format "%s-%s" org-cite-link-pdf-program path)
+                           (format "*%s-process*" org-cite-link-pdf-program)
+                           (format "/usr/bin/%s" org-cite-link-pdf-program)
+                           full-path)
+            (message "Viewing %s" path))
+        (user-error (format "Couldn't find reference: '%s'" full-path)))))
+
+  (defun org-cite-link-export (command path desc format)
+    (cond
+     ((eq format 'latex) (format "\\%s{%s}" command path))))
+
+  (org-add-link-type "citet" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citet" path desc format)))
+  (org-add-link-type "citep" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citep" path desc format)))
+  (org-add-link-type "autocite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "autocite" path desc format)))
+  (org-add-link-type "textcite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "textcite" path desc format)))
+
   (defun org-mode-reftex-setup ()
+    (message "Loading org mode reftex setup.")
     (load-library "reftex")
     (and (buffer-file-name) (file-exists-p (buffer-file-name))
          (progn ;enable auto-revert-mode to update reftex when bibtex file changes on disk
            (global-auto-revert-mode t)
            (reftex-parse-all)
            (reftex-set-cite-format
-            '((?b . "[[bib:%l][%l-bib]]")
-              (?P . "[[papers:%l][%l-paper]]")
-              (?t . "%t")
-              (?p . "[[papers:%l][%2a (%y)]]")
-              (?h . "*** %2a (%y) \"%t\"\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
-    (org-mode-reftex-keybindings-setup))
+            '((?p . "[[citep:%l][(%2a %y)]]")
+              (?t . "[[citet:%l][%2a (%y)]]")
+              (?a . "[[autocite:%l][(%2a %y)]]")
+              (?c . "[[textcite:%l][%2a (%y)]]"))))))
 #+end_src
 
 *** Execute hooks
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-  (setq org-link-abbrev-alist
-        '(("bib" . "~/doc/lib/bib/main.bib::%s")
-          ("papers" . "~/doc/lib/%s.pdf")))
+  (add-hook 'org-mode-hook 'org-mode-reftex-keybindings-setup)
 #+end_src
 
 ** Haskell
@@ -398,9 +488,6 @@
       (setq haskell-process-args-cabal-repl
             '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
       (setq haskell-process-path-ghci "ghci-ng")
-      (add-to-list 'exec-path "~/.cabal/bin/")
-      (add-to-list 'exec-path "~/local/haskell/")
-      (setenv "PATH" (concat "~/.cabal/bin:~/local/haskell" (getenv "PATH")))
       (turn-on-haskell-doc-mode)
       (turn-on-haskell-indentation)
       (setq ghc-hlint-options '("--ignore=Use camelCase"))
@@ -543,16 +630,37 @@
 ** Elisp
 *** Keyboard Setup
 #+begin_src emacs-lisp
-  (defun elisp-mode-evil-keys ())
+  (evil-leader/set-key-for-mode 'lisp-interaction-mode "j" 'eval-last-sexp)
 #+end_src
 *** Hooks
 #+begin_src emacs-lisp
   (autoload 'enable-paredit-mode "paredit" "Documentation is for pussies." t)
   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'elisp-mode-evil-keys)
 #+end_src
 ** C
 #+begin_src emacs-lisp
   (setq c-default-style "linux"
         c-basic-offest 4)
+#+end_src
+
+** Web mode
+#+begin_src emacs-lisp
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+#+end_src
+   Make it work with smartparens
+#+begin_src emacs-lisp
+  (defun my-web-mode-hook ()
+    (setq web-mode-enable-auto-pairing nil))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+  (defun sp-web-mode-is-code-context (id action context)
+    (when (and (eq action 'insert)
+               (not (or (get-text-property (point) 'part-side)
+                        (get-text-property (point) 'block-side))))
+      t))
+
+  (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
 #+end_src
