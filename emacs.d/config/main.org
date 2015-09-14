@@ -227,7 +227,7 @@
 *** Keyboard Setup
 #+begin_src emacs-lisp
 (evil-leader/set-key "gs" 'magit-status)
-(evil-leader/set-key "gb" 'magit-blame-mode)
+(evil-leader/set-key "gb" 'magit-blame)
 #+end_src
 *** Don't pester me
 #+begin_src emacs-lisp
