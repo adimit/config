@@ -83,7 +83,7 @@ alias vim='vim -p'
 alias gvim='gvim  -p'
 alias scp='scp -r'
 alias mpc="mpc --format '%position%: %artist% - %album% - %title%'"
-alias ccp="rsync -rvau --info=progress2"
+alias ccp="rsync -rvau --info=progress2 --partial"
 alias pls='pl -s'
 alias nt='urxvt& disown %1'
 alias p='mpc toggle'
