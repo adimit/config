@@ -1,0 +1,91 @@
+* Essential key bindings
+** Tumx-like frame splitting  
+Split windows like in Tmux (but without the prefix key.)
+
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-w \"") 'split-window-below)
+  (define-key evil-normal-state-map (kbd "C-w %") 'split-window-horizontally)
+#+end_src
+
+** Save with RET in normal mode
+Save buffer when hitting RET in normal mode.
+
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "<RET>") 'save-buffer)
+#+end_src
+
+And use RET to get out of editing and org-mode code block
+
+#+begin_src emacs-lisp
+  (evil-define-key 'normal org-src-mode-map (kbd "<RET>") 'org-edit-src-exit)
+  (evil-define-key 'normal org-src-mode-map (kbd "<backspace>") 'org-edit-src-abort)
+#+end_src
+* Extensions
+** TODO Hexl mode
+** Org-Mode
+*** DONE Citation setup
+CLOSED: [2015-11-01 Sun 22:30]
+**** Settings
+Set the bibtex library, PDF program, and where the pdf files live.
+#+begin_src emacs-lisp
+  (setq org-link-abbrev-alist
+        '(("bib" . "~/doc/lib/bib/main.bib::%s")))
+  (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
+  (setq org-cite-link-pdf-program "zathura")
+  (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
+#+end_src
+**** Open PDFs in Library
+#+begin_src emacs-lisp
+  (defun open-pdf-from-library (path)
+    "Open a pdf from a bibtex identifier. This is a hack, and should probably be
+  done differently, but it works for now."
+    (let* ((full-path (format org-cite-link-library path)))
+      (if (file-exists-p full-path)
+          (progn
+            (start-process (format "%s-%s" org-cite-link-pdf-program path)
+                           (format "*%s-process*" org-cite-link-pdf-program)
+                           (format "/usr/bin/%s" org-cite-link-pdf-program)
+                           full-path)
+            (message "Viewing %s" path))
+        (user-error (format "Couldn't find reference: '%s'" full-path)))))
+#+end_src
+**** Export commands
+#+begin_src emacs-lisp
+  (defun org-cite-link-export (command path desc format)
+    (cond
+     ((eq format 'latex) (format "\\%s{%s}" command path))))
+
+  (org-add-link-type "citet" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citet" path desc format)))
+  (org-add-link-type "citep" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "citep" path desc format)))
+  (org-add-link-type "autocite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "autocite" path desc format)))
+  (org-add-link-type "textcite" 'open-pdf-from-library
+                     (lambda (path desc format)
+                       (org-cite-link-export "textcite" path desc format)))
+#+end_src
+**** Org & Reftex
+#+begin_src emacs-lisp
+  (defun org-mode-reftex-setup ()
+    (message "Loading org mode reftex setup.")
+    (load-library "reftex")
+    (and (buffer-file-name) (file-exists-p (buffer-file-name))
+         (progn ;enable auto-revert-mode to update reftex when bibtex file changes on disk
+           (global-auto-revert-mode t)
+           (reftex-parse-all)
+           (reftex-set-cite-format
+            '((?p . "[[citep:%l][(%2a %y)]]")
+              (?t . "[[citet:%l][%2a (%y)]]")
+              (?a . "[[autocite:%l][(%2a %y)]]")
+              (?c . "[[textcite:%l][%2a (%y)]]"))))))
+
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+#+end_src
+*** In-Line LaTeX
+#+begin_src emacs-lisp
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+#+end_src
