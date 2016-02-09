@@ -24,6 +24,8 @@ function fish_mode_prompt; end
 # Prompt
 function fish_prompt
        set -l last_status $status
+       set background_colour 1A1A1A
+       set_color --background $background_colour normal
        # printf "$last_status "
        if [ $last_status -ne 0 ]
            set_color --bold red
@@ -43,7 +45,7 @@ function fish_prompt
                set_color --bold brown
                printf "● "
        end
-       set_color normal
+       set_color --background $background_colour normal
 end
 
 set local_config "$HOME/.config/fish/localconf.fish"
