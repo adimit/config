@@ -46,4 +46,7 @@ function fish_prompt
        set_color normal
 end
 
-source ~/.config/fish/localconf.fish
+set local_config "$HOME/.config/fish/localconf.fish"
+if [ -f $local_config ]
+    source ~/.config/fish/localconf.fish
+end
