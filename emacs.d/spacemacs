@@ -37,14 +37,16 @@ values."
      spell-checking
      syntax-checking
      version-control
+     dockerfile
+     finance
      haskell
      ess
      lua
+     yaml
      latex
      php
-     dockerfile
-     yaml
      javascript
+     gnus
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -210,22 +212,25 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
 
   ; Load main org file.
-  (setq dotfiles-dir (concat (file-name-as-directory (getenv "HOME"))
-                             (file-name-as-directory "config/emacs.d/")))
-  (add-to-list 'load-path (expand-file-name
-                           "lisp" (expand-file-name
-                                    "org-mode" dotfiles-dir)))
-  (org-babel-load-file (expand-file-name "main.org" dotfiles-dir))
+  (with-eval-after-load 'org
+    (setq dotfiles-dir (concat (file-name-as-directory (getenv "HOME"))
+                               (file-name-as-directory "config/emacs.d/")))
+    (add-to-list 'load-path (expand-file-name
+                             "lisp" (expand-file-name
+                                     "org-mode" dotfiles-dir)))
+    (org-babel-load-file (expand-file-name "main.org" dotfiles-dir)))
 )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files nil))
+(with-eval-after-load 'org
+  ;; Do not write anything past this comment. This is where Emacs will
+  ;; auto-generate custom variable definitions.
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(org-agenda-files (quote ("~/doc/uni/ma/notes.org")))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
