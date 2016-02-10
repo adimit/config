@@ -1,5 +1,5 @@
 urxvt.scrollBar: false
-urxvt.font: xft:DejaVu Sans Mono:pixelsize=14:autohint=true:antialias=true
+urxvt.font: xft:DejaVu Sans Mono:pixelsize=14:autohint=false:antialias=true
 
 urxvt.perl-lib: /usr/lib/urxvt/perl
 urxvt.perl-ext.common: default
@@ -16,8 +16,8 @@ urxvt.background: rgba:1000/1000/1000/DDDD
 ! urxvt.transparent: true
 ! urxvt.shading: 20
 
-! Without this, urxvt kerns badly (too much space)
-URxvt*letterSpace:                    -1
+! Nudge the kerning a bit.
+URxvt*letterSpace: -1
 
 ! Xft.rgba: none
 
