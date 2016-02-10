@@ -1,5 +1,7 @@
 # Config
-  
+# Created on 2016-02-09
+# Author: Aleksandar Dimitrov <aleks.dimitrov@gmail.com>
+
 alias ec "emacsclient -n"
 alias l  "ls"
 alias ll 'ls -lh'
@@ -23,29 +25,55 @@ function fish_mode_prompt; end
 
 # Prompt
 function fish_prompt
-       set -l last_status $status
-       set background_colour 1A1A1A
-       set_color --background $background_colour normal
-       # printf "$last_status "
-       if [ $last_status -ne 0 ]
-           set_color --bold red
-           printf "$last_status "
-       end
-       set last_status $status
-       # printf '%s' (__fish_git_prompt)
-       set_color green
-       switch $fish_bind_mode
-           case default
-               set_color --bold yellow
-               printf "▶ "
-           case insert
-               set_color --bold green
-               printf "▷ "
-           case visual
-               set_color --bold brown
-               printf "● "
-       end
-       set_color --background $background_colour normal
+  # Last command exit code if non-zero
+  set -l last_status $status
+  if [ $last_status -ne 0 ]
+    set_color --bold red
+    printf "$last_status "
+    set_color normal
+  end
+
+  # Number of background jobs
+  set -l jobs (jobs | wc -l | tr -d '[:space:]')
+  if [ $jobs -gt 0 ]
+    set_color yellow
+    printf "$jobs "
+    set_color normal
+  end
+
+  # Current git branch (simplified)
+  set -l git_branch ( git branch ^ /dev/null \
+                    | grep '^\*' \
+                    | cut -f 2 -d ' ' \
+                    | sed 's/feature/f/' \
+                    | sed 's/hotfix/h/'
+                    )
+  if set -q $git_branch
+  else
+    set_color $fish_color_quote
+    echo -n $git_branch' '
+    set_color normal
+  end
+
+  # Prompt, indicating vi-mode
+  switch $fish_bind_mode
+    case default
+      set_color --bold $fish_color_comment
+      printf "● "
+    case insert
+      set_color --bold green
+      printf "▶ "
+    case visual
+      set_color --bold blue
+      printf "● "
+  end
+  set_color normal
+end
+
+function fish_right_prompt
+  set_color blue
+  echo -n (prompt_pwd)
+  set_color normal
 end
 
 set local_config "$HOME/.config/fish/localconf.fish"
