@@ -41,6 +41,13 @@ function fish_prompt
     set_color normal
   end
 
+  # if logged in via SSH, show server
+  if set -q SSH_CLIENT
+    set_color blue
+    echo -n (hostname -f)' '
+    set_color normal
+  end
+
   # Current git branch (simplified)
   set -l git_branch ( git branch ^ /dev/null \
                     | grep '^\*' \
