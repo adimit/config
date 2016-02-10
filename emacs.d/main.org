@@ -1,5 +1,5 @@
 * Essential key bindings
-** Tumx-like frame splitting  
+** Tumx-like frame splitting
 Split windows like in Tmux (but without the prefix key.)
 
 #+begin_src emacs-lisp
@@ -88,4 +88,49 @@ Set the bibtex library, PDF program, and where the pdf files live.
 *** In-Line LaTeX
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+#+end_src
+*** TODO LaTeX export
+This uses minted and pygments to set source code written in Babel. The
+=-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
+set arbitrary downloaded TeX-documents with it.
+It also sets our TeX processing engine to XeLaTeX, which is as it should be.
+#+begin_src emacs-lisp
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted" nil))
+  (setq org-latex-listings 'minted)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
+The default preamble includes stuff that is not very compatible wiht XeLaTeX,
+so we overwrite the it.
+#+begin_src emacs-lisp
+  (setq org-latex-default-packages-alist
+        '(("" "fontspec" nil)
+          ("" "csquotes" nil)
+          ; Xelatex-compatible Emacs-default content of this variable
+          ("" "graphicx" nil)
+          ("" "longtable" nil)
+          ("" "float" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "marvosym" t)
+          ("" "wasysym" t)
+          ("" "amssymb" t)
+          ("breaklinks,colorlinks,citecolor=blue" "hyperref" nil)
+          "\\tolerance=1000"
+          ; Polyglossia has to be loaded last for some reason I don't remember.
+          ("" "polyglossia" nil)))
+#+end_src
+** Whitespace
+#+begin_src emacs-lisp
+  (setq whitespace-style '(face trailing tabs tab-mark))
+  (global-whitespace-mode)
+#+end_src
+** Haskell-Mode
+Use stack by default.
+#+begin_src emacs-lisp
+(setq haskell-process-type 'stack-ghci)
 #+end_src
