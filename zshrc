@@ -25,7 +25,7 @@ function ScanDirs {
 
 function addToPath {
 	if [ -d $1 ]; then
-		path+=$1
+		export PATH=$1:$PATH
 	fi
 }
 
@@ -69,6 +69,7 @@ else
 	alias ls='ls -GFBC'
 fi
 ### Simple command aliases
+alias etex='xelatex -shell-escape -interaction nonstopmode'
 alias anki='fork anki -b $HOME/doc/Anki'
 alias ec='emacsclient -n'
 alias ecc='ec -c'
