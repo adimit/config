@@ -26,7 +26,6 @@ function fish_mode_prompt; end
 
 set fish_color_command --bold blue
 
-# Prompt
 function fish_prompt
   # Last command exit code if non-zero
   set -l last_status $status
