@@ -3,6 +3,7 @@
 # Author: Aleksandar Dimitrov <aleks.dimitrov@gmail.com>
 
 alias ec "emacsclient -n"
+alias o "xdg-open"
 alias l  "ls"
 alias ll 'ls -lh'
 alias la 'ls -A'
