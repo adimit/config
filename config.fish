@@ -90,10 +90,12 @@ end
 function render_load_average
   set -l load_average $argv[1]
   set_color normal
-  if math "$load_average > 1.0" > /dev/null
-    set_color --bold $fish_color_string
-  elseif math "$load_average > 5.0" > /dev/null
+  if math "$load_average > 5.0" > /dev/null
     set_color --bold $fish_color_error
+  else if math "$load_average > 2.0" > /dev/null
+    set_color --bold yellow
+  else if math "$load_average > 1.0" > /dev/null
+    set_color --bold white
   end
   echo -n $load_average
   set_color normal
@@ -104,13 +106,13 @@ function fish_greeting
   echo -n (date +"%k:%m %a, %b %d")
   set_color normal
   echo -n " | "
-  set -l uptimes  (uptime | cut -f 4 -d ':' | tr -d '[:space:]')
-  set -l uptime1  (echo $uptimes | cut -f 1 -d ',')
-  set -l uptime5  (echo $uptimes | cut -f 2 -d ',')
-  set -l uptime15 (echo $uptimes | cut -f 3 -d ',')
-  echo (render_load_average $uptime1)\
-       (render_load_average $uptime5)\
-       (render_load_average $uptime15)
+  set -l load_avg \
+  ( uptime | sed  \
+    's/.*average: \([^,]\+\), \([^,]\+\), \([^,]\+\)/\1\n\2\n\3/'
+  )
+  echo (render_load_average $load_avg[1])\
+       (render_load_average $load_avg[2])\
+       (render_load_average $load_avg[3])
 end
 
 set local_config "$HOME/.config/fish/localconf.fish"
