@@ -59,7 +59,7 @@ function fish_prompt
                     )
   if set -q $git_branch
   else
-    set_color $fish_color_quote
+    set_color --bold $fish_color_quote
     echo -n $git_branch' '
     set_color normal
   end
