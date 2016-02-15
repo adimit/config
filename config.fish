@@ -109,7 +109,8 @@ function fish_greeting
   set -l hamster_status \
     ( hamster-cli list \
     | sed 's/( \+)/(just started)/' \
-    | sed -n 's/^ *\([0-9:]\+\)[ -]\+( *\([^)]\+\))[ |]\+\([^ ]\+\).*$/\1\n\2\n\3/p' )
+    | sed -n 's/^ *\([0-9:]\+\)[ -]\+( *\([^)]\+\))[ |]\+\([^ ]\+\).*$/\1\n\2\n\3/p'
+    )
   if set -q hamster_status[1]
     echo -n " | "
     set_color --bold green
@@ -122,8 +123,8 @@ function fish_greeting
 
   echo -n " | "
   set -l load_avg \
-  ( uptime | sed  \
-    's/.*average: \([^,]\+\), \([^,]\+\), \([^,]\+\)/\1\n\2\n\3/'
+  ( uptime \
+  | sed 's/.*average: \([^,]\+\), \([^,]\+\), \([^,]\+\)/\1\n\2\n\3/'
   )
   echo (render_load_average $load_avg[1]) \
        (render_load_average $load_avg[2]) \
