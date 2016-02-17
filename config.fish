@@ -52,10 +52,11 @@ function fish_prompt
 
   # Current git branch (simplified)
   set -l git_branch ( git branch ^ /dev/null \
-                    | grep '^\*' \
-                    | cut -f 2 -d ' ' \
-                    | sed 's/feature/f/' \
-                    | sed 's/hotfix/h/'
+                    | sed -n -e 's/\* \(.*\)/\1/p' \
+                             -e 's/(detached from \(.*\))/d:\1/p' \
+                             -e 's/^hotfix\//h\//p' \
+                             -e 's/^feature\//f\//p' \
+                    | tail -n 1
                     )
   if set -q $git_branch
   else
