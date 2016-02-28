@@ -2,6 +2,12 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+(defun get-string-from-file (filePath)
+  "Return filePath's content"
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -47,6 +53,11 @@ values."
      php
      javascript
      gnus
+     elm
+     (wakatime :variables
+               wakatime-api-key (get-string-from-file "/home/aleks/.waka-key")
+               wakatime-cli-path "/home/aleks/.local/bin/wakatime"
+      )
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
