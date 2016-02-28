@@ -20,8 +20,40 @@ alias rm 'rm -iv'
 alias mv 'mv -i'
 alias cp 'cp -i'
 
+for i in $HOME/local/*/bin
+    set PATH $i $PATH
+end
+
+set PATH $HOME/.local/bin $PATH
+
+for i in $HOME/local/*/share/man
+    set MANPATH $i $MANPATH
+end
+
+# Change into a directory and ls. Create it first, if it doesn't exist.
+function c
+    set -l folder $argv[1]
+    if [ -d $folder ]
+        cd $folder
+        ls .
+    else
+        mkdir -p $folder
+        cd $folder
+        echo "Created $folder"
+    end
+end
+
+# Remove directory mistakenly created by c
+function unc
+    set -l oldpwd (pwd)
+    cd -
+    rmdir $oldpwd
+    echo "Removed $oldpwd"
+end
+
 fish_vi_mode
 fish_vi_cursor
+# Suppress default vi-mode indicator.
 function fish_mode_prompt; end
 
 set fish_color_command --bold blue
