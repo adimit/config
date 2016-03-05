@@ -36,3 +36,5 @@
 	smtpserverport = 587
 [core]
 	excludesfile = /home/aleks/.gitignore
+[pull]
+	rebase = true
