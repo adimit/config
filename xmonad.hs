@@ -51,7 +51,7 @@ import Data.Time.LocalTime
 
 import XMonad.Layout.BinarySpacePartition
 
-import qualified XMonad.Actions.Drag as Drag
+-- import qualified XMonad.Actions.Drag as Drag
 
 statusUpdate :: Handle -> TimeZone -> IO ()
 statusUpdate h tz = do
@@ -135,9 +135,9 @@ myKeys XConfig { modMask = mask } = M.fromList $
             , ((mask .|. shiftMask, xK_t        ), MoveSplit D `bsplitOr` MirrorExpand)
             , ((mask .|. shiftMask, xK_r        ), sendMessage Swap)
             , ((mask              , xK_r        ), sendMessage Rotate) ]
-            ++ -- Drag and Drop
-            [ ((mask              , xK_w        ), Drag.dragOrDrop Drag.Swap)
-            , ((mask .|. shiftMask, xK_w        ), Drag.dragOrDrop Drag.Drop) ]
+--            ++ -- Drag and Drop
+--            [ ((mask              , xK_w        ), Drag.dragOrDrop Drag.Swap)
+--            , ((mask .|. shiftMask, xK_w        ), Drag.dragOrDrop Drag.Drop) ]
             ++ -- MPD control
             [ ((mask,               xK_F11      ), spawn "mpc toggle")
             , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
