@@ -100,7 +100,7 @@ It also sets our TeX processing engine to XeLaTeX, which is as it should be.
   (setq org-latex-listings 'minted)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   (setq org-latex-pdf-process
-        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+        '("latexmk --shell-escape -xelatex -output-directory=%o %f"))
 #+end_src
 The default preamble includes stuff that is not very compatible wiht XeLaTeX,
 so we overwrite the it.
