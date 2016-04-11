@@ -146,9 +146,11 @@ function fish_greeting
 
   echo -n " | "
   set -l load_avg \
-    ( uptime \
-    | sed 's/.*average: \([^,]\+\), \([^,]\+\), \([^,]\+\)/\1\n\2\n\3/'
-    )
+     ( uptime \
+     | sed -e 's/\([0-9]\),\([0-9]\)/\1.\2/g' \
+           -e 's/.*average: \([^,]\+\), \([^,]\+\), \([^,]\+\)/\1\n\2\n\3/'
+     )
+
   echo (render_load_average $load_avg[1]) \
        (render_load_average $load_avg[2]) \
        (render_load_average $load_avg[3])
