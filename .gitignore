@@ -3,3 +3,4 @@
 .*.swo
 ls-R
 emacs.d/session*
+/emacs.d/main.el
