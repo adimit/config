@@ -30,8 +30,6 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.SetWMName
 
-import System.Info (os)
-
 import Data.List (isInfixOf,isPrefixOf)
 import Data.Maybe (mapMaybe)
 import Data.Char (isSpace)
@@ -44,8 +42,7 @@ import Control.Applicative (liftA2)
 import Control.Concurrent
 import Data.Time.Clock
 import System.IO (hFlush,Handle)
-import Control.Monad (liftM,forever)
-import System.Locale
+import Control.Monad (liftM)
 import Data.Time.Format
 import Data.Time.LocalTime
 
