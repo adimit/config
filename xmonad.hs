@@ -136,10 +136,9 @@ myKeys XConfig { modMask = mask } = M.fromList $
 --            [ ((mask              , xK_w        ), Drag.dragOrDrop Drag.Swap)
 --            , ((mask .|. shiftMask, xK_w        ), Drag.dragOrDrop Drag.Drop) ]
             ++ -- MPD control
-            [ ((mask,               xK_F11      ), spawn "mpc toggle")
-            , ((mask .|. shiftMask, xK_F11      ), spawn "mpc crop")
-            , ((mask,               xK_F10      ), spawn "mpc prev")
-            , ((mask,               xK_F12      ), spawn "mpc next") ]
+            [ ((mask,               xK_F11      ), spawn "lollypop -t")
+            , ((mask,               xK_F10      ), spawn "lollypop -n")
+            , ((mask,               xK_F12      ), spawn "lollypop -p") ]
 
 -- If we're currently in the BinarySpacePartition layout, send the left message,
 -- else send the right message.
