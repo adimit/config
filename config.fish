@@ -51,7 +51,7 @@ function unc
     echo "Removed $oldpwd"
 end
 
-fish_vi_mode
+set -g fish_key_bindings fish_vi_key_bindings
 fish_vi_cursor
 # Suppress default vi-mode indicator.
 function fish_mode_prompt; end
