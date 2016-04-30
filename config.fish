@@ -139,21 +139,6 @@ function fish_greeting
   echo -n (date +"%k:%m %a, %b %d")
   set_color normal
 
-  set -l hamster_status \
-    ( hamster-cli list \
-    | sed 's/( \+)/(just started)/' \
-    | sed -n 's/^ *\([0-9:]\+\)[ -]\+( *\([^)]\+\))[ |]\+\([^ ]\+\).*$/\1\n\2\n\3/p'
-    )
-  if set -q hamster_status[1]
-    echo -n " | "
-    set_color --bold green
-    echo -n "$hamster_status[3] "
-    set_color normal
-    set_color green
-    echo -n "($hamster_status[2])"
-    set_color normal
-  end
-
   echo -n " | "
   set -l load_avg \
     ( uptime \
