@@ -23,6 +23,28 @@ And use RET to get out of editing and org-mode code block
 * Extensions
 ** TODO Hexl mode
 ** Org-Mode
+*** Global Settings
+**** Default ORG Directory
+#+begin_src emacs-lisp
+  (setq org-directory (concat (getenv "HOME") "/doc/org"))
+#+end_src
+*** Capture
+Capturing to default location
+#+begin_src emacs-lisp
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+#+end_src
+
+Add templates
+#+begin_src emacs-lisp
+   (setq org-capture-templates
+         '(("t" "Todo" entry (file+headline
+                              (concat org-directory "/main.org")
+                              "Tasks")
+            "* TODO %?\n  %i\n  %a")
+           ("m" "M.A." entry (file+headline "~/doc/uni/ma/ma.org"
+                                            "Tasks")
+            "* TODO %?\n  %U\n  %i\n  %a")))
+#+end_src
 *** DONE Citation setup
 CLOSED: [2015-11-01 Sun 22:30]
 **** Settings
@@ -55,12 +77,6 @@ Set the bibtex library, PDF program, and where the pdf files live.
     (cond
      ((eq format 'latex) (format "\\%s{%s}" command path))))
 
-  (org-add-link-type "citet" 'open-pdf-from-library
-                     (lambda (path desc format)
-                       (org-cite-link-export "citet" path desc format)))
-  (org-add-link-type "citep" 'open-pdf-from-library
-                     (lambda (path desc format)
-                       (org-cite-link-export "citep" path desc format)))
   (org-add-link-type "autocite" 'open-pdf-from-library
                      (lambda (path desc format)
                        (org-cite-link-export "autocite" path desc format)))
@@ -78,9 +94,7 @@ Set the bibtex library, PDF program, and where the pdf files live.
            (global-auto-revert-mode t)
            (reftex-parse-all)
            (reftex-set-cite-format
-            '((?p . "[[citep:%l][(%2a %y)]]")
-              (?t . "[[citet:%l][%2a (%y)]]")
-              (?a . "[[autocite:%l][(%2a %y)]]")
+            '((?a . "[[autocite:%l][(%2a %y)]]")
               (?c . "[[textcite:%l][%2a (%y)]]"))))))
 
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
@@ -89,7 +103,9 @@ Set the bibtex library, PDF program, and where the pdf files live.
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
 #+end_src
-*** TODO LaTeX export
+*** DONE LaTeX export
+CLOSED: [2016-05-01 Sun 13:11]
+**** LaTeX Process & Source Code Formatting
 This uses minted and pygments to set source code written in Babel. The
 =-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
 set arbitrary downloaded TeX-documents with it.
@@ -102,6 +118,7 @@ It also sets our TeX processing engine to XeLaTeX, which is as it should be.
   (setq org-latex-pdf-process
         '("latexmk --shell-escape -xelatex -output-directory=%o %f"))
 #+end_src
+**** Preamble
 The default preamble includes stuff that is not very compatible wiht XeLaTeX,
 so we overwrite the it.
 #+begin_src emacs-lisp
@@ -123,6 +140,57 @@ so we overwrite the it.
           "\\tolerance=1000"
           ; Polyglossia has to be loaded last for some reason I don't remember.
           ("" "polyglossia" nil)))
+#+end_src
+**** Quotes
+Use the csquotes package (don't forget to put it in the default header.)
+#+begin_src emacs-lisp
+  (setq org-export-with-smart-quotes t)
+
+  ; Add English csquotes style
+  (add-to-list
+   'org-export-smart-quotes-alist
+   '("en"
+     (primary-opening   :utf-8 "“"
+                        :html "&ldquo;"
+                        :latex "\\enquote{"
+                        :texinfo "``")
+     (primary-closing   :utf-8 "”"
+                        :html "&rdquo;"
+                        :latex "}"
+                        :texinfo "''")
+     (secondary-opening :utf-8 "‘"
+                        :html "&lsquo;"
+                        :latex "\\enquote*{"
+                        :texinfo "`")
+     (secondary-closing :utf-8 "’"
+                        :html "&rsquo;"
+                        :latex "}"
+                        :texinfo "'")
+     (apostrophe        :utf-8 "’"
+                        :html "&rsquo;")))
+
+  ; Add German csquotes style
+  (add-to-list
+   'org-export-smart-quotes-alist
+   '("de"
+    (primary-opening   :utf-8 "„"
+                       :html "&bdquo;"
+                       :latex "\\enquote{"
+                       :texinfo "@quotedblbase{}")
+    (primary-closing   :utf-8 "“"
+                       :html "&ldquo;"
+                       :latex "}"
+                       :texinfo "@quotedblleft{}")
+    (secondary-opening :utf-8 "‚"
+                       :html "&sbquo;"
+                       :latex "\\enquote*{"
+                       :texinfo "@quotesinglbase{}")
+    (secondary-closing :utf-8 "‘"
+                       :html "&lsquo;"
+                       :latex "}"
+                       :texinfo "@quoteleft{}")
+    (apostrophe        :utf-8 "’"
+                       :html "&rsquo;")))
 #+end_src
 ** Whitespace
 #+begin_src emacs-lisp
