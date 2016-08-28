@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+screen='/tmp/screen.png'
+
+scrot $screen
+convert $screen -scale 10% -scale 1000% $screen
+i3lock -u -i $screen
+rm -f $screen
