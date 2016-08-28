@@ -53,7 +53,7 @@ Set the bibtex library, PDF program, and where the pdf files live.
   (setq org-link-abbrev-alist
         '(("bib" . "~/doc/lib/bib/main.bib::%s")))
   (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
-  (setq org-cite-link-pdf-program "zathura")
+  (setq org-cite-link-pdf-program "mupdf")
   (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
 #+end_src
 **** Open PDFs in Library
