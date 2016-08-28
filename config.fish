@@ -151,5 +151,5 @@ end
 
 set local_config "$HOME/.config/fish/localconf.fish"
 if [ -f $local_config ]
-    source ~/.config/fish/localconf.fish
+    source $local_config
 end
