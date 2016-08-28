@@ -22,7 +22,7 @@ And use RET to get out of editing and org-mode code block
 #+end_src
 * Extensions
 ** TODO Hexl mode
-** Org-Mode
+** org-mode
 *** Global Settings
 **** Default ORG Directory
 #+begin_src emacs-lisp
@@ -192,7 +192,7 @@ Use the csquotes package (don't forget to put it in the default header.)
     (apostrophe        :utf-8 "’"
                        :html "&rsquo;")))
 #+end_src
-** Whitespace
+** whitespace
 #+begin_src emacs-lisp
   (setq whitespace-style '(face trailing tabs tab-mark))
   (global-whitespace-mode)
