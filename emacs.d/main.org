@@ -202,3 +202,8 @@ Use stack by default.
 #+begin_src emacs-lisp
 (setq haskell-process-type 'stack-ghci)
 #+end_src
+** writeroom-mode
+Increase the width of writeroom-mode, especially necessary in org-mode buffers.
+#+begin_src emacs-lisp
+  (setq writeroom-width '90)
+#+end_src
