@@ -46,6 +46,8 @@ import Control.Monad (liftM)
 import Data.Time.Format
 import Data.Time.LocalTime
 
+import Graphics.X11.ExtraTypes.XF86
+
 import XMonad.Layout.BinarySpacePartition
 
 -- import qualified XMonad.Actions.Drag as Drag
@@ -135,10 +137,23 @@ myKeys XConfig { modMask = mask } = M.fromList $
 --            ++ -- Drag and Drop
 --            [ ((mask              , xK_w        ), Drag.dragOrDrop Drag.Swap)
 --            , ((mask .|. shiftMask, xK_w        ), Drag.dragOrDrop Drag.Drop) ]
-            ++ -- MPD control
+            ++ -- Screen lock
+            [ ((mask              , xK_l        ), spawn "/home/aleks/.local/bin/lock") ]
+            ++ -- Lollypop control
             [ ((mask,               xK_F11      ), spawn "lollypop -t")
             , ((mask,               xK_F10      ), spawn "lollypop -n")
-            , ((mask,               xK_F12      ), spawn "lollypop -p") ]
+            , ((mask,               xK_F12      ), spawn "lollypop -p")
+            , ((0,       xF86XK_AudioPlay       ), spawn "lollypop -t")
+            , ((0,       xF86XK_AudioNext       ), spawn "lollypop -n")
+            , ((0,       xF86XK_AudioPrev       ), spawn "lollypop -p") ]
+            ++ -- Multimedia keys
+            [ ((0,       xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume 1 +5%")
+            , ((0,       xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume 1 -5%")
+            , ((0,       xF86XK_AudioMute       ), spawn "pactl set-sink-mute 1 toggle") ]
+            ++ -- Screen control
+            [ ((m .|. mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+                 | (key, sc) <- zip [xK_0, xK_bracketleft, xK_bracketright] [0..]
+                 , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 -- If we're currently in the BinarySpacePartition layout, send the left message,
 -- else send the right message.
