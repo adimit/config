@@ -163,3 +163,5 @@ set local_config "$HOME/.config/fish/localconf.fish"
 if [ -f $local_config ]
     source $local_config
 end
+
+set -x _JAVA_AWT_WM_NONREPARENTING 1
