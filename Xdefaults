@@ -1,5 +1,6 @@
 urxvt.scrollBar: false
-urxvt.font: xft:Ubuntu Mono:size=12:autohint=true:antialias=true
+!urxvt.font: xft:Ubuntu Mono:size=12:autohint=true:antialias=true
+urxvt.font: xft:DejaVu Sans Mono:size=11:autohint=true:antialias=true
 ! Xft.hintstyle: hintfull
 ! Xft.rgba: rgb
 
@@ -13,7 +14,7 @@ urxvt.keysym.Control-Down: perl:font-size:decrease
 
 urxvt.depth: 32
 urxvt.foreground: #ffffff
-urxvt.background: rgba:1000/1000/1000/DDDD
+urxvt.background: rgba:1000/1000/1000/BBBB
 
 ! urxvt.transparent: true
 ! urxvt.shading: 20
