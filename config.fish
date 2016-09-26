@@ -149,6 +149,9 @@ function fish_greeting
        (render_load_average $load_avg[3])
 end
 
+# Work around Java being a damn nitwit
+set -x _JAVA_AWT_WM_NONREPARENTING 1
+
 set local_config "$HOME/.config/fish/localconf.fish"
 if [ -f $local_config ]
     source $local_config
