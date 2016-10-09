@@ -43,13 +43,14 @@ values."
      spell-checking
      syntax-checking
      version-control
-     dockerfile
      finance
      intero
      ess
      lua
      yaml
+     html
      latex
+     ivy
      themes-megapack
      php
      javascript
@@ -247,6 +248,7 @@ layers configuration. You are free to put any user code."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(epg-gpg-program "gpg")
+ '(evil-want-Y-yank-to-eol t)
  '(org-agenda-files (quote ("~/doc/uni/ma/notes.org")))
  '(package-selected-packages
    (quote
