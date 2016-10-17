@@ -1,6 +1,6 @@
 urxvt.scrollBar: false
 !urxvt.font: xft:Ubuntu Mono:size=12:autohint=true:antialias=true
-urxvt.font: xft:Fira Code:size=12DejaVu Sans Monoautohint=true:antialias=true
+urxvt.font: xft:Fira Code:size=12:autohint=true:antialias=true
 ! Xft.hintstyle: hintfull
 ! Xft.rgba: rgb
 
