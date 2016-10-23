@@ -2,6 +2,9 @@
 # Created on 2016-02-09
 # Author: Aleksandar Dimitrov <aleks.dimitrov@gmail.com>
 
+# Vim on the command line
+set -x EDITOR /usr/bin/env vim
+
 alias ec "emacsclient -n"
 alias o "open"
 alias l  "ls"
