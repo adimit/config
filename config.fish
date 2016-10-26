@@ -3,7 +3,7 @@
 # Author: Aleksandar Dimitrov <aleks.dimitrov@gmail.com>
 
 # Vim on the command line
-set -x EDITOR /usr/bin/env vim
+set -x EDITOR "/usr/bin/env vim"
 
 alias ec "emacsclient -n"
 alias o "open"
