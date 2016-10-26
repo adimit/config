@@ -97,7 +97,7 @@ function fish_prompt
                              -e 's/(HEAD detached at \(.*\))/d:\1/p' \
                              -e 's/^hotfix\//h\//p' \
                              -e 's/^feature\//f\//p' \
-                    | tail -n 1 | cut -c-20
+                    | tail -n 1 | sed -e 's/\(.\{19\}\).\+/\1…/'
                     )
   if set -q $git_branch
   else
