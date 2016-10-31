@@ -94,7 +94,7 @@ function fish_prompt
   set -l git_branch ( git branch ^ /dev/null \
                     | sed -n -e 's/\* \(.*\)/\1/p' \
                              -e 's/(detached from \(.*\))/d:\1/p' \
-                             -e 's/(HEAD detached at \(.*\))/d:\1/p' \
+                             -e 's/(HEAD detached \(at\|from\) \(.*\))/d:\2/p' \
                              -e 's/^hotfix\//h\//p' \
                              -e 's/^feature\//f\//p' \
                     | tail -n 1 | sed -e 's/\(.\{19\}\).\+/\1…/'
