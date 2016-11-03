@@ -109,14 +109,14 @@ function fish_prompt
   # Prompt, indicating vi-mode
   switch $fish_bind_mode
     case default
-      set_color --bold $fish_color_comment
+      set_color --bold yellow
       printf "● "
     case insert
       set_color --bold green
       printf "▶ "
     case visual
       set_color --bold blue
-      printf "● "
+      printf "■ "
   end
   set_color normal
 end
