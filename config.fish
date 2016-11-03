@@ -106,16 +106,27 @@ function fish_prompt
     set_color normal
   end
 
+  set username (whoami)
+  set default_color yellow
+  set insert_color green
+  set visual_color blue
+
+  if [ $username = "root" ]
+    set default_color red
+    set insert_color red
+    set visual_color red
+  end
+
   # Prompt, indicating vi-mode
   switch $fish_bind_mode
     case default
-      set_color --bold yellow
+      set_color --bold $default_color
       printf "● "
     case insert
-      set_color --bold green
+      set_color --bold $insert_color
       printf "▶ "
     case visual
-      set_color --bold blue
+      set_color --bold $visual_color
       printf "■ "
   end
   set_color normal
