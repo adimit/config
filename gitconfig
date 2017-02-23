@@ -27,6 +27,7 @@
 	type = cat-file -t
 	dump = cat-file -p
 	lol = log --graph --decorate --pretty=format:'%Cblue%h %Cgreen%an %Creset%s'
+    puush = push --force-with-lease
 [push]
 	default = simple
 [sendmail]
