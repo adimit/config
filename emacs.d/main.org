@@ -31,23 +31,23 @@ And use RET to get out of editing and org-mode code block
 *** org-mode
 **** Global Settings
 ***** Default ORG Directory
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (setq org-directory (concat (getenv "HOME") "/doc/org"))
- #+end_src
+#+end_src
 ***** Indentation
 #+BEGIN_SRC emacs-lisp
   (org-indent-mode)
 #+END_SRC
 **** Capture
-     Capturing to default location
- #+begin_src emacs-lisp
+Capturing to default location
+#+begin_src emacs-lisp
    (setq org-default-notes-file (concat org-directory "/notes.org"))
    (define-key evil-normal-state-map (kbd "SPC o c") 'org-capture)
    (define-key evil-normal-state-map (kbd "SPC o l") 'org-capture-goto-last-stored)
- #+end_src
+#+end_src
 
- Add templates
- #+begin_src emacs-lisp
+Add templates
+#+begin_src emacs-lisp
    (setq org-capture-templates
    '(("t" "Todo" entry (file+headline (concat org-directory "/main.org")
                                       "In")
@@ -59,26 +59,26 @@ And use RET to get out of editing and org-mode code block
                                       "In")
       "* TODO %^{Title} %^g\n%i%?\n%a\n%t")))
 
- #+end_src
+#+end_src
 **** Refiling
- #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq org-refile-use-outline-path nil)
    (setq org-refile-targets '((nil . (:maxlevel . 3))))
    (setq org-outline-path-complete-in-steps nil)
- #+END_SRC
+#+END_SRC
 **** DONE Citation setup
-     CLOSED: [2015-11-01 Sun 22:30]
+CLOSED: [2015-11-01 Sun 22:30]
 ***** Settings
- Set the bibtex library, PDF program, and where the pdf files live.
- #+begin_src emacs-lisp
+Set the bibtex library, PDF program, and where the pdf files live.
+#+begin_src emacs-lisp
    (setq org-link-abbrev-alist
          '(("bib" . "~/doc/lib/bib/main.bib::%s")))
    (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
    (setq org-cite-link-pdf-program "mupdf")
    (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
- #+end_src
+#+end_src
 ***** Open PDFs in Library
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (defun open-pdf-from-library (path)
      "Open a pdf from a bibtex identifier. This is a hack, and should probably be
    done differently, but it works for now."
@@ -91,9 +91,9 @@ And use RET to get out of editing and org-mode code block
                             full-path)
              (message "Viewing %s" path))
          (user-error (format "Couldn't find reference: '%s'" full-path)))))
- #+end_src
+#+end_src
 ***** Export commands
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (defun org-cite-link-export (command path desc format)
      (cond
       ((eq format 'latex) (format "\\%s{%s}" command path))))
@@ -104,9 +104,9 @@ And use RET to get out of editing and org-mode code block
    (org-add-link-type "textcite" 'open-pdf-from-library
                       (lambda (path desc format)
                         (org-cite-link-export "textcite" path desc format)))
- #+end_src
+#+end_src
 ***** Org & Reftex
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (defun org-mode-reftex-setup ()
      (message "Loading org mode reftex setup.")
      (load-library "reftex")
@@ -119,30 +119,30 @@ And use RET to get out of editing and org-mode code block
                (?c . "[[textcite:%l][%2a (%y)]]"))))))
 
    (add-hook 'org-mode-hook 'org-mode-reftex-setup)
- #+end_src
+#+end_src
 **** In-Line LaTeX
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
- #+end_src
+#+end_src
 **** DONE LaTeX export
-     CLOSED: [2016-05-01 Sun 13:11]
+CLOSED: [2016-05-01 Sun 13:11]
 ***** LaTeX Process & Source Code Formatting
- This uses minted and pygments to set source code written in Babel. The
- =-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
- set arbitrary downloaded TeX-documents with it.
- It also sets our TeX processing engine to XeLaTeX, which is as it should be.
- #+begin_src emacs-lisp
+This uses minted and pygments to set source code written in Babel. The
+=-shell-escape= option to XeLaTeX is a bit dangerous, so you shouldn't just
+set arbitrary downloaded TeX-documents with it.
+It also sets our TeX processing engine to XeLaTeX, which is as it should be.
+#+begin_src emacs-lisp
    (require 'ox-latex)
    (add-to-list 'org-latex-packages-alist '("" "minted" nil))
    (setq org-latex-listings 'minted)
    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
    (setq org-latex-pdf-process
          '("latexmk --shell-escape -xelatex %f"))
- #+end_src
+#+end_src
 ***** Preamble
- The default preamble includes stuff that is not very compatible wiht XeLaTeX,
- so we overwrite the it.
- #+begin_src emacs-lisp
+The default preamble includes stuff that is not very compatible wiht XeLaTeX,
+so we overwrite the it.
+#+begin_src emacs-lisp
    (setq org-latex-default-packages-alist
          '(("" "fontspec" nil)
            ("" "csquotes" nil)
@@ -161,10 +161,10 @@ And use RET to get out of editing and org-mode code block
            "\\tolerance=1000"
            ; Polyglossia has to be loaded last for some reason I don't remember.
            ("" "polyglossia" nil)))
- #+end_src
+#+end_src
 ***** Quotes
- Use the csquotes package (don't forget to put it in the default header.)
- #+begin_src emacs-lisp
+Use the csquotes package (don't forget to put it in the default header.)
+#+begin_src emacs-lisp
    (setq org-export-with-smart-quotes t)
 
    ; Add English csquotes style
@@ -212,12 +212,12 @@ And use RET to get out of editing and org-mode code block
                         :texinfo "@quoteleft{}")
      (apostrophe        :utf-8 "’"
                         :html "&rsquo;")))
- #+end_src
+#+end_src
 *** Haskell
- Use stack by default.
- #+begin_src emacs-lisp
+Use stack by default.
+#+begin_src emacs-lisp
  (setq haskell-process-type 'stack-ghci)
- #+end_src
+#+end_src
 *** JavaScript
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2)
@@ -225,12 +225,12 @@ And use RET to get out of editing and org-mode code block
 ** Minor
 *** TODO Hexl mode
 *** whitespace
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    (setq whitespace-style '(face trailing tabs tab-mark))
    (global-whitespace-mode)
- #+end_src
+#+end_src
 *** writeroom-mode
- Increase the width of writeroom-mode, especially necessary in org-mode buffers.
- #+begin_src emacs-lisp
+Increase the width of writeroom-mode, especially necessary in org-mode buffers.
+#+begin_src emacs-lisp
    (setq writeroom-width '90)
- #+end_src
+#+end_src
