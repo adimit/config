@@ -141,8 +141,8 @@ myKeys XConfig { modMask = mask } = M.fromList $
             [ ((mask              , xK_l        ), spawn "/home/aleks/.local/bin/lock") ]
             ++ -- Lollypop control
             [ ((mask,               xK_F11      ), spawn "lollypop -t")
-            , ((mask,               xK_F10      ), spawn "lollypop -n")
-            , ((mask,               xK_F12      ), spawn "lollypop -p")
+            , ((mask,               xK_F10      ), spawn "lollypop -p")
+            , ((mask,               xK_F12      ), spawn "lollypop -n")
             , ((0,       xF86XK_AudioPlay       ), spawn "lollypop -t")
             , ((0,       xF86XK_AudioNext       ), spawn "lollypop -n")
             , ((0,       xF86XK_AudioPrev       ), spawn "lollypop -p") ]
