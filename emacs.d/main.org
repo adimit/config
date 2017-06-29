@@ -58,6 +58,9 @@ Add templates
     ("s" "Shopping List" checkitem (file+headline (concat org-directory "/main.org")
                                               "Shopping List")
      "- [ ] %?")
+    ("c" "Current clock" entry (clock)
+     "* %^{Title}\n%?"
+     :prepend)
     ("w" "Work" entry (file+headline "~/Documents/work.org"
                                      "In")
      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")))
