@@ -48,16 +48,19 @@ Capturing to default location
 
 Add templates
 #+begin_src emacs-lisp
-   (setq org-capture-templates
-   '(("t" "Todo" entry (file+headline (concat org-directory "/main.org")
-                                      "In")
-      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
-     ("m" "M.A." entry (file+headline "~/src/thesis/plan.org"
-                                      "In")
-      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
-     ("w" "Work" entry (file+headline "~/Documents/work.org"
-                                      "In")
-      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")))
+  (setq org-capture-templates
+  '(("t" "Todo" entry (file+headline (concat org-directory "/main.org")
+                                     "In")
+     "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
+    ("m" "M.A." entry (file+headline "~/src/thesis/plan.org"
+                                     "In")
+     "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
+    ("s" "Shopping List" checkitem (file+headline (concat org-directory "/main.org")
+                                              "Shopping List")
+     "- [ ] %?")
+    ("w" "Work" entry (file+headline "~/Documents/work.org"
+                                     "In")
+     "* TODO %^{Title} %^g\n%i%?\n%a\n%t")))
 
 #+end_src
 **** Refiling
