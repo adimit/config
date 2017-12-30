@@ -20,7 +20,38 @@ And use RET to get out of editing and org-mode code block
   (evil-define-key 'normal org-src-mode-map (kbd "<RET>") 'org-edit-src-exit)
   (evil-define-key 'normal org-src-mode-map (kbd "<backspace>") 'org-edit-src-abort)
 #+end_src
-* UserSettings
+* Settings
+** Mail
+*** Settings
+#+BEGIN_SRC emacs-lisp
+  (setq mu4e-maildir "~/.maildir"
+        mu4e-view-show-addresses t
+        mu4e-view-show-images t
+        mu4e-sent-messages-behavior 'delete
+        message-kill-buffer-on-exit t
+        mu4e-headers-include-related t
+        mu4e-headers-skip-duplicates t
+        mu4e-attachment-dir "~/Downloads"
+        mu4e-installation-path "~/local/mu/share/emacs/site-lisp/mu4e")
+#+END_SRC
+*** Bookmarks
+ #+BEGIN_SRC emacs-lisp
+   (add-to-list 'mu4e-bookmarks
+                (make-mu4e-bookmark
+                 :name "Last 7 days (Private)"
+                 :query "date:7d..now AND NOT flag:trashed AND maildir:/gmail/"
+                 :key ?w))
+   (add-to-list 'mu4e-bookmarks
+                (make-mu4e-bookmark
+                 :name "Flagged"
+                 :query "flag:flagged"
+                 :key ?F))
+   (add-to-list 'mu4e-bookmarks
+                (make-mu4e-bookmark
+                 :name "Last 7 days (Work)"
+                 :query "date:7d..now AND NOT flag:trashed AND maildir:/kerio/"
+                 :key ?W))
+ #+END_SRC
 ** Default Browser
 #+BEGIN_SRC emacs-lisp
   (setq browse-url-browser-function 'browse-url-generic
