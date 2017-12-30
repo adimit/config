@@ -2,5 +2,5 @@
 .*.swp
 .*.swo
 ls-R
-emacs.d/session*
-/emacs.d/main.el
+/emacs/*.el
+/emacs/private.org
