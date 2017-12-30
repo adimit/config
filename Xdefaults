@@ -13,52 +13,54 @@ urxvt.keysym.Control-Up: perl:font-size:increase
 urxvt.keysym.Control-Down: perl:font-size:decrease
 
 urxvt.depth: 32
-urxvt.foreground: #ffffff
-urxvt.background: rgba:1000/1000/1000/BBBB
+ urxvt.foreground: #ffffff
+ urxvt.background: rgba:1000/1000/1000/BBBB
 
-! urxvt.transparent: true
-! urxvt.shading: 20
+ urxvt.transparent: true
+ urxvt.shading: 20
 
 ! Nudge the kerning a bit.
 ! URxvt*letterSpace: -6
 
-! Xft.rgba: none
+Xft.rgba: none
+
+URxvt.color12: rgb:5c/5c/ff
 
 !-- Tango color scheme
 ! Black
-URxvt*color0: #2e3436
-URxvt*color8: #555753
-
-! Red
-URxvt*color1: #cc0000
-URxvt*color9: #ef2929
-
-! Green
-URxvt*color2: #4e9a06
-URxvt*color10: #8ae234
-
-! Yellow
-URxvt*color3: #c4a000
-URxvt*color11: #fce94f
-
-! Blue
-URxvt*color4: #00AFFF
-URxvt*color12: #729fcf
-
-! Purple
-URxvt*color5: #75507b
-URxvt*color13: #ad7fa8
-
-! Cyan
-URxvt*color6: #0b939b
-URxvt*color14: #00f5e9
-
-! White
-URxvt*color15: #eeeeec
-URxvt*color7: #d3d7cf
-
-! Emacs
-Emacs.cursorColor: #CCCCCC
+ URxvt*color0: #2e3436
+ URxvt*color8: #555753
+! 
+! ! Red
+ URxvt*color1: #cc0000
+ URxvt*color9: #ef2929
+ 
+ ! Green
+ URxvt*color2: #4e9a06
+ URxvt*color10: #8ae234
+ 
+ ! Yellow
+ URxvt*color3: #c4a000
+ URxvt*color11: #fce94f
+ 
+ ! Blue
+ URxvt*color4: #00AFFF
+ URxvt*color12: #729fcf
+ 
+ ! Purple
+ URxvt*color5: #75507b
+ URxvt*color13: #ad7fa8
+ 
+ ! Cyan
+ URxvt*color6: #0b939b
+ URxvt*color14: #00f5e9
+ 
+ ! White
+ URxvt*color15: #eeeeec
+ URxvt*color7: #d3d7cf
+ 
+ ! Emacs
+ Emacs.cursorColor: #CCCCCC
 
 ! URxvt*termName:                       string
 ! URxvt*geometry:                       geometry
