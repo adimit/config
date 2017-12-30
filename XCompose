@@ -25,3 +25,7 @@ include "%S/en_US.UTF-8/Compose"
 <Multi_key> <s> <asterisk> : "σ"
 <Multi_key> <a> <asterisk> : "α"
 <Multi_key> <A> <asterisk> : "Α"
+
+<Multi_key> <g> <k> : "🦎"
+<Multi_key> <o> <k> : "✓"
+
