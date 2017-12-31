@@ -277,6 +277,10 @@ Use stack by default.
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 #+END_SRC
 ** Minor
+*** prettify-symbols-mode
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode t)
+#+END_SRC
 *** flyspell
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "hunspell")
