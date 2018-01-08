@@ -1,0 +1,17 @@
+mount /media/1
+mount /media/2
+mount /backup
+
+xsetroot -cursor_name left_ptr
+setxkbmap -layout us,bg -variant dvorak, \
+	-option caps:swapescape \
+	-option compose:ralt \
+	-option grp:rctrl_rshift_toggle
+
+xset r rate 145 35
+
+nm-applet &
+stalonetray &
+workrave &
+seafile-applet &
+redshift &
