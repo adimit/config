@@ -260,6 +260,10 @@ Use the csquotes package (don't forget to put it in the default header.)
      (apostrophe        :utf-8 "’"
                         :html "&rsquo;")))
 #+end_src
+**** TaskJuggler
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-taskjuggler)
+#+END_SRC
 *** Haskell
 Use stack by default.
 #+begin_src emacs-lisp
