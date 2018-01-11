@@ -80,7 +80,7 @@ And use RET to get out of editing and org-mode code block
 #+end_src
 ***** Indentation
 #+BEGIN_SRC emacs-lisp
-  (org-indent-mode)
+  (setq org-startup-indented 1)
 #+END_SRC
 **** Capture
 Capturing to default location
