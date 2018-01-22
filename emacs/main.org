@@ -73,6 +73,16 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** org-ref
+#+BEGIN_SRC emacs-lisp
+  (setq org-ref-default-bibliography '("~/src/thesis/main.bib")
+        org-ref-pdf-directory "~/doc/lib/"
+        org-ref-bibliograpy-notes "~/doc/org/notes.org")
+
+  (setq bibtex-completion-pdf-open-function
+        (lambda (fpath)
+          (start-process "mupdf" "*helm-bibtex-mupdf*" "/usr/bin/mupdf" fpath)))
+#+END_SRC
 **** Global Settings
 ***** Default ORG Directory
 #+begin_src emacs-lisp
@@ -119,8 +129,8 @@ CLOSED: [2015-11-01 Sun 22:30]
 Set the bibtex library, PDF program, and where the pdf files live.
 #+begin_src emacs-lisp
    (setq org-link-abbrev-alist
-         '(("bib" . "~/doc/lib/bib/main.bib::%s")))
-   (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
+         '(("bib" . "~/src/thesis/main.bib::%s")))
+   (setq reftex-default-bibliography '("/home/aleks/src/thesis/main.bib"))
    (setq org-cite-link-pdf-program "mupdf")
    (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
 #+end_src
@@ -162,8 +172,8 @@ Set the bibtex library, PDF program, and where the pdf files live.
             (global-auto-revert-mode t)
             (reftex-parse-all)
             (reftex-set-cite-format
-             '((?a . "[[autocite:%l][(%2a %y)]]")
-               (?c . "[[textcite:%l][%2a (%y)]]"))))))
+             '((?c . "[[autocite:%l]]")
+               (?t . "[[textcite:%l]]"))))))
 
    (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+end_src
