@@ -97,6 +97,7 @@ to be.
 #+BEGIN_SRC emacs-lisp
   (setq org-log-into-drawer "NOTES")
   (setq org-clock-into-drawer "LOGBOOK")
+  (setq org-log-state-notes-into-drawer "LOGBOOK")
 #+END_SRC
 **** org-ref
 #+BEGIN_SRC emacs-lisp
