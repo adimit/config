@@ -73,6 +73,13 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Ordered Tasks
+Enforce ordered tasks
+#+BEGIN_SRC emacs-lisp
+  (setq org-enforce-todo-dependencies t
+        org-enforce-todo-checkbox-dependencies t
+        org-agenda-dim-blocked-tasks t)
+#+END_SRC
 **** Notes
 Take notes into a specialised drawer, but keep clock logbook where it's supposed
 to be.
