@@ -184,6 +184,11 @@ Set the bibtex library, PDF program, and where the pdf files live.
 
    (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+end_src
+**** Fill mode
+Enable auto-fill mode for org-mode by default
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+#+END_SRC
 **** In-Line LaTeX
 #+begin_src emacs-lisp
    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
