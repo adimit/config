@@ -73,6 +73,17 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Agenda files
+Add agenda files if they exist (they do not exist on all machines I use)
+#+BEGIN_SRC emacs-lisp
+  (let ((file-list
+         '("~/doc/org/main.org"
+           "~/Documents/work.org"
+           "~/src/thesis/ma.org"
+           "~/src/thesis/plan.org")))
+    (--map (add-to-list 'org-agenda-files it)
+           (--filter (file-readable-p it) file-list)))
+#+END_SRC
 **** Ordered Tasks
 Enforce ordered tasks
 #+BEGIN_SRC emacs-lisp
