@@ -73,6 +73,13 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Notes
+Take notes into a specialised drawer, but keep clock logbook where it's supposed
+to be.
+#+BEGIN_SRC emacs-lisp
+  (setq org-log-into-drawer "NOTES")
+  (setq org-clock-into-drawer "LOGBOOK")
+#+END_SRC
 **** org-ref
 #+BEGIN_SRC emacs-lisp
   (setq org-ref-default-bibliography '("~/src/thesis/main.bib")
