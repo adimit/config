@@ -20,65 +20,81 @@ This function should only modify configuration layer settings."
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
    dotspacemacs-enable-lazy-installation 'unused
+
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
+
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/config/emacs/layers/")
+
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '((mu4e :variables
-           mu4e-installation-path "/home/aleks/local/mu/share/emacs/site-lisp/mu4e")
-     graphviz
-     neotree
-     haskell
-     python
-     csv
-     nginx
-     shell-scripts
-     sql
+   '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ivy
-     auto-completion
      ;; better-defaults
-     emacs-lisp
-     git
-     markdown
-     org
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
+
+     (mu4e :variables
+           mu4e-installation-path "/home/aleks/local/mu/share/emacs/site-lisp/mu4e")
+
+     ;; enhancements
+     auto-completion
+     git
+     helm
+     neotree
      spell-checking
      syntax-checking
      version-control
-     haskell
-     gnus
-     lua
-     yaml
-     html
-     latex
-     bibtex
-     php
-     javascript
-     elm
      wakatime
+     writeroom
+
+     ;; modes
+     bibtex
+     csv
      docker
-     react)
+     elm
+     emacs-lisp
+     graphviz
+     haskell
+     html
+     javascript
+     latex
+     lua
+     markdown
+     nginx
+     org
+     php
+     python
+     react
+     shell-scripts
+     sql
+     yaml
+     )
+
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(org-plus-contrib writeroom-mode)
+   ;; To use a local version of a package, use the `:location' property:
+   ;; '(your-package :location "~/path/to/your-package/")
+   ;; Also include the dependencies as they will not be resolved automatically.
+   dotspacemacs-additional-packages '()
+
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
+
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '(adaptive-wrap)
+   dotspacemacs-excluded-packages '()
+
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and deletes any unused
