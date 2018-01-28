@@ -74,6 +74,11 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Habits
+Tracking habits in org mode
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-modules 'org-habit)
+#+END_SRC
 **** Agenda files
 Add agenda files if they exist (they do not exist on all machines I use)
 #+BEGIN_SRC emacs-lisp
