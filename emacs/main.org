@@ -74,6 +74,41 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Supported LaTeX cls
+Add a =book_noparts= class — the same as =book=, but skipping the parts at top-level.
+There has to be a more elegant way than just setting the variable, but
+=add-to-list= didn't seem to work.
+#+BEGIN_SRC emacs-lisp
+  (setq org-latex-classes
+        '(("article" "\\documentclass[11pt]{article}"
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
+          ("report" "\\documentclass[11pt]{report}"
+           ("\\part{%s}" . "\\part*{%s}")
+           ("\\chapter{%s}" . "\\chapter*{%s}")
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+
+          ("book_noparts" "\\documentclass{book}"
+           ("\\chapter{%s}" . "\\chapter*{%s}")
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
+          ("book" "\\documentclass[11pt]{book}"
+           ("\\part{%s}" . "\\part*{%s}")
+           ("\\chapter{%s}" . "\\chapter*{%s}")
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+#+END_SRC
 **** Habits
 Tracking habits in org mode
 #+BEGIN_SRC emacs-lisp
@@ -214,10 +249,6 @@ Enable auto-fill mode for org-mode by default
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook 'auto-fill-mode)
 #+END_SRC
-**** In-Line LaTeX
-#+begin_src emacs-lisp
-   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-#+end_src
 **** DONE LaTeX export
 CLOSED: [2016-05-01 Sun 13:11]
 ***** LaTeX Process & Source Code Formatting
