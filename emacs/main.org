@@ -338,6 +338,11 @@ Use the csquotes package (don't forget to put it in the default header.)
      (apostrophe        :utf-8 "’"
                         :html "&rsquo;")))
 #+end_src
+**** org-babel
+The list of languages which can be evaluated in an org-mode buffer
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-babel-load-languages '(latex . t))
+#+END_SRC
 **** TaskJuggler
 #+BEGIN_SRC emacs-lisp
   (require 'ox-taskjuggler)
