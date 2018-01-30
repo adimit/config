@@ -257,12 +257,18 @@ This uses minted and pygments to set source code written in Babel. The
 set arbitrary downloaded TeX-documents with it.
 It also sets our TeX processing engine to XeLaTeX, which is as it should be.
 #+begin_src emacs-lisp
-   (require 'ox-latex)
-   (add-to-list 'org-latex-packages-alist '("" "minted" nil))
-   (setq org-latex-listings 'minted)
-   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-   (setq org-latex-pdf-process
-         '("latexmk --shell-escape -xelatex %f"))
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted" nil))
+  (setq org-latex-listings 'minted)
+
+  ; This is the stupidest way to add anything to anything but fuck knows how plists actually work.
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.0))
+  (setq org-format-latex-options (plist-put org-format-latex-options :background "white"))
+  (setq org-format-latex-options (plist-put org-format-latex-options :foreground "black"))
+
+  (setq org-latex-pdf-process
+        '("latexmk --shell-escape -xelatex %f"))
+  (setq org-latex-create-formula-image-program 'imagemagick)
 #+end_src
 ***** Preamble
 The default preamble includes stuff that is not very compatible wiht XeLaTeX,
