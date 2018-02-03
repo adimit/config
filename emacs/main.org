@@ -279,10 +279,13 @@ so we overwrite the it.
            ("" "csquotes" nil)
            ; Xelatex-compatible Emacs-default content of this variable
            ("" "graphicx" nil)
+          ("" "grffile" nil)
+          ("" "rotating" nil)
            ("" "longtable" nil)
            ("" "float" nil)
            ("" "wrapfig" nil)
            ("" "rotating" nil)
+          ("" "capt-of" nil)
            ("normalem" "ulem" t)
            ("" "amsmath" t)
            ("" "marvosym" t)
