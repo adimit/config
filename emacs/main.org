@@ -74,6 +74,11 @@ And use RET to get out of editing and org-mode code block
 * Modes
 ** Major
 *** org-mode
+**** Footnotes
+Place footnotes in the same section
+#+BEGIN_SRC emacs-lisp
+  (setq org-footnote-section nil)
+#+END_SRC
 **** Supported LaTeX cls
 Add a =book_noparts= class — the same as =book=, but skipping the parts at top-level.
 There has to be a more elegant way than just setting the variable, but
