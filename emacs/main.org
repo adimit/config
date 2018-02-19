@@ -171,7 +171,6 @@ Add templates
   '(("t" "Todo" entry (file+headline "~/doc/org/main.org"
                                      "In")
      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
-     "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
     ("c" "Current clock" entry (clock)
      "* %^{Title}\n%?"
      :prepend)
