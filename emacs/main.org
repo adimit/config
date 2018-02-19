@@ -119,9 +119,7 @@ Add agenda files if they exist (they do not exist on all machines I use)
 #+BEGIN_SRC emacs-lisp
   (let ((file-list
          '("~/doc/org/main.org"
-           "~/Documents/work.org"
-           "~/src/thesis/ma.org"
-           "~/src/thesis/plan.org")))
+           "~/Documents/work.org")))
     (--each (--filter (file-readable-p it) file-list)
       (add-to-list 'org-agenda-files it)))
 #+END_SRC
@@ -142,7 +140,7 @@ to be.
 #+END_SRC
 **** org-ref
 #+BEGIN_SRC emacs-lisp
-  (setq org-ref-default-bibliography '("~/src/thesis/main.bib")
+  (setq org-ref-default-bibliography '("~/doc/lib/bib/main.bib")
         org-ref-pdf-directory "~/doc/lib/"
         org-ref-bibliograpy-notes "~/doc/org/notes.org")
 
@@ -173,8 +171,6 @@ Add templates
   '(("t" "Todo" entry (file+headline "~/doc/org/main.org"
                                      "In")
      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
-    ("m" "M.A." entry (file+headline "~/src/thesis/plan.org"
-                                     "In")
      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
     ("c" "Current clock" entry (clock)
      "* %^{Title}\n%?"
@@ -196,8 +192,8 @@ CLOSED: [2015-11-01 Sun 22:30]
 Set the bibtex library, PDF program, and where the pdf files live.
 #+begin_src emacs-lisp
    (setq org-link-abbrev-alist
-         '(("bib" . "~/src/thesis/main.bib::%s")))
-   (setq reftex-default-bibliography '("/home/aleks/src/thesis/main.bib"))
+         '(("bib" . "~/doc/lib/bib/main.bib::%s")))
+   (setq reftex-default-bibliography '("/home/aleks/doc/lib/bib/main.bib"))
    (setq org-cite-link-pdf-program "mupdf")
    (setq org-cite-link-library "/home/aleks/doc/lib/%s.pdf")
 #+end_src
