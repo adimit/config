@@ -274,27 +274,27 @@ It also sets our TeX processing engine to XeLaTeX, which is as it should be.
 The default preamble includes stuff that is not very compatible wiht XeLaTeX,
 so we overwrite the it.
 #+begin_src emacs-lisp
-   (setq org-latex-default-packages-alist
-         '(("" "fontspec" nil)
-           ("" "csquotes" nil)
-           ; Xelatex-compatible Emacs-default content of this variable
-           ("" "graphicx" nil)
+  (setq org-latex-default-packages-alist
+        '(("" "fontspec" nil)
+          ("" "csquotes" nil)
+          ; Xelatex-compatible Emacs-default content of this variable
+          ("" "graphicx" nil)
           ("" "grffile" nil)
           ("" "rotating" nil)
-           ("" "longtable" nil)
-           ("" "float" nil)
-           ("" "wrapfig" nil)
-           ("" "rotating" nil)
+          ("" "longtable" nil)
+          ("" "float" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
           ("" "capt-of" nil)
-           ("normalem" "ulem" t)
-           ("" "amsmath" t)
-           ("" "marvosym" t)
-           ("" "wasysym" t)
-           ("" "amssymb" t)
-           ("breaklinks,colorlinks,citecolor=blue" "hyperref" nil)
-           "\\tolerance=1000"
-           ; Polyglossia has to be loaded last for some reason I don't remember.
-           ("" "polyglossia" nil)))
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "marvosym" t)
+          ("" "wasysym" t)
+          ("" "amssymb" t)
+          ("breaklinks,colorlinks,citecolor=blue" "hyperref" nil)
+          "\\tolerance=1000"
+          ; Polyglossia has to be loaded last for some reason I don't remember.
+          ("" "polyglossia" nil)))
 #+end_src
 ***** Quotes
 Use the csquotes package (don't forget to put it in the default header.)
@@ -351,6 +351,13 @@ Use the csquotes package (don't forget to put it in the default header.)
 The list of languages which can be evaluated in an org-mode buffer
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'org-babel-load-languages '(latex . t))
+#+END_SRC
+
+Don't ask when exporting latex files
+#+BEGIN_SRC emacs-lisp
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (string= lang "latex")))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 #+END_SRC
 **** TaskJuggler
 #+BEGIN_SRC emacs-lisp
