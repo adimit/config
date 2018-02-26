@@ -27,7 +27,6 @@ And use RET to get out of editing and org-mode code block
   (setq mu4e-maildir "~/.maildir"
         mu4e-view-show-addresses t
         mu4e-view-show-images t
-        mu4e-sent-messages-behavior 'delete
         message-kill-buffer-on-exit t
         mu4e-headers-include-related t
         mu4e-headers-skip-duplicates t
