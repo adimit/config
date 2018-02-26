@@ -76,6 +76,7 @@ This function should only modify configuration layer settings."
      php
      python
      react
+     rust
      shell-scripts
      sql
      yaml
