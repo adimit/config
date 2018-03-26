@@ -7,7 +7,7 @@
 	status = auto
 [color "branch"]
 	current = red bold
-	local = red 
+	local = red
 	remote = green
 [color "diff"]
 	meta = yellow
@@ -23,11 +23,10 @@
 	ci = commit
 	st = status
 	br = branch
-	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	hist = log --graph --pretty=format:'%Cblue%h %ad %Cgreen%<(7,trunc)%an %Creset%s %Cred%D%Creset' --date=short
 	type = cat-file -t
 	dump = cat-file -p
-	lol = log --graph --decorate --pretty=format:'%Cblue%h %Cgreen%an %Creset%s'
-    puush = push --force-with-lease
+	puush = push --force-with-lease
 [push]
 	default = simple
 [sendmail]
