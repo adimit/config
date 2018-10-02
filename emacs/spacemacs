@@ -46,6 +46,7 @@ This function should only modify configuration layer settings."
 
      (mu4e :variables
            mu4e-installation-path "/home/aleks/local/mu/share/emacs/site-lisp/mu4e")
+     (org :variables org-enable-reveal-js-support t)
 
      ;; enhancements
      auto-completion
@@ -72,7 +73,6 @@ This function should only modify configuration layer settings."
      lua
      markdown
      nginx
-     org
      php
      python
      react
