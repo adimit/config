@@ -90,7 +90,7 @@ myBG       = "#202020"
 myFG       = "#EEEEEE"
 myHL       = "#cae682"
 myHLBG     = "#363946"
-myTerminal = "/usr/bin/urxvt"
+myTerminal = "/usr/bin/kitty"
 
 newTmuxIn :: (MonadIO m) => String -> m ()
 newTmuxIn dir = spawn $ "cd " ++ dir ++ ";" ++ myTerminal ++ " -e tmux"
