@@ -27,6 +27,7 @@ alias ccp "rsync -rvau --info=progress2 --partial"
 alias rm 'rm -iv'
 alias mv 'mv -i'
 alias cp 'cp -i'
+alias icat 'kitty +kitten icat'
 
 for i in $HOME/local/*/bin
     set PATH $i $PATH
