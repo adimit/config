@@ -35,35 +35,29 @@ And use RET to get out of editing and org-mode code block
         send-mail-function 'smtpmail-send-it)
 #+END_SRC
 *** Bookmarks
-    I have NO IDEA how to add multiple elements to a list in Elisp. =append=,
-    =setcdr=, whatever. They all don't work. So we add it all individually.
-    Elisp is bloody weird.
+We define =make-mu4e-segregated-bookmark= to not mix work and private mails
+together. It creates twin bookmarks that query only the private and work
+mailboxes respectively.
  #+BEGIN_SRC emacs-lisp
-   (add-to-list 'mu4e-bookmarks
-                (make-mu4e-bookmark
-                 :name "Unread (private)"
-                 :query "flag:unread AND NOT maildir:/kerio/"
-                 :key ?u))
-   (add-to-list 'mu4e-bookmarks
-                (make-mu4e-bookmark
-                 :name "Unread (work)"
-                 :query "flag:unread AND maildir:/kerio/"
-                 :key ?U))
-   (add-to-list 'mu4e-bookmarks
-                (make-mu4e-bookmark
-                 :name "Last 7 days (Private)"
-                 :query "date:7d..now AND NOT flag:trashed AND NOT maildir:/kerio/"
-                 :key ?w))
-   (add-to-list 'mu4e-bookmarks
-                (make-mu4e-bookmark
-                 :name "Flagged"
-                 :query "flag:flagged"
-                 :key ?F))
-   (add-to-list 'mu4e-bookmarks
-                (make-mu4e-bookmark
-                 :name "Last 7 days (Work)"
-                 :query "date:7d..now AND NOT flag:trashed AND maildir:/kerio/"
-                 :key ?W))
+   (let ((private-mail-query
+          "NOT flag:trashed AND NOT maildir:/kerio/ AND NOT \"maildir:/gmail/[Google Mail].Spam\"")
+         (work-mail-query
+          "maildir:/kerio/ AND NOT flag:trashed"))
+     (defun make-mu4e-segregated-bookmark (name query key1 key2)
+       (list (make-mu4e-bookmark :name (concat name " (private)")
+                                 :query (concat query " AND " private-mail-query)
+                                 :key key1)
+             (make-mu4e-bookmark :name (concat name " (work)")
+                                 :query (concat query " AND " work-mail-query)
+                                 :key key2)))
+     (setq mu4e-bookmarks
+           (append
+            (make-mu4e-segregated-bookmark "Unread" "flag:unread" ?u ?U)
+            (make-mu4e-segregated-bookmark "Last 7 days" "date:7d..now" ?w ?W)
+            (make-mu4e-segregated-bookmark "With attachment" "flag:attach" ?a ?A)
+            (make-mu4e-segregated-bookmark "Today" "date:today..now" ?t ?T)
+            (make-mu4e-segregated-bookmark "Picture attachments" "mime:image/*" ?p ?P)
+            (make-mu4e-segregated-bookmark "Flagged" "flag:flagged" ?f ?F))))
  #+END_SRC
 ** Default Browser
 #+BEGIN_SRC emacs-lisp
