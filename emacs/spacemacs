@@ -52,7 +52,6 @@ This function should only modify configuration layer settings."
      auto-completion
      git
      helm
-     neotree
      spell-checking
      syntax-checking
      version-control
