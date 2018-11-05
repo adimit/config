@@ -7,7 +7,7 @@ set -x EDITOR "/usr/bin/env vim"
 
 # Emacs doesn't like the compose key to be AltGr and nobody cares
 # See https://emacs.stackexchange.com/questions/3650/compose-key-in-emacs-multi-key-is-undefined/3910
-set -x XMODIFIERS "@im=ibus"
+set -x XMODIFIERS "@im=none"
 
 alias ec "emacsclient -n"
 alias ecc "emacsclient -cn"
