@@ -55,7 +55,8 @@ This function should only modify configuration layer settings."
      spell-checking
      syntax-checking
      version-control
-     wakatime
+     (wakatime :variables
+               wakatime-cli-path "/home/aleks/var/python/wakatime/bin/wakatime")
      writeroom
 
      ;; modes
