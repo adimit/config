@@ -33,6 +33,8 @@ And use RET to get out of editing and org-mode code block
         mu4e-headers-skip-duplicates t
         mu4e-attachment-dir "~/Downloads"
         mu4e-installation-path "~/local/mu/share/emacs/site-lisp/mu4e"
+        mu4e-confirm-quit nil
+        mu4e-context-policy 'pick-first
         send-mail-function 'smtpmail-send-it)
 #+END_SRC
 *** Bookmarks
