@@ -26,6 +26,7 @@ And use RET to get out of editing and org-mode code block
 #+BEGIN_SRC emacs-lisp
   (setq mu4e-maildir "~/.maildir"
         mu4e-view-show-addresses t
+        mu4e-use-fancy-chars t
         mu4e-view-show-images t
         message-kill-buffer-on-exit t
         mu4e-headers-include-related t
