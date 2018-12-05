@@ -69,6 +69,11 @@ mailboxes respectively.
 #+END_SRC
 * Modes
 ** Major
+*** magit
+Don't ask to save open files when opening magit window, just do it.
+#+BEGIN_SRC emacs-lisp
+  (setq magit-save-repository-buffers 'dontask)
+#+END_SRC
 *** org-mode
 **** Footnotes
 Place footnotes in the same section
