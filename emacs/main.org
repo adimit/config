@@ -88,6 +88,12 @@ WIP commits get garbage collected.
 #+END_SRC
 
 *** org-mode
+**** Agenda
+Custom agendas
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+        '(("w" todo-tree "TODO")))
+#+END_SRC
 **** Footnotes
 Place footnotes in the same section
 #+BEGIN_SRC emacs-lisp
