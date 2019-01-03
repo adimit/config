@@ -49,6 +49,7 @@ values."
      ;; enhancements
      auto-completion
      git
+     kotlin
      helm
      spell-checking
      syntax-checking
