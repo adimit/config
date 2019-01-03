@@ -143,7 +143,7 @@ Tracking habits in org mode
 Add agenda files if they exist (they do not exist on all machines I use)
 #+BEGIN_SRC emacs-lisp
   (let ((file-list
-         '("~/doc/org/main.org"
+         '("~/org/main.org"
            "~/Documents/work.org")))
     (--each (--filter (file-readable-p it) file-list)
       (add-to-list 'org-agenda-files it)))
