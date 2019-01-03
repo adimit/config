@@ -80,12 +80,13 @@ WIP-mode tries to avoid data loss at the expense of performance. ~SPC g w~
 brings up the current log. We don't use =magit-wip-merge-branch= so that the
 WIP commits get garbage collected.
 
-#+BEGIN_SRC emacs-lisp
-  (magit-wip-mode t)
-  (spacemacs/set-leader-keys "gw" 'magit-wip-log-current)
-  (setq magit-wip-merge-branch nil
-        magit-no-confirm '(safe-with-wip))
-#+END_SRC
+# Disabled, because it doesn't seem to be available anymore?
+# #+BEGIN_SRC emacs-lisp
+#   (magit-wip-mode t)
+#   (spacemacs/set-leader-keys "gw" 'magit-wip-log-current)
+#   (setq magit-wip-merge-branch nil
+#         magit-no-confirm '(safe-with-wip))
+# #+END_SRC
 
 *** org-mode
 **** Agenda
