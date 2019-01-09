@@ -194,7 +194,7 @@ Capturing to default location
 Add templates
 #+begin_src emacs-lisp
   (setq org-capture-templates
-  '(("t" "Todo" entry (file+headline "~/doc/org/main.org"
+  '(("t" "Todo" entry (file+headline "~/org/main.org"
                                      "In")
      "* TODO %^{Title} %^g\n%i%?\n%a\n%t")
     ("c" "Current clock" entry (clock)
