@@ -177,7 +177,7 @@ to be.
 **** Global Settings
 ***** Default ORG Directory
 #+begin_src emacs-lisp
-   (setq org-directory (concat (getenv "HOME") "/doc/org"))
+   (setq org-directory (concat (getenv "HOME") "/org"))
 #+end_src
 ***** Indentation
 #+BEGIN_SRC emacs-lisp
