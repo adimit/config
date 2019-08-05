@@ -9,6 +9,7 @@ set -x EDITOR "/usr/bin/env vim"
 # See https://emacs.stackexchange.com/questions/3650/compose-key-in-emacs-multi-key-is-undefined/3910
 set -x XMODIFIERS "@im=none"
 
+alias http 'while true; echo "HTTP/1.1 200 OK\n\n (date)" | nc -l mp.local 8080; end'
 alias ec "emacsclient -n"
 alias ecc "emacsclient -cn"
 alias o "open"
