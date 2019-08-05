@@ -53,7 +53,7 @@ This function should only modify configuration layer settings."
      auto-completion
      git
      kotlin
-     helm
+     ivy
      spell-checking
      syntax-checking
      version-control
