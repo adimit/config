@@ -410,7 +410,23 @@ Use stack by default.
         (let ((eslint (expand-file-name "node_modules/.bin/eslint" root)))
           (setq-local flycheck-javascript-eslint-executable eslint)))))
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+  (add-hook 'typescript-tsx-mode-hook 'prettier-js-mode)
+  (add-hook 'typescript-mode-hook 'prettier-js-mode)
+
+  (defun tslint-fix-file ()
+    (interactive)
+    (let ((the-command (concat "yarn tslint --fix " (buffer-file-name))))
+      (message (concat "Running " the-command))
+      (shell-command the-command)))
+
+  (add-hook 'typescript-mode-hook
+            (lambda () (add-hook 'after-save-hook 'tslint-fix-file nil 'make-it-local)))
+
+  (add-hook 'typescript-tsx-mode-hook
+            (lambda () (add-hook 'after-save-hook 'tslint-fix-file nil 'make-it-local)))
 #+END_SRC
+
 ** Minor
 *** Avy
 Reduce the delay on =avy-goto-line=.
