@@ -1,0 +1,8 @@
+#!/bin/sh
+
+xss-lock -- /home/aleks/.local/bin/lock.sh &
+xrandr --output eDP-1 --auto --output DVI-I-3-2  --right-of eDP-1 --output DVI-I-2-1 --right-of DVI-I-3-2 --auto
+setxkbmap -layout us,de -variant dvorak, -option caps:swapescape -option grp:win_space_toggle   -option compose:ralt
+compton &
+dunst &
+seafile-applet &
