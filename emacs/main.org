@@ -412,6 +412,12 @@ Use stack by default.
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 #+END_SRC
 ** Minor
+*** Avy
+Reduce the delay on =avy-goto-line=.
+#+begin_src emacs-lisp
+  (setq avy-timeout-seconds 0.2)
+#+end_src
+
 *** prettify-symbols-mode
 #+BEGIN_SRC emacs-lisp
   (global-prettify-symbols-mode t)
