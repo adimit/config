@@ -49,10 +49,10 @@ This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and hydra are loaded.
 #+BEGIN_SRC emacs-lisp
   (defun my-keybindings ()
-    (defhydra hydra-comma ()
+    (defhydra hydra-comma (:exit t)
       "main menu"
       ("b" counsel-switch-buffer "switch buffer")
-      ("p" projectile-command-map "project…")
+      ("g" hydra-magit/body "git…")
       ("f" counsel-find-file "open file"))
     (define-key evil-normal-state-map "," 'hydra-comma/body))
 #+END_SRC
@@ -80,6 +80,10 @@ Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
   (use-package evil-magit)
+  (defhydra hydra-magit (:exit t)
+    "magit"
+    ("s" magit-status "status")
+    ("b" magit-blame "blame"))
 #+END_SRC
 ** Modes
 *** Smartparens
