@@ -187,4 +187,9 @@ if [ -f $local_config ]
     source $local_config
 end
 
+
+if [ -d $HOME/.cargo/bin ]
+    set -xg PATH $HOME/.cargo/bin $PATH
+end
+
 set -x _JAVA_AWT_WM_NONREPARENTING 1
