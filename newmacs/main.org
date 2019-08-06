@@ -51,6 +51,7 @@ should get called after both evil and hydra are loaded.
   (defun my-keybindings ()
     (defhydra hydra-comma (:exit t)
       "main menu"
+      ("," counsel-M-x "M-x")
       ("b" counsel-switch-buffer "switch buffer")
       ("g" hydra-magit/body "git…")
       ("f" counsel-find-file "open file"))
