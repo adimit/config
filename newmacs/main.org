@@ -1,0 +1,93 @@
+* Emacs config
+** Package Configuration
+*** Fix TLS
+A temporary workaround is needed while [[https://github.com/syl20bnr/spacemacs/issues/12535][this issue]] is still in
+effect. Fixes TLS with melpa, which caused some packages to not be
+visible.
+#+BEGIN_SRC emacs-lisp
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+#+END_SRC
+*** Melpa
+Add Melpa source
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+#+END_SRC
+*** Use-Package
+Try to always download the packages that =use-package= wants to have installed.
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+#+END_SRC
+** Emacs configuration
+*** Font
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil
+                      :family "Fira Code"
+                      :weight 'normal
+                      :width 'normal
+                      :height 110)
+#+END_SRC
+*** Theme
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'wombat)
+#+END_SRC
+*** Misc
+Stop cursor from blinking
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode 0)
+#+END_SRC
+*** Keybindings
+This is a function to set up keybindings with hydra & evil. It
+should get called after both evil and hydra are loaded.
+#+BEGIN_SRC emacs-lisp
+  (defun my-keybindings ()
+    (defhydra hydra-comma ()
+      "main menu"
+      ("b" counsel-switch-buffer "switch buffer")
+      ("p" projectile-command-map "project…")
+      ("f" counsel-find-file "open file"))
+    (define-key evil-normal-state-map "," 'hydra-comma/body))
+#+END_SRC
+** Evil
+Activate evil mode
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+  :config
+    (evil-mode t))
+#+END_SRC
+** Ivy & Counsel
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy)
+  (use-package counsel)
+  (use-package hydra
+    :config (my-keybindings))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :config (projectile-mode +1))
+  (use-package counsel-projectile)
+#+END_SRC
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit)
+  (use-package evil-magit)
+#+END_SRC
+** Modes
+*** Smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :config
+    (smartparens-global-mode t))
+#+END_SRC
+*** Org-Mode
+Enable indent mode, so spaces don't clutter the file.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'org-indent-mode)
+#+END_SRC
