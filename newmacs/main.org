@@ -38,9 +38,11 @@ Try to always download the packages that =use-package= wants to have installed.
   (load-theme 'wombat)
 #+END_SRC
 *** Misc
-Stop cursor from blinking
+Visual improvements
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
 #+END_SRC
 *** Keybindings
 This is a function to set up keybindings with hydra & evil. It
