@@ -65,6 +65,9 @@ should get called after both evil and hydra are loaded.
      "M-x" 'counsel-M-x)
     (general-define-key
      :states 'normal
+     "RET" 'save-buffer)
+    (general-define-key
+     :states 'normal
      :prefix ","
      "," 'counsel-M-x
      "f" 'counsel-find-file
