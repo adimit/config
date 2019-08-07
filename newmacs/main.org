@@ -34,6 +34,11 @@ Try to always download the packages that =use-package= wants to have installed.
   (setq use-package-always-ensure t)
 #+END_SRC
 ** Emacs configuration
+*** Backups
+No files with =~= everywhere.
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist `(("." . "~/.saves")))
+#+END_SRC
 *** Font
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
