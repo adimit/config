@@ -45,21 +45,25 @@ Visual improvements
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
 #+END_SRC
-*** TODO Keybindings
-I'll have to remove hydra and add [[https://github.com/noctuid/general.el][general]]. Together with which-key it
-seems to provide what I want in a much better form.
-
+*** Keybindings
 This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and hydra are loaded.
 #+BEGIN_SRC emacs-lisp
-  (defun my-keybindings ()
-    (defhydra hydra-comma (:exit t)
-      "main menu"
-      ("," counsel-M-x "M-x")
-      ("b" counsel-switch-buffer "switch buffer")
-      ("g" hydra-magit/body "git…")
-      ("f" counsel-find-file "open file"))
-    (define-key evil-normal-state-map "," 'hydra-comma/body))
+  (use-package general
+    :config
+    (general-define-key
+     "M-x" 'counsel-M-x)
+    (general-define-key
+     :states 'normal
+     :prefix ","
+     "," 'counsel-M-x
+     "f" 'counsel-find-file
+     "g s" 'magit-status
+     "b b" 'counsel-switch-buffer
+     "b d" 'kill-current-buffer
+     "p p" 'projectile-switch-project
+     "p f" 'projectile-find-file
+     "p b" 'projectile-switch-to-buffer))
 #+END_SRC
 ** Evil
 Activate evil mode
@@ -72,8 +76,6 @@ Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package ivy)
   (use-package counsel)
-  (use-package hydra
-    :config (my-keybindings))
 #+END_SRC
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
