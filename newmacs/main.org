@@ -82,8 +82,12 @@ should get called after both evil and hydra are loaded.
 Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil
-  :config
+    :config
     (evil-mode t))
+
+  (use-package evil-surround
+    :config
+    (global-evil-surround-mode t))
 #+END_SRC
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
