@@ -53,6 +53,7 @@ Visual improvements
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
+  (setq inhibit-startup-screen t)
 #+END_SRC
 *** Keybindings
 This is a function to set up keybindings with hydra & evil. It
