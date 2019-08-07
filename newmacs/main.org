@@ -44,7 +44,10 @@ Visual improvements
   (menu-bar-mode -1)
   (tool-bar-mode -1)
 #+END_SRC
-*** Keybindings
+*** TODO Keybindings
+I'll have to remove hydra and add [[https://github.com/noctuid/general.el][general]]. Together with which-key it
+seems to provide what I want in a much better form.
+
 This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and hydra are loaded.
 #+BEGIN_SRC emacs-lisp
@@ -71,6 +74,22 @@ Activate evil mode
   (use-package hydra
     :config (my-keybindings))
 #+END_SRC
+** Which-Key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-mode))
+#+END_SRC
+** Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :config (company-mode))
+#+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :config (global-flycheck-mode))
+#+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -86,15 +105,21 @@ Activate evil mode
     ("s" magit-status "status")
     ("b" magit-blame "blame"))
 #+END_SRC
-** Modes
-*** Smartparens
+** Smartparens
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :config
     (smartparens-global-mode t))
 #+END_SRC
-*** Org-Mode
+** Org-Mode
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook 'org-indent-mode)
+#+END_SRC
+** Typescript
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :mode "\\.tsx")
+  (use-package tide
+    :mode "\\.ts")
 #+END_SRC
