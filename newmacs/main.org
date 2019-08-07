@@ -137,14 +137,15 @@ Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (defun my-web-mode-hook ())
   (defun my-tide-setup-hook ()
-    "Custom tide setup lifted from:
-  https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-web-mode.el"
-
     (tide-setup)
     (eldoc-mode)
     (tide-hl-identifier-mode +1)
 
     (setq web-mode-enable-auto-quoting nil)
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-attr-indent-offset 2)
+    (setq web-mode-attr-value-indent-offset 2)
     (set (make-local-variable 'company-backends)
          '((company-tide company-files :with company-yasnippet)
            (company-dabbrev-code company-dabbrev)))
