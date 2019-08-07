@@ -144,7 +144,7 @@ Enable indent mode, so spaces don't clutter the file.
     (eldoc-mode)
     (tide-hl-identifier-mode +1)
 
-    (setq-default typescript-indent-level 2)
+    (setq web-mode-enable-auto-quoting nil)
     (set (make-local-variable 'company-backends)
          '((company-tide company-files :with company-yasnippet)
            (company-dabbrev-code company-dabbrev)))
@@ -162,4 +162,7 @@ Enable indent mode, so spaces don't clutter the file.
                                     (_ (my-web-mode-hook)))))))
   (use-package tide
     :mode (("\\.ts$" . tide-mode)))
+
+  (setq-default typescript-indent-level 2)
+  (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
 #+END_SRC
