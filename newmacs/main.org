@@ -1,3 +1,12 @@
+* Notes
+** TODO SPC-TAB should switch buffers
+I've tried to map it, but it seems you can't bind command expressions?
+** TODO Company mode does not seem to work
+In tide, completion with M-/ works well, but company doesn't show
+anything, even though the mode is enabled. Further configuration
+of company may be required.
+** DONE Prettierjs
+Need to also add prettier js
 * Emacs config
 ** Package Configuration
 *** Fix TLS
