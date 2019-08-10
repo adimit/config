@@ -59,14 +59,13 @@ should get called after both evil and hydra are loaded.
   (use-package general
     :config
     (general-define-key
-     "M-x" 'counsel-M-x)
-    (general-define-key
      :states 'normal
+     "M-x" 'counsel-M-x
      "RET" 'save-buffer)
     (general-define-key
      :states 'normal
      :prefix ","
-     "," 'counsel-M-x
+     "," (general-simulate-key "M-x")
      "TAB" 'switch-to-prev-buffer
      "f" 'counsel-find-file
      "g s" 'magit-status
@@ -196,4 +195,13 @@ Enable indent mode, so spaces don't clutter the file.
 
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
+#+END_SRC
+** Prescient
+#+BEGIN_SRC emacs-lisp
+  (use-package prescient
+    :config (prescient-persist-mode 1))
+  (use-package ivy-prescient
+    :config (ivy-prescient-mode 1))
+  (use-package company-prescient
+    :config (company-prescient-mode 1))
 #+END_SRC
