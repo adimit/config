@@ -275,3 +275,7 @@ Facilitate editing
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
 #+END_SRC
+** YAML
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode :mode "\\.ya?ml$")
+#+END_SRC
