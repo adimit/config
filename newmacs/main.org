@@ -1,6 +1,4 @@
 * Notes
-** TODO SPC-TAB should switch buffers
-I've tried to map it, but it seems you can't bind command expressions?
 * Emacs config
 ** Package Configuration
 *** Fix TLS
