@@ -138,7 +138,10 @@ Activate evil mode
 ** Org-Mode
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook 'org-indent-mode)
+  (use-package org
+    :hook ((org-mode-hook . org-indent-mode))
+    :custom
+    (setq-default org-edit-src-content-indentation 0))
 #+END_SRC
 
 Facilitate editing
