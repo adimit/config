@@ -50,7 +50,14 @@ Visual improvements
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
-  (setq inhibit-startup-screen t)
+  (setq-default
+   inhibit-startup-screen t
+   indent-tabs-mode nil
+   initial-scratch-message ""
+   mouse-yank-at-point t
+   show-trailing-whitespace t)
+  (global-subword-mode 1)
+  (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 *** Keybindings
 This is a function to set up keybindings with hydra & evil. It
