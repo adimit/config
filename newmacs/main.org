@@ -69,6 +69,7 @@ should get called after both evil and hydra are loaded.
      :states 'normal
      :prefix ","
      "," 'counsel-M-x
+     "TAB" 'switch-to-prev-buffer
      "f" 'counsel-find-file
      "g s" 'magit-status
      "b b" 'counsel-switch-buffer
