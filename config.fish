@@ -9,7 +9,6 @@ set -x EDITOR "/usr/bin/env vim"
 # See https://emacs.stackexchange.com/questions/3650/compose-key-in-emacs-multi-key-is-undefined/3910
 set -x XMODIFIERS "@im=none"
 
-alias http 'while true; echo "HTTP/1.1 200 OK\n\n (date)" | nc -l mp.local 8080; end'
 alias ec "emacsclient -n"
 alias ecc "emacsclient -cn"
 alias o "open"
@@ -151,11 +150,11 @@ end
 function render_load_average
   set -l load_average $argv[1]
   set_color normal
-  if math "$load_average > 5.0" > /dev/null
+  if test $load_average -gt 5.0
     set_color --bold $fish_color_error
-  else if math "$load_average > 2.0" > /dev/null
+  else if test $load_average -gt 2.0
     set_color --bold yellow
-  else if math "$load_average > 1.0" > /dev/null
+  else if test $load_average -gt 1.0
     set_color --bold white
   end
   echo -n $load_average
