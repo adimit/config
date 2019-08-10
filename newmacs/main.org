@@ -133,6 +133,23 @@ Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook 'org-indent-mode)
 #+END_SRC
+
+Facilitate editing
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+  :states 'normal
+   :keymaps 'org-mode-map
+   :prefix ","
+   "'" 'org-edit-special)
+
+  (add-hook 'org-src-mode-hook
+            (lambda ()
+              (general-define-key
+               :keymaps 'local
+               :states 'normal
+               "RET" 'org-edit-src-exit
+               "BS" 'org-edit-src-abort)))
+#+END_SRC
 ** Typescript
 #+BEGIN_SRC emacs-lisp
   (defun my-web-mode-hook ())
@@ -195,6 +212,16 @@ Enable indent mode, so spaces don't clutter the file.
 
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
+#+END_SRC
+** Mode line
+** Emacs-Lisp
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :states 'normal
+   :keymaps 'emacs-lisp-mode-map
+   :prefix ", t"
+   "e e" 'eval-last-sexp
+   "e b" 'eval-buffer)
 #+END_SRC
 ** Prescient
 #+BEGIN_SRC emacs-lisp
