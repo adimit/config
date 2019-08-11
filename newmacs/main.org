@@ -103,7 +103,8 @@ Activate evil mode
 #+END_SRC
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
-  (use-package ivy)
+  (use-package ivy
+    :config (ivy-mode 1))
   (use-package counsel)
 #+END_SRC
 ** Which-Key
