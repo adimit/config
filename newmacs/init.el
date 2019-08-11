@@ -11,9 +11,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(amx-backend (quote ivy))
  '(package-selected-packages
    (quote
-    (web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil))))
+    (yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
