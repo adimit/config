@@ -76,11 +76,19 @@ should get called after both evil and hydra are loaded.
      "TAB" 'switch-to-prev-buffer
      "f" 'counsel-find-file
      "g s" 'magit-status
+
      "b b" 'counsel-switch-buffer
      "b d" 'kill-current-buffer
+
      "p p" 'projectile-switch-project
      "p f" 'projectile-find-file
-     "p b" 'projectile-switch-to-buffer))
+     "p b" 'projectile-switch-to-buffer
+
+     "w n" 'make-frame-command
+     "w c" 'evil-window-delete
+     "w o" 'other-window
+     "w s" 'evil-window-split
+     "w v" 'evil-window-vsplit))
 #+END_SRC
 ** Evil
 Activate evil mode
@@ -279,3 +287,4 @@ Facilitate editing
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode :mode "\\.ya?ml$")
 #+END_SRC
+* Languages
