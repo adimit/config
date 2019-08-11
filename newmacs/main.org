@@ -147,18 +147,23 @@ Activate evil mode
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :hook ((org-mode-hook . org-indent-mode))
+    :defer t
     :custom
-    (setq-default org-edit-src-content-indentation 0))
+    (setq-default org-edit-src-content-indentation 2))
 #+END_SRC
 
-Facilitate editing
+Keybindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key
   :states 'normal
    :keymaps 'org-mode-map
    :prefix ","
-   "'" 'org-edit-special)
+   "'" 'org-edit-special
+   ". o" 'org-open-at-point
+   ". h" 'org-promote-subtree
+   ". l" 'org-demote-subtree
+   ". a" 'org-archive-subtree
+   ". r" 'org-refile)
 
   (add-hook 'org-src-mode-hook
             (lambda ()
@@ -168,6 +173,31 @@ Facilitate editing
                "RET" 'org-edit-src-exit
                "BS" 'org-edit-src-abort)))
 #+END_SRC
+
+Place footnotes in the same section.
+#+BEGIN_SRC emacs-lisp
+  (setq-default org-footnote-section nil)
+#+END_SRC
+
+Org-directory is =~/org=
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org"))
+#+END_SRC
+
+Facilitate outlining by just matching on any heading in the org
+file. Using ivy, this ends up being more usable.
+#+BEGIN_SRC emacs-lisp
+  (let ((file-list (mapcar (lambda (file) (concat (file-name-as-directory org-directory) file))
+                           '("main.org" "work.org"))))
+    (--each (--filter (file-readable-p it) file-list)
+      (add-to-list 'org-agenda-files it)))
+
+  (setq
+   org-goto-interface 'counsel-org-goto
+   org-outline-path-complete-in-steps nil
+   org-refile-use-outline-path 'filfile)
+#+END_SRC
+
 ** Mode line
 ** Emacs-Lisp
 #+BEGIN_SRC emacs-lisp
