@@ -219,7 +219,7 @@ file. Using ivy, this ends up being more usable.
   (general-define-key
    :states 'normal
    :keymaps 'emacs-lisp-mode-map
-   :prefix ", t"
+   :prefix ", ."
    "e e" 'eval-last-sexp
    "e b" 'eval-buffer)
 #+END_SRC
@@ -285,7 +285,7 @@ file. Using ivy, this ends up being more usable.
     (general-define-key
      :states 'normal
      :keymaps 'local
-     :prefix ", t"
+     :prefix ", ."
      "f" 'tide-fix
      "i" 'tide-organize-imports
      "u" 'tide-references
