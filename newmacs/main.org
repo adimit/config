@@ -120,6 +120,8 @@ Activate evil mode
     (setq company-dabbrev-downcase 0)
     (setq company-idle-delay 0.2)
     (global-company-mode))
+  (use-package company-posframe
+    :config (company-posframe-mode 1))
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
