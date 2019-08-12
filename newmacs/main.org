@@ -56,7 +56,6 @@ Visual improvements
    initial-scratch-message ""
    mouse-yank-at-point t
    show-trailing-whitespace t)
-  (global-subword-mode 1)
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 *** Keybindings
