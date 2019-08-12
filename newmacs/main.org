@@ -237,7 +237,7 @@ file. Using ivy, this ends up being more usable.
   (use-package diff-hl
     :config
     (global-diff-hl-mode)
-    (setq-default diff-hl-side "right")
+    (setq-default diff-hl-side 'right)
     :init
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+END_SRC
