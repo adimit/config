@@ -99,6 +99,9 @@ Activate evil mode
   (use-package evil-surround
     :config
     (global-evil-surround-mode t))
+
+  (use-package evil-exchange
+    :config (evil-exchange-install))
 #+END_SRC
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
