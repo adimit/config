@@ -26,24 +26,23 @@ Try to always download the packages that =use-package= wants to have installed.
   (require 'use-package)
   (setq use-package-always-ensure t)
 #+END_SRC
-** Emacs configuration
-*** Backups
+** Backups
 No files with =~= everywhere.
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . "~/.saves")))
 #+END_SRC
-*** Font
+** Font
 #+BEGIN_SRC emacs-lisp
   (custom-theme-set-faces
    'user
    '(variable-pitch ((t (:family "Sans" :height 110 :weight normal :width normal))))
    '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
 #+END_SRC
-*** Theme
+** Theme
 #+BEGIN_SRC emacs-lisp
   (load-theme 'wombat)
 #+END_SRC
-*** Misc
+** Misc
 Visual improvements
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
@@ -58,7 +57,7 @@ Visual improvements
    show-trailing-whitespace t)
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
-*** Keybindings
+** Keybindings
 This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and hydra are loaded.
 #+BEGIN_SRC emacs-lisp
@@ -89,6 +88,26 @@ should get called after both evil and hydra are loaded.
      "w s" 'evil-window-split
      "w v" 'evil-window-vsplit))
 #+END_SRC
+* Extensions
+** Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :config
+    (setq company-dabbrev-downcase 0)
+    (setq company-idle-delay 0.2)
+    (global-company-mode))
+  (use-package company-posframe
+    :config (company-posframe-mode 1))
+#+END_SRC
+** Diff-hl
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+    :config
+    (global-diff-hl-mode)
+    (setq-default diff-hl-side 'right)
+    :init
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+#+END_SRC
 ** Evil
 Activate evil mode
 #+BEGIN_SRC emacs-lisp
@@ -103,39 +122,25 @@ Activate evil mode
   (use-package evil-exchange
     :config (evil-exchange-install))
 #+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :config (global-flycheck-mode))
+#+END_SRC
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
     :config (ivy-mode 1))
   (use-package counsel)
 #+END_SRC
-** Which-Key
+*** Prescient
 #+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :config
-    (which-key-mode))
-#+END_SRC
-** Company
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :config
-    (setq company-dabbrev-downcase 0)
-    (setq company-idle-delay 0.2)
-    (global-company-mode))
-  (use-package company-posframe
-    :config (company-posframe-mode 1))
-#+END_SRC
-** Flycheck
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :config (global-flycheck-mode))
-#+END_SRC
-** Projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :config
-    (projectile-mode +1)
-    (setq projectile-completion-system 'ivy))
+  (use-package prescient
+    :config (prescient-persist-mode 1))
+  (use-package ivy-prescient
+    :config (ivy-prescient-mode 1))
+  (use-package company-prescient
+    :config (company-prescient-mode 1))
 #+END_SRC
 ** Magit
 #+BEGIN_SRC emacs-lisp
@@ -154,95 +159,20 @@ Activate evil mode
     :hook ((web-mode . rainbow-delimiters-mode)
            (emacs-lisp-mode . rainbow-delimiters-mode)))
 #+END_SRC
-** Org-Mode
-Use =variable-pitch-mode= for org, but also correctly format
-everything that needs fixed pitch.
+** Projectile
 #+BEGIN_SRC emacs-lisp
-  (use-package org-variable-pitch)
-#+END_SRC
-
-Enable indent mode, so spaces don't clutter the file.
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :hook ((org-mode . org-indent-mode))
-    :custom
-    (setq-default org-edit-src-content-indentation 2))
-#+END_SRC
-
-Keybindings
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-  :states 'normal
-   :keymaps 'org-mode-map
-   :prefix ","
-   "'" 'org-edit-special
-   ". o" 'org-open-at-point
-   ". h" 'org-promote-subtree
-   ". l" 'org-demote-subtree
-   ". a" 'org-archive-subtree
-   ". r" 'org-refile)
-
-  (add-hook 'org-src-mode-hook
-            (lambda ()
-              (general-define-key
-               :keymaps 'local
-               :states 'normal
-               "RET" 'org-edit-src-exit
-               "BS" 'org-edit-src-abort)))
-#+END_SRC
-
-Place footnotes in the same section.
-#+BEGIN_SRC emacs-lisp
-  (setq-default org-footnote-section nil)
-#+END_SRC
-
-Org-directory is =~/org=
-#+BEGIN_SRC emacs-lisp
-  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org"))
-#+END_SRC
-
-Facilitate outlining by just matching on any heading in the org
-file. Using ivy, this ends up being more usable.
-#+BEGIN_SRC emacs-lisp
-  (let ((file-list (mapcar (lambda (file) (concat (file-name-as-directory org-directory) file))
-                           '("main.org" "work.org"))))
-    (--each (--filter (file-readable-p it) file-list)
-      (add-to-list 'org-agenda-files it)))
-
-  (setq
-   org-outline-path-complete-in-steps nil
-   org-refile-targets '((nil . (:maxlevel . 4)))
-   org-refile-use-outline-path 'file)
-#+END_SRC
-
-** Mode line
-** Emacs-Lisp
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-   :states 'normal
-   :keymaps 'emacs-lisp-mode-map
-   :prefix ", ."
-   "e e" 'eval-last-sexp
-   "e b" 'eval-buffer)
-#+END_SRC
-** Prescient
-#+BEGIN_SRC emacs-lisp
-  (use-package prescient
-    :config (prescient-persist-mode 1))
-  (use-package ivy-prescient
-    :config (ivy-prescient-mode 1))
-  (use-package company-prescient
-    :config (company-prescient-mode 1))
-#+END_SRC
-** Diff-hl
-#+BEGIN_SRC emacs-lisp
-  (use-package diff-hl
+  (use-package projectile
     :config
-    (global-diff-hl-mode)
-    (setq-default diff-hl-side 'right)
-    :init
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+    (projectile-mode +1)
+    (setq projectile-completion-system 'ivy))
 #+END_SRC
+** Which-Key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-mode))
+#+END_SRC
+* Languages
 ** CSS
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
@@ -257,6 +187,19 @@ file. Using ivy, this ends up being more usable.
 ** Docker
 #+BEGIN_SRC emacs-lisp
   (use-package dockerfile-mode :mode "Dockerfile")
+#+END_SRC
+** Emacs-Lisp
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :states 'normal
+   :keymaps 'emacs-lisp-mode-map
+   :prefix ", ."
+   "e e" 'eval-last-sexp
+   "e b" 'eval-buffer)
+#+END_SRC
+** Graphql
+#+BEGIN_SRC emacs-lisp
+  (use-package graphql-mode)
 #+END_SRC
 ** JS & friends
 *** Json
@@ -335,12 +278,68 @@ file. Using ivy, this ends up being more usable.
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
 #+END_SRC
+** Org-Mode
+Use =variable-pitch-mode= for org, but also correctly format
+everything that needs fixed pitch.
+#+BEGIN_SRC emacs-lisp
+  (use-package org-variable-pitch)
+#+END_SRC
+
+Enable indent mode, so spaces don't clutter the file.
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :hook ((org-mode . org-indent-mode))
+    :custom
+    (setq-default org-edit-src-content-indentation 2))
+#+END_SRC
+
+Keybindings
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+  :states 'normal
+   :keymaps 'org-mode-map
+   :prefix ","
+   "'" 'org-edit-special
+   ". o" 'org-open-at-point
+   ". h" 'org-promote-subtree
+   ". l" 'org-demote-subtree
+   ". a" 'org-archive-subtree
+   ". r" 'org-refile)
+
+  (add-hook 'org-src-mode-hook
+            (lambda ()
+              (general-define-key
+               :keymaps 'local
+               :states 'normal
+               "RET" 'org-edit-src-exit
+               "BS" 'org-edit-src-abort)))
+#+END_SRC
+
+Place footnotes in the same section.
+#+BEGIN_SRC emacs-lisp
+  (setq-default org-footnote-section nil)
+#+END_SRC
+
+Org-directory is =~/org=
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org"))
+#+END_SRC
+
+Facilitate outlining by just matching on any heading in the org
+file. Using ivy, this ends up being more usable.
+#+BEGIN_SRC emacs-lisp
+  (let ((file-list (mapcar (lambda (file) (concat (file-name-as-directory org-directory) file))
+                           '("main.org" "work.org"))))
+    (--each (--filter (file-readable-p it) file-list)
+      (add-to-list 'org-agenda-files it)))
+
+  (setq
+   org-outline-path-complete-in-steps nil
+   org-refile-targets '((nil . (:maxlevel . 4)))
+   org-refile-use-outline-path 'file)
+#+END_SRC
 ** YAML
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode :mode "\\.ya?ml$")
 #+END_SRC
-* Languages
-** Graphql
-#+BEGIN_SRC emacs-lisp
-  (use-package graphql-mode)
-#+END_SRC
+
