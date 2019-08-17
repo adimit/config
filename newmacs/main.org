@@ -282,7 +282,8 @@ Activate evil mode
 Use =variable-pitch-mode= for org, but also correctly format
 everything that needs fixed pitch.
 #+BEGIN_SRC emacs-lisp
-  (use-package org-variable-pitch)
+  (use-package org-variable-pitch
+    :hook ((org-mode . org-variable-pitch-minor-mode)))
 #+END_SRC
 
 Enable indent mode, so spaces don't clutter the file.
