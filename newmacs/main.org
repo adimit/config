@@ -280,6 +280,7 @@ Activate evil mode
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
 #+END_SRC
 ** Org-Mode
+*** Prettification
 Use =variable-pitch-mode= for org, but also correctly format
 everything that needs fixed pitch.
 #+BEGIN_SRC emacs-lisp
@@ -295,7 +296,7 @@ Enable indent mode, so spaces don't clutter the file.
     (setq-default org-edit-src-content-indentation 2))
 #+END_SRC
 
-Keybindings
+*** Keybindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key
   :states 'normal
@@ -317,16 +318,21 @@ Keybindings
                "BS" 'org-edit-src-abort)))
 #+END_SRC
 
+*** Basic configuration
+Org-directory is =~/org=
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org")
+        my-org-main-file (concat (file-name-as-directory org-directory) "main.org")
+        my-org-work-file (concat (file-name-as-directory org-directory) "work.org"))
+#+END_SRC
+
+*** Editing documents
 Place footnotes in the same section.
 #+BEGIN_SRC emacs-lisp
   (setq-default org-footnote-section nil)
 #+END_SRC
 
-Org-directory is =~/org=
-#+BEGIN_SRC emacs-lisp
-  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org"))
-#+END_SRC
-
+*** Refiling behaviour
 Facilitate outlining by just matching on any heading in the org
 file. Using ivy, this ends up being more usable.
 #+BEGIN_SRC emacs-lisp
@@ -339,6 +345,18 @@ file. Using ivy, this ends up being more usable.
    org-outline-path-complete-in-steps nil
    org-refile-targets '((nil . (:maxlevel . 4)))
    org-refile-use-outline-path 'file)
+#+END_SRC
+*** Capture
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :states 'normal
+   :prefix ", c"
+   "c" 'org-capture
+   "l" '(bookmark-jump "org-capture-bookmark"))
+
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline my-org-main-file "NEW")
+           "* TODO %^{Title}%^g\nTaken on: %U\n%aFrom: %f\n%i")))
 #+END_SRC
 ** YAML
 #+BEGIN_SRC emacs-lisp
