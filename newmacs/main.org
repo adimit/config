@@ -203,6 +203,10 @@ Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode)
 #+END_SRC
+** Haskell
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode)
+#+END_SRC
 ** JS & friends
 *** Json
 #+BEGIN_SRC emacs-lisp
