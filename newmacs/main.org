@@ -46,6 +46,7 @@ No files with =~= everywhere.
 Visual improvements
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
+  (global-hl-line-mode)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
