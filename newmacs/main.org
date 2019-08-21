@@ -31,16 +31,20 @@ No files with =~= everywhere.
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . "~/.saves")))
 #+END_SRC
-** Font
+** Theme
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'wombat)
+#+END_SRC
+*** Custom colors
+#+BEGIN_SRC emacs-lisp
+  (custom-theme-set-faces 'wombat `(region ((t :background "#224488"))))
+#+END_SRC
+*** Font
 #+BEGIN_SRC emacs-lisp
   (custom-theme-set-faces
    'user
    '(variable-pitch ((t (:family "Sans" :height 110 :weight normal :width normal))))
    '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
-#+END_SRC
-** Theme
-#+BEGIN_SRC emacs-lisp
-  (load-theme 'wombat)
 #+END_SRC
 ** Misc
 Visual improvements
