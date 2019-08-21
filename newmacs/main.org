@@ -386,7 +386,7 @@ file. Using ivy, this ends up being more usable.
 
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline my-org-main-file "NEW")
-           "* TODO %^{Title}%^g\nTaken on: %U\n%aFrom: %f\n%i")))
+           "* TODO %^{Title}%^g\nCreated: %U\nRef: %f %a\n%i")))
 #+END_SRC
 ** YAML
 #+BEGIN_SRC emacs-lisp
