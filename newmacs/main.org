@@ -111,6 +111,7 @@ should get called after both evil and hydra are loaded.
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+END_SRC
 ** Evil
+*** Basic settings
 Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil
@@ -123,6 +124,26 @@ Activate evil mode
 
   (use-package evil-exchange
     :config (evil-exchange-install))
+#+END_SRC
+*** Multi-cursor
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-multiedit
+    :config
+    (general-define-key
+     :states 'visual
+     "R" 'evil-multiedit-match-all
+     "r" 'evil-multiedit-and-next)
+    (general-define-key
+     :states 'normal
+     :prefix ", r"
+     "r" 'evil-multiedit-match-and-next
+     "R" 'evil-multiedit-match-and-prev)
+    (general-define-key
+     :states 'multiedit
+     "RET" 'evil-multiedit-toggle-or-restrict-region
+     "M-n" 'evil-multiedit-next
+     "M-p" 'evil-multiedit-prev)
+    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
