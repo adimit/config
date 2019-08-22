@@ -329,10 +329,11 @@ Enable indent mode, so spaces don't clutter the file.
 *** Keybindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key
-  :states 'normal
+   :states 'normal
    :keymaps 'org-mode-map
    :prefix ","
    "'" 'org-edit-special
+   ". '" 'org-edit-special
    ". o" 'org-open-at-point
    ". h" 'org-promote-subtree
    ". l" 'org-demote-subtree
@@ -344,6 +345,10 @@ Enable indent mode, so spaces don't clutter the file.
    ". c g" 'org-clock-goto
    ". c x" 'org-clock-cancel
    ". r" 'org-refile)
+  (general-define-key
+   :states 'normal
+   :prefix ", o"
+   "a" 'org-agenda)
 
   (add-hook 'org-src-mode-hook
             (lambda ()
@@ -391,8 +396,11 @@ file. Using ivy, this ends up being more usable.
    "l" '(bookmark-jump "org-capture-bookmark"))
 
   (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline my-org-main-file "NEW")
-           "* TODO %^{Title}%^g\nCreated: %U\nRef: %f %a\n%i")))
+        '(
+          ("c" "Todo" entry (file+headline my-org-main-file "NEW")
+           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i")
+          ("w" "Work" entry (file+headline my-org-work-file "NEW")
+           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i")))
 #+END_SRC
 ** YAML
 #+BEGIN_SRC emacs-lisp
