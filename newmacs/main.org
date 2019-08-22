@@ -337,6 +337,12 @@ Enable indent mode, so spaces don't clutter the file.
    ". h" 'org-promote-subtree
    ". l" 'org-demote-subtree
    ". a" 'org-archive-subtree
+   ". s" 'org-schedule
+   ". d" 'org-deadline
+   ". c c" 'org-clock-in
+   ". c o" 'org-clock-out
+   ". c g" 'org-clock-goto
+   ". c x" 'org-clock-cancel
    ". r" 'org-refile)
 
   (add-hook 'org-src-mode-hook
