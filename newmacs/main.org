@@ -65,7 +65,7 @@ Visual improvements
 #+END_SRC
 ** Keybindings
 This is a function to set up keybindings with hydra & evil. It
-should get called after both evil and hydra are loaded.
+should get called after both evil and general are loaded.
 #+BEGIN_SRC emacs-lisp
   (use-package general
     :config
