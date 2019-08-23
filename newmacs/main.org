@@ -193,6 +193,18 @@ Activate evil mode
     (projectile-mode +1)
     (setq projectile-completion-system 'ivy))
 #+END_SRC
+** Ripgrep
+#+BEGIN_SRC emacs-lisp
+  (use-package rg
+    :config
+    (general-define-key
+     :states 'normal
+     :prefix ", s"
+     "s" 'rg-dwim
+     "p" 'rg-project
+     "l" 'rg-list-searches
+     "S" 'rg-save-search))
+#+END_SRC
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
