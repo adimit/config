@@ -292,6 +292,8 @@ Activate evil mode
 
   (use-package prettier-js
     :defer t)
+  (use-package tide
+    :defer t)
 
   (use-package web-mode
     :mode (("\\.tsx$" . web-mode))
@@ -303,8 +305,13 @@ Activate evil mode
                         ("tsx" (my-tide-setup-hook))
                         (_ (my-web-mode-hook))))))
 
-  (use-package tide
-    :mode (("\\.ts$" . tide-mode)))
+  (use-package typescript-mode
+    :mode (("\\.ts$" . typescript-mode))
+    :init
+    (add-hook 'typescript-mode-hook 'my-tide-setup-hook)
+    (add-hook 'typescript-mode-hook 'company-mode)
+    (add-hook 'typescript-mode-hook 'prettier-js-mode))
+
 
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
