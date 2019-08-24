@@ -157,7 +157,9 @@ Activate evil mode
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
-    :config (ivy-mode 1))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t))
   (use-package counsel)
 #+END_SRC
 *** Prescient
