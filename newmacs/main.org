@@ -81,6 +81,10 @@ should get called after both evil and general are loaded.
      "f" 'counsel-find-file
      "g s" 'magit-status
 
+     "a a" 'org-agenda-list
+     "a t" 'org-todo-list
+     "a A" 'org-agenda
+
      "b b" 'counsel-switch-buffer
      "b d" 'kill-current-buffer
 
