@@ -414,6 +414,12 @@ All TODO entries that have not already been scheduled
            ((org-agenda-overriding-header "\nUnscheduled TODO")
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
 #+END_SRC
+
+We want our weeks to start properly
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'calendar-load-hook (lambda () calendar-set-date-style 'european))
+#+END_SRC
+
 *** Editing documents
 Place footnotes in the same section.
 #+BEGIN_SRC emacs-lisp
