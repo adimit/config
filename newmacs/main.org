@@ -383,15 +383,37 @@ Enable indent mode, so spaces don't clutter the file.
                "RET" 'org-edit-src-exit
                "BS" 'org-edit-src-abort)))
 #+END_SRC
+*** Org-Agenda keybindings
+#+BEGIN_SRC emacs-lisp
 
+  (general-define-key
+   :keymaps 'org-agenda-mode-map
+
+   "k" 'org-agenda-previous-item
+   "j" 'org-agenda-next-item
+   "I" 'org-agenda-diary-entry
+   "i" 'org-agenda-clock-in
+   "s" 'org-agenda-schedule
+   "c" 'org-capture
+   "O" 'delete-other-windows
+   "o" 'org-agenda-clock-out)
+#+END_SRC
 *** Basic configuration
 Org-directory is =~/org=
 #+BEGIN_SRC emacs-lisp
   (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org")
+        org-agenda-include-diary nil
         my-org-main-file (concat (file-name-as-directory org-directory) "main.org")
         my-org-work-file (concat (file-name-as-directory org-directory) "work.org"))
 #+END_SRC
-
+*** Agenda views
+All TODO entries that have not already been scheduled
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+        '(("u" "Unscheduled TODO" todo ""
+           ((org-agenda-overriding-header "\nUnscheduled TODO")
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+#+END_SRC
 *** Editing documents
 Place footnotes in the same section.
 #+BEGIN_SRC emacs-lisp
