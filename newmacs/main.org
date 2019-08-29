@@ -414,10 +414,19 @@ All TODO entries that have not already been scheduled
            ((org-agenda-overriding-header "\nUnscheduled TODO")
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
 #+END_SRC
-
+*** Calendar
 We want our weeks to start properly
 #+BEGIN_SRC emacs-lisp
   (add-hook 'calendar-load-hook (lambda () calendar-set-date-style 'european))
+#+END_SRC
+
+Set the calendar location for sunset & sunrise. Tübingen Hbf is: =48.516738, 9.055493=
+#+BEGIN_SRC emacs-lisp
+
+  (setq calendar-longitude 48.5
+        calendar-latitude 9.0
+        calendar-location-name "Tübingen, Germany")
+
 #+END_SRC
 
 *** Editing documents
