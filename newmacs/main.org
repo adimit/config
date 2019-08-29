@@ -462,6 +462,18 @@ file. Using ivy, this ends up being more usable.
           ("w" "Work" entry (file+headline my-org-work-file "NEW")
            "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i")))
 #+END_SRC
+
+Keybindings in capture mode
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :modes 'org-capture-mode
+   :states 'normal
+   :prefix ", ."
+   "c" 'org-capture-finalize
+   "r" 'org-capture-refile
+   "k" 'org-capture-kill
+   "x" 'org-capture-kill)
+#+END_SRC
 ** YAML
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode :mode "\\.ya?ml$")
