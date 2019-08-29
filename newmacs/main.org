@@ -46,8 +46,11 @@ No files with =~= everywhere.
    '(variable-pitch ((t (:family "Sans" :height 110 :weight normal :width normal))))
    '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
 #+END_SRC
-** Misc
-Visual improvements
+** Server
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+#+END_SRC
+** Visual improvements
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
   (global-hl-line-mode)
