@@ -1,0 +1,56 @@
+[general]
+
+accounts = Gmail
+maxsyncaccounts = 3
+pythonfile = ~/.offlineimap.py
+
+[Account Outlook]
+localrepository = LocalOutlook
+remoterepository = RemoteOutlook
+
+[Repository LocalOutlook]
+type = Maildir
+localfolders = ~/.mail/outlook
+
+[Repository RemoteOutlook]
+type = IMAP
+ssl = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+auth_mechanisms = PLAIN
+remotehost = outlook.office365.com
+remoteusereval = get_user("itdesign/outlook.microsoft.com")
+remotepasseval = get_pass("itdesign/outlook.microsoft.com")
+folderfilter = lambda folder: folder in ['Archive', 'Deleted Items', 'Drafts', 'INBOX', 'Junk Email', 'Outbox', 'Sent Items']
+
+[Account Fastmail]
+localrepository = LocalFastmail
+remoterepository = RemoteFastmail
+
+[Repository LocalFastmail]
+type = Maildir
+localfolders = ~/.mail/fastmail
+
+[Repository RemoteFastmail]
+type = IMAP
+ssl = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+auth_mechanisms = PLAIN
+remotehost = imap.fastmail.com
+remoteusereval = get_user("mail/fastmail.com/offlineimap")
+remotepasseval = get_pass("mail/fastmail.com/offlineimap")
+
+[Account Gmail]
+localrepository = LocalGmail
+remoterepository = RemoteGmail
+
+[Repository LocalGmail]
+type = GmailMaildir
+localfolders = ~/.mail/gmail
+
+[Repository RemoteGmail]
+type = Gmail
+remoteusereval = get_user("mail/gmail.com")
+remotepasseval = get_pass("mail/gmail.com")
+ssl = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+folderfilter = lambda folder: folder.startswith('INBOX')
