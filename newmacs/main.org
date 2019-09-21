@@ -43,7 +43,7 @@ No files with =~= everywhere.
 #+BEGIN_SRC emacs-lisp
   (custom-theme-set-faces
    'user
-   '(variable-pitch ((t (:family "Sans" :height 110 :weight normal :width normal))))
+   '(variable-pitch ((t (:family "Ubuntu" :height 110 :weight light :width normal))))
    '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
 #+END_SRC
 ** Server
