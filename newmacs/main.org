@@ -181,6 +181,69 @@ Activate evil mode
   (use-package magit)
   (use-package evil-magit)
 #+END_SRC
+** Mu4e
+The context definitions are in =private.org=.
+#+BEGIN_SRC emacs-lisp
+  (use-package mu4e
+    :load-path "~/local/mu/share/emacs/site-lisp/mu4e/")
+
+  (setq
+   mu4e-get-mail-command "offlineimap -o -u quiet"
+   mu4e-update-interval 60
+   message-send-mail-function 'smtpmail-send-it)
+  (auth-source-pass-enable)
+  (evil-set-initial-state 'mu4e-headers-mode 'normal)
+
+  (general-define-key
+   :keymaps 'mu4e-headers-mode-map
+   :states 'normal
+   "RET" 'mu4e-headers-view-message
+   "!" 'mu4e-headers-mark-for-read
+   "#" 'mu4e-mark-resolve-deferred-marks
+   "$" 'mu4e-show-log
+   "%" 'mu4e-headers-mark-pattern
+   "&" 'mu4e-headers-mark-custom
+   "*" 'mu4e-headers-mark-for-something
+   "+" 'mu4e-headers-mark-for-flag
+   "-" 'mu4e-headers-mark-for-unflag
+   "/" 'mu4e-headers-search-narrow
+   "n" 'mu4e-headers-rerun-search
+   ";" 'mu4e-context-switch
+   "?" 'mu4e-headers-mark-for-unread
+   "A" 'mu4e-headers-mark-for-action
+   "B" 'mu4e-headers-search-bookmark-edit
+   "C" 'mu4e-compose-new
+   "D" 'mu4e-headers-mark-for-delete
+   "E" 'mu4e-compose-edit
+   "F" 'mu4e-compose-forward
+   "H" 'mu4e-display-manual
+   "O" 'mu4e-headers-change-sorting
+   "P" 'mu4e-headers-toggle-threading
+   "Q" 'mu4e-headers-toggle-full-search
+   "R" 'mu4e-compose-reply
+   "S" 'mu4e-headers-search-edit
+   "T" 'mu4e-headers-mark-thread
+   "U" 'mu4e-mark-unmark-all
+   "V" 'mu4e-headers-toggle-skip-duplicates
+   "W" 'mu4e-headers-toggle-include-related
+   "[" 'mu4e-headers-prev-unread
+   "\\" 'mu4e-headers-query-prev
+   "]" 'mu4e-headers-next-unread
+   "a" 'mu4e-headers-action
+   "b" 'mu4e-headers-search-bookmark
+   "d" 'mu4e-headers-mark-or-move-to-trash
+   "m" 'mu4e-headers-mark-for-move
+   "q" 'mu4e~headers-quit-buffer
+   "r" 'mu4e-headers-mark-for-refile
+   "s" 'mu4e-headers-search
+   "t" 'mu4e-headers-mark-subthread
+   "u" 'mu4e-headers-mark-for-unmark
+   "x" 'mu4e-mark-execute-all
+   "y" 'mu4e-select-other-view
+   "J" 'mu4e~headers-jump-to-maildir
+   "k" 'mu4e-headers-prev
+   "j" 'mu4e-headers-next)
+#+END_SRC
 ** Parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
