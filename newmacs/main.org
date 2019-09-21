@@ -356,8 +356,8 @@ The context definitions are in =private.org=.
      "e s" 'tide-error-at-point
      "e l" 'tide-project-errors
      "e i" 'tide-add-tslint-disable-next-line
-     "e n" 'tide-find-next-error
-     "e p" 'tide-find-previous-error
+     "e n" 'flycheck-next-error
+     "e p" 'flycheck-previous-error
 
      "r r" 'tide-rename-symbol
      "r F" 'tide-refactor
