@@ -434,6 +434,12 @@ Only basic support :(
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode)
 #+END_SRC
+** Lua
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :mode "\\.lua\\'"
+    :interpreter "lua")
+#+END_SRC
 ** Org-Mode
 *** Prettification
 Use =variable-pitch-mode= for org, but also correctly format
