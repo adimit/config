@@ -1,3 +1,11 @@
+;;; package -- Init file for emacs
+;;; Commentary:
+;;; This file is just the barebones initialisation.  It loads org mode
+;;; and compiles the required main.org file.  There are some performance
+;;; improvements as well.
+
+;;; Code:
+
 ; Work around the GC on startup
 ; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
 (defvar temporary-file-name-handler-alist file-name-handler-alist)
@@ -34,3 +42,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;; init.el ends here
