@@ -51,6 +51,8 @@ Use doom themes for modeline & overall theming
   (use-package doom-modeline
     :custom
     (doom-modeline-icon t)
+    (doom-modeline-buffer-file-name-style 'buffer-name)
+    (doom-modeline-buffer-state-icon nil)
 
     :hook
     (after-init . doom-modeline-mode)
