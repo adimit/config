@@ -32,12 +32,32 @@ No files with =~= everywhere.
   (setq backup-directory-alist `(("." . "~/.saves")))
 #+END_SRC
 ** Theme
+*** Theme
+Use =all-the-icons= for some eyecandy in the modeline
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'wombat)
+  (use-package all-the-icons)
 #+END_SRC
-*** Custom colors
+
+Use doom themes for modeline & overall theming
 #+BEGIN_SRC emacs-lisp
-  (custom-theme-set-faces 'wombat `(region ((t :background "#224488"))))
+  (use-package doom-themes
+    :custom
+    (doom-themes-enable-italic t)
+    (doom-themes-enable-bold t)
+    :config
+    (load-theme 'doom-nord t)
+    (doom-themes-org-config))
+
+  (use-package doom-modeline
+    :custom
+    (doom-modeline-icon t)
+
+    :hook
+    (after-init . doom-modeline-mode)
+    :config
+    (setq doom-modeline-mu4e t
+          doom-modeline-buffer-encoding nil
+          ))
 #+END_SRC
 *** Font
 #+BEGIN_SRC emacs-lisp
