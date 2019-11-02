@@ -363,6 +363,10 @@ Notification support with an extra package
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode)
 #+END_SRC
+** Groovy
+#+BEGIN_SRC emacs-lisp
+  (use-package groovy-mode)
+#+END_SRC
 ** Haskell
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode)
