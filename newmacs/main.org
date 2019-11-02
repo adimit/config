@@ -466,6 +466,11 @@ Only basic support :(
     :mode "\\.lua\\'"
     :interpreter "lua")
 #+END_SRC
+** Markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :config (setq markdown-fontify-code-blocks-natively t))
+#+END_SRC
 ** Org-Mode
 *** Prettification
 Use =variable-pitch-mode= for org, but also correctly format
