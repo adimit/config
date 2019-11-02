@@ -488,6 +488,32 @@ Enable indent mode, so spaces don't clutter the file.
     (setq-default org-edit-src-content-indentation 2))
 #+END_SRC
 
+Prettier lists, by substituting bullet points for list item markers. Also use =org-bullets= for nicer headlines.
+#+BEGIN_SRC emacs-lisp
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  (use-package org-bullets
+    :hook (org-mode . org-bullets-mode))
+#+END_SRC
+
+Headline sizes
+#+BEGIN_SRC emacs-lisp
+  (custom-theme-set-faces
+   'user
+   `(org-level-4 ((t (:height 1.1))))
+   `(org-level-3 ((t (:weight bold :height 1.25))))
+   `(org-level-2 ((t (:height 1.5))))
+   `(org-level-1 ((t (:weight bold :height 1.75))))
+   `(org-document-title ((t (:height 2.0 :underline nil)))))
+#+END_SRC
+
+Hide emphasis markers, gives a bit more of a WYSIWYG feel.
+#+BEGIN_SRC emacs-lisp
+  (setq org-hide-emphasis-markers t)
+#+END_SRC
+
 *** Keybindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key
