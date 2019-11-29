@@ -510,24 +510,32 @@ Enable indent mode, so spaces don't clutter the file.
     (setq-default org-edit-src-content-indentation 2))
 #+END_SRC
 
-Prettier lists, by substituting bullet points for list item markers. Also use =org-bullets= for nicer headlines.
+Prettier lists, by substituting bullet points for list item markers.
 #+BEGIN_SRC emacs-lisp
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+#+END_SRC
 
+Some more prettification
+#+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :hook (org-mode . org-bullets-mode))
+    :hook ((org-mode . org-bullets-mode))
+    :config (setq org-bullets-bullet-list '(" ")))
+
+  (setq org-ellipsis "  ⮟"
+        org-fontify-whole-heading-line t
+        org-pretty-entities t)
 #+END_SRC
 
 Headline sizes
 #+BEGIN_SRC emacs-lisp
   (custom-theme-set-faces
    'user
-   `(org-level-4 ((t (:height 1.1))))
-   `(org-level-3 ((t (:weight bold :height 1.25))))
-   `(org-level-2 ((t (:height 1.5))))
-   `(org-level-1 ((t (:weight bold :height 1.75))))
+   `(org-level-4 ((t (:height 1.2 :background nil))))
+   `(org-level-3 ((t (:weight bold :height 1.25 :background nil))))
+   `(org-level-2 ((t (:height 1.5 :background nil))))
+   `(org-level-1 ((t (:weight bold :height 1.75 :background nil))))
    `(org-document-title ((t (:height 2.0 :underline nil)))))
 #+END_SRC
 
