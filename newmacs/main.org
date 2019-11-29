@@ -25,11 +25,13 @@ Try to always download the packages that =use-package= wants to have installed.
   (require 'use-package)
   (setq use-package-always-ensure t)
 #+END_SRC
+
 ** Backups
 No files with =~= everywhere.
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . "~/.saves")))
 #+END_SRC
+
 ** Theme
 *** Theme
 Use =all-the-icons= for some eyecandy in the modeline
@@ -47,6 +49,7 @@ Use doom themes for modeline & overall theming
     (load-theme 'doom-nord t)
     (doom-themes-org-config))
 
+
   (use-package doom-modeline
     :custom
     (doom-modeline-icon t)
@@ -57,9 +60,9 @@ Use doom themes for modeline & overall theming
     (after-init . doom-modeline-mode)
     :config
     (setq doom-modeline-mu4e t
-          doom-modeline-buffer-encoding nil
-          ))
+          doom-modeline-buffer-encoding nil))
 #+END_SRC
+
 *** Font
 #+BEGIN_SRC emacs-lisp
   (custom-theme-set-faces
@@ -67,10 +70,12 @@ Use doom themes for modeline & overall theming
    '(variable-pitch ((t (:family "Ubuntu" :height 110 :weight light :width normal))))
    '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
 #+END_SRC
+
 ** Server
 #+BEGIN_SRC emacs-lisp
   (server-start)
 #+END_SRC
+
 ** Visual improvements
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
@@ -87,9 +92,11 @@ Use doom themes for modeline & overall theming
    show-trailing-whitespace t)
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
 ** Keybindings
 This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and general are loaded.
+
 #+BEGIN_SRC emacs-lisp
   (use-package general
     :config
@@ -120,6 +127,7 @@ should get called after both evil and general are loaded.
      "w s" 'evil-window-split
      "w v" 'evil-window-vsplit))
 #+END_SRC
+
 * Extensions
 ** Company
 #+BEGIN_SRC emacs-lisp
@@ -131,6 +139,7 @@ should get called after both evil and general are loaded.
   (use-package company-posframe
     :config (company-posframe-mode 1))
 #+END_SRC
+
 ** Diff-hl
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
@@ -140,6 +149,7 @@ should get called after both evil and general are loaded.
     :init
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+END_SRC
+
 ** Evil
 *** Basic settings
 Activate evil mode
@@ -155,6 +165,7 @@ Activate evil mode
   (use-package evil-exchange
     :config (evil-exchange-install))
 #+END_SRC
+
 *** Multi-cursor
 #+BEGIN_SRC emacs-lisp
   (use-package evil-multiedit
@@ -175,11 +186,13 @@ Activate evil mode
      "M-p" 'evil-multiedit-prev)
     (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
+
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :config (global-flycheck-mode))
 #+END_SRC
+
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
@@ -188,6 +201,7 @@ Activate evil mode
     (setq ivy-use-virtual-buffers t))
   (use-package counsel)
 #+END_SRC
+
 *** Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package prescient
@@ -197,11 +211,13 @@ Activate evil mode
   (use-package company-prescient
     :config (company-prescient-mode 1))
 #+END_SRC
+
 ** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
   (use-package evil-magit)
 #+END_SRC
+
 ** Mu4e
 The context definitions are in =private.org=.
 #+BEGIN_SRC emacs-lisp
@@ -308,6 +324,7 @@ Notification support with an extra package
     :hook ((web-mode . rainbow-delimiters-mode)
            (emacs-lisp-mode . rainbow-delimiters-mode)))
 #+END_SRC
+
 ** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -315,6 +332,7 @@ Notification support with an extra package
     (projectile-mode +1)
     (setq projectile-completion-system 'ivy))
 #+END_SRC
+
 ** Ripgrep
 #+BEGIN_SRC emacs-lisp
   (use-package rg
@@ -327,12 +345,14 @@ Notification support with an extra package
      "l" 'rg-list-searches
      "S" 'rg-save-search))
 #+END_SRC
+
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :config
     (which-key-mode))
 #+END_SRC
+
 * Languages
 ** CSS
 #+BEGIN_SRC emacs-lisp
@@ -341,14 +361,17 @@ Notification support with an extra package
   (use-package scss-mode
     :mode ("\\.scss$" "\\.sass$"))
 #+END_SRC
+
 ** CSV
 #+BEGIN_SRC emacs-lisp
   (use-package csv-mode)
 #+END_SRC
+
 ** Docker
 #+BEGIN_SRC emacs-lisp
   (use-package dockerfile-mode :mode "Dockerfile")
 #+END_SRC
+
 ** Emacs-Lisp
 #+BEGIN_SRC emacs-lisp
   (general-define-key
@@ -358,18 +381,22 @@ Notification support with an extra package
    "e e" 'eval-last-sexp
    "e b" 'eval-buffer)
 #+END_SRC
+
 ** Graphql
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode)
 #+END_SRC
+
 ** Groovy
 #+BEGIN_SRC emacs-lisp
   (use-package groovy-mode)
 #+END_SRC
+
 ** Haskell
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode)
 #+END_SRC
+
 ** JS & friends
 *** Json
 #+BEGIN_SRC emacs-lisp
@@ -377,10 +404,12 @@ Notification support with an extra package
     :mode "\\.json$")
   (add-to-list 'flycheck-disabled-checkers 'json-python-json)
 #+END_SRC
+
 *** JS
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level 2)
 #+END_SRC
+
 *** Typescript
 #+BEGIN_SRC emacs-lisp
   (defun my-web-mode-hook ())
@@ -454,22 +483,26 @@ Notification support with an extra package
   (setq-default typescript-indent-level 2)
   (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
 #+END_SRC
+
 ** Kotlin
 Only basic support :(
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode)
 #+END_SRC
+
 ** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :mode "\\.lua\\'"
     :interpreter "lua")
 #+END_SRC
+
 ** Markdown
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
     :config (setq markdown-fontify-code-blocks-natively t))
 #+END_SRC
+
 ** Org-Mode
 *** Prettification
 Use =variable-pitch-mode= for org, but also correctly format
@@ -545,6 +578,7 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
                "RET" 'org-edit-src-exit
                "BS" 'org-edit-src-abort)))
 #+END_SRC
+
 *** Org-Agenda keybindings
 #+BEGIN_SRC emacs-lisp
 
@@ -560,6 +594,7 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
    "O" 'delete-other-windows
    "o" 'org-agenda-clock-out)
 #+END_SRC
+
 *** Basic configuration
 Org-directory is =~/org=
 #+BEGIN_SRC emacs-lisp
@@ -568,6 +603,7 @@ Org-directory is =~/org=
         my-org-main-file (concat (file-name-as-directory org-directory) "main.org")
         my-org-work-file (concat (file-name-as-directory org-directory) "work.org"))
 #+END_SRC
+
 *** Agenda views
 All TODO entries that have not already been scheduled
 #+BEGIN_SRC emacs-lisp
@@ -576,6 +612,7 @@ All TODO entries that have not already been scheduled
            ((org-agenda-overriding-header "\nUnscheduled TODO")
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
 #+END_SRC
+
 *** Calendar
 We want our weeks to start properly
 #+BEGIN_SRC emacs-lisp
@@ -611,6 +648,7 @@ file. Using ivy, this ends up being more usable.
    org-refile-targets '((nil . (:maxlevel . 4)))
    org-refile-use-outline-path 'file)
 #+END_SRC
+
 *** Capture
 #+BEGIN_SRC emacs-lisp
   (general-define-key
@@ -638,12 +676,15 @@ Keybindings in capture mode
    "k" 'org-capture-kill
    "x" 'org-capture-kill)
 #+END_SRC
+
 *** Reveal
 Support for generating slides from org mode
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
   (use-package ox-reveal)
 #+END_SRC
+
+*** Contrib
 ** YAML
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode :mode "\\.ya?ml$")
