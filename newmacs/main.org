@@ -227,7 +227,6 @@ The context definitions are in =private.org=.
 
     (setq
      mail-user-agent 'mu4e-user-agent
-     mu4e-get-mail-command "offlineimap -o -u quiet"
      mu4e-update-interval 60
      message-send-mail-function 'smtpmail-send-it
      mu4e-use-fancy-chars t
