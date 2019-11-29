@@ -298,19 +298,6 @@ All keybindings are redefined for evil
    "j" 'mu4e-headers-next)
 #+END_SRC
 
-Notification support with an extra package
-#+BEGIN_SRC emacs-lisp
-  (use-package mu4e-alert
-    :config
-    (mu4e-alert-set-default-style 'libnotify)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-    (setq mu4e-alert-interesting-mail-query
-          (string-join '("flag:unread"
-                         "AND NOT flag:trashed"
-                         "AND NOT maildir:\"[Google Mail].Spam\"")
-                       " ")))
-#+END_SRC
 ** Parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
