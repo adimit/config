@@ -1,5 +1,3 @@
-* Notes
-** TODO Make a prettier mode line with all-the-icons package
 * Emacs config
 ** Package Configuration
 *** Fix TLS
@@ -9,6 +7,7 @@ visible.
 #+BEGIN_SRC emacs-lisp
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 #+END_SRC
+
 *** Melpa
 Add Melpa source
 #+BEGIN_SRC emacs-lisp
