@@ -501,7 +501,11 @@ everything that needs fixed pitch.
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :hook ((org-mode . org-indent-mode))
+    :hook (
+           (org-mode . org-indent-mode)
+           (org-mode . (lambda ()
+                         (setq left-margin-width 2
+                               right-margin-width 2))))
     :custom
     (setq-default org-edit-src-content-indentation 2))
 #+END_SRC
