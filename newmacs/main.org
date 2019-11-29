@@ -516,8 +516,7 @@ Some more prettification
     :hook ((org-mode . org-bullets-mode))
     :config (setq org-bullets-bullet-list '(" ")))
 
-  (setq org-ellipsis "  ⮟"
-        org-fontify-whole-heading-line t
+  (setq org-fontify-whole-heading-line t
         org-pretty-entities t)
 #+END_SRC
 
