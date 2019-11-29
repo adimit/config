@@ -385,6 +385,22 @@ Don't ask when exporting latex files
 #+BEGIN_SRC emacs-lisp
   (require 'ox-taskjuggler)
 #+END_SRC
+**** Structure templates
+Reset the org-structure-template-alist. For some reason, it was polluted.
+#+BEGIN_SRC emacs-lisp
+  (setq org-structure-template-alist
+        '(("a" . "export ascii")
+          ("c" . "center")
+          ("C" . "comment")
+          ("e" . "example")
+          ("E" . "export")
+          ("h" . "export html")
+          ("l" . "export latex")
+          ("q" . "quote")
+          ("s" . "src")
+          ("v" . "verse")))
+#+END_SRC
+
 *** Haskell
 Use stack by default.
 #+begin_src emacs-lisp
@@ -411,20 +427,20 @@ Use stack by default.
           (setq-local flycheck-javascript-eslint-executable eslint)))))
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
-  (add-hook 'typescript-tsx-mode-hook 'prettier-js-mode)
-  (add-hook 'typescript-mode-hook 'prettier-js-mode)
-
   (defun tslint-fix-file ()
     (interactive)
     (let ((the-command (concat "yarn tslint --fix " (buffer-file-name))))
       (message (concat "Running " the-command))
       (shell-command the-command)))
 
-  (add-hook 'typescript-mode-hook
-            (lambda () (add-hook 'after-save-hook 'tslint-fix-file nil 'make-it-local)))
+  (defun my-typescript-mode-hook ()
+    (prettier-js-mode)
+    (setq spacemacs-jump-handlers (cons '(tide-jump-to-definition :async t) ())))
 
-  (add-hook 'typescript-tsx-mode-hook
-            (lambda () (add-hook 'after-save-hook 'tslint-fix-file nil 'make-it-local)))
+  (setq-default typescript-indent-level 2)
+
+  (add-hook 'typescript-mode-hook 'my-typescript-mode-hook)
+  (add-hook 'typescript-tsx-mode-hook 'my-typescript-mode-hook)
 #+END_SRC
 
 ** Minor
