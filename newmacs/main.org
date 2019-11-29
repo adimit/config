@@ -4,6 +4,7 @@
 A temporary workaround is needed while [[https://github.com/syl20bnr/spacemacs/issues/12535][this issue]] is still in
 effect. Fixes TLS with melpa, which caused some packages to not be
 visible.
+
 #+BEGIN_SRC emacs-lisp
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 #+END_SRC
@@ -15,6 +16,7 @@ Add Melpa source
   (package-initialize)
   (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
 #+END_SRC
+
 *** Use-Package
 Try to always download the packages that =use-package= wants to have installed.
 #+BEGIN_SRC emacs-lisp
