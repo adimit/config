@@ -304,6 +304,7 @@ All keybindings are redefined for evil
 #+BEGIN_SRC emacs-lisp
   (add-hook 'mu4e-headers-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
   (add-hook 'mu4e-view-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
+  (setq shr-color-visible-luminance-min 80)
 #+END_SRC
 
 ** Parentheses
