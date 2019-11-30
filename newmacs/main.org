@@ -245,7 +245,7 @@ Store org-mode links to emails
 #+BEGIN_SRC emacs-lisp
   (require 'org-mu4e)
 #+END_SRC
-
+*** Keybindings
 All keybindings are redefined for evil
 #+BEGIN_SRC emacs-lisp
   (evil-set-initial-state 'mu4e-headers-mode 'normal)
@@ -298,6 +298,11 @@ All keybindings are redefined for evil
    "J" 'mu4e~headers-jump-to-maildir
    "k" 'mu4e-headers-prev
    "j" 'mu4e-headers-next)
+#+END_SRC
+
+*** Customization
+#+BEGIN_SRC emacs-lisp
+
 #+END_SRC
 
 ** Parentheses
