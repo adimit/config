@@ -488,7 +488,10 @@ Only basic support :(
 ** Ledger
 #+BEGIN_SRC emacs-lisp
   (use-package ledger-mode)
+  (use-package flycheck-ledger
+    :after flycheck)
 #+END_SRC
+
 ** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
