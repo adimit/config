@@ -485,6 +485,10 @@ Only basic support :(
   (use-package kotlin-mode)
 #+END_SRC
 
+** Ledger
+#+BEGIN_SRC emacs-lisp
+  (use-package ledger-mode)
+#+END_SRC
 ** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
