@@ -40,6 +40,10 @@ for i in $HOME/local/*/share/man
     set MANPATH $i $MANPATH
 end
 
+if [ -d $HOME/.pub-cache/bin ]
+   set PATH $HOME/.pub-cache/bin $PATH
+end
+
 # Change into a directory and ls. Create it first, if it doesn't exist.
 function c
     set -l folder $argv[1]
