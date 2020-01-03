@@ -214,6 +214,17 @@ Activate evil mode
     :config (company-prescient-mode 1))
 #+END_SRC
 
+** LSP
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :hook (dart-mode . lsp-deferred)
+    :commands lsp lsp-deferred)
+
+  (use-package lsp-ui :commands lsp-ui-mode)
+  (use-package company-lsp :commands company-lsp)
+
+#+END_SRC
+
 ** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
@@ -360,6 +371,14 @@ All keybindings are redefined for evil
 ** CSV
 #+BEGIN_SRC emacs-lisp
   (use-package csv-mode)
+#+END_SRC
+
+** Dart
+#+BEGIN_SRC emacs-lisp
+  (use-package dart-mode)
+  (setq-default lsp-dart-sdk-dir (concat
+                                  (file-name-as-directory (getenv "HOME"))
+                                  "local/dart-sdk"))
 #+END_SRC
 
 ** Docker
