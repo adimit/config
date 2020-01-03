@@ -509,8 +509,26 @@ Only basic support :(
   (use-package ledger-mode)
   (use-package flycheck-ledger
     :after flycheck)
+  (defun browse-paypal-history-at-point ()
+    "Open paypal.com order history.  The search term is an exact date range from `thing-at-point'."
+    (interactive)
+    (let ((date (substring (replace-regexp-in-string
+                            (regexp-quote "/") "-"
+                            (thing-at-point 'symbol 'no-props)
+                            nil 'literal)
+                           0 10)))
+      (browse-url (concat "https://www.paypal.com/myaccount/transactions/?start_date=" date "&end_date=" date))))
+  (defun browse-amazon-history-at-point ()
+    "Open amazon.de order history.  The search term is `thing-at-point'."
+    (interactive)
+    (browse-url (concat "https://www.amazon.de/gp/your-account/order-history/?search=" (thing-at-point 'symbol 'no-props))))
+  (general-define-key
+   :states 'normal
+   :keymaps 'ledger-mode-map
+   :prefix ", ."
+   "a" 'browse-amazon-history-at-point
+   "p" 'browse-paypal-history-at-point)
 #+END_SRC
-
 ** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
