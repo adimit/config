@@ -14,7 +14,8 @@ Add Melpa source
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (package-initialize)
-  (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 #+END_SRC
 
 *** Use-Package
@@ -543,6 +544,12 @@ Only basic support :(
 #+END_SRC
 
 ** Org-Mode
+*** Installation
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure org-plus-contrib)
+#+END_SRC
+
 *** Prettification
 Use =variable-pitch-mode= for org, but also correctly format
 everything that needs fixed pitch.
