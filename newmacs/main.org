@@ -153,6 +153,12 @@ should get called after both evil and general are loaded.
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+END_SRC
 
+** Editorconfig
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :config (editorconfig-mode 1))
+#+END_SRC
+
 ** Evil
 *** Basic settings
 Activate evil mode
