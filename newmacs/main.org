@@ -366,6 +366,10 @@ All keybindings are redefined for evil
     (which-key-mode))
 #+END_SRC
 
+** Writeroom mode
+#+BEGIN_SRC emacs-lisp
+  (use-package writeroom-mode)
+#+END_SRC
 * Languages
 ** CSS
 #+BEGIN_SRC emacs-lisp
