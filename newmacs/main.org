@@ -132,6 +132,14 @@ should get called after both evil and general are loaded.
 #+END_SRC
 
 * Extensions
+** Beacon
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :config (beacon-mode 1)
+    (setq beacon-blink-delay 0.15)
+    (setq beacon-blink-duration 0.15))
+#+END_SRC
+
 ** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
