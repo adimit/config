@@ -9,6 +9,11 @@ import XMonad.Prompt
 import qualified XMonad.StackSet as W
 import XMonad.Actions.GridSelect
 
+import XMonad.Layout.ThreeColumns
+import XMonad.Layout.Gaps
+import XMonad.Hooks.ManageDocks
+import XMonad.Layout.MouseResizableTile
+
 promptConfig :: XPConfig
 promptConfig = def { position          = Top
                    --, font              = myFont
@@ -28,8 +33,10 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask                , xK_t           ), windowGo D False) ]
   ++ -- general keys
   [ ((mask                , xK_Return      ), spawn "kitty")
+  , ((mask                , xK_Return      ), windows W.swapMaster)
   , ((mask                , xK_l           ), spawn "gnome-screensaver-command -l")
   , ((mask .|. shiftMask  , xK_q           ), spawn "gnome-session-save --gui --logout-dialog")
+  , ((mask                , xK_a           ), withFocused $ windows . W.sink) -- %! Push window back into tiling
   , ((mask                , xK_BackSpace   ), shellPromptHere promptConfig)
   , ((mask                , xK_grave       ), toggleWS) ]
   ++ -- Dynamic Workspac  es
@@ -45,11 +52,20 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_bracketright), windowToScreen R False) ]
   ++ -- Grid select
   [ ((mask                , xK_g           ), goToSelected def)]
+  ++ -- Resize
+  [ ((mask .|. shiftMask  , xK_h           ), sendMessage Shrink)
+  , ((mask .|. shiftMask  , xK_s           ), sendMessage Expand)
+  , ((mask                , xK_u           ), sendMessage ShrinkSlave)
+  , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
+
 
 main :: IO()
 main = xmonad
   $ withNavigation2DConfig def
   $ gnomeConfig
     { terminal = "kitty"
+    , layoutHook = avoidStrutsOn [D] $
+      ThreeColMid 1 (3/100) (1/3) |||
+      let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile ||| Full
     , modMask = mod4Mask
     , keys = \c -> myKeys c `M.union` keys gnomeConfig c }
