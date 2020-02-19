@@ -11,6 +11,7 @@ import XMonad.Actions.GridSelect
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Gaps
+import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageDocks
 import XMonad.Layout.MouseResizableTile
 
@@ -65,7 +66,8 @@ main = xmonad
   $ gnomeConfig
     { terminal = "kitty"
     , layoutHook = avoidStrutsOn [D] $
-      ThreeColMid 1 (3/100) (1/3) |||
-      let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile ||| Full
+      ThreeColMid 1 (3/100) (1/3)
+      ||| let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile
+      ||| noBorders Full
     , modMask = mod4Mask
     , keys = \c -> myKeys c `M.union` keys gnomeConfig c }
