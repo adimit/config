@@ -9,7 +9,7 @@ import XMonad.Prompt
 import qualified XMonad.StackSet as W
 import XMonad.Actions.GridSelect
 
-import XMonad.Layout.ThreeColumns
+import XMonad.Layout.MultiColumns
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageDocks
@@ -59,14 +59,13 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask                , xK_u           ), sendMessage ShrinkSlave)
   , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
 
-
 main :: IO()
 main = xmonad
   $ withNavigation2DConfig def
   $ gnomeConfig
     { terminal = "kitty"
     , layoutHook = avoidStrutsOn [D] $
-      ThreeColMid 1 (3/100) (1/3)
+      multiCol [2, 1, 0] 0 0.5 0.3
       ||| let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile
       ||| noBorders Full
     , modMask = mod4Mask
