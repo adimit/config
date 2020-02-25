@@ -61,6 +61,8 @@ myKeys XConfig { modMask = mask } = M.fromList $
 main :: IO()
 main = xmonad
   $ withNavigation2DConfig def
+    { defaultTiledNavigation = centerNavigation
+    , screenNavigation = centerNavigation }
   $ gnomeConfig
     { terminal = "kitty"
     , layoutHook = avoidStrutsOn [D] $
