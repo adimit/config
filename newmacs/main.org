@@ -367,6 +367,29 @@ All keybindings are redefined for evil
      "S" 'rg-save-search))
 #+END_SRC
 
+** Treemacs
+#+BEGIN_SRC emacs-lisp
+  (use-package treemacs
+    :defer t
+    :config
+    (treemacs-follow-mode t)
+    (treemacs-git-mode 'deferred)
+    (treemacs-filewatch-mode t)
+    (general-define-key
+     :states 'normal
+     :prefix ", t"
+     "t" 'treemacs
+     "f" 'treemacs-find-file
+     "p" 'treemacs-projectile
+     "P" 'treemacs-add-and-display-current-project))
+  (use-package treemacs-evil
+    :after treemacs evil)
+  (use-package treemacs-projectile
+    :after treemacs projectile)
+  (use-package treemacs-magit
+    :after treemacs magit)
+#+END_SRC
+
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -378,6 +401,7 @@ All keybindings are redefined for evil
 #+BEGIN_SRC emacs-lisp
   (use-package writeroom-mode)
 #+END_SRC
+
 * Languages
 ** CSS
 #+BEGIN_SRC emacs-lisp
@@ -415,6 +439,10 @@ All keybindings are redefined for evil
    "e b" 'eval-buffer)
 #+END_SRC
 
+** Fish
+#+BEGIN_SRC emacs-lisp
+  (use-package fish-mode)
+#+END_SRC
 ** Graphql
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode)
@@ -548,6 +576,7 @@ Only basic support :(
    "a" 'browse-amazon-history-at-point
    "p" 'browse-paypal-history-at-point)
 #+END_SRC
+
 ** Lua
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
