@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 import qualified Data.Map as M
 import XMonad
 import XMonad.Actions.CycleWS
@@ -18,15 +20,22 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.MouseResizableTile
 import System.Taffybar.Support.PagerHints (pagerHints)
 
+blue, black, white :: String
+blue = "#3388BB"
+black = "#000000"
+white = "#FFFFFF"
+
 promptConfig :: XPConfig
 promptConfig = def { position          = Top
-                   --, font              = myFont
-                   --, bgColor           = myHLBG
-                   --, fgColor           = myFG
-                   --, fgHLight          = myBG
-                   --, bgHLight          = myHL
-                   --, promptKeymap      = defaultXPKeymap' wordSep
-                   , promptBorderWidth = 0 }
+                   , font              = "xft:Fira Code"
+                   , alwaysHighlight   = True
+                   , height            = 30
+                   , bgColor           = black
+                   , borderColor       = blue
+                   , fgColor           = white
+                   , bgHLight          = blue
+                   , fgHLight          = black
+                   , promptBorderWidth = 2 }
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig { modMask = mask } = M.fromList $
@@ -60,7 +69,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_s           ), sendMessage Expand)
   , ((mask                , xK_u           ), sendMessage ShrinkSlave)
   , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
-  ++ -- multimedia
+  ++ -- Multimedia
   [ ((0,       xF86XK_AudioRaiseVolume), spawn $ volumeControl "5%+")
   , ((0,       xF86XK_AudioLowerVolume), spawn $ volumeControl "5%-")
   , ((0,       xF86XK_AudioMute       ), spawn $ volumeControl "toggle")
@@ -74,15 +83,16 @@ myKeys XConfig { modMask = mask } = M.fromList $
       ++ v ++ " | perl -wnE 'say /\\[(\\d?\\d?\\d%)\\]/' | tail -n 1)"
 
 main :: IO()
-main = xmonad $ docks $ ewmh $ pagerHints
-  $ withNavigation2DConfig def
-    { defaultTiledNavigation = centerNavigation
-    , screenNavigation = centerNavigation }
-  $ gnomeConfig
+main = xmonad $ docks $ ewmh $ pagerHints $ withNavigation2DConfig navconf $ gnomeConfig
     { terminal = "kitty"
-    , layoutHook = avoidStrutsOn [D] $
-      multiCol [2, 1, 0] 0 0.5 0.3
-      ||| let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile
-      ||| noBorders Full
+    , layoutHook = layout
     , modMask = mod4Mask
+    , normalBorderColor = black
+    , focusedBorderColor = blue
     , keys = \c -> myKeys c `M.union` keys gnomeConfig c }
+  where
+    navconf = def { defaultTiledNavigation = centerNavigation , screenNavigation = centerNavigation }
+    layout = avoidStrutsOn [D] $
+          let gap = 8 in gaps [(U, gap), (D, gap), (L, gap), (R, gap)] mouseResizableTile
+          ||| multiCol [2, 1, 0] 0 0.5 0.3
+          ||| noBorders Full
