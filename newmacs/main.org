@@ -443,6 +443,7 @@ All keybindings are redefined for evil
 #+BEGIN_SRC emacs-lisp
   (use-package fish-mode)
 #+END_SRC
+
 ** Graphql
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode)
@@ -664,6 +665,7 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
    ". a" 'org-archive-subtree
    ". s" 'org-schedule
    ". d" 'org-deadline
+   ". e" 'org-set-effort
    ". c c" 'org-clock-in
    ". c o" 'org-clock-out
    ". c g" 'org-clock-goto
