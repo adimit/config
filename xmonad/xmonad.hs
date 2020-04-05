@@ -8,12 +8,14 @@ import XMonad.Config.Gnome
 import XMonad.Prompt
 import qualified XMonad.StackSet as W
 import XMonad.Actions.GridSelect
+import XMonad.Hooks.EwmhDesktops (ewmh)
+import XMonad.Hooks.ManageDocks
 
 import XMonad.Layout.MultiColumns
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
-import XMonad.Hooks.ManageDocks
 import XMonad.Layout.MouseResizableTile
+import System.Taffybar.Support.PagerHints (pagerHints)
 
 promptConfig :: XPConfig
 promptConfig = def { position          = Top
@@ -59,7 +61,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
 
 main :: IO()
-main = xmonad
+main = xmonad $ docks $ ewmh $ pagerHints
   $ withNavigation2DConfig def
     { defaultTiledNavigation = centerNavigation
     , screenNavigation = centerNavigation }
