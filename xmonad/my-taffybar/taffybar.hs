@@ -12,6 +12,7 @@ main =
     myConfig = toTaffyConfig $ defaultSimpleTaffyConfig
        { startWidgets = [ workspaces ]
        , centerWidgets = [ textClockNewWith defaultClockConfig { clockFormatString = "<b>%R</b>  %e %b <small>W %V</small>" } ]
-       , endWidgets = [ batteryIconNew, sniTrayThatStartsWatcherEvenThoughThisIsABadWayToDoIt ]
+       , cssPath = Just "/home/aleks/config/xmonad/taffybar.css"
+       , endWidgets = [ sniTrayThatStartsWatcherEvenThoughThisIsABadWayToDoIt, batteryIconNew ]
        , barHeight = 32 }
   in startTaffybar myConfig
