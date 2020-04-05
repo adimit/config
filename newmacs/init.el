@@ -32,15 +32,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(amx-backend (quote ivy))
+ '(amx-backend 'ivy)
+ '(doom-themes-enable-bold t)
+ '(doom-themes-enable-italic t)
  '(package-selected-packages
-   (quote
-    (yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil))))
+   '(org-protocol fish-mode treemacs-magit treemacs-projectile treemacs-evil treemacs yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(fixed-pitch ((t (:family "Fira Code" :slant normal :weight normal :height 110 :width narrow))))
+ '(org-document-title ((t (:height 2.0 :underline nil))))
+ '(org-level-1 ((t (:weight bold :height 1.75 :background nil))))
+ '(org-level-2 ((t (:height 1.5 :background nil))))
+ '(org-level-3 ((t (:weight bold :height 1.25 :background nil))))
+ '(org-level-4 ((t (:height 1.2 :background nil))))
+ '(variable-pitch ((t (:family "Ubuntu" :height 110 :weight light :width normal)))))
 
 ;;; init.el ends here
