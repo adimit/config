@@ -1,0 +1,9 @@
+*.o
+*.hi
+/xmobar
+/xmonad
+/xmonad-contrib
+.stack-work
+xmonad.errors
+xmonad-*-linux
+prompt-history
