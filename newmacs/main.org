@@ -791,6 +791,41 @@ Support for generating slides from org mode
 #+END_SRC
 
 *** Contrib
+*** Protocol
+#+BEGIN_SRC emacs-lisp
+  (require 'org-protocol)
+#+END_SRC
+
+In order to get Gnome to handle the URL correctly, save this to =~/.local/share/applications/org-protocol.desktop=.
+
+#+BEGIN_SRC conf
+  [Desktop Entry]
+  Name=org-protocol
+  Exec=emacsclient %u
+  Type=Application
+  Terminal=false
+  Categories=System;
+  MimeType=x-scheme-handler/org-protocol;
+#+END_SRC
+
+and run
+
+#+BEGIN_SRC shell
+  update-desktop-database ~/.local/share/applications/
+#+END_SRC
+
+Then use the following bookmarklet for capturing:
+
+#+BEGIN_SRC fundamental
+  javascript:location.href='org-protocol://capture://c/'+
+        encodeURIComponent(location.href)+'/'+
+        encodeURIComponent(document.title)+'/'+
+        encodeURIComponent(window.getSelection())
+#+END_SRC
+
+Note the =/c/= in the URL, it denotes the capture template we want to use.
+
+Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html][the documentation]].
 ** YAML
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode :mode "\\.ya?ml$")
