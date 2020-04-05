@@ -1,6 +1,7 @@
 [user]
 	name = Aleksandar Dimitrov
 	email = git@aleks.bg
+	signingkey = B46267749DF0791A0E665DA4FD9B5D4F19DC5CEC
 [color]
 	branch = auto
 	diff = auto
@@ -43,3 +44,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[gpg]
+	program = gpg2
