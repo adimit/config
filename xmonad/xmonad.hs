@@ -11,6 +11,7 @@ import XMonad.Actions.GridSelect
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks
 
+import Graphics.X11.ExtraTypes.XF86
 import XMonad.Layout.MultiColumns
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
@@ -59,6 +60,18 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_s           ), sendMessage Expand)
   , ((mask                , xK_u           ), sendMessage ShrinkSlave)
   , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
+  ++ -- multimedia
+  [ ((0,       xF86XK_AudioRaiseVolume), spawn $ volumeControl "5%+")
+  , ((0,       xF86XK_AudioLowerVolume), spawn $ volumeControl "5%-")
+  , ((0,       xF86XK_AudioMute       ), spawn $ volumeControl "toggle")
+  , ((0,       xF86XK_AudioPlay       ), spawn $ gdbusLollypop "PlayPause")
+  , ((0,       xF86XK_AudioPause      ), spawn $ gdbusLollypop "Pause")
+  , ((0,       xF86XK_AudioNext       ), spawn $ gdbusLollypop "Next")
+  , ((0,       xF86XK_AudioPrev       ), spawn $ gdbusLollypop "Prev") ]
+  where
+    gdbusLollypop c = "gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player." ++ c
+    volumeControl v = "notify-send -t 400 \"Sound Level\" \"🔊 \"$(amixer -D pulse sset Master "
+      ++ v ++ " | perl -wnE 'say /\\[(\\d?\\d?\\d%)\\]/' | tail -n 1)"
 
 main :: IO()
 main = xmonad $ docks $ ewmh $ pagerHints
