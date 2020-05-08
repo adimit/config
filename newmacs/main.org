@@ -354,6 +354,20 @@ All keybindings are redefined for evil
     (setq projectile-completion-system 'ivy))
 #+END_SRC
 
+** Roam
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam
+    :hook (after-init . org-roam-mode)
+    :custom
+    (org-roam-directory (concat (file-name-as-directory (getenv "HOME")) "org/roam"))
+    :config
+    (setq org-roam-completion-system 'ivy))
+
+  (use-package company-org-roam
+    :config (push 'company-org-roam company-backends))
+
+#+END_SRC
+
 ** Ripgrep
 #+BEGIN_SRC emacs-lisp
   (use-package rg
