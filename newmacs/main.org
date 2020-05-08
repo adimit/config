@@ -379,6 +379,16 @@ All keybindings are redefined for evil
      "S" 'rg-save-search))
 #+END_SRC
 
+** Solaire
+#+BEGIN_SRC emacs-lisp
+  (use-package solaire-mode
+    :hook
+    ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+    (minibuffer-setup . solaire-mode-in-minibuffer)
+    :config
+    (solaire-global-mode +1)
+    (solaire-mode-swap-bg))
+#+END_SRC
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
@@ -445,7 +455,6 @@ We also want some Flutter support
     :after dart-mode
     :custom (flutter-sdk-path (concat (file-name-as-directory (getenv "HOME")) "local/flutter")))
 #+END_SRC
-
 
 ** Docker
 #+BEGIN_SRC emacs-lisp
