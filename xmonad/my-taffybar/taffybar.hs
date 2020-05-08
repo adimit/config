@@ -13,6 +13,6 @@ main =
        { startWidgets = [ workspaces ]
        , centerWidgets = [ textClockNewWith defaultClockConfig { clockFormatString = "<b>%R</b>  %e %b <small>W %V</small>" } ]
        , cssPath = Just "/home/aleks/config/xmonad/taffybar.css"
-       , endWidgets = [ sniTrayThatStartsWatcherEvenThoughThisIsABadWayToDoIt, batteryIconNew ]
+       , endWidgets = [ sniTrayThatStartsWatcherEvenThoughThisIsABadWayToDoIt, textBatteryNew "$percentage$ $time$", batteryIconNew ]
        , barHeight = 32 }
   in startTaffybar myConfig
