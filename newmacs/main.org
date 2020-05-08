@@ -232,12 +232,10 @@ Activate evil mode
 ** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :hook (dart-mode . lsp-deferred)
     :commands lsp lsp-deferred)
 
   (use-package lsp-ui :commands lsp-ui-mode)
   (use-package company-lsp :commands company-lsp)
-
 #+END_SRC
 
 ** Magit
@@ -433,10 +431,21 @@ All keybindings are redefined for evil
 ** Dart
 #+BEGIN_SRC emacs-lisp
   (use-package dart-mode)
+  (use-package lsp-dart
+   :hook (dart-mode . lsp-deferred))
   (setq-default lsp-dart-sdk-dir (concat
                                   (file-name-as-directory (getenv "HOME"))
                                   "local/dart-sdk"))
 #+END_SRC
+
+We also want some Flutter support
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flutter
+    :after dart-mode
+    :custom (flutter-sdk-path (concat (file-name-as-directory (getenv "HOME")) "local/flutter")))
+#+END_SRC
+
 
 ** Docker
 #+BEGIN_SRC emacs-lisp
