@@ -36,12 +36,12 @@ end
 
 set PATH $HOME/.local/bin $PATH
 
-for i in $HOME/local/*/share/man
-    set MANPATH $i $MANPATH
-end
-
 if [ -d $HOME/.pub-cache/bin ]
    set PATH $HOME/.pub-cache/bin $PATH
+end
+
+if [ -d $HOME/.cargo/bin ]
+    set -xg PATH $HOME/.cargo/bin $PATH
 end
 
 # Change into a directory and ls. Create it first, if it doesn't exist.
@@ -188,11 +188,6 @@ set -x _JAVA_AWT_WM_NONREPARENTING 1
 set local_config "$HOME/.config/fish/localconf.fish"
 if [ -f $local_config ]
     source $local_config
-end
-
-
-if [ -d $HOME/.cargo/bin ]
-    set -xg PATH $HOME/.cargo/bin $PATH
 end
 
 set -x _JAVA_AWT_WM_NONREPARENTING 1
