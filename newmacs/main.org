@@ -333,6 +333,7 @@ All keybindings are redefined for evil
 
 ** Newsticker
 #+BEGIN_SRC emacs-lisp
+  (require 'newsticker)
   (setq newsticker-url-list
         '(("SMBC" "https://www.smbc-comics.com/comic/rss" nil nil nil)
          ("XKCD" "https://xkcd.com/rss.xml")
