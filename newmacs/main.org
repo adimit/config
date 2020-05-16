@@ -331,6 +331,15 @@ All keybindings are redefined for evil
   (setq shr-color-visible-luminance-min 80)
 #+END_SRC
 
+** Newsticker
+#+BEGIN_SRC emacs-lisp
+  (setq newsticker-url-list
+        '(("SMBC" "https://www.smbc-comics.com/comic/rss" nil nil nil)
+         ("XKCD" "https://xkcd.com/rss.xml")
+         ("Fowl Language" "https://www.fowllanguagecomics.com/feed/")
+         ("Itchy Feet" "https://www.itchyfeetcomic.com/feeds/posts/default?alt=rss")))
+#+END_SRC
+
 ** Parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
@@ -389,6 +398,7 @@ All keybindings are redefined for evil
     (solaire-global-mode +1)
     (solaire-mode-swap-bg))
 #+END_SRC
+
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
