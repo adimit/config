@@ -96,6 +96,17 @@ Use doom themes for modeline & overall theming
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+*** Word Wrap
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-text-mode-hook ()
+    (visual-line-mode)
+    (writeroom-mode))
+
+  (add-hook 'text-mode-hook 'my-text-mode-hook)
+
+#+END_SRC
+
 ** Keybindings
 This is a function to set up keybindings with hydra & evil. It
 should get called after both evil and general are loaded.
