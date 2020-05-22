@@ -884,11 +884,14 @@ Note the =/c/= in the URL, it denotes the capture template we want to use.
 Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html][the documentation]].
 *** Ref
 #+BEGIN_SRC emacs-lisp
-  (setq reftex-default-bibliography '("~/doc/lib/bib/main.bib")
+  (use-package org-ref
+    :config
+    (setq reftex-default-bibliography '("~/doc/lib/bib/main.bib")
           org-ref-default-bibliography '("~/doc/lib/bib/main.bib")
           org-ref-pdf-directory "~/doc/lib"
           org-ref-bibliography-notes "~/doc/lib/notes.org"
-          bibtex-completion-pdf-open-function 'org-open-file)
+          bibtex-completion-pdf-open-function 'org-open-file
+          org-ref-completion-library "org-ref-ivy"))
 #+END_SRC
 
 ** YAML
