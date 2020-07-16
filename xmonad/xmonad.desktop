@@ -1,0 +1,6 @@
+[Desktop Entry]
+Version=1.0
+Name=XMonad
+Comment=XMonad session
+Exec=start-xmonad
+Type=Application

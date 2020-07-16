@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+my-taffybar&
+emacs --daemon&
+setxkbmap -layout us,bg -variant dvorak, \
+	-option caps:swapescape \
+	-option compose:ralt \
+	-option grp:rctrl_rshift_toggle
+
+xsetroot -cursor_name left_ptr
+
+
+compton&
+nm-applet &
+seafile-applet &
+
+dbus-launch ssh-agent xmonad > $HOME/.x-debug &
+XMONADPID=$!
+gnome-keyring-daemon &
+
+wait $XMONADPID
