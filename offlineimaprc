@@ -15,7 +15,7 @@ localfolders = ~/.mail/outlook
 [Repository RemoteOutlook]
 type = IMAP
 ssl = yes
-sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+sslcacertfile = /etc/ssl/certs/ca-bundle.crt
 auth_mechanisms = PLAIN
 remotehost = outlook.office365.com
 remoteusereval = get_user("itdesign/outlook.microsoft.com")
@@ -33,7 +33,7 @@ localfolders = ~/.mail/fastmail
 [Repository RemoteFastmail]
 type = IMAP
 ssl = yes
-sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+sslcacertfile = /etc/ssl/certs/ca-bundle.crt
 auth_mechanisms = PLAIN
 remotehost = imap.fastmail.com
 remoteusereval = get_user("mail/fastmail.com/offlineimap")
@@ -52,5 +52,6 @@ type = Gmail
 remoteusereval = get_user("mail/gmail.com")
 remotepasseval = get_pass("mail/gmail.com")
 ssl = yes
-sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+sslcacertfile = /etc/ssl/certs/ca-bundle.crt
+ssl_version = tls1_2
 folderfilter = lambda folder: folder in ['INBOX', 'Trash', '[Google Mail]/Trash', '[Google Mail]/Spam']
