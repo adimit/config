@@ -11,6 +11,8 @@ TAFFYBAR_REPO = xmonad/my-taffybar/taffybar
 EMACS_CONFIG = ~/.emacs.d
 FISH_CONFIG = ~/.config/fish/config.fish
 GIT_CONFIG = ~/.gitconfig
+OFFLINEIMAPRC = ~/.offlineimaprc
+OFFLINEIMAPPY = ~/.offlineimap.py
 KITTY_CONFIG = ~/.config/kitty/kitty.conf
 DUNST_CONFIG = ~/.config/dunst/dunstrc
 XMONAD_CONFIG = ~/.xmonad
@@ -64,7 +66,13 @@ ${XMONAD_CONFIG}:
 	ln -s ${PWD}/xmonad ${XMONAD_CONFIG}
 
 .PHONY: links
-links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${MKDOTFILE}
+links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${MKDOTFILE} ${OFFLINEIMAPRC} ${OFFLINEIMAPPY}
+
+${OFFLINEIMAPRC}:
+	ln -s ${PWD}/offlineimaprc ${OFFLINEIMAPRC}
+
+${OFFLINEIMAPPY}:
+	ln -s ${PWD}/offlineimap.py ${OFFLINEIMAPPY}
 
 xmonad:
 	mkdir -p xmonad
