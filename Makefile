@@ -1,7 +1,7 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap
 EXECUTABLES  = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 XMONAD = ~/.local/bin/xmonad
 TAFFYBAR = ~/.local/bin/my-taffybar
