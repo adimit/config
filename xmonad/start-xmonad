@@ -9,7 +9,7 @@ setxkbmap -layout us,bg -variant dvorak, \
 
 xsetroot -cursor_name left_ptr
 
-
+nitrogen --restore
 compton&
 nm-applet &
 seafile-applet &
