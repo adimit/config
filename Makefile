@@ -2,7 +2,8 @@
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
 EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap
-EXECUTABLES  = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
+EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
+X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 XMONAD = ~/.local/bin/xmonad
 TAFFYBAR = ~/.local/bin/my-taffybar
 XMONAD_REPO = xmonad/xmonad
@@ -25,7 +26,10 @@ XMONAD_XSESSION = /usr/share/xsessions/xmonad.desktop
 XMONAD_START_FILE = ~/.local/bin/start-xmonad
 
 .PHONY: install
-install: links ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES}
+install: links ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION}
+
+${X_TOUCHPAD_CONFIGURATION}:
+	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
 
 /usr/bin/signal-desktop:
 	sudo dnf -y copr enable luminoso/Signal-Desktop
