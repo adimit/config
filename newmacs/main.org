@@ -97,7 +97,6 @@ Use doom themes for modeline & overall theming
 #+END_SRC
 
 *** Word Wrap
-
 #+BEGIN_SRC emacs-lisp
   (defun my-text-mode-hook ()
     (flyspell-mode)
@@ -105,7 +104,6 @@ Use doom themes for modeline & overall theming
     (writeroom-mode))
 
   (add-hook 'text-mode-hook 'my-text-mode-hook)
-
 #+END_SRC
 
 ** Keybindings
@@ -895,6 +893,15 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
           org-ref-bibliography-notes "~/doc/lib/notes.org"
           bibtex-completion-pdf-open-function 'org-open-file
           org-ref-completion-library 'org-ref-ivy-cite))
+#+END_SRC
+
+
+** Rust
+#+BEGIN_SRC emacs-lisp
+  (use-package rustic)
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
 #+END_SRC
 
 ** YAML
