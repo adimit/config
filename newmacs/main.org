@@ -342,6 +342,9 @@ All keybindings are redefined for evil
   (add-hook 'mu4e-headers-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
   (add-hook 'mu4e-view-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
   (setq shr-color-visible-luminance-min 80)
+
+  (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
+  (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
 #+END_SRC
 
 ** Newsticker
