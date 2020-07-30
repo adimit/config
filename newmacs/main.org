@@ -894,7 +894,7 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
           org-ref-pdf-directory "~/doc/lib"
           org-ref-bibliography-notes "~/doc/lib/notes.org"
           bibtex-completion-pdf-open-function 'org-open-file
-          org-ref-completion-library "org-ref-ivy"))
+          org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
 
 ** YAML
