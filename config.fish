@@ -28,7 +28,10 @@ alias rm 'rm -iv'
 alias mv 'mv -i'
 alias cp 'cp -i'
 alias icat 'kitty +kitten icat'
-alias ssh 'env TERM=xterm-color ssh'
+
+function ssh
+    TERM=screen-256color ssh $argv
+end
 
 for i in $HOME/local/*/bin
     set PATH $i $PATH
