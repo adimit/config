@@ -30,7 +30,7 @@ alias cp 'cp -i'
 alias icat 'kitty +kitten icat'
 
 function ssh
-    TERM=screen-256color ssh $argv
+    TERM=screen-256color command ssh $argv
 end
 
 for i in $HOME/local/*/bin
