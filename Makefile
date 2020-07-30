@@ -1,11 +1,12 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
-XMONAD = ~/.local/bin/xmonad
-TAFFYBAR = ~/.local/bin/my-taffybar
+LOCAL = ${HOME}/.local
+XMONAD = ${LOCAL}/bin/xmonad
+TAFFYBAR = ${LOCAL}/bin/my-taffybar
 XMONAD_REPO = xmonad/xmonad
 XMONAD_CONTRIB_REPO = xmonad/xmonad-contrib
 TAFFYBAR_REPO = xmonad/my-taffybar/taffybar
@@ -19,14 +20,20 @@ DUNST_CONFIG = ~/.config/dunst/dunstrc
 XMONAD_CONFIG = ~/.xmonad
 MKDOTFILE = ~/bin/mkdotfile
 STACK = /usr/local/bin/stack
-MU = ~/.local/bin/mu
-MU_REPOSITORY = ~/var/src/mu
 FOREIGN_SOURCE = ~/var/src
+MU = ${LOCAL}/bin/mu
+MU_REPOSITORY = ${FOREIGN_SOURCE}/mu
+EMACS = ${LOCAL}/bin/emacs
+EMACS_REPOSITORY = ${FOREIGN_SOURCE}/emacs
 XMONAD_XSESSION = /usr/share/xsessions/xmonad.desktop
-XMONAD_START_FILE = ~/.local/bin/start-xmonad
+XMONAD_START_FILE = ${LOCAL}/bin/start-xmonad
+RUST = ${HOME}/.cargo/bin/rustc
+WASM_PACK = ${HOME}/.cargo/bin/wasm-pack
+CARGO_GENERATE = ${HOME}/.cargo/bin/cargo-generate
+RUST_ANALYZER = ${HOME}/.local/bin/rust-analyzer
 
 .PHONY: install
-install: links ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION}
+install: links ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
@@ -104,15 +111,37 @@ ${STACK}:
 ${MU}: ${MU_REPOSITORY}
 	sudo dnf install -y guile-devel texinfo html2text xdg-utils guile22-devel gmime30-devel xapian-core-devel webkit2gtk3-devel
 	cd ${MU_REPOSITORY} && \
-	./autogen.sh --prefix=${HOME}/.local && \
+	./autogen.sh --prefix=${LOCAL} && \
 	make -j5 && \
 	make install
 
 ${MU_REPOSITORY}: ${FOREIGN_SOURCE}
 	cd ${FOREIGN_SOURCE} && git clone https://github.com/djcb/mu.git
 
+${EMACS_REPOSITORY}: ${FOREIGN_SOURCE}
+	cd ${FOREIGN_SOURCE} && git clone https://git.savannah.gnu.org/git/emacs.git
+
+${EMACS}: ${EMACS_REPOSITORY}
+	sudo dnf builddep -y emacs
+	sudo dnf install -y jansson-devel
+	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} && make -j5 && make install
+
 ${FOREIGN_SOURCE}:
 	mkdir -p ~/var/src
 
 ~/bin:
 	mkdir -p ~/bin
+
+${RUST}:
+	curl --proto '=https' --tlsv1.2 -sSf 'https://sh.rustup.rs' > /tmp/install_rust.sh && sh /tmp/install_rust.sh -y && rm -f /tmp/install_rust.sh
+
+${WASM_PACK}:
+	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | sh
+
+${CARGO_GENERATE}:
+	sudo dnf install -y openssl-devel
+	cargo install cargo-generate
+
+${RUST_ANALYZER}:
+	curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o ${RUST_ANALYZER}
+	chmod +x ${RUST_ANALYZER}
