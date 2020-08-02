@@ -124,7 +124,7 @@ ${EMACS_REPOSITORY}: ${FOREIGN_SOURCE}
 ${EMACS}: ${EMACS_REPOSITORY}
 	sudo dnf builddep -y emacs
 	sudo dnf install -y jansson-devel
-	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} && make -j5 && make install
+	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} --with-xwidgets && make -j5 && make install
 
 ${FOREIGN_SOURCE}:
 	mkdir -p ~/var/src
