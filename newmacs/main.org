@@ -918,13 +918,13 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
           org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
 
-
 ** Rust
 #+BEGIN_SRC emacs-lisp
-  (use-package rustic)
-  (setq rustic-lsp-server 'rust-analyzer)
-  (setq lsp-rust-server 'rust-analyzer)
-  (setq lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer"))
+  (use-package rustic
+    :config (setq rustic-format-trigger 'on-save
+                  rustic-lsp-server 'rust-analyzer
+                  lsp-rust-server 'rust-analyzer
+                  lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer")))
 #+END_SRC
 
 ** YAML
