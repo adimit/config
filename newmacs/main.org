@@ -246,21 +246,25 @@ Activate evil mode
     :config (setq read-process-output-max (* 1024 1024))
     (general-define-key
      :states 'normal
-     :prefix ", l"
-     "x" 'lsp-execute-code-action))
+     ", l x" 'lsp-execute-code-action
+     "M-RET" 'lsp-execute-code-action))
 
   (use-package lsp-ui
     :commands lsp-ui-mode
     :config (setq lsp-ui-doc-header t
                   lsp-ui-doc-position 'at-point
-                  lsp-ui-doc-use-childframe nil)
+                  lsp-ui-doc-delay 1
+                  lsp-ui-doc-use-childframe 't)
     (general-define-key
      :states 'normal
-     :prefix ", l d"
+     :prefix ", l"
      "h" 'lsp-ui-doc-hide
      "d" 'lsp-describe-thing-at-point
      "u" 'lsp-ui-doc-unfocus-frame
-     "f" 'lsp-ui-doc-focus-frame))
+     "f" 'lsp-ui-doc-focus-frame
+     "l" 'flycheck-list-errors
+     "n" 'flycheck-next-error
+     "p" 'flycheck-previous-error))
 
 
   (use-package company-lsp :commands company-lsp)
