@@ -243,9 +243,26 @@ Activate evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :commands lsp lsp-deferred
-    :config (setq read-process-output-max (* 1024 1024)))
+    :config (setq read-process-output-max (* 1024 1024))
+    (general-define-key
+     :states 'normal
+     :prefix ", l"
+     "x" 'lsp-execute-code-action))
 
-  (use-package lsp-ui :commands lsp-ui-mode)
+  (use-package lsp-ui
+    :commands lsp-ui-mode
+    :config (setq lsp-ui-doc-header t
+                  lsp-ui-doc-position 'at-point
+                  lsp-ui-doc-use-childframe nil)
+    (general-define-key
+     :states 'normal
+     :prefix ", l d"
+     "h" 'lsp-ui-doc-hide
+     "d" 'lsp-describe-thing-at-point
+     "u" 'lsp-ui-doc-unfocus-frame
+     "f" 'lsp-ui-doc-focus-frame))
+
+
   (use-package company-lsp :commands company-lsp)
 #+END_SRC
 
