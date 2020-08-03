@@ -749,6 +749,12 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
    :states 'normal
    :prefix ", o"
    "a" 'org-agenda)
+  (general-define-key
+   :states 'normal
+   :prefix ", c"
+   "i" 'org-clock-in-last
+   "g" 'org-clock-goto
+   "o" 'org-clock-out)
 
   (add-hook 'org-src-mode-hook
             (lambda ()
