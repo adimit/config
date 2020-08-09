@@ -278,7 +278,10 @@ Activate evil mode
 ** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
-  (use-package evil-magit)
+  (use-package evil-magit
+    :after magit)
+  (use-package forge
+    :after magit)
 #+END_SRC
 
 ** Mu4e
