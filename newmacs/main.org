@@ -627,7 +627,7 @@ We also want some Flutter support
 
 
   (setq-default typescript-indent-level 2)
-  (setq-default tide-tsserver-executable "/home/aleks/local/npm/bin/tsserver")
+  (setq-default tide-tsserver-executable "/home/aleks/.local/bin/tsserver")
 #+END_SRC
 
 ** Kotlin
