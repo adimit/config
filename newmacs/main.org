@@ -29,6 +29,12 @@ Try to always download the packages that =use-package= wants to have installed.
   (setq use-package-always-ensure t)
 #+END_SRC
 
+** Auth
+This uses =pass= for all auth storage, including =mu4e= and =ghub=. If there are problems remember =(setq auth-source-debug t).=
+#+begin_src emacs-lisp
+  (auth-source-pass-enable)
+#+end_src
+
 ** Backups
 No files with =~= everywhere.
 #+BEGIN_SRC emacs-lisp
@@ -293,8 +299,7 @@ The context definitions are in =private.org=.
      mu4e-headers-fields '((:human-date . 25)
                            (:flags . 6)
                            (:from . 22)
-                           (:thread-subject . nil)))
-    (auth-source-pass-enable))
+                           (:thread-subject . nil))))
 #+END_SRC
 
 Store org-mode links to emails
