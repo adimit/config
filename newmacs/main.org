@@ -127,7 +127,6 @@ should get called after both evil and general are loaded.
      :states 'normal
      :prefix ","
      "," (general-simulate-key "M-x")
-     "TAB" 'switch-to-prev-buffer
      "f" 'counsel-find-file
      "g s" 'magit-status
 
