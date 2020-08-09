@@ -894,10 +894,9 @@ Keybindings in capture mode
 #+END_SRC
 
 *** Reveal
-Support for generating slides from org mode
+Support for generating slides from org mode. Removed =ox-reveal= for now as it was messing with structure templates. The replacement is apparently =org-re-reveal= [[https://gitlab.com/oer/org-re-reveal][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
-  (use-package ox-reveal)
 #+END_SRC
 
 *** Contrib
