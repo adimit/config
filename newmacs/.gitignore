@@ -4,3 +4,11 @@ projectile-bookmarks.eld
 recentf
 transient
 var
+.*
+/eshell
+/bookmarks
+*.sqlite
+/network-security.data
+/org-clock-save.el
+/session.*
+/tramp
