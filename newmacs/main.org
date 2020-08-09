@@ -612,7 +612,6 @@ We also want some Flutter support
   (use-package web-mode
     :mode (("\\.tsx$" . web-mode))
     :init
-    (add-hook 'web-mode-hook 'variable-pitch-mode)
     (add-hook 'web-mode-hook 'company-mode)
     (add-hook 'web-mode-hook 'prettier-js-mode)
     (add-hook 'web-mode-hook (lambda () (pcase (file-name-extension buffer-file-name)
