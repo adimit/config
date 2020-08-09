@@ -46,3 +46,5 @@
 	required = true
 [gpg]
 	program = gpg2
+[github]
+	user = adimit
