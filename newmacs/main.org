@@ -854,11 +854,31 @@ file. Using ivy, this ends up being more usable.
    "l" '(bookmark-jump "org-capture-bookmark"))
 
   (setq org-capture-templates
-        '(
-          ("c" "Todo" entry (file+headline my-org-main-file "NEW")
-           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i")
+        '(("c" "Todo" entry (file+headline my-org-main-file "NEW")
+           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
+          ("C" "Add to current" entry (clock)
+           "* TODO %^{Title}\n%i%?"
+           :prepend t)
+          ("u" "Urgent item" entry (file+headline my-org-work-file "NEW")
+           "* TODO %^{Title}\n:PROPERTIES:\n:TIMESTAMP: %U\n:Reference: %f %a\n:END:\n%i%?"
+           :clock-in t)
           ("w" "Work" entry (file+headline my-org-work-file "NEW")
-           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i")))
+           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
+          ("s" "Sprint" entry (file my-org-work-file)
+           (function (lambda () (string-join
+            '("* Sprint %^{Title} [[http://xjira/secure/RapidBoard.jspa?rapidView=292&quickFilter=2360][(board)]]"
+              "#+BEGIN: clocktable :scope subtree :maxlevel 2 :step day :block thisweek :compact t :maxlevel 2"
+              "#+END:"
+              "** Recurring"
+              "*** Calls"
+              "*** Daily"
+              "*** Refinement"
+              "*** Code Review"
+              "*** Emails"
+              "** Tasks"
+              "%i%?")
+            "\n")))
+           :jump-to-captured t)))
 #+END_SRC
 
 Keybindings in capture mode
