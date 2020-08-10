@@ -875,6 +875,7 @@ file. Using ivy, this ends up being more usable.
               "*** Refinement"
               "*** Code Review"
               "*** Emails"
+              "*** Retro"
               "** Tasks"
               "%i%?")
             "\n")))
