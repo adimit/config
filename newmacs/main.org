@@ -36,9 +36,10 @@ This uses =pass= for all auth storage, including =mu4e= and =ghub=. If there are
 #+end_src
 
 ** Backups
-No files with =~= everywhere.
+No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . "~/.saves")))
+  (setq create-lockfiles nil)
 #+END_SRC
 
 ** Theme
