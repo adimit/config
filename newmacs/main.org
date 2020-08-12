@@ -432,6 +432,21 @@ All keybindings are redefined for evil
      "S" 'rg-save-search))
 #+END_SRC
 
+** Smerge
+#+begin_src emacs-lisp
+  (general-define-key
+   :states 'normal
+   :modes 'smerge-mode
+   :prefix ", d"
+   "n" 'smerge-next
+   "p" 'smerge-prev
+   "j" 'smerge-keep-lower
+   "k" 'smerge-keep-upper
+   "c" 'smerge-keep-all
+   "X" 'smerge-keep-base
+   "x" 'smerge-swap
+   "r" 'smerge-resolve)
+#+end_src
 ** Solaire
 #+BEGIN_SRC emacs-lisp
   (use-package solaire-mode
