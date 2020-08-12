@@ -759,6 +759,7 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
    :prefix ","
    "'" 'org-edit-special
    ". '" 'org-edit-special
+   ". i" 'org-insert-structure-template
    ". o" 'org-open-at-point
    ". h" 'org-promote-subtree
    ". l" 'org-demote-subtree
@@ -963,11 +964,13 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
           bibtex-completion-pdf-open-function 'org-open-file
           org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
+
 *** Clock
 #+begin_src emacs-lisp
   (setq org-clock-persist t)
   (org-clock-persistence-insinuate)
 #+end_src
+
 ** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
