@@ -1,7 +1,7 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 LOCAL = ${HOME}/.local
@@ -31,9 +31,11 @@ RUST = ${HOME}/.cargo/bin/rustc
 WASM_PACK = ${HOME}/.cargo/bin/wasm-pack
 CARGO_GENERATE = ${HOME}/.cargo/bin/cargo-generate
 RUST_ANALYZER = ${HOME}/.local/bin/rust-analyzer
+FONTS = ${HOME}/.fonts
+FIRA_CODE = ${FONTS}/FiraCode
 
 .PHONY: install
-install: links ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER}
+install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
@@ -41,6 +43,9 @@ ${X_TOUCHPAD_CONFIGURATION}:
 /usr/bin/signal-desktop:
 	sudo dnf -y copr enable luminoso/Signal-Desktop
 	sudo dnf install -y signal-desktop
+
+/usr/bin/oggenc:
+	sudo dnf install -y vorbis-tools
 
 /usr/bin/seafile-applet:
 	sudo dnf install -y seafile-client
@@ -115,10 +120,10 @@ ${MU}: ${MU_REPOSITORY}
 	make -j5 && \
 	make install
 
-${MU_REPOSITORY}: ${FOREIGN_SOURCE}
+${MU_REPOSITORY}:
 	cd ${FOREIGN_SOURCE} && git clone https://github.com/djcb/mu.git
 
-${EMACS_REPOSITORY}: ${FOREIGN_SOURCE}
+${EMACS_REPOSITORY}:
 	cd ${FOREIGN_SOURCE} && git clone https://git.savannah.gnu.org/git/emacs.git
 
 ${EMACS}: ${EMACS_REPOSITORY}
@@ -145,3 +150,15 @@ ${CARGO_GENERATE}:
 ${RUST_ANALYZER}:
 	curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o ${RUST_ANALYZER}
 	chmod +x ${RUST_ANALYZER}
+
+${FONTS}:
+	mkdir -p ${FONTS}
+
+FIRA_TMP_FILE = /tmp/fira_code.zip
+
+${FIRA_CODE}:
+	curl -L 'https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip' -o ${FIRA_TMP_FILE}
+	mkdir -p ${FIRA_CODE}
+	unzip ${FIRA_TMP_FILE} -d ${FIRA_CODE}
+	rm -f ${FIRA_TMP_FILE}
+	fc-cache -fv ${FONTS}
