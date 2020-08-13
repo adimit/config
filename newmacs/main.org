@@ -768,6 +768,7 @@ Hide emphasis markers, gives a bit more of a WYSIWYG feel.
    ". d" 'org-deadline
    ". e" 'org-set-effort
    ". c c" 'org-clock-in
+   ". c i" 'org-clock-in
    ". c o" 'org-clock-out
    ". c g" 'org-clock-goto
    ". c x" 'org-clock-cancel
