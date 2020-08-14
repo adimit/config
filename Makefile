@@ -33,9 +33,10 @@ CARGO_GENERATE = ${HOME}/.cargo/bin/cargo-generate
 RUST_ANALYZER = ${HOME}/.local/bin/rust-analyzer
 FONTS = ${HOME}/.fonts
 FIRA_CODE = ${FONTS}/FiraCode
+FIRA_GO = ${FONTS}/FiraGo
 
 .PHONY: install
-install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE}
+install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
@@ -154,11 +155,18 @@ ${RUST_ANALYZER}:
 ${FONTS}:
 	mkdir -p ${FONTS}
 
-FIRA_TMP_FILE = /tmp/fira_code.zip
+FIRA_TMP_FILE = /tmp/fonts.zip
 
 ${FIRA_CODE}:
 	curl -L 'https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip' -o ${FIRA_TMP_FILE}
 	mkdir -p ${FIRA_CODE}
 	unzip ${FIRA_TMP_FILE} -d ${FIRA_CODE}
+	rm -f ${FIRA_TMP_FILE}
+	fc-cache -fv ${FONTS}
+
+${FIRA_GO}:
+	curl -L 'https://bboxtype.com/downloads/FiraGO/Download_Folder_FiraGO_1001.zip' -o ${FIRA_TMP_FILE}
+	mkdir -p ${FIRA_GO}
+	unzip ${FIRA_TMP_FILE} -d ${FIRA_GO}
 	rm -f ${FIRA_TMP_FILE}
 	fc-cache -fv ${FONTS}
