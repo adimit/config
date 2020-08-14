@@ -49,16 +49,10 @@ Use =all-the-icons= for some eyecandy in the modeline
   (use-package all-the-icons)
 #+END_SRC
 
-Use doom themes for modeline & overall theming
+Use doom themes for modeline & Prot's Modus Vivendi
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes
-    :custom
-    (doom-themes-enable-italic t)
-    (doom-themes-enable-bold t)
-    :config
-    (load-theme 'doom-nord t)
-    (doom-themes-org-config))
-
+  (use-package modus-vivendi-theme
+    :config (load-theme 'modus-vivendi t))
 
   (use-package doom-modeline
     :custom
@@ -70,16 +64,24 @@ Use doom themes for modeline & overall theming
     (after-init . doom-modeline-mode)
     :config
     (setq doom-modeline-mu4e t
-          doom-modeline-buffer-encoding nil))
+	  doom-modeline-buffer-encoding nil))
 #+END_SRC
 
 *** Font
+
 #+BEGIN_SRC emacs-lisp
-  (custom-theme-set-faces
-   'user
-   '(variable-pitch ((t (:family "Ubuntu" :height 110 :weight light :width normal))))
-   '(fixed-pitch ((t ( :family "Fira Code" :slant normal :weight normal :height 110 :width narrow)))))
+  (set-face-attribute 'default nil :font "Fira Code-12")
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code-12")
+  (set-face-attribute 'variable-pitch nil :font "Dejavu Serif-13.0" :weight 'normal :height 1.0)
+  (setq line-spacing 0.1)
 #+END_SRC
+
+Variable pitch for =org-mode=
+
+#+begin_src emacs-lisp
+  (use-package org-variable-pitch
+    :hook ((org-mode . org-variable-pitch-minor-mode)))
+#+end_src
 
 ** Server
 #+BEGIN_SRC emacs-lisp
@@ -699,13 +701,6 @@ Only basic support :(
 #+END_SRC
 
 *** Prettification
-Use =variable-pitch-mode= for org, but also correctly format
-everything that needs fixed pitch.
-#+BEGIN_SRC emacs-lisp
-  (use-package org-variable-pitch
-    :hook ((org-mode . org-variable-pitch-minor-mode)))
-#+END_SRC
-
 Enable indent mode, so spaces don't clutter the file.
 #+BEGIN_SRC emacs-lisp
   (use-package org
