@@ -889,7 +889,7 @@ file. Using ivy, this ends up being more usable.
               "*** Code Review"
               "*** Emails"
               "** Tasks"
-              "*** TODO Review"
+              "*** TODO Sprint Review"
               "*** TODO Retro"
               "*** TODO SP1"
               "*** TODO SP2"
