@@ -870,7 +870,7 @@ file. Using ivy, this ends up being more usable.
         '(("c" "Todo" entry (file+headline my-org-main-file "NEW")
            "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
           ("C" "Add to current" entry (clock)
-           "* TODO %^{Title}\n%i%?"
+           "- [ ] %i%?"
            :prepend t)
           ("u" "Urgent item" entry (file+headline my-org-work-file "NEW")
            "* TODO %^{Title}\n:PROPERTIES:\n:TIMESTAMP: %U\n:Reference: %f %a\n:END:\n%i%?"
@@ -880,19 +880,24 @@ file. Using ivy, this ends up being more usable.
           ("s" "Sprint" entry (file my-org-work-file)
            (function (lambda () (string-join
             '("* Sprint %^{Title} [[http://xjira/secure/RapidBoard.jspa?rapidView=292&quickFilter=2360][(board)]]"
-              "#+BEGIN: clocktable :scope subtree :maxlevel 2 :step day :block thisweek :compact t :maxlevel 2"
+              ""
+              "** Times"
+              ""
+              "#+BEGIN: clocktable :scope file :step day :block thisweek :compact t :maxlevel 3 :stepskip0 t :formula %"
               "#+END:"
-              "** Recurring"
-              "*** Calls"
+              ""
+              "** Meetings"
               "*** Daily"
               "*** Refinement"
+              "*** Sprint Review"
+              "*** Retro"
+              "*** SP1"
+              "*** SP2"
+              "** Overhead"
+              "*** Calls"
               "*** Code Review"
               "*** Emails"
               "** Tasks"
-              "*** TODO Sprint Review"
-              "*** TODO Retro"
-              "*** TODO SP1"
-              "*** TODO SP2"
               "%i%?")
             "\n")))
            :jump-to-captured t)))
