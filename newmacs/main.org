@@ -74,7 +74,7 @@ Use doom themes for modeline & Prot's Modus Vivendi
 	  doom-modeline-buffer-encoding nil))
 #+END_SRC
 
-*** Font
+*** Fonts
 
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil :font "Fira Code-12")
