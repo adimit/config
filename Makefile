@@ -1,8 +1,10 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
+NPM_EXECUTABLES = /tsc /eslint /prettier
+NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 LOCAL = ${HOME}/.local
 XMONAD = ${LOCAL}/bin/xmonad
@@ -18,7 +20,6 @@ OFFLINEIMAPPY = ~/.offlineimap.py
 KITTY_CONFIG = ~/.config/kitty/kitty.conf
 DUNST_CONFIG = ~/.config/dunst/dunstrc
 XMONAD_CONFIG = ~/.xmonad
-MKDOTFILE = ~/bin/mkdotfile
 STACK = /usr/local/bin/stack
 FOREIGN_SOURCE = ~/var/src
 MU = ${LOCAL}/bin/mu
@@ -36,7 +37,11 @@ FIRA_CODE = ${FONTS}/FiraCode
 FIRA_GO = ${FONTS}/FiraGo
 
 .PHONY: install
-install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO}
+install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES}
+
+.PHONY: npm-prefix
+npm-prefix: /usr/bin/npm
+	npm set prefix ${LOCAL}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
@@ -83,7 +88,7 @@ ${XMONAD_CONFIG}:
 	ln -s ${PWD}/xmonad ${XMONAD_CONFIG}
 
 .PHONY: links
-links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${MKDOTFILE} ${OFFLINEIMAPRC} ${OFFLINEIMAPPY}
+links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${OFFLINEIMAPRC} ${OFFLINEIMAPPY}
 
 ${OFFLINEIMAPRC}:
 	ln -s ${PWD}/offlineimaprc ${OFFLINEIMAPRC}
@@ -103,11 +108,7 @@ ${XMONAD_CONTRIB_REPO}: xmonad
 ${TAFFYBAR_REPO}: xmonad
 	cd xmonad/my-taffybar && git clone "git@github.com:taffybar/taffybar.git"
 
-${MKDOTFILE}: ~/bin
-	ln -s ${HOME}/config/bin/mkdotfile ${HOME}/bin
-
-.PHONY: build
-build: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${TAFFYBAR_REPO}
+${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${TAFFYBAR_REPO}
 	sudo dnf install -y gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
 	cd xmonad && stack install
 
@@ -170,3 +171,12 @@ ${FIRA_GO}:
 	unzip ${FIRA_TMP_FILE} -d ${FIRA_GO}
 	rm -f ${FIRA_TMP_FILE}
 	fc-cache -fv ${FONTS}
+
+${LOCAL}/bin/tsc: npm-prefix
+	npm i -g typescript
+
+${LOCAL}/bin/eslint: npm-prefix
+	npm i -g eslint
+
+${LOCAL}/bin/prettier: npm-prefix
+	npm i -g prettier
