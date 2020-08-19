@@ -79,7 +79,7 @@ Use doom themes for modeline & Prot's Modus Vivendi
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil :font "Fira Code-12")
   (set-face-attribute 'fixed-pitch nil :font "Fira Code-12")
-  (set-face-attribute 'variable-pitch nil :font "Dejavu Serif-13.0" :weight 'normal :height 1.0)
+  (set-face-attribute 'variable-pitch nil :font "FiraGo-14.0" :weight 'light)
   (setq line-spacing 0.1)
 #+END_SRC
 
