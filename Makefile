@@ -1,7 +1,7 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
