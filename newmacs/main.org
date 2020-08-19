@@ -316,7 +316,7 @@ Insert the current ticket number if we're on a KNUTH feature branch.
   Ignores comments"
     (save-excursion
       (goto-char 0)
-      (search-forward needle nil 'noerror)))
+      (search-forward-regexp needle nil 'noerror)))
 
   (add-hook 'git-commit-setup-hook 'insert-knuth-ticket-number-from-branch)
 #+end_src
