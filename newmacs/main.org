@@ -1,14 +1,5 @@
 * Emacs config
 ** Package Configuration
-*** Fix TLS
-A temporary workaround is needed while [[https://github.com/syl20bnr/spacemacs/issues/12535][this issue]] is still in
-effect. Fixes TLS with melpa, which caused some packages to not be
-visible.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-#+END_SRC
-
 *** Melpa
 Add Melpa source
 #+BEGIN_SRC emacs-lisp
