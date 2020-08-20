@@ -160,12 +160,16 @@ should get called after both evil and general are loaded.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :config
-    (setq company-dabbrev-downcase 0)
+    (setq company-dabbrev-downcase 'case-replace)
     (setq company-idle-delay 0.2)
     (global-company-mode))
-  (use-package company-posframe
-    :config (company-posframe-mode 1))
 #+END_SRC
+
+Add nice icons in the company popup.
+#+begin_src emacs-lisp
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+#+end_src
 
 ** Diff-hl
 #+BEGIN_SRC emacs-lisp

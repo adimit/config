@@ -33,7 +33,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(modus-vivendi-theme org-mru-clock forge rustic rustic-mode org-protocol fish-mode treemacs-magit treemacs-projectile treemacs-evil treemacs yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil)))
+   '(company-box modus-vivendi-theme org-mru-clock forge rustic rustic-mode org-protocol fish-mode treemacs-magit treemacs-projectile treemacs-evil treemacs yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil)))
 
 
 ;;; init.el ends here
