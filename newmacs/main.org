@@ -769,17 +769,6 @@ Some more prettification
         org-pretty-entities t)
 #+END_SRC
 
-Headline sizes
-#+BEGIN_SRC emacs-lisp
-  (custom-theme-set-faces
-   'user
-   `(org-level-4 ((t (:height 1.2 :background nil))))
-   `(org-level-3 ((t (:weight bold :height 1.25 :background nil))))
-   `(org-level-2 ((t (:height 1.5 :background nil))))
-   `(org-level-1 ((t (:weight bold :height 1.75 :background nil))))
-   `(org-document-title ((t (:height 2.0 :underline nil)))))
-#+END_SRC
-
 Hide emphasis markers, gives a bit more of a WYSIWYG feel.
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-emphasis-markers t)
