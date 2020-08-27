@@ -1,6 +1,5 @@
-* Emacs config
-** Package Configuration
-*** Melpa
+* Package Setup
+** Melpa
 Add Melpa source
 #+BEGIN_SRC emacs-lisp
   (require 'package)
@@ -9,7 +8,7 @@ Add Melpa source
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 #+END_SRC
 
-*** Use-Package
+** Use-Package
 Try to always download the packages that =use-package= wants to have installed.
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
@@ -20,7 +19,9 @@ Try to always download the packages that =use-package= wants to have installed.
   (setq use-package-always-ensure t)
 #+END_SRC
 
+* Basic Setup
 ** Auth
+
 This uses =pass= for all auth storage, including =mu4e= and =ghub=. If there are problems remember =(setq auth-source-debug t).=
 
 #+begin_src emacs-lisp
@@ -34,91 +35,55 @@ Let Emacs query the pass phrase instead of an external pinentry dialogue.
 #+end_src
 
 ** Backups
+
 No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
+
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . "~/.saves")))
   (setq create-lockfiles nil)
 #+END_SRC
 
-** Theme
-*** Theme
-Use =all-the-icons= for some eyecandy in the modeline
+** Evil
+*** Basic settings
+Activate evil mode
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons)
-#+END_SRC
-
-Use doom themes for modeline & Prot's Modus Vivendi
-#+BEGIN_SRC emacs-lisp
-  (use-package modus-vivendi-theme
-    :config (load-theme 'modus-vivendi t))
-
-  (use-package doom-modeline
-    :custom
-    (doom-modeline-icon t)
-    (doom-modeline-buffer-file-name-style 'buffer-name)
-    (doom-modeline-buffer-state-icon nil)
-
-    :hook
-    (after-init . doom-modeline-mode)
+  (use-package evil
     :config
-    (setq doom-modeline-mu4e t
-	  doom-modeline-buffer-encoding nil))
+    (evil-mode t))
+
+  (use-package evil-surround
+    :config
+    (global-evil-surround-mode t))
+
+  (use-package evil-exchange
+    :config (evil-exchange-install))
 #+END_SRC
 
-*** Fonts
-
+*** Multi-cursor
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :font "Fira Code-12")
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code-12")
-  (set-face-attribute 'variable-pitch nil :font "FiraGo-14.0" :weight 'light)
-  (setq line-spacing 0.1)
-#+END_SRC
-
-Variable pitch for =org-mode=
-
-#+begin_src emacs-lisp
-  (use-package org-variable-pitch
-    :hook ((org-mode . org-variable-pitch-minor-mode)))
-#+end_src
-
-** Server
-#+BEGIN_SRC emacs-lisp
-  (server-start)
-#+END_SRC
-
-** Visual improvements
-#+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode 0)
-  (global-hl-line-mode)
-  (set-face-attribute hl-line-face nil :underline nil)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (setq-default
-   inhibit-startup-screen t
-   indent-tabs-mode nil
-   initial-scratch-message ""
-   mouse-yank-at-point t
-   show-trailing-whitespace t)
-  (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-*** Word Wrap
-#+BEGIN_SRC emacs-lisp
-  (defun my-text-mode-hook ()
-    (flyspell-mode)
-    (visual-line-mode)
-    (writeroom-mode))
-
-  (add-hook 'text-mode-hook 'my-text-mode-hook)
+  (use-package evil-multiedit
+    :config
+    (general-define-key
+     :states 'visual
+     "R" 'evil-multiedit-match-all
+     "r" 'evil-multiedit-and-next)
+    (general-define-key
+     :states 'normal
+     :prefix ", r"
+     "r" 'evil-multiedit-match-and-next
+     "R" 'evil-multiedit-match-and-prev)
+    (general-define-key
+     :states 'multiedit
+     "RET" 'evil-multiedit-toggle-or-restrict-region
+     "M-n" 'evil-multiedit-next
+     "M-p" 'evil-multiedit-prev)
+    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
 
 ** Key bindings
-This is a function to set up keybindings with hydra & evil. It
-should get called after both evil and general are loaded.
-
 #+BEGIN_SRC emacs-lisp
   (use-package general
+    :after (evil counsel)
     :config
     (general-define-key
      :states 'normal
@@ -146,6 +111,97 @@ should get called after both evil and general are loaded.
      "w s" 'evil-window-split
      "w v" 'evil-window-vsplit))
 #+END_SRC
+
+** Server
+Enable emacs server mode.
+
+#+begin_src emacs-lisp
+  (server-mode)
+#+end_src
+
+There are two shell aliases that help with server mode:
+
+#+begin_src shell
+  alias ec=emacsclient -n
+  alias ecc=emacsclient -cn
+#+end_src
+
+=ecc= opens another frame, and =ec= just re-uses an existing frame.
+
+* Visual Configuration
+** Fonts
+#+begin_src emacs-lisp
+  (custom-set-faces
+   '(variable-pitch ((t (:family "Bitstream Charter" :height 160))))
+   '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+   '(default ((t (:family "Fira Code" :height 130)))))
+#+end_src
+
+** Improvements
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode 0)
+  (global-hl-line-mode)
+  (set-face-attribute hl-line-face nil :underline nil)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq-default
+   inhibit-startup-screen t
+   indent-tabs-mode nil
+   initial-scratch-message ""
+   mouse-yank-at-point t
+   show-trailing-whitespace t)
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Mode line
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :custom
+    (doom-modeline-icon t)
+    (doom-modeline-buffer-file-name-style 'buffer-name)
+    (doom-modeline-buffer-state-icon nil)
+
+    :hook
+    (after-init . doom-modeline-mode)
+    :config
+    (setq doom-modeline-mu4e t
+          doom-modeline-buffer-encoding nil))
+#+END_SRC
+
+** Theme
+#+begin_src emacs-lisp
+    (use-package modus-vivendi-theme)
+    (use-package modus-operandi-theme)
+    (use-package leuven-theme)
+    (setq modus-operandi-theme-scale-headings t
+          modus-operandi-theme-slanted-constructs t
+          modus-operandi-theme-scale-1 1.1
+          modus-operandi-theme-scale-2 1.2
+          modus-operandi-theme-scale-3 1.3
+          modus-operandi-theme-scale-4 1.4
+          modus-operandi-theme-scale-5 1.5
+          modus-vivendi-theme-scale-headings t
+          modus-vivendi-theme-slanted-constructs t
+          modus-vivendi-theme-scale-1 1.1
+          modus-vivendi-theme-scale-2 1.2
+          modus-vivendi-theme-scale-3 1.3
+          modus-vivendi-theme-scale-4 1.4
+          modus-vivendi-theme-scale-5 1.5)
+    (load-theme 'modus-operandi t t)
+    (load-theme 'modus-vivendi t t)
+    (enable-theme 'modus-operandi)
+#+end_src
+
+** Text mode buffers
+
+Enable flyspell mode and visual line mode in all text mode buffers
+
+#+begin_src emacs-lisp
+  (defun my-text-mode-hook ()
+    (flyspell-mode)
+    (visual-line-mode))
+#+end_src
 
 * Extensions
 ** Beacon
@@ -185,43 +241,6 @@ Add nice icons in the company popup.
 #+BEGIN_SRC emacs-lisp
   (use-package editorconfig
     :config (editorconfig-mode 1))
-#+END_SRC
-
-** Evil
-*** Basic settings
-Activate evil mode
-#+BEGIN_SRC emacs-lisp
-  (use-package evil
-    :config
-    (evil-mode t))
-
-  (use-package evil-surround
-    :config
-    (global-evil-surround-mode t))
-
-  (use-package evil-exchange
-    :config (evil-exchange-install))
-#+END_SRC
-
-*** Multi-cursor
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-multiedit
-    :config
-    (general-define-key
-     :states 'visual
-     "R" 'evil-multiedit-match-all
-     "r" 'evil-multiedit-and-next)
-    (general-define-key
-     :states 'normal
-     :prefix ", r"
-     "r" 'evil-multiedit-match-and-next
-     "R" 'evil-multiedit-match-and-prev)
-    (general-define-key
-     :states 'multiedit
-     "RET" 'evil-multiedit-toggle-or-restrict-region
-     "M-n" 'evil-multiedit-next
-     "M-p" 'evil-multiedit-prev)
-    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
 
 ** Flycheck
@@ -326,7 +345,9 @@ Insert the current ticket number if we're on a KNUTH feature branch.
 #+end_src
 
 ** Mu4e
+
 The context definitions are in =private.org=.
+
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
@@ -414,14 +435,19 @@ All keybindings are redefined for evil
   (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
 #+END_SRC
 
-** Newsticker
+** Olivetti
+
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :hook (org-mode . olivetti-mode))
+#+end_src
+
+** Projectile
 #+BEGIN_SRC emacs-lisp
-  (require 'newsticker)
-  (setq newsticker-url-list
-        '(("SMBC" "https://www.smbc-comics.com/comic/rss" nil nil nil)
-         ("XKCD" "https://xkcd.com/rss.xml")
-         ("Fowl Language" "https://www.fowllanguagecomics.com/feed/")
-         ("Itchy Feet" "https://www.itchyfeetcomic.com/feeds/posts/default?alt=rss")))
+  (use-package projectile
+    :config
+    (projectile-mode +1)
+    (setq projectile-completion-system 'ivy))
 #+END_SRC
 
 ** Parentheses
@@ -437,12 +463,17 @@ All keybindings are redefined for evil
            (emacs-lisp-mode . rainbow-delimiters-mode)))
 #+END_SRC
 
-** Projectile
+** Ripgrep
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
+  (use-package rg
     :config
-    (projectile-mode +1)
-    (setq projectile-completion-system 'ivy))
+    (general-define-key
+     :states 'normal
+     :prefix ", s"
+     "s" 'rg-dwim
+     "p" 'rg-project
+     "l" 'rg-list-searches
+     "S" 'rg-save-search))
 #+END_SRC
 
 ** Roam
@@ -457,19 +488,6 @@ All keybindings are redefined for evil
   (use-package company-org-roam
     :config (push 'company-org-roam company-backends))
 
-#+END_SRC
-
-** Ripgrep
-#+BEGIN_SRC emacs-lisp
-  (use-package rg
-    :config
-    (general-define-key
-     :states 'normal
-     :prefix ", s"
-     "s" 'rg-dwim
-     "p" 'rg-project
-     "l" 'rg-list-searches
-     "S" 'rg-save-search))
 #+END_SRC
 
 ** Smerge
@@ -487,17 +505,6 @@ All keybindings are redefined for evil
    "x" 'smerge-swap
    "r" 'smerge-resolve)
 #+end_src
-
-** Solaire
-#+BEGIN_SRC emacs-lisp
-  (use-package solaire-mode
-    :hook
-    ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-    (minibuffer-setup . solaire-mode-in-minibuffer)
-    :config
-    (solaire-global-mode +1)
-    (solaire-mode-swap-bg))
-#+END_SRC
 
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
@@ -521,7 +528,6 @@ All keybindings are redefined for evil
   (use-package treemacs-magit
     :after treemacs magit)
 #+END_SRC
-
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -529,12 +535,7 @@ All keybindings are redefined for evil
     (which-key-mode))
 #+END_SRC
 
-** Writeroom mode
-#+BEGIN_SRC emacs-lisp
-  (use-package writeroom-mode)
-#+END_SRC
-
-* Languages
+* File Modes
 ** CSS
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
@@ -734,24 +735,31 @@ Only basic support :(
 
 ** Org-Mode
 *** Installation
+Side-load =org-plus-contrib= (for =ox-confluence=) and set up some
+mostly visual hooks. Also ensure that code is displayed in fixed pitch
+in org mode.
+
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :ensure org-plus-contrib)
+    :ensure org-plus-contrib
+    :hook
+    (org-mode . org-indent-mode)
+    (org-mode . variable-pitch-mode)
+    :config
+    (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
+          `(org-block
+            org-special-keyword
+            org-drawer
+            org-todo
+            org-done
+            org-priority
+            org-checkbox
+            org-block-end-line
+            org-block-begin-line
+            org-table org-verbatim)))
 #+END_SRC
 
 *** Prettification
-Enable indent mode, so spaces don't clutter the file.
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :hook (
-           (org-mode . org-indent-mode)
-           (org-mode . (lambda ()
-                         (setq left-margin-width 2
-                               right-margin-width 2))))
-    :custom
-    (setq-default org-edit-src-content-indentation 2))
-#+END_SRC
-
 Prettier lists, by substituting bullet points for list item markers.
 #+BEGIN_SRC emacs-lisp
   (font-lock-add-keywords 'org-mode
@@ -853,16 +861,16 @@ All TODO entries that have not already been scheduled
 *** Calendar
 We want our weeks to start properly
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'calendar-load-hook (lambda () calendar-set-date-style 'european))
+  (use-package calendar
+    :defer t
+    :custom (calendar-week-start-day 1))
 #+END_SRC
 
 Set the calendar location for sunset & sunrise. Tübingen Hbf is: =48.516738, 9.055493=
 #+BEGIN_SRC emacs-lisp
-
   (setq calendar-longitude 48.5
         calendar-latitude 9.0
         calendar-location-name "Tübingen, Germany")
-
 #+END_SRC
 
 *** Editing documents
@@ -875,6 +883,7 @@ Place footnotes in the same section.
 Facilitate outlining by just matching on any heading in the org
 file. Using ivy, this ends up being more usable.
 #+BEGIN_SRC emacs-lisp
+  (use-package dash)
   (let ((file-list (mapcar (lambda (file) (concat (file-name-as-directory org-directory) file))
                            '("main.org" "work.org"))))
     (--each (--filter (file-readable-p it) file-list)
@@ -891,8 +900,7 @@ file. Using ivy, this ends up being more usable.
   (general-define-key
    :states 'normal
    :prefix ", c"
-   "c" 'org-capture
-   "l" '(bookmark-jump "org-capture-bookmark"))
+   "c" 'org-capture)
 
   (setq org-capture-templates
         '(("c" "Todo" entry (file+headline my-org-main-file "NEW")

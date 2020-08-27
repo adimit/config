@@ -13,7 +13,6 @@
       gc-cons-percentage 0.6
       file-name-handler-alist nil)
 
-
 (let* ((config-emacs-directory "~/config/newmacs")
        (main-org-file (expand-file-name "main.org" config-emacs-directory))
        (private-org-file (expand-file-name "private.org" config-emacs-directory)))
@@ -23,17 +22,8 @@
       (org-babel-load-file private-org-file)))
 
 (add-hook 'emacs-startup-hook
-          (lambda () (setq gc-cons-threshold 16777216
+	  (lambda () (setq gc-cons-threshold 16777216
                            gc-cons-percentage 0.1
                            file-name-handler-alist temporary-file-name-handler-alist)))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(company-box modus-vivendi-theme org-mru-clock forge rustic rustic-mode org-protocol fish-mode treemacs-magit treemacs-projectile treemacs-evil treemacs yaml-mode json-mode dockerfile-mode csv-mode scss-mode diff-hl diff-hl-mode all-the-icons company-prescient ivy-prescient prescient general web-mode tide flycheck company which-key counsel-projectile projectile hydra counsel ivy evil-magit magit smartparens use-package evil)))
-
 
 ;;; init.el ends here
