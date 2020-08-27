@@ -137,11 +137,41 @@ There are two shell aliases that help with server mode:
 =ecc= opens another frame, and =ec= just re-uses an existing frame.
 
 * Visual Configuration
+** Switch themes
+#+begin_src emacs-lisp
+  (defun aleks/set-org-mode-fixed-pitch-faces ()
+    (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
+          `(org-block
+            org-special-keyword
+            org-drawer
+            org-todo
+            org-done
+            org-priority
+            org-checkbox
+            org-block-end-line
+            org-block-begin-line
+            org-table org-verbatim)))
+  (defun aleks/set-custom-faces ()
+    "Set the faces we care about."
+    (aleks/set-org-mode-fixed-pitch-faces))
+
+  (defun aleks/dark-mode ()
+    "Set theme and fonts for dark mode."
+    (interactive)
+    (enable-theme 'modus-vivendi)
+    (aleks/set-custom-faces))
+
+  (defun aleks/light-mode ()
+    "Set theme and fonts for dark mode."
+    (interactive)
+    (enable-theme 'modus-operandi)
+    (aleks/set-custom-faces))
+#+end_src
 ** Fonts
 #+begin_src emacs-lisp
   (custom-set-faces
-   '(variable-pitch ((t (:family "Bitstream Charter" :height 160))))
-   '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+   '(variable-pitch ((t (:family "Bitstream Charter" :height (lambda (height) (truncate (* height (/ 6 5.0))))))))
+   '(fixed-pitch ((t (:family "Fira Code" :height (lambda (height) (truncate (* height (/ 5 6.0))))))))
    '(default ((t (:family "Fira Code" :height 130)))))
 #+end_src
 
@@ -797,17 +827,7 @@ in org mode.
     (org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
     :config
-    (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
-          `(org-block
-            org-special-keyword
-            org-drawer
-            org-todo
-            org-done
-            org-priority
-            org-checkbox
-            org-block-end-line
-            org-block-begin-line
-            org-table org-verbatim)))
+    (aleks/set-org-mode-fixed-pitch-faces))
 #+END_SRC
 
 *** Prettification
