@@ -245,6 +245,37 @@ Add nice icons in the company popup.
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+END_SRC
 
+** Dired
+
+Show dired as sidebar and add keybindings for toggle & full dired.
+
+#+begin_src emacs-lisp
+  (setq dired-dwim-target t)
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+  (use-package dired-toggle
+    :defer t
+    :general
+    (:states 'normal :prefix ", d"
+             "d" (lambda () (interactive) (dired "."))
+             "h" 'dired-toggle)
+    :bind
+    ([remap dired-find-file] . #'dired-toggle-find-file)
+    ([remap dired-up-directory] . #'dired-toggle-up-directory)
+
+    :config
+    (setq dired-toggle-window-size 32
+          dired-toggle-window-side 'left)
+    :hook
+    (dired-toggle-mode . (lambda () (interactive)
+                           (visual-line-mode 1)
+                           (setq-local visual-line-fringe-indicators '(nil right-curly-arrow))
+                           (setq-local word-wrap nil))))
+  (general-define-key
+   :keymaps 'dired-mode-map
+   "q" 'evil-window-delete)
+#+end_src
+
 ** Editorconfig
 #+BEGIN_SRC emacs-lisp
   (use-package editorconfig
@@ -517,7 +548,6 @@ All keybindings are redefined for evil
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
-    :defer t
     :config
     (treemacs-follow-mode t)
     (treemacs-git-mode 'deferred)
@@ -528,7 +558,10 @@ All keybindings are redefined for evil
      "t" 'treemacs
      "f" 'treemacs-find-file
      "p" 'treemacs-projectile
-     "P" 'treemacs-add-and-display-current-project))
+     "P" 'treemacs-add-and-display-current-project)
+    (evil-define-key 'treemacs treemacs-mode-map (kbd "tn") #'treemacs-create-file)
+    (evil-define-key 'treemacs treemacs-mode-map (kbd "td") #'treemacs-create-dir)
+    (evil-define-key 'treemacs treemacs-mode-map (kbd "tc") #'treemacs-copy-file))
   (use-package treemacs-evil
     :after treemacs evil)
   (use-package treemacs-projectile
