@@ -569,6 +569,7 @@ All keybindings are redefined for evil
   (use-package treemacs-magit
     :after treemacs magit)
 #+END_SRC
+
 ** Which-Key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
