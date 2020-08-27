@@ -288,6 +288,15 @@ Show dired as sidebar and add keybindings for toggle & full dired.
     :config (global-flycheck-mode))
 #+END_SRC
 
+*** Checkdoc in org src edit buffers
+=checkdoc= will insist on headers, footers, commentary sections etc. in all your elisp code, including code that's opened with =org-src-edit=, which makes no sense at all. The corresponding function is =checkdoc-comments= and it runs whenever =buffer-file-name= is set. Org src edit buffers do set a file name, so =checkdoc= happily checks their comments. There's no way to exclude just one kind of check, so we just disable checkdoc in =org-src-edit= buffers.
+
+#+begin_src emacs-lisp
+  (defun disable-checkdoc ()
+    (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (add-hook 'org-src-mode-hook 'disable-checkdoc)
+#+end_src
+
 ** Ivy & Counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
