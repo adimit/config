@@ -43,6 +43,14 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
   (setq create-lockfiles nil)
 #+END_SRC
 
+** Customisations
+
+Don't store customisations, they usually surprise me by being there and making things not work as expected.
+
+#+begin_src emacs-lisp
+  (setq custom-file null-device)
+#+end_src
+
 ** Evil
 *** Basic settings
 Activate evil mode
