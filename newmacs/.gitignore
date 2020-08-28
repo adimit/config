@@ -12,3 +12,4 @@ var
 /org-clock-save.el
 /session.*
 /tramp
+/url
