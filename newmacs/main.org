@@ -1171,6 +1171,9 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
 #+end_src
 
 ** Rust
+
+Use =rustic=, as =rust-analyzer= is somewhat obsolete.
+
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
     :config (setq rustic-format-trigger 'on-save
