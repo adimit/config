@@ -137,7 +137,10 @@ There are two shell aliases that help with server mode:
 =ecc= opens another frame, and =ec= just re-uses an existing frame.
 
 * Visual Configuration
-** Switch themes
+** Faces & Theme
+
+Instead of using a package like =org-variable-pitch-mode=, the following definition takes care of setting up which parts of =org-mode= are fixed pitch.
+
 #+begin_src emacs-lisp
   (defun aleks/set-org-mode-fixed-pitch-faces ()
     (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
@@ -151,63 +154,29 @@ There are two shell aliases that help with server mode:
             org-block-end-line
             org-block-begin-line
             org-table org-verbatim)))
-  (defun aleks/set-custom-faces ()
-    "Set the faces we care about."
-    (aleks/set-org-mode-fixed-pitch-faces))
 
-  (defun aleks/dark-mode ()
-    "Set theme and fonts for dark mode."
-    (interactive)
-    (enable-theme 'modus-vivendi)
-    (aleks/set-custom-faces))
-
-  (defun aleks/light-mode ()
-    "Set theme and fonts for dark mode."
-    (interactive)
-    (enable-theme 'modus-operandi)
-    (aleks/set-custom-faces))
 #+end_src
-** Fonts
+
+Since sans serif fonts seem to be more easily readable when the background is black, and serif fonts just look so good on white background, we set up different font sets for light and dark mode.
+
 #+begin_src emacs-lisp
-  (custom-set-faces
-   '(variable-pitch ((t (:family "Bitstream Charter" :height (lambda (height) (truncate (* height (/ 6 5.0))))))))
-   '(fixed-pitch ((t (:family "Fira Code" :height (lambda (height) (truncate (* height (/ 5 6.0))))))))
-   '(default ((t (:family "Fira Code" :height 130)))))
+  (defun aleks/set-light-mode-faces ()
+    "Set the faces for light mode."
+    (custom-set-faces
+     '(variable-pitch ((t (:family "Bitstream Charter" :height 160 ))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+     '(default ((t (:family "Fira Code" :height 130))))))
+
+  (defun aleks/set-dark-mode-faces ()
+    "Set the faces for dark mode."
+    (custom-set-faces
+     '(variable-pitch ((t (:family "Dejavu Sans" :height 160))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+     '(default ((t (:family "Fira Code" :height 130))))))
 #+end_src
 
-** Improvements
-#+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode 0)
-  (global-hl-line-mode)
-  (set-face-attribute hl-line-face nil :underline nil)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (setq-default
-   inhibit-startup-screen t
-   indent-tabs-mode nil
-   initial-scratch-message ""
-   mouse-yank-at-point t
-   show-trailing-whitespace t)
-  (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+I'm using Prot's modus themes for light and dark mode. They're only loaded here, not enabled.
 
-** Mode line
-#+BEGIN_SRC emacs-lisp
-  (use-package doom-modeline
-    :custom
-    (doom-modeline-icon t)
-    (doom-modeline-buffer-file-name-style 'buffer-name)
-    (doom-modeline-buffer-state-icon nil)
-
-    :hook
-    (after-init . doom-modeline-mode)
-    :config
-    (setq doom-modeline-mu4e t
-          doom-modeline-buffer-encoding nil))
-#+END_SRC
-
-** Theme
 #+begin_src emacs-lisp
     (use-package modus-vivendi-theme)
     (use-package modus-operandi-theme)
@@ -228,17 +197,78 @@ There are two shell aliases that help with server mode:
           modus-vivendi-theme-scale-5 1.5)
     (load-theme 'modus-operandi t t)
     (load-theme 'modus-vivendi t t)
-    (enable-theme 'modus-operandi)
 #+end_src
+
+Finally, let's define dark and light mode…
+
+#+begin_src emacs-lisp
+  (defun aleks/dark-mode ()
+    "Set theme and fonts for dark mode."
+    (interactive)
+    (enable-theme 'modus-vivendi)
+    (aleks/set-org-mode-fixed-pitch-faces)
+    (aleks/set-dark-mode-faces))
+
+  (defun aleks/light-mode ()
+    "Set theme and fonts for dark mode."
+    (interactive)
+    (enable-theme 'modus-operandi)
+    (aleks/set-org-mode-fixed-pitch-faces)
+    (aleks/set-light-mode-faces))
+#+end_src
+
+And activate light mode by default.
+
+#+begin_src emacs-lisp
+  (aleks/light-mode)
+#+end_src
+
+** Miscellaneous Improvements
+
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode 0)
+  (global-hl-line-mode)
+  (set-face-attribute hl-line-face nil :underline nil)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq-default
+   inhibit-startup-screen t
+   indent-tabs-mode nil
+   initial-scratch-message ""
+   mouse-yank-at-point t
+   show-trailing-whitespace t)
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Mode line
+
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :custom
+    (doom-modeline-icon t)
+    (doom-modeline-buffer-file-name-style 'buffer-name)
+    (doom-modeline-buffer-state-icon nil)
+
+    :hook
+    (after-init . doom-modeline-mode)
+    :config
+    (setq doom-modeline-mu4e t
+          doom-modeline-buffer-encoding nil))
+#+END_SRC
 
 ** Text mode buffers
 
-Enable flyspell mode and visual line mode in all text mode buffers
+Text mode buffers have spell check enabled, are narrowed, and use variable pitch and word wrap.
 
 #+begin_src emacs-lisp
-  (defun my-text-mode-hook ()
+  (defun aleks/text-mode-hook ()
     (flyspell-mode)
-    (visual-line-mode))
+    (visual-line-mode)
+    (variable-pitch-mode)
+    (olivetti-mode))
+
+  (add-hook 'text-mode-hook 'aleks/text-mode-hook)
 #+end_src
 
 * Extensions
