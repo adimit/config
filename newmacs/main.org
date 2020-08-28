@@ -342,6 +342,60 @@ Show dired as sidebar and add keybindings for toggle & full dired.
     :config (editorconfig-mode 1))
 #+END_SRC
 
+** Elfeed
+
+Elfeeds keybindings are completely broken with evil, so we need to redefine them all.
+
+#+begin_src emacs-lisp
+  (use-package elfeed
+    :config
+    (setq elfeed-feeds
+          '("https://www.smbc-comics.com/comic/rss"
+            "https://xkcd.com/rss.xml")))
+  (general-define-key
+   :keymaps 'elfeed-search-mode-map
+   :states 'normal
+   "RET" 'elfeed-search-show-entry
+   "+" 'elfeed-search-tag-all
+   "-" 'elfeed-search-untag-all
+   "<" 'elfeed-search-first-entry
+   ">" 'elfeed-search-last-entry
+   ">" 'elfeed-search-last-entry
+   "f" 'elfeed-search-fetch
+   "S" 'elfeed-search-set-filter
+   "b" 'elfeed-search-browse-url
+   "c" 'elfeed-search-clear-filter
+   "F" 'elfeed-search-update--force
+   "q" 'elfeed-search-quit-window
+   "r" 'elfeed-search-untag-all-unread
+   "s" 'elfeed-search-live-filter
+   "u" 'elfeed-search-tag-all-unread
+   "y" 'elfeed-search-yank)
+
+  (general-define-key
+   :keymaps 'elfeed-show-mode-map
+   :states 'normal
+   "TAB"  'elfeed-show-next-link
+   "SPC"  'scroll-up-command
+   "+"    'elfeed-show-tag
+   "-"    'elfeed-show-untag
+   "0"    'digit-argument
+   "<"    'beginning-of-buffer
+   ">"    'end-of-buffer
+   "A"    'elfeed-show-add-enclosure-to-playlist
+   "P"    'elfeed-show-play-enclosure
+   "b"    'elfeed-show-visit
+   "c"    'elfeed-kill-link-url-at-point
+   "d"    'elfeed-show-save-enclosure
+   "F"    'elfeed-show-refresh
+   "h"    'describe-mode
+   "n"    'elfeed-show-next
+   "p"    'elfeed-show-prev
+   "q"    'elfeed-kill-buffer
+   "s"    'elfeed-show-new-live-search
+   "u"    'elfeed-show-tag--unread
+   "y"    'elfeed-show-yank)
+#+end_src
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
