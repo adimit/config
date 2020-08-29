@@ -643,7 +643,6 @@ All keybindings are redefined for evil
 
   (use-package company-org-roam
     :config (push 'company-org-roam company-backends))
-
 #+END_SRC
 
 ** Smerge
@@ -829,7 +828,6 @@ We also want some Flutter support
   (use-package web-mode
     :mode (("\\.tsx$" . web-mode))
     :init
-    (add-hook 'web-mode-hook 'company-mode)
     (add-hook 'web-mode-hook 'prettier-js-mode)
     (add-hook 'web-mode-hook (lambda () (pcase (file-name-extension buffer-file-name)
                         ("tsx" (my-tide-setup-hook))
@@ -839,7 +837,6 @@ We also want some Flutter support
     :mode (("\\.ts$" . typescript-mode))
     :init
     (add-hook 'typescript-mode-hook 'my-tide-setup-hook)
-    (add-hook 'typescript-mode-hook 'company-mode)
     (add-hook 'typescript-mode-hook 'prettier-js-mode))
 
 
