@@ -284,10 +284,11 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
 
 #+BEGIN_SRC emacs-lisp
   (use-package company
+    :custom
+    (company-dabbrev-downcase nil)
+    (company-dabbrev-ignore-case nil)
+    (company-idle-delay 0)
     :config
-    (setq company-dabbrev-downcase nil
-          company-dabbrev-ignore-case nil
-          company-idle-delay 0)
     (global-company-mode)
     :general
     (:keymaps 'company-active-map
