@@ -289,12 +289,6 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
     (global-company-mode))
 #+END_SRC
 
-Add nice icons in the company popup.
-#+begin_src emacs-lisp
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
-#+end_src
-
 ** Diff-hl
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
