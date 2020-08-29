@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fun
+# key: f
+# --
+const ${1:name} = (${2:args}) => $0;

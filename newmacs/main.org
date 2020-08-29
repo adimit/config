@@ -701,6 +701,18 @@ All keybindings are redefined for evil
     (which-key-mode))
 #+END_SRC
 
+** Yasnippet
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1)
+    :hook
+    (prog-mode-hook . yas-minor-mode)
+    (org-mode-hook . yas-minor-mode)
+    :custom
+    (yas-snippet-dirs '("~/config/newmacs/snippets")))
+#+end_src
 * File Modes
 ** CSS
 #+BEGIN_SRC emacs-lisp
