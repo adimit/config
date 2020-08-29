@@ -281,12 +281,19 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
 #+END_SRC
 
 ** Company
+
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :config
-    (setq company-dabbrev-downcase 'case-replace)
-    (setq company-idle-delay 0.2)
-    (global-company-mode))
+    (setq company-dabbrev-downcase nil
+          company-dabbrev-ignore-case nil
+          company-idle-delay 0)
+    (global-company-mode)
+    :general
+    (:keymaps 'company-active-map
+              "C-n" 'company-select-next
+              "C-p" 'company-select-previous
+              "C-f" 'company-filter-candidates))
 #+END_SRC
 
 ** Diff-hl
