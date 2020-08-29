@@ -297,6 +297,13 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
               "C-f" 'company-filter-candidates))
 #+END_SRC
 
+Posframe mode allows completions to not look silly in =variable-pitch-mode=.
+
+#+begin_src emacs-lisp
+  (use-package company-posframe
+    :config (company-posframe-mode 1))
+#+end_src
+
 ** Diff-hl
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
