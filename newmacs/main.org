@@ -1190,7 +1190,7 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
 
 ** Rust
 
-Use =rustic=, as =rust-analyzer= is somewhat obsolete.
+Use =rust-analyzer=, as =rls= is somewhat obsolete.
 
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
