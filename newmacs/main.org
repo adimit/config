@@ -49,6 +49,41 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
    '(create-lockfiles nil))
 #+END_SRC
 
+** Calendar
+Calendar is set up for European style display (Monday starts week) and manual location of Tübingen, Germany (for sunrise/sunset).
+Tübingen Hbf is: =48.516738, 9.055493=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package calendar
+    :defer t
+    :custom
+    (calendar-week-start-day 1)
+    (calendar-latitude 48.516738)
+    (calendar-longitude 9.055493)
+    (calendar-location-name "Tübingen, Germany"))
+#+END_SRC
+
+Here's a function that returns whether it's currently dark outside, so you don't have to look.
+
+#+begin_src emacs-lisp
+  (defun aleks/is-it-dark-p ()
+    "Return t if it's dark outside, otherwise nil.
+
+  Will look at the `current-time' and calculate sunset and sunrise times
+  according to `calendar-longitude' and `calendar-latitude' using
+  `solar-sunrise-sunset'so make sure you've set your location."
+    (require 'solar)
+    (let* ((solar (solar-sunrise-sunset (calendar-current-date)))
+	 (sunrise (car (car solar)))
+	 (sunset (car (car (cdr solar))))
+	 (time (decode-time (current-time)))
+	 (hour (nth 2 time))
+	 (minute (nth 1 time))
+	 (minute-fraction (/ minute 60.0))
+	 (time-decimal (+ hour minute-fraction)))
+    (or (> time-decimal sunset) (< time-decimal sunrise))))
+#+end_src
+
 ** Customisations
 
 Don't store customisations, they usually surprise me by being there and making things not work as expected.
@@ -227,10 +262,21 @@ Finally, let's define dark and light mode…
     (aleks/set-light-mode-faces))
 #+end_src
 
-And activate light mode by default.
+And here's a function that can choose the correct theme according to the current sunset/sunrise time. I don't like automatic switching, as switching themes introduces lag and is rather disruptive.
 
 #+begin_src emacs-lisp
-  (aleks/light-mode)
+  (defun aleks/auto-choose-theme ()
+    "Choose between dark and light based on sunrise/sunset time."
+    (if (aleks/is-it-dark-p)
+        (aleks/dark-mode)
+      (aleks/light-mode)))
+#+end_src
+
+When starting up, choose a theme based on the current time.
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'calendar
+    (aleks/auto-choose-theme))
 #+end_src
 
 ** Miscellaneous Improvements
@@ -1037,21 +1083,6 @@ All TODO entries that have not already been scheduled
         '(("u" "Unscheduled TODO" todo ""
            ((org-agenda-overriding-header "\nUnscheduled TODO")
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
-#+END_SRC
-
-*** Calendar
-We want our weeks to start properly
-#+BEGIN_SRC emacs-lisp
-  (use-package calendar
-    :defer t
-    :custom (calendar-week-start-day 1))
-#+END_SRC
-
-Set the calendar location for sunset & sunrise. Tübingen Hbf is: =48.516738, 9.055493=
-#+BEGIN_SRC emacs-lisp
-  (setq calendar-longitude 48.5
-        calendar-latitude 9.0
-        calendar-location-name "Tübingen, Germany")
 #+END_SRC
 
 *** Editing documents
