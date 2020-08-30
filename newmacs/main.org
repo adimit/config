@@ -129,6 +129,18 @@ Activate evil mode
     (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
 
+
+** Region and IEdit
+
+=evil-iedit-state= builds off of =expand-region= to provide the functionality to edit multiple occurrences of the current region.
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :general (:states 'normal :prefix ","
+                      "SPC" 'er/expand-region))
+  (use-package evil-iedit-state)
+#+end_src
+
 ** Key bindings
 #+BEGIN_SRC emacs-lisp
   (use-package general
