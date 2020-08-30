@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Self-closing tag
+# key: /
+# --
+<$0 />

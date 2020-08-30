@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: function
+# key: fn
+# --
+fn ${1:name}(${2:args}) -> ${3:()} {
+    ${4:todo!()}
+}
