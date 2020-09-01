@@ -1252,6 +1252,33 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
   (org-clock-persistence-insinuate)
 #+end_src
 
+** REST
+
+Rest client with company backend & org support.
+
+#+begin_src emacs-lisp
+  (use-package restclient
+    :general (:keymaps 'restclient-mode :states 'normal :prefix ", ." :mode "\\.rest$"
+                       "c" 'restclient-http-send-current
+                       "r" 'restclient-http-send-current-raw
+                       "v" 'restclient-http-send-current-stay-in-window
+                       "n" 'restclient-jump-next
+                       "p" 'restclient-jump-prev
+                       "u" 'restclient-copy-curl-command
+                       "N" 'restclient-narrow-to-current
+                       "i" 'restclient-show-info))
+
+  (use-package company-restclient
+    :config
+    (add-to-list 'company-backends 'company-restclient))
+
+  (use-package ob-restclient
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t))))
+
+#+end_src
 ** Rust
 
 Use =rust-analyzer=, as =rls= is somewhat obsolete.
