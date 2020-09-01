@@ -49,6 +49,39 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
    '(create-lockfiles nil))
 #+END_SRC
 
+** Bindings
+
+#+BEGIN_SRC emacs-lisp
+  (use-package general
+    :after (evil counsel)
+    :config
+    (general-define-key
+     :states 'normal
+     "M-x" 'counsel-M-x
+     "RET" 'save-buffer)
+    (general-define-key
+     :states 'normal
+     :prefix ","
+     "," (general-simulate-key "M-x")
+     "f" 'counsel-find-file
+     "g s" 'magit-status
+
+     "a" 'org-agenda
+
+     "b b" 'counsel-switch-buffer
+     "b d" 'kill-current-buffer
+
+     "p p" 'projectile-switch-project
+     "p f" 'projectile-find-file
+     "p b" 'projectile-switch-to-buffer
+
+     "w n" 'make-frame-command
+     "w c" 'evil-window-delete
+     "w o" 'other-window
+     "w s" 'evil-window-split
+     "w v" 'evil-window-vsplit))
+#+END_SRC
+
 ** Calendar
 Calendar is set up for European style display (Monday starts week) and manual location of Tübingen, Germany (for sunrise/sunset).
 Tübingen Hbf is: =48.516738, 9.055493=
@@ -138,38 +171,6 @@ Activate evil mode
                       "SPC" 'er/expand-region))
   (use-package evil-iedit-state)
 #+end_src
-
-** Key bindings
-#+BEGIN_SRC emacs-lisp
-  (use-package general
-    :after (evil counsel)
-    :config
-    (general-define-key
-     :states 'normal
-     "M-x" 'counsel-M-x
-     "RET" 'save-buffer)
-    (general-define-key
-     :states 'normal
-     :prefix ","
-     "," (general-simulate-key "M-x")
-     "f" 'counsel-find-file
-     "g s" 'magit-status
-
-     "a" 'org-agenda
-
-     "b b" 'counsel-switch-buffer
-     "b d" 'kill-current-buffer
-
-     "p p" 'projectile-switch-project
-     "p f" 'projectile-find-file
-     "p b" 'projectile-switch-to-buffer
-
-     "w n" 'make-frame-command
-     "w c" 'evil-window-delete
-     "w o" 'other-window
-     "w s" 'evil-window-split
-     "w v" 'evil-window-vsplit))
-#+END_SRC
 
 ** Server
 Enable emacs server mode.
