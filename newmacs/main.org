@@ -214,14 +214,14 @@ Since sans serif fonts seem to be more easily readable when the background is bl
   (defun aleks/set-light-mode-faces ()
     "Set the faces for light mode."
     (custom-set-faces
-     '(variable-pitch ((t (:family "Bitstream Charter" :height 160 ))))
+     '(variable-pitch ((t (:family "Bitter" :height 160 ))))
      '(fixed-pitch ((t (:family "Fira Code" :height 130))))
      '(default ((t (:family "Fira Code" :height 130))))))
 
   (defun aleks/set-dark-mode-faces ()
     "Set the faces for dark mode."
     (custom-set-faces
-     '(variable-pitch ((t (:family "Dejavu Sans" :height 160))))
+     '(variable-pitch ((t (:family "Bitter" :height 160))))
      '(fixed-pitch ((t (:family "Fira Code" :height 130))))
      '(default ((t (:family "Fira Code" :height 130))))))
 #+end_src

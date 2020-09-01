@@ -35,9 +35,10 @@ RUST_ANALYZER = ${HOME}/.local/bin/rust-analyzer
 FONTS = ${HOME}/.fonts
 FIRA_CODE = ${FONTS}/FiraCode
 FIRA_GO = ${FONTS}/FiraGo
+BITTER = ${FONTS}/Bitter
 
 .PHONY: install
-install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES}
+install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER}
 
 .PHONY: npm-prefix
 npm-prefix: /usr/bin/npm
@@ -159,21 +160,28 @@ ${RUST_ANALYZER}:
 ${FONTS}:
 	mkdir -p ${FONTS}
 
-FIRA_TMP_FILE = /tmp/fonts.zip
+FONT_TMP_FILE = /tmp/fonts.zip
 
 ${FIRA_CODE}:
-	curl -L 'https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip' -o ${FIRA_TMP_FILE}
+	curl -L 'https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip' -o ${FONT_TMP_FILE}
 	mkdir -p ${FIRA_CODE}
-	unzip ${FIRA_TMP_FILE} -d ${FIRA_CODE}
-	rm -f ${FIRA_TMP_FILE}
+	unzip ${FONT_TMP_FILE} -d ${FIRA_CODE}
+	rm -f ${FONT_TMP_FILE}
 	fc-cache -fv ${FONTS}
 
 ${FIRA_GO}:
-	curl -L 'https://bboxtype.com/downloads/FiraGO/Download_Folder_FiraGO_1001.zip' -o ${FIRA_TMP_FILE}
+	curl -L 'https://bboxtype.com/downloads/FiraGO/Download_Folder_FiraGO_1001.zip' -o ${FONT_TMP_FILE}
 	mkdir -p ${FIRA_GO}
-	unzip ${FIRA_TMP_FILE} -d ${FIRA_GO}
-	rm -f ${FIRA_TMP_FILE}
+	unzip ${FONT_TMP_FILE} -d ${FIRA_GO}
+	rm -f ${FONT_TMP_FILE}
 	fc-cache -fv ${FONTS}
+
+${BITTER}:
+	curl -L 'https://fonts.google.com/download?family=Bitter' -o ${FONT_TMP_FILE}
+	mkdir -p ${BITTER}
+	unzip ${FONT_TMP_FILE} -d ${BITTER}
+	rm -f ${FONT_TMP_FILE}
+	fc-cache -fv
 
 ${LOCAL}/bin/tsc: npm-prefix
 	npm i -g typescript
