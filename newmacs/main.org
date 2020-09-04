@@ -278,6 +278,7 @@ And here's a function that can choose the correct theme according to the current
 #+begin_src emacs-lisp
   (defun aleks/auto-choose-theme ()
     "Choose between dark and light based on sunrise/sunset time."
+    (interactive)
     (if (aleks/is-it-dark-p)
         (aleks/dark-mode)
       (aleks/light-mode)))
