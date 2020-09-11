@@ -890,13 +890,12 @@ We also want some Flutter support
 
 *** Typescript
 #+BEGIN_SRC emacs-lisp
-  (use-package prettier-js
-    :defer t)
+  (use-package prettier
+    :config (global-prettier-mode))
 
   (use-package typescript-mode
     :mode (("\\.tsx?$" . typescript-mode))
     :hook
-    (typescript-mode . prettier-js-mode)
     (typescript-mode . tree-sitter-mode)
     (typescript-mode . tree-sitter-hl-mode)
     (typescript-mode . lsp)
