@@ -157,9 +157,11 @@ Activate evil mode
              "R" 'evil-multiedit-match-all)
     (:states 'multiedit
              "RET" 'evil-multiedit-toggle-or-restrict-region
+             "n" 'evil-multiedit-next
+             "N" 'evil-multiedit-prev
              "M-r" 'evil-multiedit-match-all
-             "M-n" 'evil-multiedit-match-and-next
-             "M-p" 'evil-multiedit-match-and-prev))
+             "SPC" 'evil-multiedit-match-and-next
+             "S-SPC" 'evil-multiedit-match-and-prev))
 #+END_SRC
 
 
