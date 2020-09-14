@@ -431,7 +431,9 @@ Here's the list of subscribed feeds.
     (list "https://www.smbc-comics.com/comic/rss"
           "https://xkcd.com/rss.xml"
           "https://fedoramagazine.org/feed/"
-          "https://augengeradeaus.net/feed/")
+          "https://augengeradeaus.net/feed/"
+          "https://updates.orgmode.org/feed/help"
+          "https://updates.orgmode.org/feed/bugs")
     "List of feeds to subscribe to")
 #+end_src
 
