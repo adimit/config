@@ -979,138 +979,112 @@ in org mode.
     (org-mode . variable-pitch-mode)
     :config
     (aleks/set-org-mode-fixed-pitch-faces)
+    (org-clock-persistence-insinuate)
     :custom
-    (org-tags-column 0))
+    (org-tags-column
+     0
+     "Aligning tags is broken with variable pitch")
+    (org-clock-persist
+     t
+     "Clocks survive closing Emacs.")
+    (org-footnote-section
+     nil
+     "Place footnotes in the same section they're referenced")
+    (org-hide-emphasis-markers t)
+    (org-babel-confirm-evaluate nil "I trust my org files")
+
+                                          ; Refiling
+    (org-outline-path-complete-in-steps
+     nil
+     "Use a flat list instead of hierarchichal steps")
+    (org-refile-targets
+     '((nil . (:maxlevel . 4)))
+     "Don't descend more than 4 levels for refiling")
+    (org-refile-use-outline-path
+     'file
+     "Include file names when refiling")
+
+                                          ; Agenda
+    (org-agenda-include-diary nil)
+    (org-directory
+     (concat (file-name-as-directory (getenv "HOME")) "org"))
+    (my-org-main-file
+     (concat (file-name-as-directory org-directory) "main.org"))
+    (my-org-work-file
+     (concat (file-name-as-directory org-directory) "work.org"))
+    (org-agenda-files
+     `(,my-org-main-file ,my-org-work-file))
+    (org-agenda-custom-commands
+     '(("u" "Unscheduled TODO" todo ""
+        ((org-agenda-overriding-header "\nUnscheduled TODO")
+         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+    :general
+    (:states 'normal :keymaps 'org-mode-map :prefix ", ."
+             ". '" 'org-edit-special
+             ". i" 'org-insert-structure-template
+             ". o" 'org-open-at-point
+             ". h" 'org-promote-subtree
+             ". l" 'org-demote-subtree
+             ". a" 'org-archive-subtree
+             ". s" 'org-schedule
+             ". d" 'org-deadline
+             ". e" 'org-set-effort
+             ". c c" 'org-clock-in
+             ". c i" 'org-clock-in
+             ". c o" 'org-clock-out
+             ". c g" 'org-clock-goto
+             ". c x" 'org-clock-cancel
+             ". r" 'org-refile)
+    (:states 'normal :keymaps 'org-mode-map :prefix ","
+             "'" 'org-edit-special)
+    (:states 'normal :prefix ", c"
+             "c" 'org-capture
+             "i" 'org-clock-in-last
+             "r" 'org-mru-clock-in
+             "g" 'org-clock-goto
+             "o" 'org-clock-out)
+    (:states 'normal :definer 'minor-mode :keymaps 'org-src-mode
+             "RET" 'org-edit-src-exit
+             "BS" 'org-edit-src-abort)
+    (:states 'normal :keymaps 'org-src-minor-mode-map
+             "RET" 'org-edit-src-exit
+             "BS" 'org-edit-src-abort)
+    (:keymaps 'org-agenda-mode-map
+              "k" 'org-agenda-previous-item
+              "j" 'org-agenda-next-item
+              "I" 'org-agenda-diary-entry
+              "i" 'org-agenda-clock-in
+              "s" 'org-agenda-schedule
+              "c" 'org-capture
+              "O" 'delete-other-windows
+              "o" 'org-agenda-clock-out))
 #+END_SRC
 
 *** Prettification
+
 Prettier lists, by substituting bullet points for list item markers.
+
 #+BEGIN_SRC emacs-lisp
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
-Some more prettification
+This hides heading bullets for a cleaner look.
+
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :hook ((org-mode . org-bullets-mode))
+    :hook
+    (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '(" "))
     (org-fontify-whole-heading-line t)
     (org-pretty-entities t))
 #+END_SRC
 
-Hide emphasis markers, gives a bit more of a WYSIWYG feel.
-#+BEGIN_SRC emacs-lisp
-  (setq org-hide-emphasis-markers t)
-#+END_SRC
-
-*** Keybindings
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-   :states 'normal
-   :keymaps 'org-mode-map
-   :prefix ","
-   "'" 'org-edit-special
-   ". '" 'org-edit-special
-   ". i" 'org-insert-structure-template
-   ". o" 'org-open-at-point
-   ". h" 'org-promote-subtree
-   ". l" 'org-demote-subtree
-   ". a" 'org-archive-subtree
-   ". s" 'org-schedule
-   ". d" 'org-deadline
-   ". e" 'org-set-effort
-   ". c c" 'org-clock-in
-   ". c i" 'org-clock-in
-   ". c o" 'org-clock-out
-   ". c g" 'org-clock-goto
-   ". c x" 'org-clock-cancel
-   ". r" 'org-refile)
-  (general-define-key
-   :states 'normal
-   :prefix ", o"
-   "a" 'org-agenda)
-  (general-define-key
-   :states 'normal
-   :prefix ", c"
-   "i" 'org-clock-in-last
-   "g" 'org-clock-goto
-   "o" 'org-clock-out)
-
-  (add-hook 'org-src-mode-hook
-            (lambda ()
-              (general-define-key
-               :keymaps 'local
-               :states 'normal
-               "RET" 'org-edit-src-exit
-               "BS" 'org-edit-src-abort)))
-#+END_SRC
-
-*** Org-Agenda keybindings
-#+BEGIN_SRC emacs-lisp
-
-  (general-define-key
-   :keymaps 'org-agenda-mode-map
-
-   "k" 'org-agenda-previous-item
-   "j" 'org-agenda-next-item
-   "I" 'org-agenda-diary-entry
-   "i" 'org-agenda-clock-in
-   "s" 'org-agenda-schedule
-   "c" 'org-capture
-   "O" 'delete-other-windows
-   "o" 'org-agenda-clock-out)
-#+END_SRC
-
-*** Basic configuration
-Org-directory is =~/org=
-#+BEGIN_SRC emacs-lisp
-  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org")
-        org-agenda-include-diary nil
-        my-org-main-file (concat (file-name-as-directory org-directory) "main.org")
-        my-org-work-file (concat (file-name-as-directory org-directory) "work.org"))
-#+END_SRC
-
-*** Agenda views
-All TODO entries that have not already been scheduled
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-custom-commands
-        '(("u" "Unscheduled TODO" todo ""
-           ((org-agenda-overriding-header "\nUnscheduled TODO")
-            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
-#+END_SRC
-
-*** Editing documents
-Place footnotes in the same section.
-#+BEGIN_SRC emacs-lisp
-  (setq-default org-footnote-section nil)
-#+END_SRC
-
-*** Refiling behaviour
-Facilitate outlining by just matching on any heading in the org
-file. Using ivy, this ends up being more usable.
-#+BEGIN_SRC emacs-lisp
-  (use-package dash)
-  (let ((file-list (mapcar (lambda (file) (concat (file-name-as-directory org-directory) file))
-                           '("main.org" "work.org"))))
-    (--each (--filter (file-readable-p it) file-list)
-      (add-to-list 'org-agenda-files it)))
-
-  (setq
-   org-outline-path-complete-in-steps nil
-   org-refile-targets '((nil . (:maxlevel . 4)))
-   org-refile-use-outline-path 'file)
-#+END_SRC
-
 *** Capture
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-   :states 'normal
-   :prefix ", c"
-   "c" 'org-capture)
 
+#+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
         '(("c" "Todo" entry (file+headline my-org-main-file "NEW")
            "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
@@ -1153,6 +1127,7 @@ file. Using ivy, this ends up being more usable.
 #+END_SRC
 
 Keybindings in capture mode
+
 #+BEGIN_SRC emacs-lisp
   (general-define-key
    :modes 'org-capture-mode
@@ -1170,7 +1145,6 @@ Support for generating slides from org mode. Removed =ox-reveal= for now as it w
   (use-package htmlize)
 #+END_SRC
 
-*** Contrib
 *** Protocol
 #+BEGIN_SRC emacs-lisp
   (require 'org-protocol)
@@ -1209,20 +1183,14 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
 *** Ref
 #+BEGIN_SRC emacs-lisp
   (use-package org-ref
-    :config
-    (setq reftex-default-bibliography '("~/doc/lib/bib/main.bib")
-          org-ref-default-bibliography '("~/doc/lib/bib/main.bib")
-          org-ref-pdf-directory "~/doc/lib"
-          org-ref-bibliography-notes "~/doc/lib/notes.org"
-          bibtex-completion-pdf-open-function 'org-open-file
-          org-ref-completion-library 'org-ref-ivy-cite))
+    :custom
+    (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-pdf-directory "~/doc/lib")
+    (org-ref-bibliography-notes "~/doc/lib/notes.org")
+    (bibtex-completion-pdf-open-function 'org-open-file)
+    (org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
-
-*** Clock
-#+begin_src emacs-lisp
-  (setq org-clock-persist t)
-  (org-clock-persistence-insinuate)
-#+end_src
 
 ** REST
 
