@@ -608,16 +608,34 @@ Insert the current ticket number if we're on a =KNUTH= feature branch.
 
 The context definitions are in =private.org=.
 
-#+BEGIN_SRC emacs-lisp
+=set-from-line= manages identities: always answer with the =to:= email address when it's to one of my private email addresses. Manage mailing list identities separately (I know of no automatic way, unfortunately.)
+
+#+begin_src emacs-lisp
+  (defun aleks/set-from-line ()
+    "Set From: address based on To: address of original email.  Also set mailing list addresses."
+    (when mu4e-compose-parent-message
+      (cond
+       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :to "aleks.bg")
+        (setq user-mail-address (mu4e-message-field mu4e-compose-parent-message :to)))
+       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
+        (setq user-mail-address "org@list.aleks.bg")))))
+
+  (defun aleks/disable-show-trailing-whitespace ()
+    "Disable trailing whitespace."
+    (message "Disabling whitespace")
+    (setq show-trailing-whitespace nil))
+
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
+    :commands (mu4e)
     :config
     (evil-set-initial-state 'mu4e-headers-mode 'normal)
     (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
     (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
     :hook
-    (mu4e-view-mode-hook . (lambda () (setq show-trailing-whitespace nil)))
-    (mu4e-headers-mode-hook . (lambda () (setq show-trailing-whitespace nil)))
+    (mu4e-view-mode . aleks/disable-show-trailing-whitespace)
+    (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
+    (mu4e-compose-mode . aleks/set-from-line)
     :custom
     (shr-color-visible-luminance-min 80)
     (mail-user-agent 'mu4e-user-agent)
@@ -821,9 +839,6 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
   (use-package yasnippet
     :config
     (yas-global-mode 1)
-    :hook
-    (prog-mode-hook . yas-minor-mode)
-    (org-mode-hook . yas-minor-mode)
     :custom
     (yas-snippet-dirs '("~/config/newmacs/snippets")))
 #+end_src
