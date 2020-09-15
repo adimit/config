@@ -768,12 +768,13 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
 ** Roam
 #+BEGIN_SRC emacs-lisp
   (use-package org-roam
-    :hook (after-init . org-roam-mode)
+    :commands (org-roam-find-file)
     :custom
     (org-roam-directory (concat (file-name-as-directory (getenv "HOME")) "org/roam"))
     (org-roam-completion-system 'ivy))
 
   (use-package company-org-roam
+    :after (org-roam)
     :config (push 'company-org-roam company-backends))
 #+END_SRC
 
@@ -822,8 +823,11 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
 ** Tree-Sitter
 
 #+begin_src emacs-lisp
-  (use-package tree-sitter)
-  (use-package tree-sitter-langs)
+  (use-package tree-sitter
+    :hook
+    (typescript-mode . tree-sitter-mode)
+    (typescript-mode . tree-sitter-hl-mode)
+    :ensure tree-sitter-langs)
 #+end_src
 
 ** Which-Key
@@ -931,8 +935,6 @@ We also want some Flutter support
   (use-package typescript-mode
     :mode (("\\.tsx?$" . typescript-mode))
     :hook
-    (typescript-mode . tree-sitter-mode)
-    (typescript-mode . tree-sitter-hl-mode)
     (typescript-mode . lsp)
     :custom
     (typescript-indent-level 2))
@@ -1218,6 +1220,7 @@ Rest client with company backend & org support.
 
 #+begin_src emacs-lisp
   (use-package restclient
+    :mode "\\.rest$"
     :general (:keymaps 'restclient-mode :states 'normal :prefix ", ." :mode "\\.rest$"
                        "c" 'restclient-http-send-current
                        "r" 'restclient-http-send-current-raw
@@ -1229,15 +1232,16 @@ Rest client with company backend & org support.
                        "i" 'restclient-show-info))
 
   (use-package company-restclient
+    :after (restclient)
     :config
     (add-to-list 'company-backends 'company-restclient))
 
   (use-package ob-restclient
+    :after (restclient)
     :config
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((restclient . t))))
-
 #+end_src
 ** Rust
 
