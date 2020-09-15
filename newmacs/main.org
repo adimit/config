@@ -626,7 +626,6 @@ The context definitions are in =private.org=.
 
   (defun aleks/disable-show-trailing-whitespace ()
     "Disable trailing whitespace."
-    (message "Disabling whitespace")
     (setq show-trailing-whitespace nil))
 
   (use-package mu4e
