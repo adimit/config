@@ -1062,21 +1062,21 @@ in org mode.
          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
     :general
     (:states 'normal :keymaps 'org-mode-map :prefix ", ."
-             ". '" 'org-edit-special
-             ". i" 'org-insert-structure-template
-             ". o" 'org-open-at-point
-             ". h" 'org-promote-subtree
-             ". l" 'org-demote-subtree
-             ". a" 'org-archive-subtree
-             ". s" 'org-schedule
-             ". d" 'org-deadline
-             ". e" 'org-set-effort
-             ". c c" 'org-clock-in
-             ". c i" 'org-clock-in
-             ". c o" 'org-clock-out
-             ". c g" 'org-clock-goto
-             ". c x" 'org-clock-cancel
-             ". r" 'org-refile)
+             "'" 'org-edit-special
+             "i" 'org-insert-structure-template
+             "o" 'org-open-at-point
+             "h" 'org-promote-subtree
+             "l" 'org-demote-subtree
+             "a" 'org-archive-subtree
+             "s" 'org-schedule
+             "d" 'org-deadline
+             "e" 'org-set-effort
+             "c c" 'org-clock-in
+             "c i" 'org-clock-in
+             "c o" 'org-clock-out
+             "c g" 'org-clock-goto
+             "c x" 'org-clock-cancel
+             "r" 'org-refile)
     (:states 'normal :keymaps 'org-mode-map :prefix ","
              "'" 'org-edit-special)
     (:states 'normal :prefix ", c"
