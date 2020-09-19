@@ -221,15 +221,15 @@ Since sans serif fonts seem to be more easily readable when the background is bl
     "Set the faces for light mode."
     (custom-set-faces
      '(variable-pitch ((t (:family "Bitter" :height 160 ))))
-     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
-     '(default ((t (:family "Fira Code" :height 130))))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 150))))
+     '(default ((t (:family "Fira Code" :height 150))))))
 
   (defun aleks/set-dark-mode-faces ()
     "Set the faces for dark mode."
     (custom-set-faces
      '(variable-pitch ((t (:family "Bitter" :height 160))))
-     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
-     '(default ((t (:family "Fira Code" :height 130))))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 150))))
+     '(default ((t (:family "Fira Code" :height 150))))))
 #+end_src
 
 I'm using Prot's modus themes for light and dark mode. They're only loaded here, not enabled.
