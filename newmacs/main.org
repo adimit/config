@@ -1022,6 +1022,7 @@ in org mode.
     :config
     (aleks/set-org-mode-fixed-pitch-faces)
     (org-clock-persistence-insinuate)
+    (require 'ox-confluence)
     :custom
     (org-tags-column
      0
@@ -1182,12 +1183,14 @@ Keybindings in capture mode
 #+END_SRC
 
 *** Reveal
+
 Support for generating slides from org mode. Removed =ox-reveal= for now as it was messing with structure templates. The replacement is apparently =org-re-reveal= [[https://gitlab.com/oer/org-re-reveal][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
 #+END_SRC
 
 *** Protocol
+
 #+BEGIN_SRC emacs-lisp
   (require 'org-protocol)
 #+END_SRC
@@ -1222,7 +1225,9 @@ Then use the following bookmarklet for capturing:
 Note the =/c/= in the URL, it denotes the capture template we want to use.
 
 Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html][the documentation]].
+
 *** Ref
+
 #+BEGIN_SRC emacs-lisp
   (use-package org-ref
     :custom
