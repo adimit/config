@@ -65,7 +65,7 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
      :states 'normal
      :prefix ","
      "," (general-simulate-key "M-x")
-     "f" 'counsel-find-file
+     "f f" 'counsel-find-file
      "g s" 'magit-status
 
      "a" 'org-agenda
@@ -773,10 +773,16 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
 ** Roam
 #+BEGIN_SRC emacs-lisp
   (use-package org-roam
-    :commands (org-roam-find-file)
     :custom
     (org-roam-directory (concat (file-name-as-directory (getenv "HOME")) "org/roam"))
-    (org-roam-completion-system 'ivy))
+    (org-roam-completion-system 'ivy)
+    :general
+    (:states 'normal
+             ", f r" 'org-roam-find-file)
+    (:states 'normal :definer 'minor-mode :keymaps 'org-roam-mode :prefix ", ."
+             "i" 'org-roam-insert
+             "I" 'org-roam-insert-immediate
+             "b" 'org-roam-buffer-toggle-display))
 
   (use-package company-org-roam
     :after (org-roam)
