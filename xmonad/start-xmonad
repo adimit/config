@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-my-taffybar&
 emacs --daemon&
 setxkbmap -layout us,bg -variant dvorak, \
 	-option caps:swapescape \

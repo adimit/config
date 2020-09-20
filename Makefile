@@ -15,10 +15,8 @@ NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 LOCAL = ${HOME}/.local
 XMONAD = ${LOCAL}/bin/xmonad
-TAFFYBAR = ${LOCAL}/bin/my-taffybar
 XMONAD_REPO = xmonad/xmonad
 XMONAD_CONTRIB_REPO = xmonad/xmonad-contrib
-TAFFYBAR_REPO = xmonad/my-taffybar/taffybar
 EMACS_CONFIG = ~/.emacs.d
 FISH_CONFIG = ~/.config/fish/config.fish
 GIT_CONFIG = ~/.gitconfig
@@ -119,19 +117,15 @@ ${XMONAD_REPO}:
 ${XMONAD_CONTRIB_REPO}: ${XMONAD_REPO}
 	cd xmonad && test -d xmonad-contrib || git clone "git@github.com:xmonad/xmonad-contrib"
 
-${TAFFYBAR_REPO}: ${XMONAD_REPO}
-	cd xmonad/my-taffybar && test -d taffybar || git clone "git@github.com:taffybar/taffybar.git"
-
 ${HLEDGER}: ${STACK}
 	stack install hledger hledger-web
 
-
 ifeq (${OS},Fedora)
-XMONAD_DEPENDENCIES=gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
+XMONAD_DEPENDENCIES=libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel
 else
-XMONAD_DEPENDENCIES=gobject-introspection libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev libcairo2-dev libcairo-gobject2 libgdk-pixbuf2.0-dev libsdl-pango-dev libdbusmenu-gtk3-dev libgtksourceview-3.0-dev libgirepository1.0-dev
+XMONAD_DEPENDENCIES=libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev
 endif
-${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${TAFFYBAR_REPO}
+${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO}
 	${INSTALL_CMD} ${XMONAD_DEPENDENCIES}
 	cd xmonad && stack install
 
