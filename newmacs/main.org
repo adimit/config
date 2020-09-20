@@ -640,6 +640,7 @@ The context definitions are in =private.org=.
     (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
     (mu4e-compose-mode . aleks/set-from-line)
     :custom
+    (require 'org-mu4e)
     (shr-color-visible-luminance-min 80)
     (mail-user-agent 'mu4e-user-agent)
     (mu4e-update-interval 60)
@@ -651,12 +652,6 @@ The context definitions are in =private.org=.
                            (:flags . 6)
                            (:from . 22)
                            (:thread-subject . nil))))
-#+END_SRC
-
-Store org-mode links to emails
-
-#+BEGIN_SRC emacs-lisp
-  (require 'org-mu4e)
 #+END_SRC
 
 *** Keybindings
