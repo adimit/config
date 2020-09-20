@@ -1,7 +1,7 @@
 # TODO:
 # - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /signal-desktop /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
@@ -36,32 +36,30 @@ FONTS = ${HOME}/.fonts
 FIRA_CODE = ${FONTS}/FiraCode
 FIRA_GO = ${FONTS}/FiraGo
 BITTER = ${FONTS}/Bitter
+INSTALL_CMD=sudo apt install -y
+HLEDGER = ${LOCAL}/bin/hledger
+NPM_PREFIX = npm set prefix ${LOCAL}
 
 .PHONY: install
-install: links ${FOREIGN_SOURCE} ${XMONAD} ${TAFFYBAR} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${EXECUTABLES} ${X_TOUCHPAD_CONFIGURATION} ${EMACS} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER}
-
-.PHONY: npm-prefix
-npm-prefix: /usr/bin/npm
-	npm set prefix ${LOCAL}
+install: links ${EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER}
 
 ${X_TOUCHPAD_CONFIGURATION}:
+	sudo mkdir -p $$(dirname ${X_TOUCHPAD_CONFIGURATION})
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
 
-/usr/bin/signal-desktop:
-	sudo dnf -y copr enable luminoso/Signal-Desktop
-	sudo dnf install -y signal-desktop
-
 /usr/bin/chromium-browser:
-	sudo dnf install -y chromium
+#${INSTALL_CMD} chromium
+	${INSTALL_CMD} chromium-browser
 
 /usr/bin/oggenc:
-	sudo dnf install -y vorbis-tools
+	${INSTALL_CMD} vorbis-tools
 
 /usr/bin/seafile-applet:
-	sudo dnf install -y seafile-client
+# ${INSTALL_CMD} seafile-client
+	${INSTALL_CMD} seafile-gui
 
 /usr/bin/%:
-	sudo dnf -y install $*
+	${INSTALL_CMD} $*
 
 ${XMONAD_XSESSION}:
 	sudo cp xmonad/xmonad.desktop ${XMONAD_XSESSION}
@@ -100,27 +98,31 @@ ${OFFLINEIMAPRC}:
 ${OFFLINEIMAPPY}:
 	ln -s ${PWD}/offlineimap.py ${OFFLINEIMAPPY}
 
-xmonad:
+${XMONAD_REPO}:
 	mkdir -p xmonad
+	cd xmonad &&  test -d xmonad || git clone "git@github.com:xmonad/xmonad"
 
-${XMONAD_REPO}: xmonad
-	cd xmonad && git clone "git@github.com:xmonad/xmonad"
+${XMONAD_CONTRIB_REPO}: ${XMONAD_REPO}
+	cd xmonad && test -d xmonad-contrib || git clone "git@github.com:xmonad/xmonad-contrib"
 
-${XMONAD_CONTRIB_REPO}: xmonad
-	cd xmonad && git clone "git@github.com:xmonad/xmonad-contrib"
+${TAFFYBAR_REPO}: ${XMONAD_REPO}
+	cd xmonad/my-taffybar && test -d taffybar || git clone "git@github.com:taffybar/taffybar.git"
 
-${TAFFYBAR_REPO}: xmonad
-	cd xmonad/my-taffybar && git clone "git@github.com:taffybar/taffybar.git"
+${HLEDGER}: ${STACK}
+	stack install hledger hledger-web
 
 ${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${TAFFYBAR_REPO}
-	sudo dnf install -y gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
+	# sudo dnf install -y gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
+	${INSTALL_CMD} gobject-introspection libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev libcairo2-dev libcairo-gobject2 libgdk-pixbuf2.0-dev libsdl-pango-dev libdbusmenu-gtk3-dev libgtksourceview-3.0-dev libgirepository1.0-dev
 	cd xmonad && stack install
 
 ${STACK}:
 	curl -sSL https://get.haskellstack.org/ | sh
 
 ${MU}: ${MU_REPOSITORY}
-	sudo dnf install -y guile-devel texinfo html2text xdg-utils guile22-devel gmime30-devel xapian-core-devel webkit2gtk3-devel
+	# sudo dnf install -y guile-devel texinfo html2text xdg-utils guile22-devel gmime30-devel xapian-core-devel webkit2gtk3-devel
+	${INSTALL_CMD} guile-3.0-dev texinfo html2text xdg-utils guile-2.2-dev libgmime-3.0-dev libxapian-dev libwebkit2gtk-4.0-dev
+
 	cd ${MU_REPOSITORY} && \
 	./autogen.sh --prefix=${LOCAL} && \
 	make -j5 && \
@@ -133,8 +135,10 @@ ${EMACS_REPOSITORY}:
 	cd ${FOREIGN_SOURCE} && git clone https://git.savannah.gnu.org/git/emacs.git
 
 ${EMACS}: ${EMACS_REPOSITORY}
-	sudo dnf builddep -y emacs
-	sudo dnf install -y jansson-devel
+	# sudo dnf builddep -y emacs
+	# sudo dnf install -y jansson-devel
+	sudo apt build-dep -y emacs
+	${INSTALL_CMD} libjansson-dev
 	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} --with-xwidgets && make -j5 && make install
 
 ${FOREIGN_SOURCE}:
@@ -147,10 +151,11 @@ ${RUST}:
 	curl --proto '=https' --tlsv1.2 -sSf 'https://sh.rustup.rs' > /tmp/install_rust.sh && sh /tmp/install_rust.sh -y && rm -f /tmp/install_rust.sh
 
 ${WASM_PACK}:
-	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | sh
+	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | PATH=$$HOME/.cargo/bin:$$PATH sh
 
 ${CARGO_GENERATE}:
-	sudo dnf install -y openssl-devel
+	# sudo dnf install -y openssl-devel
+	${INSTALL_CMD} libssl-dev
 	cargo install cargo-generate
 
 ${RUST_ANALYZER}:
@@ -183,11 +188,14 @@ ${BITTER}:
 	rm -f ${FONT_TMP_FILE}
 	fc-cache -fv
 
-${LOCAL}/bin/tsc: npm-prefix
+${LOCAL}/bin/tsc:
+	${NPM_PREFIX}
 	npm i -g typescript
 
-${LOCAL}/bin/eslint: npm-prefix
+${LOCAL}/bin/eslint:
+	${NPM_PREFIX}
 	npm i -g eslint
 
-${LOCAL}/bin/prettier: npm-prefix
+${LOCAL}/bin/prettier:
+	${NPM_PREFIX}
 	npm i -g prettier
