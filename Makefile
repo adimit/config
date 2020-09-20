@@ -1,5 +1,12 @@
-# TODO:
-# - link configuration files for emacs, fish, git, dunst, kitty, xmonad, tmux, XCompose, Xdefaults
+ifneq (,$(realpath /usr/bin/dpkg))
+OS=Debianish
+INSTALL_CMD=sudo apt install -y
+else ifneq (,$(realpath /usr/bin/dnf))
+OS=Fedora
+INSTALL_CMD=sudo dnf install -y
+else
+$(error Could not find dpkg or dnf)
+endif
 
 EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
@@ -36,7 +43,6 @@ FONTS = ${HOME}/.fonts
 FIRA_CODE = ${FONTS}/FiraCode
 FIRA_GO = ${FONTS}/FiraGo
 BITTER = ${FONTS}/Bitter
-INSTALL_CMD=sudo apt install -y
 HLEDGER = ${LOCAL}/bin/hledger
 NPM_PREFIX = npm set prefix ${LOCAL}
 
@@ -47,16 +53,24 @@ ${X_TOUCHPAD_CONFIGURATION}:
 	sudo mkdir -p $$(dirname ${X_TOUCHPAD_CONFIGURATION})
 	sudo cp 50-touchpad.conf ${X_TOUCHPAD_CONFIGURATION}
 
+ifeq (${OS},Fedora)
+CHROMIUM_PACKAGE=chromium
+else
+CHROMIUM_PACKAGE=chromium-browser
+endif
 /usr/bin/chromium-browser:
-#${INSTALL_CMD} chromium
-	${INSTALL_CMD} chromium-browser
+	${INSTALL_CMD} ${CHROMIUM_BROWSER}
 
 /usr/bin/oggenc:
 	${INSTALL_CMD} vorbis-tools
 
+ifeq (${OS},Fedora)
+SEAFILE_PACKAGE=chromium
+else
+SEAFILE_PACKAGE=chromium-browser
+endif
 /usr/bin/seafile-applet:
-# ${INSTALL_CMD} seafile-client
-	${INSTALL_CMD} seafile-gui
+	${INSTALL_CMD} ${SEAFILE_PACKAGE}
 
 /usr/bin/%:
 	${INSTALL_CMD} $*
@@ -111,18 +125,26 @@ ${TAFFYBAR_REPO}: ${XMONAD_REPO}
 ${HLEDGER}: ${STACK}
 	stack install hledger hledger-web
 
+
+ifeq (${OS},Fedora)
+XMONAD_DEPENDENCIES=gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
+else
+XMONAD_DEPENDENCIES=gobject-introspection libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev libcairo2-dev libcairo-gobject2 libgdk-pixbuf2.0-dev libsdl-pango-dev libdbusmenu-gtk3-dev libgtksourceview-3.0-dev libgirepository1.0-dev
+endif
 ${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${TAFFYBAR_REPO}
-	# sudo dnf install -y gobject-introspection-devel libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel cairo-devel cairo-gobject-devel gdk-pixbuf2-devel pango-devel libdbusmenu-devel atk-devel gtksourceview3-devel libdbusmenu-gtk3-devel
-	${INSTALL_CMD} gobject-introspection libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev libcairo2-dev libcairo-gobject2 libgdk-pixbuf2.0-dev libsdl-pango-dev libdbusmenu-gtk3-dev libgtksourceview-3.0-dev libgirepository1.0-dev
+	${INSTALL_CMD} ${XMONAD_DEPENDENCIES}
 	cd xmonad && stack install
 
 ${STACK}:
 	curl -sSL https://get.haskellstack.org/ | sh
 
+ifeq (${OS},Fedora)
+MU_DEPENDENCIES=guile-devel texinfo html2text xdg-utils guile22-devel gmime30-devel xapian-core-devel webkit2gtk3-devel
+else
+MU_DEPENDENCIES=guile-3.0-dev texinfo html2text xdg-utils guile-2.2-dev libgmime-3.0-dev libxapian-dev libwebkit2gtk-4.0-dev
+endif
 ${MU}: ${MU_REPOSITORY}
-	# sudo dnf install -y guile-devel texinfo html2text xdg-utils guile22-devel gmime30-devel xapian-core-devel webkit2gtk3-devel
-	${INSTALL_CMD} guile-3.0-dev texinfo html2text xdg-utils guile-2.2-dev libgmime-3.0-dev libxapian-dev libwebkit2gtk-4.0-dev
-
+	${INSTALL_CMD} ${MU_DEPENDENCIES}
 	cd ${MU_REPOSITORY} && \
 	./autogen.sh --prefix=${LOCAL} && \
 	make -j5 && \
@@ -134,11 +156,18 @@ ${MU_REPOSITORY}:
 ${EMACS_REPOSITORY}:
 	cd ${FOREIGN_SOURCE} && git clone https://git.savannah.gnu.org/git/emacs.git
 
+ifeq (${OS},Fedora)
+EMACS_DEPENDENCIES=jansson-devel
+else
+EMACS_DEPENDENCIES=libjansson-dev
+endif
 ${EMACS}: ${EMACS_REPOSITORY}
-	# sudo dnf builddep -y emacs
-	# sudo dnf install -y jansson-devel
+ifeq (${OS},Fedora)
+	sudo dnf builddep -y emacs
+else
 	sudo apt build-dep -y emacs
-	${INSTALL_CMD} libjansson-dev
+endif
+	${INSTALL_CMD} ${EMACS_DEPENDENCIES}
 	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} --with-xwidgets && make -j5 && make install
 
 ${FOREIGN_SOURCE}:
@@ -153,9 +182,13 @@ ${RUST}:
 ${WASM_PACK}:
 	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | PATH=$$HOME/.cargo/bin:$$PATH sh
 
+ifeq (${OS},Fedora)
+CARGO_DEPENDENCIES=openssl-devel
+else
+CARGO_DEPENDENCIES=libssl-dev
+endif
 ${CARGO_GENERATE}:
-	# sudo dnf install -y openssl-devel
-	${INSTALL_CMD} libssl-dev
+	${INSTALL_CMD} ${CARGO_DEPENDENCIES}
 	cargo install cargo-generate
 
 ${RUST_ANALYZER}:
