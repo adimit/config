@@ -990,7 +990,7 @@ Only basic support :(
              "p" 'browse-paypal-history-at-point))
 
   (use-package flycheck-ledger
-    :after flycheck ledger)
+    :after flycheck ledger-mode)
 #+END_SRC
 
 ** Lua
