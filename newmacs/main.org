@@ -141,6 +141,10 @@ Activate evil mode
 
   (use-package evil-exchange
     :config (evil-exchange-install))
+
+  (use-package evil-goggles
+    :after evil
+    :config (evil-goggles-mode))
 #+END_SRC
 
 *** Multi-cursor
