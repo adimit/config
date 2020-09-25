@@ -1,5 +1,21 @@
 resolver: lts-16.15
 
 packages:
-- xmonad
-- xmonad-contrib
+  - xmonad
+  - xmonad-contrib
+  - xmobar
+
+flags:
+  xmobar:
+    with_dbus: true
+    with_threaded: true
+    with_xft: true
+    with_inotify: true
+    with_alsa: true
+    with_datezone: true
+    with_xpm: true
+    with_mpris: true
+    with_weather: true
+
+extra-deps:
+  - netlink-1.1.1.0

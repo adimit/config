@@ -12,29 +12,42 @@ import qualified XMonad.StackSet as W
 import XMonad.Actions.GridSelect
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.UrgencyHook
 
 import Graphics.X11.ExtraTypes.XF86
 import XMonad.Layout.MultiColumns
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
 import XMonad.Layout.MouseResizableTile
-import System.Taffybar.Support.PagerHints (pagerHints)
 
-blue, black, white :: String
-blue = "#3388BB"
+-- colors from the modus vivendi theme
+red, green, yellow, blue, cyan, magenta, bgActive, fgActive, white, black, magentaNuanced, magentaNuancedBg :: String
+red = "#ff8059"
+green = "#44bc44"
+yellow = "#eecc00"
+blue = "#2fafff"
+magenta = "#feacd0"
+cyan = "#00d3d0"
 black = "#000000"
 white = "#FFFFFF"
+magentaNuanced = "#e5cfef"
+magentaNuancedBg = "#230631"
+
+
+bgActive = "#323232"
+fgActive = "#f4f4f4"
 
 promptConfig :: XPConfig
 promptConfig = def { position          = Top
-                   , font              = "xft:Fira Code"
+                   , font              = "xft:Fira Code-14"
                    , alwaysHighlight   = True
                    , height            = 30
                    , bgColor           = black
                    , borderColor       = blue
                    , fgColor           = white
-                   , bgHLight          = blue
-                   , fgHLight          = black
+                   , bgHLight          = magenta
+                   , fgHLight          = bgActive
                    , promptBorderWidth = 2 }
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
@@ -82,14 +95,29 @@ myKeys XConfig { modMask = mask } = M.fromList $
     volumeControl v = "notify-send -t 400 \"Sound Level\" \"🔊 \"$(amixer -D pulse sset Master "
       ++ v ++ " | perl -wnE 'say /\\[(\\d?\\d?\\d%)\\]/' | tail -n 1)"
 
+transformWsName :: WorkspaceId -> String
+transformWsName = id
+
+myXmobarPP :: PP
+myXmobarPP = xmobarPP { ppCurrent = xmobarColor bgActive red . pad . transformWsName
+                      , ppVisible = xmobarColor fgActive "#762422" . pad . transformWsName
+                      , ppHidden = transformWsName
+                      , ppHiddenNoWindows = \_ -> ""
+                      , ppUrgent = xmobarColor bgActive magenta . pad . transformWsName
+                      , ppSep = " "
+                      , ppLayout = \_ -> ""
+                      , ppTitle = xmobarColor red black . wrap "<fn=1>" "</fn>"}
+
 main :: IO()
-main = xmonad $ docks $ ewmh $ pagerHints $ withNavigation2DConfig navconf $ gnomeConfig
-    { terminal = "kitty"
+main = do
+  xconfig <- statusBar "xmobar" myXmobarPP (\l -> (modMask l, xK_b))
+    $ docks $ withUrgencyHook NoUrgencyHook $ ewmh $ withNavigation2DConfig navconf $ gnomeConfig { terminal = "kitty"
     , layoutHook = layout
     , modMask = mod4Mask
     , normalBorderColor = black
     , focusedBorderColor = blue
     , keys = \c -> myKeys c `M.union` keys gnomeConfig c }
+  xmonad xconfig
   where
     navconf = def { defaultTiledNavigation = centerNavigation , screenNavigation = centerNavigation }
     layout = avoidStrutsOn [D] $

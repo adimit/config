@@ -8,7 +8,7 @@ else
 $(error Could not find dpkg or dnf)
 endif
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
@@ -16,7 +16,9 @@ X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 LOCAL = ${HOME}/.local
 XMONAD = ${LOCAL}/bin/xmonad
 XMONAD_REPO = xmonad/xmonad
+XMOBAR_REPO = xmonad/xmobar
 XMONAD_CONTRIB_REPO = xmonad/xmonad-contrib
+XMOBAR_CONFIG = ~/.xmobarrc
 EMACS_CONFIG = ~/.emacs.d
 FISH_CONFIG = ~/.config/fish/config.fish
 GIT_CONFIG = ~/.gitconfig
@@ -77,8 +79,7 @@ ${XMONAD_XSESSION}:
 	sudo cp xmonad/xmonad.desktop ${XMONAD_XSESSION}
 
 ${XMONAD_START_FILE}:
-	cp xmonad/start-xmonad ${XMONAD_START_FILE}
-	chmod +x ${XMONAD_START_FILE}
+	ln -s ${PWD}/xmonad/start-xmonad ${XMONAD_START_FILE}
 
 ${EMACS_CONFIG}:
 	ln -s ${PWD}/newmacs ${EMACS_CONFIG}
@@ -102,7 +103,10 @@ ${XMONAD_CONFIG}:
 	ln -s ${PWD}/xmonad ${XMONAD_CONFIG}
 
 .PHONY: links
-links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${OFFLINEIMAPRC} ${OFFLINEIMAPPY}
+links: ${EMACS_CONFIG} ${FISH_CONFIG} ${GIT_CONFIG} ${DUNST_CONFIG} ${KITTY_CONFIG} ${XMONAD_CONFIG} ${OFFLINEIMAPRC} ${OFFLINEIMAPPY} ${XMOBAR_CONFIG}
+
+${XMOBAR_CONFIG}:
+	ln -s ${PWD}/xmonad/xmobarrc ${XMOBAR_CONFIG}
 
 ${OFFLINEIMAPRC}:
 	ln -s ${PWD}/offlineimaprc ${OFFLINEIMAPRC}
@@ -111,21 +115,23 @@ ${OFFLINEIMAPPY}:
 	ln -s ${PWD}/offlineimap.py ${OFFLINEIMAPPY}
 
 ${XMONAD_REPO}:
-	mkdir -p xmonad
-	cd xmonad &&  test -d xmonad || git clone "git@github.com:xmonad/xmonad"
+	cd xmonad && test -d xmonad || git clone "git@github.com:xmonad/xmonad"
 
 ${XMONAD_CONTRIB_REPO}: ${XMONAD_REPO}
 	cd xmonad && test -d xmonad-contrib || git clone "git@github.com:xmonad/xmonad-contrib"
+
+${XMOBAR_REPO}: ${XMONAD_REPO}
+	cd xmonad && test -d xmobar || git clone "git@github.com:jaor/xmobar"
 
 ${HLEDGER}: ${STACK}
 	stack install hledger hledger-web
 
 ifeq (${OS},Fedora)
-XMONAD_DEPENDENCIES=libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel
+XMONAD_DEPENDENCIES=libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel libXpm-devel
 else
-XMONAD_DEPENDENCIES=libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev
+XMONAD_DEPENDENCIES=libx11-dev libxrandr-dev libxinerama-dev libxss-dev libxft-dev libasound2-dev libxpm-dev
 endif
-${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO}
+${XMONAD}: ${STACK} ${XMONAD_REPO} ${XMONAD_CONTRIB_REPO} ${XMOBAR_REPO}
 	${INSTALL_CMD} ${XMONAD_DEPENDENCIES}
 	cd xmonad && stack install
 
