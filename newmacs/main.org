@@ -960,8 +960,9 @@ We also want some Flutter support
 *** Typescript
 #+BEGIN_SRC emacs-lisp
   (use-package prettier
-    :after typescript-mode
-    :config (global-prettier-mode))
+    :hook
+    (typescript-mode . prettier-mode)
+    (json-mode . prettier-mode))
 
   (use-package typescript-mode
     :mode "\\.tsx?$"
