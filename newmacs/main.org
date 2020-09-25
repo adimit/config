@@ -927,8 +927,12 @@ We also want some Flutter support
 
 ** Graphql
 #+BEGIN_SRC emacs-lisp
+  (use-package request
+    :commands (request))
+
   (use-package graphql-mode
-    :mode "\\.graphql$")
+    :mode "\\.graphql$"
+    :custom (graphql-indent-level 4))
 #+END_SRC
 
 ** Groovy
