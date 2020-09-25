@@ -67,6 +67,8 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
      "," (general-simulate-key "M-x")
      "f f" 'counsel-find-file
      "g s" 'magit-status
+     "g f" 'magit-file-dispatch
+     "g b" 'magit-blame
 
      "a" 'org-agenda
 
