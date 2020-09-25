@@ -744,10 +744,11 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
 ** Parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
+    :hook
+    (prog-mode . smartparens-mode)
+    (prog-mode . show-paren-mode) ; not smartparens, but eh
     :custom
-    (show-parent-delay 0)
-    (smartparens-global-mode t)
-    (show-paren-mode 1)
+    (show-paren-delay 0)
     :config
     (require 'smartparens-config)
     :general
@@ -764,7 +765,7 @@ For some reason, the =:general= keyword on =use-package= kept =mu4e= from being 
              "}" 'sp-down-sexp))
 
   (use-package rainbow-delimiters
-    :hook ((prog-mode . rainbow-delimiters-mode)))
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 ** Ripgrep
