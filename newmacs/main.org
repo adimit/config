@@ -1162,11 +1162,6 @@ This hides heading bullets for a cleaner look.
            (function (lambda () (string-join
             '("* Sprint %^{Title} [[http://xjira/secure/RapidBoard.jspa?rapidView=292&quickFilter=2360][(board)]]"
               ""
-              "** Times"
-              ""
-              "#+BEGIN: clocktable :scope file :step day :block thisweek :compact t :maxlevel 3 :stepskip0 t :formula %"
-              "#+END:"
-              ""
               "** Meetings"
               "*** Daily"
               "*** Refinement"
