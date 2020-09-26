@@ -1104,6 +1104,7 @@ in org mode.
      (concat (file-name-as-directory org-directory) "work.org"))
     (org-agenda-files
      `(,my-org-main-file ,my-org-work-file))
+    (diary-file (concat (file-name-as-directory org-directory) "diary"))
     (org-agenda-custom-commands
      '(("u" "Unscheduled TODO" todo ""
         ((org-agenda-overriding-header "\nUnscheduled TODO")
