@@ -1182,14 +1182,14 @@ This hides heading bullets for a cleaner look.
            "- [ ] %i%?"
            :prepend t)
           ("u" "Urgent item" entry (file+headline my-org-work-file "NEW")
-           "* TODO %^{Title}\n:PROPERTIES:\n:TIMESTAMP: %U\n:Reference: %f %a\n:END:\n%i%?"
+           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?"
            :clock-in t)
           ("w" "Work" entry (file+headline my-org-work-file "NEW")
            "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
           ("s" "Add sprint task" entry (file+headline my-org-work-file "Tasks")
-           "* TODO %^{Title}\n:PROPERTIES:\n:TIMESTAMP: %U\n:Reference: %f %a\n:END:\n%i%?")
+           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?")
           ("j" "Add Jira ticket" entry (file+headline my-org-work-file "Tasks")
-           "* TODO KNUTH-%^{KNUTH} %?\n:PROPERTIES:\n:TIMESTAMP: %U\n:Reference: http://xjira/browse/KNUTH-%\\1\n:END:\n%i")
+           "* TODO KNUTH-%^{KNUTH} %?\n:PROPERTIES:\n:CREATED: %U\n:Reference: http://xjira/browse/KNUTH-%\\1\n:END:\n%i")
           ("S" "Sprint" entry (file my-org-work-file)
            (function (lambda () (string-join
             '("* Sprint %^{Title} [[http://xjira/secure/RapidBoard.jspa?rapidView=292&quickFilter=2360][(board)]]"
