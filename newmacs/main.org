@@ -91,13 +91,33 @@ Calendar is set up for European style display (Monday starts week) and manual lo
 Tübingen Hbf is: =48.516738, 9.055493=
 
 #+BEGIN_SRC emacs-lisp
+  (defvar holiday-baden-württemberg-holidays
+    '((holiday-fixed 1 1 "Neujahr")
+      (holiday-fixed 1 6 "Heilige Drei Könige")
+      (holiday-fixed 5 1 "Tag der Arbeit")
+      (holiday-fixed 10 3 "Tag der deutschen Einheit")
+      (holiday-fixed 11 1 "Allerheiligen")
+      (holiday-fixed 12 25 "Erster Weihnachtsfeiertag")
+      (holiday-fixed 12 26 "Zweiter Weihnachtsfeiertag")
+      (holiday-easter-etc -2 "Karfreitag")
+      (holiday-easter-etc +1 "Ostermontag")
+      (holiday-easter-etc +39 "Christi Himmelfahrt")
+      (holiday-easter-etc +50 "Pfingstmontag")
+      (holiday-easter-etc +60 "Fronleichnam")))
+
   (use-package calendar
     :defer t
     :custom
     (calendar-week-start-day 1)
     (calendar-latitude 48.516738)
     (calendar-longitude 9.055493)
-    (calendar-location-name "Tübingen, Germany"))
+    (calendar-location-name "Tübingen, Germany")
+    (calendar-holidays (append holiday-solar-holidays
+                               holiday-baden-württemberg-holidays))
+    ; remove irrelevant holidays
+    :config
+    (calendar-set-date-style 'european))
+
 #+END_SRC
 
 Here's a function that returns whether it's currently dark outside, so you don't have to look.
@@ -1040,6 +1060,8 @@ in org mode.
     :hook
     (org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
+    (org-agenda-mode . olivetti-mode)
+    (org-agenda-mode . variable-pitch-mode)
     :config
     (aleks/set-org-mode-fixed-pitch-faces)
     (org-clock-persistence-insinuate)
@@ -1069,7 +1091,9 @@ in org mode.
      "Include file names when refiling")
 
                                           ; Agenda
-    (org-agenda-include-diary nil)
+    (org-agenda-include-diary t)
+    (org-agenda-window-setup 'current-window)
+    (org-agenda-restore-windows-after-quit t)
     (org-directory
      (concat (file-name-as-directory (getenv "HOME")) "org"))
     (my-org-main-file
