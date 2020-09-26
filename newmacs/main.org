@@ -114,6 +114,8 @@ Tübingen Hbf is: =48.516738, 9.055493=
     (calendar-location-name "Tübingen, Germany")
     (calendar-holidays (append holiday-solar-holidays
                                holiday-baden-württemberg-holidays))
+    (calendar-time-display-form
+     '(24-hours ":" minutes (if time-zone (concat " (" time-zone ")"))))
     ; remove irrelevant holidays
     :config
     (calendar-set-date-style 'european))
