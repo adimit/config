@@ -114,11 +114,9 @@ Tübingen Hbf is: =48.516738, 9.055493=
     (calendar-location-name "Tübingen, Germany")
     (calendar-holidays (append holiday-solar-holidays
                                holiday-baden-württemberg-holidays))
+    (calendar-date-style 'european)
     (calendar-time-display-form
-     '(24-hours ":" minutes (if time-zone (concat " (" time-zone ")"))))
-    ; remove irrelevant holidays
-    :config
-    (calendar-set-date-style 'european))
+     '(24-hours ":" minutes (if time-zone (concat " (" time-zone ")")))))
 
 #+END_SRC
 
@@ -1136,7 +1134,7 @@ in org mode.
              "o" 'org-clock-out)
     (:states 'normal :definer 'minor-mode :keymaps 'org-src-mode
              "RET" 'org-edit-src-exit
-             "BS" 'org-edit-src-abort)
+             "<backspace>" 'org-edit-src-abort)
     (:states 'normal :keymaps 'org-src-minor-mode-map
              "RET" 'org-edit-src-exit
              "BS" 'org-edit-src-abort)
@@ -1149,6 +1147,7 @@ in org mode.
               "c" 'org-capture
               "O" 'delete-other-windows
               "o" 'org-agenda-clock-out))
+
 #+END_SRC
 
 *** Prettification
