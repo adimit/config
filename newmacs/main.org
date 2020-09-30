@@ -294,14 +294,16 @@ Finally, let's define dark and light mode…
     (interactive)
     (enable-theme 'modus-vivendi)
     (aleks/set-org-mode-fixed-pitch-faces)
-    (aleks/set-dark-mode-faces))
+    (aleks/set-dark-mode-faces)
+    (highlight-indent-guides-auto-set-faces))
 
   (defun aleks/light-mode ()
     "Set theme and fonts for dark mode."
     (interactive)
     (enable-theme 'modus-operandi)
     (aleks/set-org-mode-fixed-pitch-faces)
-    (aleks/set-light-mode-faces))
+    (aleks/set-light-mode-faces)
+    (highlight-indent-guides-auto-set-faces))
 #+end_src
 
 And here's a function that can choose the correct theme according to the current sunset/sunrise time. I don't like automatic switching, as switching themes introduces lag and is rather disruptive.
@@ -952,6 +954,7 @@ We also want some Flutter support
     :commands (request))
 
   (use-package graphql-mode
+    :load-path "~/src/graphql-mode/"
     :mode "\\.graphql$"
     :custom (graphql-indent-level 4))
 #+END_SRC
