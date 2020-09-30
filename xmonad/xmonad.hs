@@ -34,7 +34,6 @@ white = "#FFFFFF"
 magentaNuanced = "#e5cfef"
 magentaNuancedBg = "#230631"
 
-
 bgActive = "#323232"
 fgActive = "#f4f4f4"
 
@@ -110,8 +109,10 @@ myXmobarPP = xmobarPP { ppCurrent = xmobarColor bgActive red . pad . transformWs
 
 main :: IO()
 main = do
-  xconfig <- statusBar "xmobar" myXmobarPP (\l -> (modMask l, xK_b))
-    $ docks $ withUrgencyHook NoUrgencyHook $ ewmh $ withNavigation2DConfig navconf $ gnomeConfig { terminal = "kitty"
+  xmonad =<< (statusBar "xmobar" myXmobarPP (\l -> (modMask l, xK_b))
+    $ docks $ withUrgencyHook NoUrgencyHook $ ewmh $ withNavigation2DConfig navconf $ gnomeConfig
+    { terminal = "kitty"
+    , workspaces = map show ([1..9] :: [Int]) ++ ["0","chat","music"]
     , layoutHook = layout
     , manageHook = composeAll [ className =? "Screen" --> doFloat
                               , className =? "Lollypop" --> doF (W.shift "music")
@@ -121,8 +122,7 @@ main = do
     , modMask = mod4Mask
     , normalBorderColor = black
     , focusedBorderColor = blue
-    , keys = \c -> myKeys c `M.union` keys gnomeConfig c }
-  xmonad xconfig
+    , keys = \c -> myKeys c `M.union` keys gnomeConfig c })
   where
     navconf = def { defaultTiledNavigation = centerNavigation , screenNavigation = centerNavigation }
     layout = avoidStrutsOn [D] $
