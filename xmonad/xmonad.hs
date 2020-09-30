@@ -113,6 +113,11 @@ main = do
   xconfig <- statusBar "xmobar" myXmobarPP (\l -> (modMask l, xK_b))
     $ docks $ withUrgencyHook NoUrgencyHook $ ewmh $ withNavigation2DConfig navconf $ gnomeConfig { terminal = "kitty"
     , layoutHook = layout
+    , manageHook = composeAll [ className =? "Screen" --> doFloat
+                              , className =? "Lollypop" --> doF (W.shift "music")
+                              , className =? "Seafile Client" --> doF (W.shift "9")
+                              , className =? "Microsoft Teams - Preview" --> doF (W.shift "8")
+                              , className =? "Signal" --> doF (W.shift "chat") ]
     , modMask = mod4Mask
     , normalBorderColor = black
     , focusedBorderColor = blue
