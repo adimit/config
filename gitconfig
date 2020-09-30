@@ -37,7 +37,6 @@
 	smtpserverport = 587
 [core]
 	excludesfile = /home/aleks/.gitignore
-	abbrev = 7
 [pull]
 	rebase = true
 [filter "lfs"]
@@ -49,3 +48,6 @@
 	program = gpg2
 [github]
 	user = adimit
+
+[includeIf "gitdir:~/src/mp-*/"]
+           path = ~/.gitconfig.meisterplan
