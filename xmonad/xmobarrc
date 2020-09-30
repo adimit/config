@@ -6,6 +6,6 @@ Config { font = "xft:Bitter-14"
        , commands = [ Run StdinReader
                     , Run Mpris2 "Lollypop" ["-t", "<artist> (<album>) - <title>"] 10
                     , Run Date "KW %W | %H:%M, %d %b %Y " "date" 10
-                    , Run Battery ["-t", "<watts> (<left>%)"] 60 ]
+                    , Run Battery ["-t", "<watts>W (<left>%)"] 60 ]
        , template = "<fn=2>%StdinReader%</fn>} <fc=#ffffff><fn=1>%date%</fn></fc> {<fc=#e5cfef>%mpris2%</fc> | %battery%"
 }
