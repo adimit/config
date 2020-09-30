@@ -1175,9 +1175,13 @@ This hides heading bullets for a cleaner look.
 *** Capture
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
+  (customize-set-variable 'org-capture-templates
         '(("c" "Todo" entry (file+headline my-org-main-file "NEW")
            "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
+          ("w" "Add to week" entry (file+regexp my-org-main-file "KW [0-9][0-9]?")
+           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+          ("k" "Add to stack" entry (file+headline my-org-main-file "Stack")
+           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
           ("C" "Add to current" entry (clock)
            "- [ ] %i%?"
            :prepend t)
