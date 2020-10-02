@@ -591,10 +591,6 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
      "l" 'flycheck-list-errors
      "n" 'flycheck-next-error
      "p" 'flycheck-previous-error))
-
-  (use-package company-lsp
-    :commands company-lsp
-    :after lsp lsp-mode)
 #+END_SRC
 
 ** Magit
