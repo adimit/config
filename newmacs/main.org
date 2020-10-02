@@ -1108,9 +1108,18 @@ in org mode.
      `(,my-org-main-file ,my-org-work-file))
     (diary-file (concat (file-name-as-directory org-directory) "diary"))
     (org-agenda-custom-commands
-     '(("u" "Unscheduled TODO" todo ""
-        ((org-agenda-overriding-header "\nUnscheduled TODO")
-         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+     '(("R" "Weekly Review"
+        ((todo "TODO" ((org-agenda-overriding-header "Unfinished")
+                       (org-agenda-files `(,my-org-main-file))))
+         (todo "PLAN" ((org-agenda-overriding-header "Planned")
+                       (org-agenda-files `(,my-org-main-file))))
+         (agenda "" ((org-agenda-span 7)
+                     (org-agenda-overriding-header "Week")))))
+       ("x" "Test block"
+        ((agenda "" ((org-agenda-span 4)
+                     (org-agenda-overriding-header "Schedule")))
+         (todo "TODO" ((org-agenda-compact-blocks 't)
+                       (org-agenda-overriding-header "Current Tasks")))))))
     :general
     (:states 'normal :keymaps 'org-mode-map :prefix ", ."
              "'" 'org-edit-special
