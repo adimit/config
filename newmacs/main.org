@@ -1189,11 +1189,9 @@ This hides heading bullets for a cleaner look.
 
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable 'org-capture-templates
-        '(("c" "Todo" entry (file+headline my-org-main-file "NEW")
-           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
-          ("w" "Add to week" entry (file+regexp my-org-main-file "KW [0-9][0-9]?")
-           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-          ("k" "Add to stack" entry (file+headline my-org-main-file "Stack")
+        '(("k" "Add to stack" entry (file+headline my-org-main-file "Stack")
+           "* PLAN %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+          ("w" "Add to week" entry (file+regexp my-org-main-file "Week [0-9][0-9]?")
            "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
           ("C" "Add to current" entry (clock)
            "- [ ] %i%?"
@@ -1201,8 +1199,6 @@ This hides heading bullets for a cleaner look.
           ("u" "Urgent item" entry (file+headline my-org-work-file "NEW")
            "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?"
            :clock-in t)
-          ("w" "Work" entry (file+headline my-org-work-file "NEW")
-           "* TODO %^{Title}\nCreated: %U\nRef: %f %a\n%i%?")
           ("s" "Add sprint task" entry (file+headline my-org-work-file "Tasks")
            "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?")
           ("j" "Add Jira ticket" entry (file+headline my-org-work-file "Tasks")
