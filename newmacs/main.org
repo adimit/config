@@ -1143,8 +1143,8 @@ in org mode.
              "RET" 'org-edit-src-exit
              "BS" 'org-edit-src-abort)
     (:keymaps 'org-agenda-mode-map
-              "k" 'org-agenda-previous-item
-              "j" 'org-agenda-next-item
+              "k" 'org-agenda-previous-line
+              "j" 'org-agenda-next-line
               "I" 'org-agenda-diary-entry
               "i" 'org-agenda-clock-in
               "s" 'org-agenda-schedule
