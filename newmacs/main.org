@@ -1081,6 +1081,7 @@ in org mode.
      "Place footnotes in the same section they're referenced")
     (org-hide-emphasis-markers t)
     (org-babel-confirm-evaluate nil "I trust my org files")
+    (org-log-into-drawer t "Add a logbook drawer")
 
                                           ; Refiling
     (org-outline-path-complete-in-steps
