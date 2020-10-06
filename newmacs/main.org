@@ -240,22 +240,20 @@ Instead of using a package like =org-variable-pitch-mode=, the following definit
 
 #+end_src
 
-Since sans serif fonts seem to be more easily readable when the background is black, and serif fonts just look so good on white background, we set up different font sets for light and dark mode.
+In order to be able to set different faces depending on the theme, we define two separate functions for setting faces.
 
 #+begin_src emacs-lisp
   (defun aleks/set-light-mode-faces ()
     "Set the faces for light mode."
     (custom-set-faces
-     '(variable-pitch ((t (:family "Bitter" :height 160 ))))
-     '(fixed-pitch ((t (:family "Fira Code" :height 150))))
-     '(default ((t (:family "Fira Code" :height 150))))))
+     '(variable-pitch ((t (:family "Bitter" :height 140))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+     '(default ((t (:family "Fira Code" :height 130))))))
 
   (defun aleks/set-dark-mode-faces ()
     "Set the faces for dark mode."
-    (custom-set-faces
-     '(variable-pitch ((t (:family "Bitter" :height 160))))
-     '(fixed-pitch ((t (:family "Fira Code" :height 150))))
-     '(default ((t (:family "Fira Code" :height 150))))))
+    ; the light mode faces work well for dark mode right now
+    (aleks/set-light-mode-faces))
 #+end_src
 
 I'm using Prot's modus themes for light and dark mode. They're only loaded here, not enabled.
