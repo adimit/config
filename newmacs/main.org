@@ -1144,9 +1144,10 @@ in org mode.
     (:states 'normal :definer 'minor-mode :keymaps 'org-src-mode
              "RET" 'org-edit-src-exit
              "<backspace>" 'org-edit-src-abort)
-    (:states 'normal :keymaps 'org-src-minor-mode-map
-             "RET" 'org-edit-src-exit
-             "BS" 'org-edit-src-abort)
+    (:states 'normal :definer 'minor-mode :keymaps 'org-capture-mode
+             "RET" 'org-capture-finalize
+             "<backspace>" 'org-capture-kill
+             ", . r" 'org-capture-refile)
     (:keymaps 'org-agenda-mode-map
               "k" 'org-agenda-previous-line
               "j" 'org-agenda-next-line
@@ -1219,20 +1220,6 @@ This hides heading bullets for a cleaner look.
             "\n")))
            :jump-to-captured t)))
 #+END_SRC
-
-Keybindings in capture mode
-
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-   :modes 'org-capture-mode
-   :states 'normal
-   :prefix ", ."
-   "c" 'org-capture-finalize
-   "r" 'org-capture-refile
-   "k" 'org-capture-kill
-   "x" 'org-capture-kill)
-#+END_SRC
-
 *** Reveal
 
 Support for generating slides from org mode. Removed =ox-reveal= for now as it was messing with structure templates. The replacement is apparently =org-re-reveal= [[https://gitlab.com/oer/org-re-reveal][here]].
@@ -1290,6 +1277,12 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
     (org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
 
+** Python
+#+begin_src emacs-lisp
+  (use-package lsp-python-ms
+    :custom (lsp-python-ms-auto-install-server t)
+    :hook (python-mode . lsp-mode))
+#+end_src
 ** REST
 
 Rest client with company backend & org support.
