@@ -403,6 +403,31 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
     (beacon-blink-duration 0.15))
 #+END_SRC
 
+** Centaur tabs
+#+begin_src emacs-lisp
+  (use-package centaur-tabs
+    :general (:states 'normal :prefix "g"
+                      "t" 'centaur-tabs-forward
+                      "T" 'centaur-tabs-backward)
+    :hook
+    (term-mode . centaur-tabs-local-mode)
+    (calendar-mode . centaur-tabs-local-mode)
+    (org-agenda-mode . centaur-tabs-local-mode)
+    :custom
+    (centaur-tabs-height 26)
+    (centaur-tabs-set-icons t)
+    (centaur-tabs-gray-out-icons 'buffer)
+    (centaur-tabs-style "bar")
+    (centaur-tabs-set-bar 'under)
+    (x-underline-at-descent-line t)
+    (centaur-tabs-set-close-button nil)
+    (centaur-tabs-set-modified-marker nil)
+    :config
+    (centaur-tabs-change-fonts "Bitter" 120))
+
+  ; for some reason, use-package doesn't switch on centaur-tabs mode properly
+  (centaur-tabs-mode 1)
+#+end_src
 ** Company
 
 #+BEGIN_SRC emacs-lisp
