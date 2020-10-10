@@ -11,6 +11,7 @@ set -x XMODIFIERS "@im=none"
 
 alias ec "emacsclient -n"
 alias ecc "emacsclient -cn"
+alias ew "emacsclient -nw"
 alias o "open"
 alias l  "ls"
 alias ll 'ls -lh'
