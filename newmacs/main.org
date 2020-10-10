@@ -418,6 +418,7 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
 #+begin_src emacs-lisp
   (use-package centaur-tabs
     :general (:states 'normal :prefix "g"
+                      "p" 'centaur-tabs-toggle-groups
                       "t" 'centaur-tabs-forward
                       "T" 'centaur-tabs-backward)
     :hook
