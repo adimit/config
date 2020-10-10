@@ -413,6 +413,9 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
     (term-mode . centaur-tabs-local-mode)
     (calendar-mode . centaur-tabs-local-mode)
     (org-agenda-mode . centaur-tabs-local-mode)
+    (org-src-mode . centaur-tabs-local-mode)
+    (git-commit-mode . centaur-tabs-local-mode)
+    (debugger-mode . centaur-tabs-local-mode)
     :custom
     (centaur-tabs-height 26)
     (centaur-tabs-set-icons t)
