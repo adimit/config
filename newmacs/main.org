@@ -66,6 +66,7 @@ No files with =~= everywhere. Prevent creation of lockfiles, as that confuses so
      :prefix ","
      "," (general-simulate-key "M-x")
      "f f" 'counsel-find-file
+
      "g s" 'magit-status
      "g f" 'magit-file-dispatch
      "g b" 'magit-blame
@@ -153,9 +154,32 @@ Don't store customisations, they usually surprise me by being there and making t
 *** Basic settings
 Activate evil mode
 #+BEGIN_SRC emacs-lisp
+  (use-package undo-fu
+    :config
+    (global-undo-tree-mode -1))
+
   (use-package evil
+    :init
+    (custom-set-variables
+     '(evil-want-keybinding nil)
+     '(evil-want-integration t))
+    :custom
+    (evil-respect-visual-line-mode t)
+    (evil-want-Y-yank-to-eol t)
+    (evil-undo-system 'undo-fu)
+    (evil-want-C-u-delete t)
+    (evil-want-C-u-scroll t)
     :config
     (evil-mode t))
+
+  (use-package evil-collection
+    :after evil
+    :custom
+    (evil-collection-calendar-want-org-bindings nil)
+    (evil-collection-outline-bind-tab-p t)
+    (evil-collection-term-sync-state-and-mode-p t)
+    :config
+    (evil-collection-init))
 
   (use-package evil-surround
     :config
@@ -471,49 +495,7 @@ Elfeeds keybindings are completely broken with evil, so we need to redefine them
     (elfeed-show-mode . olivetti-mode)
     :commands (elfeed)
     :custom
-    (elfeed-feeds aleks/subscribed-feeds)
-    :general
-    (:keymaps 'elfeed-search-mode-map
-              :states 'normal
-              "RET" 'elfeed-search-show-entry
-              "+" 'elfeed-search-tag-all
-              "-" 'elfeed-search-untag-all
-              "<" 'elfeed-search-first-entry
-              ">" 'elfeed-search-last-entry
-              ">" 'elfeed-search-last-entry
-              "f" 'elfeed-search-fetch
-              "S" 'elfeed-search-set-filter
-              "b" 'elfeed-search-browse-url
-              "c" 'elfeed-search-clear-filter
-              "F" 'elfeed-search-update--force
-              "q" 'elfeed-search-quit-window
-              "r" 'elfeed-search-untag-all-unread
-              "s" 'elfeed-search-live-filter
-              "u" 'elfeed-search-tag-all-unread
-              "y" 'elfeed-search-yank
-              "U" 'elfeed-update)
-    (:keymaps 'elfeed-show-mode-map
-              :states 'normal
-              "TAB"  'elfeed-show-next-link
-              "SPC"  'scroll-up-command
-              "+"    'elfeed-show-tag
-              "-"    'elfeed-show-untag
-              "0"    'digit-argument
-              "<"    'beginning-of-buffer
-              ">"    'end-of-buffer
-              "A"    'elfeed-show-add-enclosure-to-playlist
-              "P"    'elfeed-show-play-enclosure
-              "b"    'elfeed-show-visit
-              "c"    'elfeed-kill-link-url-at-point
-              "d"    'elfeed-show-save-enclosure
-              "F"    'elfeed-show-refresh
-              "h"    'describe-mode
-              "n"    'elfeed-show-next
-              "p"    'elfeed-show-prev
-              "q"    'elfeed-kill-buffer
-              "s"    'elfeed-show-new-live-search
-              "u"    'elfeed-show-tag--unread
-              "y"    'elfeed-show-yank))
+    (elfeed-feeds aleks/subscribed-feeds))
 #+end_src
 
 ** Flycheck
@@ -683,63 +665,6 @@ The context definitions are in =private.org=.
                            (:from . 22)
                            (:thread-subject . nil))))
 #+END_SRC
-
-*** Keybindings
-
-For some reason, the =:general= keyword on =use-package= kept =mu4e= from being properly initialised, hence the separate declaration here.
-
-#+begin_src emacs-lisp
-  (general-define-key
-   :keymaps 'mu4e-headers-mode-map
-   :states 'normal
-   "RET" 'mu4e-headers-view-message
-   "!" 'mu4e-headers-mark-for-read
-   "#" 'mu4e-mark-resolve-deferred-marks
-   "$" 'mu4e-show-log
-   "%" 'mu4e-headers-mark-pattern
-   "&" 'mu4e-headers-mark-custom
-   "*" 'mu4e-headers-mark-for-something
-   "+" 'mu4e-headers-mark-for-flag
-   "-" 'mu4e-headers-mark-for-unflag
-   "/" 'mu4e-headers-search-narrow
-   "n" 'mu4e-headers-rerun-search
-   ";" 'mu4e-context-switch
-   "?" 'mu4e-headers-mark-for-unread
-   "A" 'mu4e-headers-mark-for-action
-   "B" 'mu4e-headers-search-bookmark-edit
-   "C" 'mu4e-compose-new
-   "D" 'mu4e-headers-mark-for-delete
-   "E" 'mu4e-compose-edit
-   "F" 'mu4e-compose-forward
-   "H" 'mu4e-display-manual
-   "O" 'mu4e-headers-change-sorting
-   "P" 'mu4e-headers-toggle-threading
-   "Q" 'mu4e-headers-toggle-full-search
-   "R" 'mu4e-compose-reply
-   "S" 'mu4e-headers-search-edit
-   "T" 'mu4e-headers-mark-thread
-   "U" 'mu4e-mark-unmark-all
-   "V" 'mu4e-headers-toggle-skip-duplicates
-   "W" 'mu4e-headers-toggle-include-related
-   "[" 'mu4e-headers-prev-unread
-   "\\" 'mu4e-headers-query-prev
-   "]" 'mu4e-headers-next-unread
-   "a" 'mu4e-headers-action
-   "b" 'mu4e-headers-search-bookmark
-   "d" 'mu4e-headers-mark-or-move-to-trash
-   "m" 'mu4e-headers-mark-for-move
-   "q" 'mu4e~headers-quit-buffer
-   "r" 'mu4e-headers-mark-for-refile
-   "s" 'mu4e-headers-search
-   "t" 'mu4e-headers-mark-subthread
-   "u" 'mu4e-headers-mark-for-unmark
-   "x" 'mu4e-mark-execute-all
-   "y" 'mu4e-select-other-view
-   "J" 'mu4e~headers-jump-to-maildir
-   "k" 'mu4e-headers-prev
-   "j" 'mu4e-headers-next)
-#+end_src
-
 ** Olivetti
 
 #+begin_src emacs-lisp
@@ -1327,16 +1252,7 @@ Rest client with company backend & org support.
 
 #+begin_src emacs-lisp
   (use-package restclient
-    :mode "\\.rest$"
-    :general (:keymaps 'restclient-mode :states 'normal :prefix ", ." :mode "\\.rest$"
-                       "c" 'restclient-http-send-current
-                       "r" 'restclient-http-send-current-raw
-                       "v" 'restclient-http-send-current-stay-in-window
-                       "n" 'restclient-jump-next
-                       "p" 'restclient-jump-prev
-                       "u" 'restclient-copy-curl-command
-                       "N" 'restclient-narrow-to-current
-                       "i" 'restclient-show-info))
+    :mode "\\.rest$")
 
   (use-package company-restclient
     :after (restclient)
