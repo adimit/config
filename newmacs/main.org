@@ -840,6 +840,8 @@ The context definitions are in =private.org=.
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
     :commands treemacs
+    :hook
+    (treemacs-mode . variable-pitch-mode)
     :general
     (:states 'normal
              :prefix ", t"
