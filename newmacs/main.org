@@ -973,6 +973,27 @@ We also want some Flutter support
 #+END_SRC
 
 ** JS & friends
+
+*** Eslint
+
+Sadly, =eslint= server needs to be installed separately. Use
+
+#+begin_src shell
+  git clone https://github.com/Microsoft/vscode-eslint -b 'release/2.0.9'
+  cd vscode-eslint
+  npm install && npm run compile
+#+end_src
+
+The current upstream version [[https://github.com/emacs-lsp/lsp-mode/issues/1932][does not work with lsp-mode]], which is why we checkout =2.0.9=.
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(lsp-eslint-server-command
+     '("node"
+       "/home/aleks/var/src/vscode-eslint/server/out/eslintServer.js"
+       "--stdio")))
+#+end_src
+
 *** Json
 #+BEGIN_SRC emacs-lisp
   (use-package json-mode
