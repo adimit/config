@@ -1165,7 +1165,6 @@ in org mode.
              "c" 'org-capture
              "l" 'org-capture-goto-last-stored
              "i" 'org-clock-in-last
-             "r" 'org-mru-clock-in
              "g" 'org-clock-goto
              "o" 'org-clock-out)
     (:states 'normal :definer 'minor-mode :keymaps 'org-src-mode
@@ -1208,6 +1207,21 @@ This hides heading bullets for a cleaner look.
     (org-fontify-whole-heading-line t)
     (org-pretty-entities t))
 #+END_SRC
+
+*** Clock MRU
+
+Clock into a list of most recently used tasks for quick task switching.
+
+#+begin_src emacs-lisp
+  (use-package org-mru-clock
+    :custom
+    (org-mru-clock-how-many 20)
+    (org-mru-clock-completing-read 'ivy-completing-read)
+    :general
+    (:states 'normal :prefix ", c"
+             "r" 'org-mru-clock-in
+             "R" 'org-mru-clock-select-recent-task))
+#+end_src
 
 *** Capture
 
