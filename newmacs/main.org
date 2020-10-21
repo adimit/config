@@ -1163,6 +1163,7 @@ in org mode.
              "'" 'org-edit-special)
     (:states 'normal :prefix ", c"
              "c" 'org-capture
+             "l" 'org-capture-goto-last-stored
              "i" 'org-clock-in-last
              "r" 'org-mru-clock-in
              "g" 'org-clock-goto
