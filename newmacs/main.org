@@ -245,6 +245,14 @@ There are two shell aliases that help with server mode:
 
 =ecc= opens another frame, and =ec= just re-uses an existing frame.
 
+** Window Manager
+Emacs needs to be told about how the window manager operates. There's also a [[https://github.com/emacs-lsp/lsp-ui/issues/464][persistent bug with posframe]] that affects both company and lsp-ui this works around
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(focus-follows-mouse 'auto-raise)
+   '(mouse-autoselect-window nil))
+#+end_src
 * Visual Configuration
 ** Faces & Theme
 
