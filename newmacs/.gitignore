@@ -13,3 +13,5 @@ var
 /session.*
 /tramp
 /url
+/games
+/request
