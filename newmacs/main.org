@@ -1,29 +1,31 @@
 * Package Setup
-** Melpa
-Add Melpa source
-#+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (package-initialize)
-  (mapcar (lambda (archive) (add-to-list 'package-archives archive t))
-          '(("melpa" . "https://melpa.org/packages/")
-            ("org" . "https://orgmode.org/elpa/")
-            ("tree-sitter" . "https://elpa.ubolonton.org/packages/")))
-#+END_SRC
+
+** Straight setup
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(straight-use-package-by-default t))
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
 
 ** Use-Package
 
-Ideally, use of =require= should be completely unnecessary due to =use-package=. It also handles package installs via =ensure=.
+Historically, I've used =use-package= for its nice keyword support. The setting of =straight-use-package-by-default= means that =use-package= won't use =package.el=, but =straight.el=.
 
 #+BEGIN_SRC emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-
-  (eval-when-compile
-    (require 'use-package))
-
-  (customize-set-variable
-   'use-package-always-ensure t "Always install packages if they're not installed")
+  (straight-use-package 'use-package)
 #+END_SRC
 
 * Basic Setup
@@ -868,11 +870,27 @@ The context definitions are in =private.org=.
 ** Tree-Sitter
 
 #+begin_src emacs-lisp
+  ;; Core APIs.
+  (straight-register-package
+   '(tsc :host github
+         :repo "ubolonton/emacs-tree-sitter"
+         :files ("core/*.el")))
+
   (use-package tree-sitter
+    :straight (tree-sitter :type git
+                           :host github
+                           :repo "ubolonton/emacs-tree-sitter"
+                           :files ("lisp/*.el"))
     :hook
     (typescript-mode . tree-sitter-mode)
-    (typescript-mode . tree-sitter-hl-mode)
-    :ensure tree-sitter-langs)
+    (typescript-mode . tree-sitter-hl-mode))
+
+  (use-package tree-sitter-langs
+    :straight (tree-sitter-langs :type git
+                                 :host github
+                                 :repo "ubolonton/emacs-tree-sitter"
+                                 :files ("langs/*.el" "langs/queries"))
+    :after tree-sitter)
 #+end_src
 
 ** Which-Key
@@ -1007,13 +1025,20 @@ The current upstream version [[https://github.com/emacs-lsp/lsp-mode/issues/1932
   (setq-default js-indent-level 2)
 #+END_SRC
 
-*** Typescript
-#+BEGIN_SRC emacs-lisp
+*** Prettier
+
+Prettier currently needs some help to work with =straight.el=, see [[https://github.com/raxod502/straight.el/issues/621][this issue]].
+
+#+begin_src emacs-lisp
   (use-package prettier
     :hook
-    (typescript-mode . prettier-mode)
-    (json-mode . prettier-mode))
+    ((typescript-mode json-mode) . prettier-mode))
 
+#+end_src
+
+*** Typescript
+
+#+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
     :mode "\\.tsx?$"
     :hook
