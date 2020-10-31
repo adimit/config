@@ -62,6 +62,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask                , xK_l           ), spawn "gnome-screensaver-command -l")
   , ((mask                , xK_a           ), withFocused $ windows . W.sink) -- %! Push window back into tiling
   , ((mask                , xK_BackSpace   ), shellPromptHere promptConfig)
+  , ((mask                , xK_e           ), spawn "emacsclient -c -n -e '(switch-to-buffer nil)'")
   , ((mask                , xK_grave       ), toggleWS) ]
   ++ -- Dynamic Workspac  es
   [ ((mask                , xK_d           ), selectWorkspace promptConfig)
