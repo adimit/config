@@ -757,7 +757,7 @@ The context definitions are in =private.org=.
     "Insert your pair programer into the current git commit."
     (when (and pair-programming-mode git-commit-mode)
       (pcase pair-programming--pair-programmer
-        (`(,name ,email) (git-commit-insert-header "Co-authed-by" name email))
+        (`(,name ,email) (git-commit-insert-header "Co-authored-by" name email))
         (_ (error "No pair programmer found or wrong content")))))
 
   (add-hook 'git-commit-setup-hook 'insert-pair-programmer-as-coauthor)
@@ -1041,7 +1041,6 @@ Prettier currently needs some help to work with =straight.el=, see [[https://git
   (use-package prettier
     :hook
     ((typescript-mode json-mode) . prettier-mode))
-
 #+end_src
 
 *** Typescript
