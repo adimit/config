@@ -426,8 +426,8 @@ Text mode buffers have spell check enabled, are narrowed, and use variable pitch
 Set up a slight transparency, fade out unfocused frames. Otherwise what do I have pretty desktop backgrounds for?
 
 #+begin_src emacs-lisp
-  (set-frame-parameter (selected-frame) 'alpha '(96 . 80))
-  (add-to-list 'default-frame-alist '(alpha . (96 . 80)))
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 80))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 80)))
 #+end_src
 
 * Extensions
