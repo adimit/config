@@ -6,15 +6,16 @@ setxkbmap -layout us,bg -variant dvorak, \
 	-option compose:ralt \
 	-option grp:rctrl_rshift_toggle
 
+gnome-keyring-daemon &
+
 xsetroot -cursor_name left_ptr
 
 nitrogen --restore
-compton&
-nm-applet &
+
+picom -C -c -f --vsync -I 0.09 -O 0.05 --experimental-backends --backend glx &
 seafile-applet &
 
 dbus-launch ssh-agent xmonad > $HOME/.x-debug &
 XMONADPID=$!
-gnome-keyring-daemon &
 
 wait $XMONADPID
