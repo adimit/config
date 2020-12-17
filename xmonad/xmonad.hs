@@ -69,8 +69,8 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_d           ), withWorkspace promptConfig (windows . W.shift))
   , ((mask .|. shiftMask  , xK_BackSpace   ), removeWorkspace) ]
   ++ -- Screen control
-  [ ((mask                , xK_bracketleft ), screenGo L False)
-  , ((mask                , xK_bracketright), screenGo R False)
+  [ ((mask                , xK_bracketleft ), screenGo U False)
+  , ((mask                , xK_bracketright), screenGo D False)
   , ((mask .|. controlMask, xK_bracketleft ), screenSwap L False)
   , ((mask .|. controlMask, xK_bracketright), screenSwap R False)
   , ((mask .|. shiftMask  , xK_bracketleft ), windowToScreen L False)
