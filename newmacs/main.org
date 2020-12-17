@@ -591,6 +591,9 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
     :custom
     (ivy-use-virtual-buffers t))
   (use-package counsel)
+
+  (use-package all-the-icons-ivy
+    :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 #+END_SRC
 
 *** Prescient

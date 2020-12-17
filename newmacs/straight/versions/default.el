@@ -1,5 +1,6 @@
 (("Emacs-wgrep" . "f0ef9bfa44db503cdb2f83fcfbd2fa4e2382ef1f")
  ("ace-window" . "c7cb315c14e36fded5ac4096e158497ae974bec9")
+ ("all-the-icons-ivy" . "a70cbfa1effe36efc946a823a580cec686d5e88d")
  ("all-the-icons.el" . "6917b08f64dd8487e23769433d6cb9ba11f4152f")
  ("annalist.el" . "134fa3f0fb91a636a1c005c483516d4b64905a6d")
  ("avy" . "bbf1e7339eba06784dfe86643bb0fbddf5bb0342")
