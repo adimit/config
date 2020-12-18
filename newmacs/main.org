@@ -1010,26 +1010,6 @@ We also want some Flutter support
 
 ** JS & friends
 
-*** Eslint
-
-Sadly, =eslint= server needs to be installed separately. Use
-
-#+begin_src shell
-  git clone https://github.com/Microsoft/vscode-eslint -b 'release/2.0.9'
-  cd vscode-eslint
-  npm install && npm run compile
-#+end_src
-
-The current upstream version [[https://github.com/emacs-lsp/lsp-mode/issues/1932][does not work with lsp-mode]], which is why we checkout =2.0.9=.
-
-#+begin_src emacs-lisp
-  (custom-set-variables
-   '(lsp-eslint-server-command
-     '("node"
-       "/home/aleks/var/src/vscode-eslint/server/out/eslintServer.js"
-       "--stdio")))
-#+end_src
-
 *** Json
 #+BEGIN_SRC emacs-lisp
   (use-package json-mode
@@ -1250,6 +1230,28 @@ This hides heading bullets for a cleaner look.
     (org-pretty-entities t))
 #+END_SRC
 
+*** Agenda
+Let's add sunrise and sunset to the agenda via diary entries.
+#+begin_src emacs-lisp
+  (defun read-solar-decimal-time (frac)
+    "Read a solar decimal and render a formatted 24h time."
+    (let* ((time (round (* 60 frac))))
+      (format "%02d:%02d" (/ time 60) (% time 60))))
+
+  (defun get-sunrise-sunset-data ()
+    "Get a list of the current solar data."
+    (pcase (solar-sunrise-sunset (calendar-current-date))
+      (`((,sunrise ,time-zone) (,sunset ,time-zone) ,daylight-hours)
+       `(,(read-solar-decimal-time sunrise)
+         ,(read-solar-decimal-time sunset)
+         ,daylight-hours))))
+
+
+  (defun diary-sunrise () (pcase (get-sunrise-sunset-data)
+                            (`(,sunrise ,sunset ,daylight) (format "%s (%sh)" sunrise daylight))))
+
+  (defun diary-sunset () (nth 2 (get-sunrise-sunset-data)))
+#+end_src
 *** Clock MRU
 
 Clock into a list of most recently used tasks for quick task switching.
