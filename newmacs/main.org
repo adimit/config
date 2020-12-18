@@ -639,8 +639,6 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :commands magit magit-status)
-  (use-package evil-magit
-    :after magit)
   (use-package forge
     :after magit)
 #+END_SRC
