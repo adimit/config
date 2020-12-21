@@ -497,12 +497,9 @@ Posframe mode allows completions to not look silly in =variable-pitch-mode=.
 ** Diff-hl
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
-    :hook
-    (magit-post-refresh . diff-hl-magit-post-refresh)
-    :config
-    (global-diff-hl-mode)
-    :custom
-    (diff-hl-side 'right))
+    :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :config (global-diff-hl-mode)
+    :custom (diff-hl-side 'right))
 #+END_SRC
 
 ** Dired
