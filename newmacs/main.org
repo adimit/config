@@ -1098,6 +1098,10 @@ mostly visual hooks. Also ensure that code is displayed in fixed pitch
 in org mode.
 
 #+BEGIN_SRC emacs-lisp
+  (defcustom org-directory (concat (file-name-as-directory (getenv "HOME")) "org") "Org directory.")
+  (defcustom my-org-main-file (concat (file-name-as-directory org-directory) "main.org") "Personal Org agenda file.")
+  (defcustom my-org-work-file (concat (file-name-as-directory org-directory) "work.org") "Professional Org agenda file.")
+
   (use-package org
     :ensure org-plus-contrib
     :mode ("\\.org$" . org-mode)
@@ -1139,12 +1143,6 @@ in org mode.
     (org-agenda-include-diary t)
     (org-agenda-window-setup 'current-window)
     (org-agenda-restore-windows-after-quit t)
-    (org-directory
-     (concat (file-name-as-directory (getenv "HOME")) "org"))
-    (my-org-main-file
-     (concat (file-name-as-directory org-directory) "main.org"))
-    (my-org-work-file
-     (concat (file-name-as-directory org-directory) "work.org"))
     (org-agenda-files
      `(,my-org-main-file ,my-org-work-file))
     (diary-file (concat (file-name-as-directory org-directory) "diary"))
