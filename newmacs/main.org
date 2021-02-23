@@ -1206,6 +1206,20 @@ This hides heading bullets for a cleaner look.
     (org-pretty-entities t))
 #+END_SRC
 
+Org-appear allows easy editing of inline markup when it's hidden.
+
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode)
+    :custom
+    (org-appear-autolinks t)
+    (org-appear-autosubmarkers t)
+    (org-appear-autoemphasis t)
+    :straight (org-appear :type git
+                :host github
+                :repo "awth13/org-appear"))
+
+#+end_src
 *** Agenda
 Let's add sunrise and sunset to the agenda via diary entries.
 #+begin_src emacs-lisp
