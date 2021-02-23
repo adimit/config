@@ -1389,7 +1389,6 @@ Use =rust-analyzer=, as =rls= is somewhat obsolete.
 
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
-    :mode "\\.rs$"
     :custom
     (rustic-format-trigger 'on-save)
     (rustic-lsp-server 'rust-analyzer)
