@@ -633,10 +633,7 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
 
 ** Magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :commands magit magit-status)
-  (use-package forge
-    :after magit)
+  (use-package magit)
 #+END_SRC
 
 *** Add Issue Number to Commit Message
