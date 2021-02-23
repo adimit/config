@@ -615,9 +615,10 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
   (use-package lsp-ui
     :custom
     (lsp-ui-doc-header t)
-    (lsp-ui-doc-position 'at-point)
+    (lsp-ui-doc-position 'top)
     (lsp-ui-doc-delay 1)
     (lsp-ui-doc-use-childframe 't)
+    (lsp-ui-sideline-show-diagnostics nil)
     :general
     (:states 'normal
      :prefix ", l"
