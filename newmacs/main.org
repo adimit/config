@@ -555,8 +555,7 @@ Elfeeds keybindings are completely broken with evil, so we need to redefine them
 
 #+begin_src emacs-lisp
   (use-package elfeed
-    :hook
-    (elfeed-show-mode . olivetti-mode)
+    :hook (elfeed-show-mode . olivetti-mode)
     :commands (elfeed)
     :custom
     (elfeed-feeds aleks/subscribed-feeds))
@@ -614,7 +613,6 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
      "M-RET" 'lsp-execute-code-action))
 
   (use-package lsp-ui
-    :commands lsp-ui-mode
     :custom
     (lsp-ui-doc-header t)
     (lsp-ui-doc-position 'at-point)
@@ -725,8 +723,7 @@ The context definitions are in =private.org=.
 ** Olivetti
 
 #+begin_src emacs-lisp
-  (use-package olivetti
-    :commands (olivetti-mode))
+  (use-package olivetti)
 #+end_src
 
 ** Pair Programming Mode
@@ -772,7 +769,6 @@ The context definitions are in =private.org=.
 ** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :commands projectile-find-file projectile-switch-project projectile-switch-buffer
     :config
     (projectile-mode +1)
     :custom
@@ -831,10 +827,6 @@ The context definitions are in =private.org=.
              "i" 'org-roam-insert
              "I" 'org-roam-insert-immediate
              "b" 'org-roam-buffer-toggle-display))
-
-  (use-package company-org-roam
-    :after (org-roam)
-    :config (push 'company-org-roam company-backends))
 #+END_SRC
 
 ** Smerge
@@ -856,9 +848,7 @@ The context definitions are in =private.org=.
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
-    :commands treemacs
-    :hook
-    (treemacs-mode . variable-pitch-mode)
+    :hook (treemacs-mode . variable-pitch-mode)
     :general
     (:states 'normal
              :prefix ", t"
@@ -869,17 +859,11 @@ The context definitions are in =private.org=.
     :config
     (treemacs-follow-mode t)
     (treemacs-git-mode 'deferred)
-    (treemacs-filewatch-mode t)
-    (evil-define-key 'treemacs treemacs-mode-map (kbd "tn") #'treemacs-create-file)
-    (evil-define-key 'treemacs treemacs-mode-map (kbd "td") #'treemacs-create-dir)
-    (evil-define-key 'treemacs treemacs-mode-map (kbd "tc") #'treemacs-copy-file))
+    (treemacs-filewatch-mode 0))
 
-  (use-package treemacs-evil
-    :after treemacs evil)
-  (use-package treemacs-projectile
-    :after treemacs projectile)
-  (use-package treemacs-magit
-    :after treemacs magit)
+  (use-package treemacs-evil :after treemacs evil)
+  (use-package treemacs-projectile :after treemacs projectile)
+  (use-package treemacs-magit :after treemacs magit)
 #+END_SRC
 
 ** Tree-Sitter
@@ -984,8 +968,7 @@ We also want some Flutter support
 
 ** Graphql
 #+BEGIN_SRC emacs-lisp
-  (use-package request
-    :commands (request))
+  (use-package request)
 
   (use-package graphql-mode
     :load-path "~/src/graphql-mode/"
