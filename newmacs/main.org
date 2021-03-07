@@ -1142,8 +1142,6 @@ in org mode.
      '(("R" "Weekly Review"
         ((todo "TODO" ((org-agenda-overriding-header "Unfinished")
                        (org-agenda-files `(,my-org-main-file))))
-         (todo "PLAN" ((org-agenda-overriding-header "Planned")
-                       (org-agenda-files `(,my-org-main-file))))
          (agenda "" ((org-agenda-span 7)
                      (org-agenda-overriding-header "Week")))))
        ("x" "Test block"
@@ -1272,10 +1270,10 @@ Clock into a list of most recently used tasks for quick task switching.
 
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable 'org-capture-templates
-        '(("k" "Add to stack" entry (file+headline my-org-main-file "Stack")
-           "* PLAN %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+        '(("c" "Add to today" entry (file+headline my-org-main-file "Week [0-9][0-9]?")
+           "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n")
           ("w" "Add to week" entry (file+regexp my-org-main-file "Week [0-9][0-9]?")
-           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+           "* TODO %?\nSCHEDULED: %^t\n:PROPERTIES:\n:CREATED: %U\n:END:\n")
           ("C" "Add to current" entry (clock)
            "- [ ] %i%?"
            :prepend t)
@@ -1283,9 +1281,9 @@ Clock into a list of most recently used tasks for quick task switching.
            "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?"
            :clock-in t)
           ("s" "Add sprint task" entry (file+headline my-org-work-file "Tasks")
-           "* TODO %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:Reference: %f %a\n:END:\n%i%?")
+           "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:REFERENCE: %f %a\n:END:\n%i")
           ("j" "Add Jira ticket" entry (file+headline my-org-work-file "Tasks")
-           "* TODO KNUTH-%^{KNUTH} %?\n:PROPERTIES:\n:CREATED: %U\n:Reference: http://xjira/browse/KNUTH-%\\1\n:END:\n%i")
+           "* TODO KNUTH-%^{KNUTH} %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:REFERENCE: http://xjira/browse/KNUTH-%\\1\n:END:\n%i")
           ("S" "Sprint" entry (file my-org-work-file)
            (function (lambda () (string-join
             '("* Sprint %^{Title} [[http://xjira/secure/RapidBoard.jspa?rapidView=292&quickFilter=2360][(board)]]"
