@@ -616,7 +616,6 @@ Perhaps try [[https://github.com/raxod502/selectrum][selectrum]] one of these da
 ** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :commands lsp lsp-deferred
     :custom (read-process-output-max (* 1024 1024))
     :general
     (:states 'normal
