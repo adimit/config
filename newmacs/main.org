@@ -288,9 +288,9 @@ In order to be able to set different faces depending on the theme, we define two
   (defun aleks/set-light-mode-faces ()
     "Set the faces for light mode."
     (custom-set-faces
-     '(variable-pitch ((t (:family "Bitter" :height 140))))
-     '(fixed-pitch ((t (:family "Fira Code" :height 130))))
-     '(default ((t (:family "Fira Code" :height 130))))))
+     '(variable-pitch ((t (:family "Bitter" :height 180))))
+     '(fixed-pitch ((t (:family "Fira Code" :height 170))))
+     '(default ((t (:family "Fira Code" :height 170))))))
 
   (defun aleks/set-dark-mode-faces ()
     "Set the faces for dark mode."
