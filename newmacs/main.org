@@ -407,6 +407,17 @@ When starting up, choose a theme based on the current time.
     (after-init . doom-modeline-mode))
 #+END_SRC
 
+** Support Emojis
+You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Display via Noto Color Emoji font. Enable Emojify mode for github style emojis in Forge Post mode.
+
+#+begin_src emacs-lisp
+  (set-fontset-font t 'symbol "Noto Color Emoji")
+  (set-fontset-font t 'symbol "Symbola" nil 'append)
+
+  (use-package emojify
+    :hook (forge-post-mode . emojify-mode))
+#+end_src
+
 ** Text mode buffers
 
 Text mode buffers have spell check enabled, are narrowed, and use variable pitch and word wrap.
