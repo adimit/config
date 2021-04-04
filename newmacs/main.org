@@ -1292,8 +1292,11 @@ Clock into a list of most recently used tasks for quick task switching.
 #+END_SRC
 *** Reveal
 
-Support for generating slides from org mode. Removed =ox-reveal= for now as it was messing with structure templates. The replacement is apparently =org-re-reveal= [[https://gitlab.com/oer/org-re-reveal][here]].
 #+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+    :custom
+    (org-reveal-root "file:///home/aleks/src/talks/reveal.js-4.1.0")
+    (org-reveal-hlevel 2))
   (use-package htmlize)
 #+END_SRC
 
