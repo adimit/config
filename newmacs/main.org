@@ -301,31 +301,18 @@ In order to be able to set different faces depending on the theme, we define two
 I'm using Prot's modus themes for light and dark mode. They're only loaded here, not enabled.
 
 #+begin_src emacs-lisp
-  (use-package modus-vivendi-theme
+  (use-package modus-themes
     :custom
-    (modus-vivendi-theme-scale-headings t)
-    (modus-vivendi-theme-slanted-constructs t)
-    (modus-vivendi-theme-scale-1 1.1)
-    (modus-vivendi-theme-scale-2 1.2)
-    (modus-vivendi-theme-scale-3 1.3)
-    (modus-vivendi-theme-scale-4 1.4)
-    (modus-vivendi-theme-scale-5 1.5)
-    (modus-vivendi-theme-mode-line '3d)
-    :config
-    (load-theme 'modus-vivendi t t))
-
-  (use-package modus-operandi-theme
-    :custom
-    (modus-operandi-theme-scale-headings t)
-    (modus-operandi-theme-slanted-constructs t)
-    (modus-operandi-theme-scale-1 1.1)
-    (modus-operandi-theme-scale-2 1.2)
-    (modus-operandi-theme-scale-3 1.3)
-    (modus-operandi-theme-scale-4 1.4)
-    (modus-operandi-theme-scale-5 1.5)
-    (modus-operandi-theme-mode-line '3d)
-    :config
-    (load-theme 'modus-operandi t t))
+    (modus-themes-scale-headings t)
+    (modus-themes-slanted-constructs t)
+    (modus-themes-scale-1 1.1)
+    (modus-themes-scale-2 1.2)
+    (modus-themes-scale-3 1.3)
+    (modus-themes-scale-4 1.4)
+    (modus-themes-scale-5 1.5)
+    (modus-themes-mode-line '3d)
+    :init
+    (modus-themes-load-themes))
 #+end_src
 
 Finally, let's define dark and light mode…
@@ -334,7 +321,7 @@ Finally, let's define dark and light mode…
   (defun aleks/dark-mode ()
     "Set theme and fonts for dark mode."
     (interactive)
-    (enable-theme 'modus-vivendi)
+    (modus-themes-load-vivendi)
     (aleks/set-org-mode-fixed-pitch-faces)
     (aleks/set-dark-mode-faces)
     (highlight-indent-guides-auto-set-faces))
@@ -342,7 +329,7 @@ Finally, let's define dark and light mode…
   (defun aleks/light-mode ()
     "Set theme and fonts for dark mode."
     (interactive)
-    (enable-theme 'modus-operandi)
+    (modus-themes-load-operandi)
     (aleks/set-org-mode-fixed-pitch-faces)
     (aleks/set-light-mode-faces)
     (highlight-indent-guides-auto-set-faces))
