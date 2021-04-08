@@ -1256,7 +1256,7 @@ Clock into a list of most recently used tasks for quick task switching.
 
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable 'org-capture-templates
-        '(("c" "Add to today" entry (file+headline my-org-main-file "Week [0-9][0-9]?")
+        '(("c" "Add to today" entry (file+regexp my-org-main-file "Week [0-9][0-9]?")
            "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n")
           ("w" "Add to week" entry (file+regexp my-org-main-file "Week [0-9][0-9]?")
            "* TODO %?\nSCHEDULED: %^t\n:PROPERTIES:\n:CREATED: %U\n:END:\n")
