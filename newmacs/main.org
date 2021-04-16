@@ -367,8 +367,7 @@ When starting up, choose a theme based on the current time.
    '(inhibit-startup-screen t)
    '(indent-tabs-mode nil)
    '(initial-scratch-message "")
-   '(mouse-yank-at-point t)
-   '(show-trailing-whitespace t))
+   '(mouse-yank-at-point t))
 #+END_SRC
 
 ** Mode line
@@ -394,6 +393,18 @@ When starting up, choose a theme based on the current time.
     (after-init . doom-modeline-mode))
 #+END_SRC
 
+** Show Trailing Whitespace
+Switch on highlighting of trailing white space, and provide a facility to turn it off on a per-mode base, as for some modes it's not useful.
+
+#+begin_src emacs-lisp
+  (custom-set-variables '(show-trailing-whitespace t))
+
+  (defun aleks/disable-show-trailing-whitespace ()
+      "Disable trailing whitespace."
+      (setq show-trailing-whitespace nil))
+
+  (add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
+#+end_src
 ** Support Emojis
 You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Display via Noto Color Emoji font. Enable Emojify mode for github style emojis in Forge Post mode.
 
@@ -686,9 +697,7 @@ The context definitions are in =private.org=.
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
         (setq user-mail-address "org@list.aleks.bg")))))
 
-  (defun aleks/disable-show-trailing-whitespace ()
-    "Disable trailing whitespace."
-    (setq show-trailing-whitespace nil))
+  
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
     :commands mu4e
