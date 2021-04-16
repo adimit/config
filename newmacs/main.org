@@ -450,37 +450,7 @@ Set up a slight transparency, fade out unfocused frames. Otherwise what do I hav
     (beacon-blink-duration 0.15))
 #+END_SRC
 
-** Centaur tabs
-#+begin_src emacs-lisp
-  (use-package centaur-tabs
-    :general (:states 'normal :prefix "g"
-                      "p" 'centaur-tabs-toggle-groups
-                      "t" 'centaur-tabs-forward
-                      "T" 'centaur-tabs-backward)
-    :hook
-    (term-mode . centaur-tabs-local-mode)
-    (calendar-mode . centaur-tabs-local-mode)
-    (org-agenda-mode . centaur-tabs-local-mode)
-    (org-src-mode . centaur-tabs-local-mode)
-    (git-commit-mode . centaur-tabs-local-mode)
-    (debugger-mode . centaur-tabs-local-mode)
-    :custom
-    (centaur-tabs-height 25)
-    (centaur-tabs-set-icons t)
-    (centaur-tabs-gray-out-icons 'buffer)
-    (centaur-tabs-style "bar")
-    (centaur-tabs-set-bar 'under)
-    (x-underline-at-descent-line t)
-    (centaur-tabs-set-close-button nil)
-    (centaur-tabs-set-modified-marker nil)
-    :config
-    (centaur-tabs-change-fonts "Bitter" 120))
-
-  ; for some reason, use-package doesn't switch on centaur-tabs mode properly
-  (centaur-tabs-mode 1)
-#+end_src
 ** Company
-
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :custom
