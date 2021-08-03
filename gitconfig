@@ -51,3 +51,5 @@
 
 [includeIf "gitdir:~/src/mp-*/"]
            path = ~/.gitconfig.meisterplan
+[init]
+	defaultBranch = main
