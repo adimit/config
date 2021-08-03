@@ -850,7 +850,8 @@ The context definitions are in =private.org=.
 
 ** Tree-Sitter
 
-#+begin_src emacs-lisp
+Disabled for now, I'm having ABI version problems I can't address, due to lack of time.
+#+begin_src fundamental
   ;; Core APIs.
   (straight-register-package
    '(tsc :host github
