@@ -2,17 +2,20 @@
 
 accounts = Fastmail, Outlook, Gmail
 maxsyncaccounts = 3
+
 pythonfile = ~/.offlineimap.py
 
 [Account Outlook]
 localrepository = LocalOutlook
 remoterepository = RemoteOutlook
+autorefresh = 5
 
 [Repository LocalOutlook]
 type = Maildir
 localfolders = ~/.mail/outlook
 
 [Repository RemoteOutlook]
+
 type = IMAP
 ssl = yes
 sslcacertfile = OS-DEFAULT
@@ -25,6 +28,7 @@ folderfilter = lambda folder: folder in ['Archive', 'Deleted Items', 'Drafts', '
 [Account Fastmail]
 localrepository = LocalFastmail
 remoterepository = RemoteFastmail
+autorefresh = 5
 
 [Repository LocalFastmail]
 type = Maildir
@@ -42,6 +46,7 @@ remotepasseval = get_pass("mail/fastmail.com/offlineimap")
 [Account Gmail]
 localrepository = LocalGmail
 remoterepository = RemoteGmail
+autorefresh = 5
 
 [Repository LocalGmail]
 type = GmailMaildir
