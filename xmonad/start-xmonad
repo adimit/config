@@ -14,6 +14,7 @@ nitrogen --restore
 
 picom -C -c -f --vsync -I 0.09 -O 0.05 --experimental-backends --backend glx &
 seafile-applet &
+syncthing &
 
 dbus-launch ssh-agent xmonad > $HOME/.x-debug &
 XMONADPID=$!
