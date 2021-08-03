@@ -57,7 +57,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask                , xK_n           ), windowGo U False)
   , ((mask                , xK_t           ), windowGo D False) ]
   ++ -- general keys
-  [ ((mask                , xK_Return      ), spawn "kitty")
+  [ ((mask                , xK_Return      ), spawn "alacritty")
   , ((mask .|. shiftMask  , xK_Return      ), windows W.swapMaster)
   , ((mask                , xK_l           ), spawn "gnome-screensaver-command -l")
   , ((mask                , xK_a           ), withFocused $ windows . W.sink) -- %! Push window back into tiling
