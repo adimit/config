@@ -1086,6 +1086,10 @@ in org mode.
     (org-clock-persist
      t
      "Clocks survive closing Emacs.")
+    (org-confirm-babel-evaluate
+     nil
+     "Don't prompt when executing babel src blocks.")
+    (org-startup-folded t)
     (org-footnote-section
      nil
      "Place footnotes in the same section they're referenced")
