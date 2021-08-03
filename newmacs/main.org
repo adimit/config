@@ -948,6 +948,11 @@ We also want some Flutter support
     :mode "\\.fish$")
 #+END_SRC
 
+** Gnuplot
+#+begin_src emacs-lisp
+  (use-package gnuplot-mode)
+  (use-package gnuplot)
+#+end_src
 ** Graphql
 #+BEGIN_SRC emacs-lisp
   (use-package request)
