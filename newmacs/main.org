@@ -1163,8 +1163,23 @@ in org mode.
               "c" 'org-capture
               "O" 'delete-other-windows
               "o" 'org-agenda-clock-out))
-
 #+END_SRC
+
+There's a bug either in my config, or perhaps in org-mode itself: =org-clocking-buffer= is undefined, but it is referred to by many places in =org-clock.el=. This [[https://orgmode.org/list/87mtvjd15c.fsf@kyleam.com/T/][patch]] has a fix: we only need to provide an alias.
+
+#+begin_src emacs-lisp
+  (defalias 'org-clocking-buffer #'org-clock-is-active)
+#+end_src
+
+Additionally, =org-journal= is misbehaving. =org-journal-mark-entries= is missing? I just define a dummy to make =calendar= work:
+
+#+begin_src emacs-lisp
+  (defun org-journal-mark-entries ()
+    "A dummy function, because the real implementation is gone?")
+#+end_src
+
+These hacks should probably be removed at some point. They were added
+<2021-03-21 So>
 
 *** Prettification
 
