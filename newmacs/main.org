@@ -1347,6 +1347,14 @@ Further details are in [[https://orgmode.org/worg/org-contrib/org-protocol.html]
     :custom (lsp-python-ms-auto-install-server t)
     :hook (python-mode . lsp-mode))
 #+end_src
+** R
+#+begin_src emacs-lisp
+    (use-package ess
+      :config
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((R . t))))
+#+end_src
 ** REST
 
 Rest client with company backend & org support.
