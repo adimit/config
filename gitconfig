@@ -45,7 +45,7 @@
 	process = git-lfs filter-process
 	required = true
 [gpg]
-	program = gpg2
+	program = gpg
 [github]
 	user = adimit
 
