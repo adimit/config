@@ -8,12 +8,13 @@ else
 $(error Could not find dpkg or dnf)
 endif
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
-NPM_BINARIES = $(NPM_EXECUTABLES:/%=/home/aleks/.local/bin/%)
+NPM_BINARIES = $(NPM_EXECUTABLES:/%=${HOME}/.local/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
 LOCAL = ${HOME}/.local
+CARGO_LOCAL = ${HOME}/.cargo
 XMONAD = ${LOCAL}/bin/xmonad
 XMONAD_REPO = xmonad/xmonad
 XMOBAR_REPO = xmonad/xmobar
@@ -45,9 +46,11 @@ FIRA_GO = ${FONTS}/FiraGo
 BITTER = ${FONTS}/Bitter
 HLEDGER = ${LOCAL}/bin/hledger
 NPM_PREFIX = npm set prefix ${LOCAL}
+ALACRITTY = ${CARGO_LOCAL}/bin/alacritty
+FD = ${CARGO_LOCAL}/bin/fd
 
 .PHONY: install
-install: links ${EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER}
+install: links ${EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER} ${ALACRITTY} ${FD}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo mkdir -p $$(dirname ${X_TOUCHPAD_CONFIGURATION})
@@ -71,6 +74,40 @@ SEAFILE_PACKAGE=chromium-browser
 endif
 /usr/bin/seafile-applet:
 	${INSTALL_CMD} ${SEAFILE_PACKAGE}
+
+/usr/bin/psql:
+	${INSTALL_CMD} postgresql-client
+
+/usr/bin/javac:
+	${INSTALL_CMD} openjdk-14-jdk
+
+/usr/bin/rg:
+	${INSTALL_CMD} ripgrep
+
+/usr/bin/virtualenv:
+	${INSTALL_CMD} python3-virtualenv
+
+/usr/bin/syncthing:
+ifeq (${OS},Fedora)
+else
+	sudo curl -s -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+	echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+	printf "Package: *\nPin: origin apt.syncthing.net\nPin-Priority: 990\n" | sudo tee /etc/apt/preferences.d/syncthing
+	sudo apt update
+endif
+	${INSTALL_CMD} syncthing
+
+/usr/bin/pip3:
+	${INSTALL_CMD} python3-pip python3-dev
+
+/usr/bin/dot:
+	${INSTALL_CMD} graphviz
+
+/usr/bin/latex:
+	${INSTALL_CMD} texlive
+
+/usr/bin/xelatex:
+	${INSTALL_CMD} texlive-xetex
 
 /usr/bin/%:
 	${INSTALL_CMD} $*
@@ -159,16 +196,17 @@ ${EMACS_REPOSITORY}:
 ifeq (${OS},Fedora)
 EMACS_DEPENDENCIES=jansson-devel
 else
-EMACS_DEPENDENCIES=libjansson-dev
+EMACS_DEPENDENCIES=libjansson-dev libxpm-dev libgif-dev libjpeg-dev libpng-dev libtiff-dev libx11-dev libncurses5-dev automake autoconf texinfo libgtk2.0-dev libwebkit2gtk-4.0-dev libgccjit-10-dev gcc-10 g++-10 libgccjit0 libgccjit-10-dev libjansson4 libjansson-dev libgtk-3-dev libmagick++-dev
 endif
 ${EMACS}: ${EMACS_REPOSITORY}
 ifeq (${OS},Fedora)
 	sudo dnf builddep -y emacs
 else
+	sudo add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
 	sudo apt build-dep -y emacs
 endif
 	${INSTALL_CMD} ${EMACS_DEPENDENCIES}
-	cd ${EMACS_REPOSITORY} && git checkout emacs-27 && ./autogen.sh && ./configure --prefix=${LOCAL} --with-xwidgets && make -j5 && make install
+	cd ${EMACS_REPOSITORY} && ./autogen.sh && ( CC=/usr/bin/gcc-10 CXX=/usr/bin/gcc-10 ./configure --prefix=${LOCAL} --with-xwidgets --with-cairo --with-modules --without-compress-install --with-x-toolkit=yes --with-gnutls --without-gconf --without-toolkit-scroll-bars --without-xaw3d --without-gsettings --with-mailutils --with-native-compilation --with-json --with-harfbuzz --with-imagemagick --with-jpeg --with-png --with-rsvg --with-tiff --with-wide-int --without-xft --with-xml2 --with-xpm CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer" && make -j5 && make install)
 
 ${FOREIGN_SOURCE}:
 	mkdir -p ~/var/src
@@ -180,7 +218,7 @@ ${RUST}:
 	curl --proto '=https' --tlsv1.2 -sSf 'https://sh.rustup.rs' > /tmp/install_rust.sh && sh /tmp/install_rust.sh -y && rm -f /tmp/install_rust.sh
 
 ${WASM_PACK}:
-	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | PATH=$$HOME/.cargo/bin:$$PATH sh
+	curl 'https://rustwasm.github.io/wasm-pack/installer/init.sh' -sSf | PATH=$$HOME/.cargo/bin:$$PATH sh 
 
 ifeq (${OS},Fedora)
 CARGO_DEPENDENCIES=openssl-devel
@@ -189,7 +227,7 @@ CARGO_DEPENDENCIES=libssl-dev
 endif
 ${CARGO_GENERATE}:
 	${INSTALL_CMD} ${CARGO_DEPENDENCIES}
-	cargo install cargo-generate
+	( PATH=$$HOME/.cargo/bin:$$PATH cargo install cargo-generate )
 
 ${RUST_ANALYZER}:
 	curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o ${RUST_ANALYZER}
@@ -232,3 +270,15 @@ ${LOCAL}/bin/eslint:
 ${LOCAL}/bin/prettier:
 	${NPM_PREFIX}
 	npm i -g prettier
+
+ifeq (${OS},Fedora)
+DEPENDENCIES=cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++
+else
+DEPENDENCIES=cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+endif
+${ALACRITTY}:
+	${INSTALL_CMD} ${DEPENDENCIES}
+	( PATH=$$HOME/.cargo/bin:$$PATH cargo install alacritty )
+
+${FD}:
+	( PATH=$$HOME/.cargo/bin:$$PATH cargo install fd-find )
