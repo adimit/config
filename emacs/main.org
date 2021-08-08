@@ -732,8 +732,8 @@ Completion using =company=
     (company-dabbrev-downcase nil)
     (company-dabbrev-ignore-case nil)
     (company-idle-delay 0)
-    :config
-    (global-company-mode)
+    :hook
+    (after-init . global-company-mode)
     :general
     (:keymaps 'company-active-map
               "C-n" 'company-select-next
