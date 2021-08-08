@@ -321,6 +321,7 @@ Syntax highlighting via tree-sitter.
     :custom
     (typescript-indent-level 2))
 #+end_src
+
 * Utilities
 
 Various add-ons outside of major mode functionality and Emacs core functionality.
@@ -512,6 +513,49 @@ The best =git= porcelain ever.
     "g b" 'magit-blame)
 #+end_src
 
+** Mu4e
+
+The context definitions are in =private.org=.
+
+=set-from-line= manages identities: always answer with the =to:= email address when it's to one of my private email addresses. Manage mailing list identities separately (I know of no automatic way, unfortunately.)
+
+#+begin_src emacs-lisp
+  (defun aleks/set-from-line ()
+    "Set From: address based on To: address of original email.  Also set mailing list addresses."
+    (when mu4e-compose-parent-message
+      (cond
+       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :to "aleks.bg")
+        (setq user-mail-address (cdr (car (mu4e-message-field mu4e-compose-parent-message :to)))))
+       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
+        (setq user-mail-address "org@list.aleks.bg")))))
+
+  (use-package mu4e
+    :load-path "~/.local/share/emacs/site-lisp/mu4e/"
+    :commands mu4e
+    :config
+    (aleks/load-org-file "private.org")
+    (evil-set-initial-state 'mu4e-headers-mode 'normal)
+    (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
+    (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
+    :hook
+    (mu4e-view-mode . aleks/disable-show-trailing-whitespace)
+    (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
+    (mu4e-compose-mode . aleks/set-from-line)
+    :custom
+    (require 'org-mu4e)
+    (shr-color-visible-luminance-min 80)
+    (mail-user-agent 'mu4e-user-agent)
+    (mu4e-update-interval 60)
+    (message-send-mail-function 'smtpmail-send-it)
+    (mu4e-use-fancy-chars t)
+    (mu4e-attachment-dir "~/Downloads")
+    (mu4e-view-show-images t)
+    (mu4e-headers-fields '((:human-date . 25)
+                           (:flags . 6)
+                           (:from . 22)
+                           (:thread-subject . nil))))
+#+END_SRC
+
 ** Multi-cursor
 
 Select something visually, hit =R=, and use =n=, =N=, =<return>=  and =<space>= to select other such regions, then edit them all together seamlessly.
@@ -684,4 +728,19 @@ Snippets live in version control under the Emacs directory.
     :config
     (which-key-mode))
 #+END_SRC
+
+
+** Whitespace
+
+Switch on highlighting of trailing white space, and provide a facility to turn it off on a per-mode base, as for some modes it's not useful.
+
+#+begin_src emacs-lisp
+  (custom-set-variables '(show-trailing-whitespace t))
+
+  (defun aleks/disable-show-trailing-whitespace ()
+      "Disable trailing whitespace."
+      (setq show-trailing-whitespace nil))
+
+  (add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
+#+end_src
 
