@@ -744,6 +744,14 @@ Completion using =company=
 Unfortunately, it doesn't work very well for variable-pitch-mode. Pos-frame mode, on the other hand, doesn't work well with [[https://github.com/emacs-lsp/lsp-ui/issues/464][xmonad]].
 
 
+** Consult
+
+#+begin_src emacs-lisp
+  (use-package consult
+    :general
+    (aleks/global-leader :states 'normal "b" 'consult-buffer))
+#+end_src
+
 ** Diff-hl
 
 Display git diff hint in the gutter.
