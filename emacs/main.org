@@ -1,0 +1,687 @@
+* Early Initialisation
+
+Everything that is in here needs to happen early, mostly because other definitions depend on it. 
+
+** Straight
+The initialization code for =straight.el= that lives [[https://github.com/raxod502/straight.el#getting-started][in the straight.el readme]] is already loaded in =init.el=.
+
+Note that you also have to place the following in your =early-init.el=:
+
+#+begin_src emacs-lisp :tangle no
+  (setq package-enable-at-startup nil)
+#+end_src
+
+** Use-Package
+
+For general package management use use-package, and instruct it to always use straight.
+
+#+begin_src emacs-lisp
+  (straight-use-package 'use-package)
+  (custom-set-variables
+   '(straight-use-package-by-default t))
+#+end_src
+   
+** Evil
+
+We set =evil-want-keybinding= to =nil= for =evil-collection=. I rarely use prefix arguments, and if I do, I'm probably in normal mode, whereas =C-u= is a very useful insert mode shortcut. Finally, we're using Emacs 28's new =undo-redo= instead of relying on outside packages.
+
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-keybinding nil
+          evil-want-integration t)
+    :config
+    (evil-mode 1)
+    :custom
+    (evil-want-C-u-delete t)
+    (evil-undo-system 'undo-redo))
+#+end_src
+
+** General
+=general= seems rather unmaintained, but it still is the most convenient way to set up key bindings. This needs to be very high up so that every following =use-package= declaration can make use of =:general=.
+
+#+begin_src emacs-lisp
+  (use-package general
+    :after evil
+    :config
+    (general-define-key
+     :states 'normal
+     "RET" 'save-buffer
+     :states 'motion
+     ";" 'evil-ex
+     ":" 'evil-repeat-find-char)
+    :config
+    (general-create-definer
+     aleks/global-leader
+     :prefix ",")
+    (general-create-definer
+     aleks/local-leader
+     :prefix ", ."))
+#+end_src
+
+* Emacs
+
+Tweak various aspects of Emacs' visuals and behaviour.
+
+** Appearance & Behaviour
+
+Some basic appearance & behaviour settings
+
+#+begin_src emacs-lisp
+  (blink-cursor-mode 0)
+  (global-hl-line-mode)
+  (set-face-attribute hl-line-face nil :underline nil)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (custom-set-variables
+   '(inhibit-startup-screen t)
+   '(indent-tabs-mode nil)
+   '(initial-scratch-message "")
+   '(mouse-yank-at-point t))
+#+end_src
+
+** Backups
+
+No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
+
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+   '(backup-directory-alist `(("." . "~/.saves")))
+   '(create-lockfiles nil))
+#+END_SRC
+
+** Calendar
+Calendar is set up for European style display (Monday starts week) and manual location of Tübingen, Germany (for sunrise/sunset).
+Tübingen Hbf is: =48.516738, 9.055493=
+
+#+BEGIN_SRC emacs-lisp
+  (defvar holiday-baden-württemberg-holidays
+    '((holiday-fixed 1 1 "Neujahr")
+      (holiday-fixed 1 6 "Heilige Drei Könige")
+      (holiday-fixed 5 1 "Tag der Arbeit")
+      (holiday-fixed 10 3 "Tag der deutschen Einheit")
+      (holiday-fixed 11 1 "Allerheiligen")
+      (holiday-fixed 12 25 "Erster Weihnachtsfeiertag")
+      (holiday-fixed 12 26 "Zweiter Weihnachtsfeiertag")
+      (holiday-easter-etc -2 "Karfreitag")
+      (holiday-easter-etc +1 "Ostermontag")
+      (holiday-easter-etc +39 "Christi Himmelfahrt")
+      (holiday-easter-etc +50 "Pfingstmontag")
+      (holiday-easter-etc +60 "Fronleichnam")))
+  
+  (use-package calendar
+    :defer t
+    :custom
+    (calendar-week-start-day 1)
+    (calendar-latitude 48.516738)
+    (calendar-longitude 9.055493)
+    (calendar-location-name "Tübingen, Germany")
+    (calendar-holidays
+     (append holiday-solar-holidays
+             holiday-baden-württemberg-holidays))
+    (calendar-date-style 'european)
+    (calendar-time-display-form
+     '(24-hours ":"
+                minutes
+                (if time-zone (concat " (" time-zone ")")))))
+  
+#+END_SRC
+
+Here's a function that returns whether it's currently dark outside, so you don't have to look.
+
+#+begin_src emacs-lisp
+  (defun aleks/is-it-dark-p ()
+    "Return t if it's dark outside, otherwise nil.
+
+  Will look at the `current-time' and calculate sunset and sunrise times
+  according to `calendar-longitude' and `calendar-latitude' using
+  `solar-sunrise-sunset'so make sure you've set your location."
+    (require 'solar)
+    (let* ((solar (solar-sunrise-sunset (calendar-current-date)))
+	 (sunrise (car (car solar)))
+	 (sunset (car (car (cdr solar))))
+	 (time (decode-time (current-time)))
+	 (hour (nth 2 time))
+	 (minute (nth 1 time))
+	 (minute-fraction (/ minute 60.0))
+	 (time-decimal (+ hour minute-fraction)))
+    (or (> time-decimal sunset) (< time-decimal sunrise))))
+#+end_src
+
+** Emacs-Server
+
+Enable emacs server mode.
+
+#+begin_src emacs-lisp
+  (server-mode)
+#+end_src
+
+There are two shell aliases that help with server mode:
+
+#+begin_src shell
+  alias ec=emacsclient -n
+  alias ecc=emacsclient -cn
+#+end_src
+
+=ecc= opens another frame, and =ec= just re-uses an existing frame.
+** Font
+
+Instead of using a package like =org-variable-pitch-mode=, the
+following definition takes care of setting up which parts of
+=org-mode= are fixed pitch.
+
+#+begin_src emacs-lisp
+  (defun aleks/set-org-mode-fixed-pitch-faces ()
+    (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
+          `(org-block
+            org-special-keyword
+            org-drawer
+            org-todo
+            org-done
+            org-priority
+            org-checkbox
+            org-block-end-line
+            org-block-begin-line
+            org-table org-verbatim)))
+  
+  (with-eval-after-load "org"
+   (aleks/set-org-mode-fixed-pitch-faces))
+#+end_src
+
+And here's a function to set the different faces.
+
+#+begin_src emacs-lisp
+  (defun aleks/set-light-mode-faces ()
+      "Set the faces for light mode."
+      (custom-set-faces
+       '(variable-pitch ((t (:family "Bitter" :height 180))))
+       '(fixed-pitch ((t (:family "Fira Code" :height 170))))
+       '(default ((t (:family "Fira Code" :height 170))))))
+#+end_src
+
+These are triggered after [[Theme]] selection.
+
+** Global Keybindings
+
+Using the global leader, these are valid everywhere.
+
+#+begin_src emacs-lisp
+  (aleks/global-leader
+    :states 'normal
+    :keymaps 'override
+    "" nil ; make sure global-leader can be used as a prefix key
+    "b" 'switch-to-buffer
+    "f" 'find-file
+    "c" 'org-capture
+    "a" 'org-agenda)
+#+end_src
+
+
+
+** Text buffers
+
+When reading text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
+
+#+begin_src emacs-lisp
+  (use-package olivetti)
+#+end_src
+
+Text mode buffers have spell check enabled, are narrowed, and use variable pitch and word wrap.
+
+#+begin_src emacs-lisp
+  (defun aleks/text-mode-hook ()
+    (flyspell-mode)
+    (visual-line-mode)
+    (variable-pitch-mode)
+    (olivetti-mode))
+  
+  (add-hook 'text-mode-hook 'aleks/text-mode-hook)
+#+end_src
+
+** Theme
+
+Use Prot's awesome Modus theme, vivendi by default. They're built-in
+to Emacs now, but we're loading the latest version here.
+
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-region '(bg-only no-extend)
+          modus-themes-scale-headings t
+          modus-themes-slanted-constructs t
+          modus-themes-scale-1 1.1
+          modus-themes-scale-2 1.2
+          modus-themes-scale-3 1.3
+          modus-themes-scale-4 1.4
+          modus-themes-scale-5 1.5
+          modus-themes-mode-line '3d)
+  
+    ;; Load the theme files before enabling a theme
+    (modus-themes-load-themes)
+    :config
+    (modus-themes-load-vivendi)
+    (aleks/set-light-mode-faces))
+#+end_src
+
+* Major Modes
+
+A list of supported major modes and their configuration.
+
+** Org
+
+Loading org already happened in =init.el=.
+
+*** Babel
+Tangle by default
+
+#+begin_src emacs-lisp
+  (setq org-babel-default-header-args
+        '((:session . "none")
+          (:results . "replace")
+          (:exports . "code")
+          (:cache . "no")
+          (:noweb . "no")
+          (:hlines . "no")
+          (:tangle . "yes")))
+#+end_src
+
+*** Indentation
+
+Indent mode keeps leading spaces out of org text files.
+
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook #'org-indent-mode)
+#+end_src
+
+** Rust
+
+Rustic mode works well with =rust-analyzer=. Format on save is done with [[Apheleia]] via =rustfmt=.
+
+#+begin_src emacs-lisp
+  (use-package rustic
+    :custom
+    (rustic-lsp-server 'rust-analyzer)
+    (lsp-rust-server 'rust-analyzer)
+    (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer")))
+#+end_src
+
+** Typescript
+
+Syntax highlighting via tree-sitter.
+
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :hook (typescript-mode . tree-sitter-mode)
+    :mode "\\.tsx?$"
+    :custom
+    (typescript-indent-level 2))
+#+end_src
+* Utilities
+
+Various add-ons outside of major mode functionality and Emacs core functionality.
+
+** Apheleia
+Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g. =prettier=, =black=, =rustfmt=.
+
+=rustfmt= isn't supported out of the box. I've opened a [[https://github.com/raxod502/apheleia/pull/45][PR]]. In the meantime, we define our own.
+
+#+begin_src emacs-lisp
+  (use-package apheleia
+    :straight (apheleia :type git
+                        :host github
+                        :repo "raxod502/apheleia")
+    :config
+    (apheleia-global-mode +1)
+    (add-to-list 'apheleia-formatters
+                 '(rustfmt  . ("rustfmt" "--unstable-features" "--skip-children" "--quiet" "--emit" "stdout" file)))
+    (add-to-list 'apheleia-mode-alist
+                 '(rustic-mode . rustfmt)))
+#+end_src
+
+** Beacon
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :config
+    (beacon-mode 1)
+    :custom
+    (beacon-blink-delay 0.15)
+    (beacon-blink-duration 0.15))
+#+END_SRC
+
+** Company
+
+Completion using =company=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :custom
+    (company-dabbrev-downcase nil)
+    (company-dabbrev-ignore-case nil)
+    (company-idle-delay 0)
+    :config
+    (global-company-mode)
+    :general
+    (:keymaps 'company-active-map
+              "C-n" 'company-select-next
+              "C-p" 'company-select-previous
+              "C-f" 'company-filter-candidates))
+#+END_SRC
+
+Unfortunately, it doesn't work very well for variable-pitch-mode. Pos-frame mode, on the other hand, doesn't work well with [[https://github.com/emacs-lsp/lsp-ui/issues/464][xmonad]].
+
+
+** Diff-hl
+
+Display git diff hint in the gutter.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+    :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :config (global-diff-hl-mode)
+    :custom (diff-hl-side 'right))
+#+END_SRC
+
+** Editorconfig
+
+Read =.editorconfig= files and adjust settings correspondingly.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :config (editorconfig-mode 1))
+#+END_SRC
+
+** Embark
+#+begin_src emacs-lisp :tangle no
+  (use-package embark
+    :general
+    ("C-<return>" 'embark-act)
+    (aleks/local-leader 'normal "." 'embark-act))
+#+end_src
+
+** Emojis
+You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Display via Noto Color Emoji font. Enable Emojify mode for github style emojis in Forge Post mode.
+
+#+begin_src emacs-lisp
+  (set-fontset-font t 'symbol "Noto Color Emoji")
+  (set-fontset-font t 'symbol "Symbola" nil 'append)
+  
+  (use-package emojify
+    :hook (forge-post-mode . emojify-mode))
+#+end_src
+
+** Evil Collection
+
+With crowd sourced bindings for various packages:
+
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :init
+    (setq evil-collection-outline-bind-tab-p t)
+    :after evil
+    :config
+    (evil-collection-init
+     '(calendar
+       magit
+       mu4e
+       mu4e-conversation
+       outline)))
+#+end_src
+
+** Evil Extensions
+
+Surround bindings for text objects (e.g. =c s b [=.)
+
+#+begin_src emacs-lisp
+  (use-package evil-surround
+    :config
+    (global-evil-surround-mode t))
+#+end_src
+
+Swap text objects with one command.  (e.g. =g x w=)
+
+#+begin_src emacs-lisp
+  (use-package evil-exchange
+    :config (evil-exchange-install))
+#+end_src
+
+** Flycheck
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :config (global-flycheck-mode))
+#+END_SRC
+
+*** Checkdoc in org src edit buffers
+=checkdoc= will insist on headers, footers, commentary sections etc. in all your elisp code, including code that's opened with =org-src-edit=, which makes no sense at all. The corresponding function is =checkdoc-comments= and it runs whenever =buffer-file-name= is set. Org src edit buffers do set a file name, so =checkdoc= happily checks their comments. There's no way to exclude just one kind of check, so we just disable checkdoc in =org-src-edit= buffers.
+
+#+begin_src emacs-lisp
+  (defun disable-checkdoc ()
+    (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (add-hook 'org-src-mode-hook 'disable-checkdoc)
+#+end_src
+
+** Guess-Language
+
+This guesses the language a text is in per-paragraph. This means that you can code switch in your prose writing without having half the text turn up bright red (and *with* functioning spell-check in all languages.)
+
+Currently, only German and English are supported here, as I don't write much else with Emacs.
+
+#+begin_src emacs-lisp
+  (use-package guess-language
+    :hook (text-mode . (lambda () (guess-language-mode 1)))
+    :custom
+    (guess-language-languages '(en de))
+    (guess-language-langcodes '((en . ("en_GB" "English"))
+                                (de . ("de_DE" "German")))))
+#+end_src
+
+** LSP
+
+Language Server Protocol support using =lsp-mode=. =read-process-output-max= is set so larger LSP JSON payloads can be processed by Emacs.
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :custom (read-process-output-max (* 1024 1024))
+    :general
+    (:states
+     'normal
+     "M-RET" 'lsp-execute-code-action))
+#+end_src
+
+LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
+
+#+begin_src emacs-lisp
+  (use-package lsp-ui)
+#+end_src
+
+** Magit
+
+The best =git= porcelain ever.
+
+#+begin_src emacs-lisp
+  (use-package magit)
+  (aleks/global-leader
+    :states 'normal
+    "g s" 'magit-status
+    "g f" 'magit-file-dispatch
+    "g b" 'magit-blame)
+#+end_src
+
+** Multi-cursor
+
+Select something visually, hit =R=, and use =n=, =N=, =<return>=  and =<space>= to select other such regions, then edit them all together seamlessly.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-multiedit
+    :config
+    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
+    :general
+    (:states 'visual
+             "R" 'evil-multiedit-match-all
+             "r" 'evil-multiedit-match-and-next)
+    (:states 'normal :prefix ", r"
+             "r" 'evil-multiedit-match-and-next
+             "R" 'evil-multiedit-match-all)
+    (:states 'multiedit
+             "RET" 'evil-multiedit-toggle-or-restrict-region
+             "n" 'evil-multiedit-next
+             "N" 'evil-multiedit-prev
+             "M-r" 'evil-multiedit-match-all
+             "SPC" 'evil-multiedit-match-and-next
+             "S-SPC" 'evil-multiedit-match-and-prev))
+#+END_SRC
+
+** Org-Roam
+
+Mostly for lecture notes, ideas for talks, but also random thoughts.
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (file-truename (concat (file-name-as-directory (getenv "HOME")) "org/roam")))
+    :config
+    (org-roam-setup))
+#+end_src
+
+** Parentheses
+
+Highlight parentheses in different colours according to their nesting level.
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+      :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+Smartparens to make handling parentheses easier.
+
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :init
+    (require 'smartparens-config)
+    :config
+    (smartparens-global-mode 1)
+    (show-smartparens-global-mode 1)
+    :custom
+    (smartparens-strict-mode 1)
+    (sp-show-pair-delay 0)
+    :general
+    (:states
+     '(insert normal)
+     "M-s" 'sp-split-sexp
+     "M-l" 'sp-join-sexp ; link
+     "C-/" 'sp-forward-barf-sexp
+     "C-=" 'sp-forward-slurp-sexp))
+#+end_src
+
+** Projectile
+
+I haven't configured =projectile= to use =selectrum=, but it's working alright for now.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :config
+    (projectile-mode +1)
+    :general
+    (aleks/global-leader
+      :states 'normal
+      "p p" 'projectile-switch-project
+      "p f" 'projectile-find-file
+      "p b" 'projectile-switch-buffer))
+  
+#+END_SRC
+
+** Ripgrep
+
+Near-instant full-text-search across projects.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rg
+    :general
+    (aleks/global-leader 'normal
+     "s s" 'rg-dwim
+     "s p" 'rg-project
+     "s l" 'rg-list-searches))
+#+END_SRC
+
+** Selection
+Try out =selectrum= as an alternative to =ivy=.
+
+#+begin_src emacs-lisp
+  (use-package selectrum
+    :config
+    (selectrum-mode +1))
+#+end_src
+
+Use =prescient= for sorting options by /frecency/:
+
+#+begin_src emacs-lisp
+  (use-package prescient)
+  
+  (use-package selectrum-prescient
+    :config
+    (selectrum-prescient-mode +1)
+    (prescient-persist-mode +1))
+#+end_src
+
+Add documentation to each selection entry if possible.
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :init
+    (marginalia-mode))
+#+end_src
+
+** Smerge
+
+Awesome shortcuts to do complicated 3-way-merges with =git=.
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :states 'normal
+   :modes 'smerge-mode
+   :prefix ", d"
+   "n" 'smerge-next
+   "p" 'smerge-prev
+   "j" 'smerge-keep-lower
+   "k" 'smerge-keep-upper
+   "c" 'smerge-keep-all
+   "X" 'smerge-keep-base
+   "x" 'smerge-swap
+   "r" 'smerge-resolve)
+#+end_src
+
+** Snippets
+
+Snippets live in version control under the Emacs directory.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1)
+    :custom
+    (yas-snippet-dirs '("~/config/emacs/snippets")))
+#+end_src
+
+
+** Treesitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter)
+  (use-package tree-sitter-langs :after tree-sitter)
+#+end_src
+** Which-Key
+
+=which-key= shows hints after pressing a prefix key. Greatly aids discoverability.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-mode))
+#+END_SRC
+
