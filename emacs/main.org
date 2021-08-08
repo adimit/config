@@ -1,7 +1,6 @@
 * Early Initialisation
 
-Everything that is in here needs to happen early, mostly because other definitions depend on it. 
-
+Everything that is in here needs to happen early.
 ** Straight
 The initialization code for =straight.el= that lives [[https://github.com/raxod502/straight.el#getting-started][in the straight.el readme]] is already loaded in =init.el=.
 
@@ -272,22 +271,254 @@ to Emacs now, but we're loading the latest version here.
 
 A list of supported major modes and their configuration.
 
+** CSS
+#+BEGIN_SRC emacs-lisp
+  (use-package css-mode
+    :mode "\\.css$"
+    :custom (css-indent-offset 2))
+  (use-package scss-mode
+    :mode ("\\.scss$" "\\.sass$"))
+#+END_SRC
+
+** CSV
+
+#+BEGIN_SRC emacs-lisp
+  (use-package csv-mode
+    :mode "\\.[ct]sv$")
+#+END_SRC
+
+** Docker
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dockerfile-mode :mode "Dockerfile")
+#+END_SRC
+
+** Fish
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fish-mode
+    :mode "\\.fish$")
+#+END_SRC
+
+** Graphql
+
+#+BEGIN_SRC emacs-lisp
+  (use-package request)
+
+  (use-package graphql-mode
+    :load-path "~/src/graphql-mode/"
+    :mode "\\.graphql$"
+    :custom (graphql-indent-level 4))
+#+END_SRC
+
+** Groovy
+
+#+BEGIN_SRC emacs-lisp
+  (use-package groovy-mode
+    :mode "build\\.gradle" "\\.groovy$")
+#+END_SRC
+
+
+** Haskell
+
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :mode "\\.hs$")
+#+END_SRC
+
+** Json
+#+BEGIN_SRC emacs-lisp
+  (use-package json-mode
+    :mode "\\.json$"
+    :config
+    (add-to-list 'flycheck-disabled-checkers 'json-python-json))
+#+END_SRC
+
+** Kotlin
+
+Only basic support :(
+
+#+BEGIN_SRC emacs-lisp
+  (use-package kotlin-mode
+    :mode "\\.kt$")
+#+END_SRC
+
+** Ledger
+
+The function =browse-amazon-history-at-point= is useful to get to the Amazon order number from the bank statement itself. Helps with categorisation.
+
+#+BEGIN_SRC emacs-lisp
+  (defun browse-amazon-history-at-point ()
+    "Open amazon.de order history.  The search term is `thing-at-point'."
+    (interactive)
+    (browse-url (concat "https://www.amazon.de/gp/your-account/order-history/?search=" (thing-at-point 'symbol 'no-props))))
+
+  (use-package ledger-mode
+    :mode "hledger\\.journal$" "\\.ledger$"
+    :general
+    (aleks/local-leader :states 'normal :keymaps 'ledger-mode-map
+             "a" 'browse-amazon-history-at-point
+             "p" 'browse-paypal-history-at-point))
+
+  (use-package flycheck-ledger
+    :after flycheck ledger-mode)
+#+END_SRC
+
+** Lua
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :mode "\\.lua$"
+    :interpreter "lua")
+#+END_SRC
+
+** Markdown
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode "\\.md$"
+    :custom (markdown-fontify-code-blocks-natively t))
+#+END_SRC
+
 ** Org
 
 Loading org already happened in =init.el=.
 
-*** Babel
-Tangle by default
+*** Agenda
+
+The most important files get their own variables.
 
 #+begin_src emacs-lisp
-  (setq org-babel-default-header-args
-        '((:session . "none")
-          (:results . "replace")
-          (:exports . "code")
-          (:cache . "no")
-          (:noweb . "no")
-          (:hlines . "no")
-          (:tangle . "yes")))
+  (defcustom org-directory (concat (file-name-as-directory (getenv "HOME")) "org") "Org directory.")
+  (defcustom my-org-main-file (concat (file-name-as-directory org-directory) "main.org") "Personal Org agenda file.")
+  (defcustom my-org-work-file (concat (file-name-as-directory org-directory) "work.org") "Professional Org agenda file.")
+#+end_src
+
+Add diary and agenda files.
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(org-agenda-include-diary t)
+   '(org-agenda-files `(,my-org-main-file ,my-org-work-file))
+   '(diary-file (concat (file-name-as-directory org-directory) "diary")))
+#+end_src
+
+*** Babel
+
+Tangle every block by default.
+
+#+begin_src emacs-lisp
+  (add-to-list 'org-babel-default-header-args '(:tangle . "yes"))
+#+end_src
+
+*** Capture
+
+Capture templates:
+
+#+begin_src emacs-lisp
+  (defun join-lines (strings)
+    "Join STRINGS with newlines."
+    (string-join strings "\n"))
+  (customize-set-variable
+   'org-capture-templates
+   `(("c" "Add to today" entry
+      (file+regexp my-org-main-file "Week [0-9][0-9]?")
+      ,(join-lines
+        '("* TODO %?"
+          "SCHEDULED: %t"
+          ":PROPERTIES:"
+          ":CREATED: %U"
+          ":END:"
+          "")))
+     ("s" "Add task to sprint" entry
+      (file+headline my-org-work-file "Tasks")
+      ,(join-lines
+        '("* TODO %?\n"
+          "SCHEDULED: %t"
+          ":PROPERTIES:"
+          ":CREATED: %U"
+          ":REFERENCE: %f"
+          ":END:"
+          ""
+          "%i")))
+     ("j" "Add MP Jira ticket" entry
+      (file+headline my-org-work-file "Tasks")
+      ,(join-lines
+        '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get-captured-issue) %(xjira-get-captured-title)"
+          "SCHEDULED: %t"
+          ":PROPERTIES:"
+          ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get-captured-issue)"
+          ":Reporter: %(xjira-get-captured-reporter)"
+          ":END:"
+          ""
+          "%(xjira-get-captured-description)")))
+     ("S" "Sprint" entry (file my-org-work-file)
+      ,(join-lines
+        '("* Sprint %^{Title}"
+          ""
+          "** Meetings"
+          "*** Sprint Review"
+          "*** Retro"
+          "*** SP1"
+          "*** SP2"
+          "** Tasks"
+          "%i%?"))))
+#+end_src
+
+*** Citations
+
+Only works with the new (as of summer 2021) org citation support.
+
+#+begin_src emacs-lisp
+  (defvar aleks/global-bibliography-files '("~/doc/lib/bib/main.bib"))
+  (custom-set-variables
+   '(org-cite-global-bibliography aleks/global-bibliography-files))
+#+end_src
+
+We install =citeproc= to get the CSL backend.
+
+#+begin_src emacs-lisp
+  (use-package citeproc
+    :config
+    (require 'oc-csl))
+#+end_src
+
+We set the export backend to biblatex for latex.
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(org-cite-export-processors
+     '((latex biblatex)
+       (t csl))))
+#+end_src
+
+*** Customisation
+
+And we set a lot of configuration options for org.
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(org-tags-column 0) ; alignment broken with variable pitch
+   '(org-confirm-babel-evaluate nil) ; don't prompt when evaluating
+   '(org-startup-folded t)
+   '(org-hide-emphasis-markers t)
+   '(org-babel-confirm-evaluate nil)
+   '(org-log-into-drawer t)
+   '(org-outline-path-complete-in-steps nil) ; use a flat list instead of hierarchichal steps
+   '(org-refile-targets
+     '((nil . (:maxlevel . 4)))) ; don't descend more than 4 levels when refiling
+   '(org-footnote-section nil)) ; place footnotes in same section
+#+end_src
+
+*** Evil
+
+The agenda is a pain with evil.
+
+#+begin_src emacs-lisp
+  (use-package evil-org
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
 #+end_src
 
 *** Indentation
@@ -296,6 +527,137 @@ Indent mode keeps leading spaces out of org text files.
 
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook #'org-indent-mode)
+#+end_src
+
+*** Keybindings
+**** General
+
+#+begin_src emacs-lisp
+  (aleks/local-leader
+    :states 'normal
+    :keymaps 'org-mode-map
+    "'" 'org-edit-special
+    "i" 'org-insert-structure-template
+    "o" 'org-open-at-point
+    "h" 'org-promote-subtree
+    "l" 'org-demote-subtree
+    "a" 'org-archive-subtree
+    "s" 'org-schedule
+    "d" 'org-deadline
+    "e" 'org-set-effort
+    "c c" 'org-clock-in
+    "c i" 'org-clock-in
+    "c o" 'org-clock-out
+    "c g" 'org-clock-goto
+    "c x" 'org-clock-cancel)
+#+end_src
+
+**** Edit Special
+
+A quicker shortcut for editing special environments in =org=.
+
+#+begin_src emacs-lisp
+  (aleks/global-leader :states 'normal :keymaps 'org-mode-map
+    "'" 'org-edit-special)
+#+end_src
+
+Interaction with special edits.
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :states 'normal
+   :definer 'minor-mode
+   :keymaps 'org-src-mode
+   "<return>" 'org-edit-src-exit
+   "<backspace>" 'org-edit-src-abort)
+#+end_src
+
+*** Reveal
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+    :custom
+    (org-reveal-root "file:///home/aleks/src/talks/reveal.js-4.1.0")
+    (org-reveal-hlevel 2))
+  (use-package htmlize)
+#+END_SRC
+
+*** Visuals
+
+Prettier lists, by substituting bullet points for list item markers.
+
+#+BEGIN_SRC emacs-lisp
+  (font-lock-add-keywords
+   'org-mode
+   '(("^ *\\([-]\\) "
+      (0 (prog1 () (compose-region
+                    (match-beginning 1)
+                    (match-end 1)
+                    "•"))))))
+#+END_SRC
+
+This hides heading bullets for a cleaner look.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :hook
+    (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '(" "))
+    (org-fontify-whole-heading-line t)
+    (org-pretty-entities t))
+#+END_SRC
+
+Org-appear allows easy editing of inline markup when it's hidden.
+
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode)
+    :custom
+    (org-appear-autolinks t)
+    (org-appear-autosubmarkers t)
+    (org-appear-autoemphasis t)
+    :straight (org-appear :type git
+                :host github
+                :repo "awth13/org-appear"))
+#+end_src
+** Python
+
+#+begin_src emacs-lisp
+  (use-package lsp-python-ms
+    :custom (lsp-python-ms-auto-install-server t)
+    :hook (python-mode . lsp-mode))
+#+end_src
+
+** R
+
+#+begin_src emacs-lisp
+    (use-package ess
+      :config
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((R . t))))
+#+end_src
+
+** REST
+
+Rest client with company backend & org support.
+
+#+begin_src emacs-lisp
+  (use-package restclient
+    :mode "\\.rest$")
+
+  (use-package company-restclient
+    :after (restclient)
+    :config
+    (add-to-list 'company-backends 'company-restclient))
+
+  (use-package ob-restclient
+    :after (restclient)
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t))))
 #+end_src
 
 ** Rust
@@ -321,6 +683,12 @@ Syntax highlighting via tree-sitter.
     :custom
     (typescript-indent-level 2))
 #+end_src
+
+** YAML
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode :mode "\\.ya?ml$")
+#+END_SRC
 
 * Utilities
 
@@ -715,10 +1083,14 @@ Snippets live in version control under the Emacs directory.
 
 
 ** Treesitter
+
+Tree-sitter provides editor-agnostic syntax highlighting. For now it's just used for [[Typescript]] here.
+
 #+begin_src emacs-lisp
   (use-package tree-sitter)
   (use-package tree-sitter-langs :after tree-sitter)
 #+end_src
+
 ** Which-Key
 
 =which-key= shows hints after pressing a prefix key. Greatly aids discoverability.
@@ -744,3 +1116,14 @@ Switch on highlighting of trailing white space, and provide a facility to turn i
   (add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
 #+end_src
 
+
+** XJira
+
+An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
+
+#+begin_src emacs-lisp
+  (use-package xjira
+    :straight (xjira :type git :host github :repo "adimit/xjira"))
+#+end_src
+
+The authorisation and host variables are set in =private.org=.
