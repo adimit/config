@@ -462,7 +462,7 @@ Capture templates:
           "*** SP1"
           "*** SP2"
           "** Tasks"
-          "%i%?"))))
+          "%i%?")))))
 #+end_src
 
 *** Citations
