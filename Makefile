@@ -196,7 +196,7 @@ ${EMACS_REPOSITORY}:
 ifeq (${OS},Fedora)
 EMACS_DEPENDENCIES=jansson-devel
 else
-EMACS_DEPENDENCIES=libjansson-dev libxpm-dev libgif-dev libjpeg-dev libpng-dev libtiff-dev libx11-dev libncurses5-dev automake autoconf texinfo libgtk2.0-dev libwebkit2gtk-4.0-dev libgccjit-10-dev gcc-10 g++-10 libgccjit0 libgccjit-10-dev libjansson4 libjansson-dev libgtk-3-dev libmagick++-dev
+EMACS_DEPENDENCIES=libjansson-dev libxpm-dev libgif-dev libjpeg-dev libpng-dev libtiff-dev libx11-dev libncurses5-dev automake autoconf texinfo libgtk2.0-dev libwebkit2gtk-4.0-dev libgccjit-10-dev gcc-10 g++-10 libgccjit0 libgccjit-10-dev libjansson4 libjansson-dev libgtk-3-dev libmagick++-dev fonts-symbola fonts-noto-color-emoji
 endif
 ${EMACS}: ${EMACS_REPOSITORY}
 ifeq (${OS},Fedora)
