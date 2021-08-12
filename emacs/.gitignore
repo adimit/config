@@ -6,3 +6,6 @@
 !/snippets
 !/snippets/*
 !/snippets/*/*
+!/straight
+!/straight/versions
+!/straight/versions/default.el
