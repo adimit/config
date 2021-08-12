@@ -48,6 +48,7 @@ HLEDGER = ${LOCAL}/bin/hledger
 NPM_PREFIX = npm set prefix ${LOCAL}
 ALACRITTY = ${CARGO_LOCAL}/bin/alacritty
 FD = ${CARGO_LOCAL}/bin/fd
+CASK = ${LOCAL}/bin/cask
 
 .PHONY: install
 install: links ${EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER} ${ALACRITTY} ${FD}
@@ -162,6 +163,9 @@ ${XMOBAR_REPO}: ${XMONAD_REPO}
 
 ${HLEDGER}: ${STACK}
 	stack install hledger hledger-web
+
+${CASK}:
+	cd /var/tmp && git clone "https://github.com/cask/cask" && cd cask && make install
 
 ifeq (${OS},Fedora)
 XMONAD_DEPENDENCIES=libX11-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel libXft-devel libXpm-devel
