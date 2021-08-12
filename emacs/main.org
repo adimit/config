@@ -444,14 +444,14 @@ Capture templates:
      ("j" "Add MP Jira ticket" entry
       (file+headline my-org-work-file "Tasks")
       ,(join-lines
-        '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get-captured-issue) %(xjira-get-captured-title)"
+        '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title)"
           "SCHEDULED: %t"
           ":PROPERTIES:"
-          ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get-captured-issue)"
-          ":Reporter: %(xjira-get-captured-reporter)"
+          ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get 'issue)"
+          ":Reporter: %(xjira-get 'reporter)"
           ":END:"
           ""
-          "%(xjira-get-captured-description)")))
+          "%(xjira-get 'description)")))
      ("S" "Sprint" entry (file my-org-work-file)
       ,(join-lines
         '("* Sprint %^{Title}"
