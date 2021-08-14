@@ -411,6 +411,12 @@ Tangle every block by default.
   (add-to-list 'org-babel-default-header-args '(:tangle . "yes"))
 #+end_src
 
+Redisplay images after code block evaluation. Handy if the result of your computation is an image: it'll pop up immediately.
+
+#+begin_src emacs-lisp
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+#+end_src
+
 *** Capture
 
 Capture templates:
