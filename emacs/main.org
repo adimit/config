@@ -1,6 +1,7 @@
 * Early Initialisation
 
 Everything that is in here needs to happen early.
+
 ** Straight
 The initialization code for =straight.el= that lives [[https://github.com/raxod502/straight.el#getting-started][in the straight.el readme]] is already loaded in =init.el=.
 
@@ -19,7 +20,7 @@ For general package management use use-package, and instruct it to always use st
   (custom-set-variables
    '(straight-use-package-by-default t))
 #+end_src
-   
+
 ** Evil
 
 We set =evil-want-keybinding= to =nil= for =evil-collection=. I rarely use prefix arguments, and if I do, I'm probably in normal mode, whereas =C-u= is a very useful insert mode shortcut. Finally, we're using Emacs 28's new =undo-redo= instead of relying on outside packages.
@@ -439,7 +440,7 @@ Capture templates:
      ("s" "Add task to sprint" entry
       (file+headline my-org-work-file "Tasks")
       ,(join-lines
-        '("* TODO %?\n"
+        '("* TODO %?"
           "SCHEDULED: %t"
           ":PROPERTIES:"
           ":CREATED: %U"
