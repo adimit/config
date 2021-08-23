@@ -536,6 +536,13 @@ Indent mode keeps leading spaces out of org text files.
   (add-hook 'org-mode-hook #'org-indent-mode)
 #+end_src
 
+*** Inline Latex
+
+Render inline LaTeX fragments somewhat bigger, to match the font size.
+#+begin_src emacs-lisp
+  (plist-put org-format-latex-options :scale 1.7)
+#+end_src
+
 *** Keybindings
 **** General
 
