@@ -431,6 +431,15 @@ Redisplay images after code block evaluation. Handy if the result of your comput
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 #+end_src
 
+Load the following languages into org babel by default:
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(org-babel-load-languages
+     '((dot . t)
+       (emacs-lisp . t))))
+#+end_src
+
 *** Capture
 
 Capture templates:
