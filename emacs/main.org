@@ -562,7 +562,7 @@ Indent mode keeps leading spaces out of org text files.
 
 Render inline LaTeX fragments somewhat bigger, to match the font size.
 #+begin_src emacs-lisp
-  (plist-put org-format-latex-options :scale 1.7)
+  (plist-put org-format-latex-options :scale 2)
 #+end_src
 
 *** Keybindings
