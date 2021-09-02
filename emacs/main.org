@@ -82,6 +82,19 @@ Some basic appearance & behaviour settings
    '(mouse-yank-at-point t))
 #+end_src
 
+** Auth
+This uses =pass= for all auth storage, including =mu4e= and =ghub=. If there are problems remember =(setq auth-source-debug t).=
+
+#+begin_src emacs-lisp
+  (auth-source-pass-enable)
+#+end_src
+
+Let Emacs query the pass phrase instead of an external pinentry dialogue.
+
+#+begin_src emacs-lisp
+  (customize-set-variable 'epg-pinentry-mode 'loopback)
+#+end_src
+
 ** Backups
 
 No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
