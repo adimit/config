@@ -917,12 +917,22 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
 The best =git= porcelain ever.
 
 #+begin_src emacs-lisp
-  (use-package magit)
-  (aleks/global-leader
-    :states 'normal
-    "g s" 'magit-status
-    "g f" 'magit-file-dispatch
-    "g b" 'magit-blame)
+  (use-package magit
+    :general
+    (aleks/global-leader
+      :states 'normal
+      "g s" 'magit-status
+      "g f" 'magit-file-dispatch
+      "g b" 'magit-blame))
+#+end_src
+
+Integration for Github.
+
+#+begin_src emacs-lisp
+  (use-package forge
+    :after magit)
+#+end_src
+
 ** Move File and Buffer
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]].
