@@ -992,6 +992,18 @@ Select something visually, hit =R=, and use =n=, =N=, =<return>=  and =<space>= 
              "S-SPC" 'evil-multiedit-match-and-prev))
 #+END_SRC
 
+** Org-Ref
+
+I'm using org-cite nowadays, but org-ref still has important goodies.
+
+#+begin_src emacs-lisp
+  (use-package org-ref
+    :custom
+    (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-pdf-directory '("~/doc/lib")))
+#+end_src
+
 ** Org-Roam
 
 Mostly for lecture notes, ideas for talks, but also random thoughts.
