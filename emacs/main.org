@@ -702,6 +702,8 @@ Rustic mode works well with =rust-analyzer=. Format on save is done with [[Aphel
 
 #+begin_src emacs-lisp
   (use-package rustic
+    :hook
+    (rustic-mode . lsp)
     :custom
     (rustic-lsp-server 'rust-analyzer)
     (lsp-rust-server 'rust-analyzer)
@@ -714,7 +716,9 @@ Syntax highlighting via tree-sitter.
 
 #+begin_src emacs-lisp
   (use-package typescript-mode
-    :hook (typescript-mode . tree-sitter-mode)
+    :hook
+    (typescript-mode . tree-sitter-mode)
+    (typescript-mode . lsp)
     :mode "\\.tsx?$"
     :custom
     (typescript-indent-level 2))
