@@ -668,11 +668,10 @@ Org-appear allows easy editing of inline markup when it's hidden.
 ** R
 
 #+begin_src emacs-lisp
-    (use-package ess
-      :config
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((R . t))))
+  (use-package ess
+    :config
+    (add-to-list 'org-babel-load-languages
+                 '(R . t)))
 #+end_src
 
 ** REST
@@ -691,9 +690,7 @@ Rest client with company backend & org support.
   (use-package ob-restclient
     :after (restclient)
     :config
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((restclient . t))))
+    (add-to-list 'org-babel-load-languages '(restclient . t)))
 #+end_src
 
 ** Rust
@@ -1230,7 +1227,6 @@ Snippets live in version control under the Emacs directory.
     :custom
     (yas-snippet-dirs '("~/config/emacs/snippets")))
 #+end_src
-
 
 ** Treesitter
 
