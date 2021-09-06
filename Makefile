@@ -8,7 +8,7 @@ else
 $(error Could not find dpkg or dnf)
 endif
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki /inkscape
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=${HOME}/.local/bin/%)
