@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: jira subtask
+# key: st
+# --
+
+- ${1:name} / estimate: "${2:estimate}" description: "${3:description}"
