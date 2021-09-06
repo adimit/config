@@ -486,11 +486,20 @@ Capture templates:
         '("* Sprint %^{Title}"
           ""
           "** Meetings"
-          "*** Sprint Review"
-          "*** Retro"
-          "*** SP1"
-          "*** SP2"
+          "*** MEET Sprint Review"
+          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
+          "*** MEET Retro"
+          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
+          "*** MEET Next sprint SP1"
+          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(10 00))"
+          "*** MEET Next sprint SP2"
+          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(13 00))"
           "** Tasks"
+          "*** TODO Update Metrics"
+          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/monday-this-week (aleks/next-sprint-review-day)))"
+          ":PROPERTIES:"
+          ":REFERENCE: %(eval team-integration-metrics-sheet-link)"
+          ":END:"
           "%i%?")))))
 #+end_src
 
@@ -758,6 +767,61 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
     (beacon-blink-delay 0.15)
     (beacon-blink-duration 0.15))
 #+END_SRC
+
+** Calculate Sprints
+
+A utility function to calculate the next sprint review's date (usually) from today.
+
+#+begin_src emacs-lisp
+  (require 'calendar)
+  (require 'cal-dst)
+
+  (defun aleks/calendar-day-of-week (arg)
+    "Get the day of week for ARG, European style.
+
+  0 for Monday, … 6 for Sunday."
+    (let ((anglo-day-of-week (calendar-day-of-week arg)))
+      (if (= 0 anglo-day-of-week)
+          6
+        (- anglo-day-of-week 1))))
+
+  (defun aleks/monday-this-week (&optional origin)
+    "Returns the date of the week's monday relative to ORIGIN."
+    (let ((start-date (if origin origin (calendar-current-date))))
+      (calendar-gregorian-from-absolute
+       (- (calendar-absolute-from-gregorian start-date)
+          (aleks/calendar-day-of-week start-date)))))
+
+  (defun aleks/next-sprint-review-day (&optional origin)
+    "Get the next sprint review (Wednesday in 2 weeks) from ORIGIN or today.
+
+  Returns a calendar date '(MM DD YYYY)."
+    (calendar-gregorian-from-absolute
+     (+ 2 14 (calendar-absolute-from-gregorian (aleks/monday-this-week origin)))))
+
+  (defun aleks/next-sprint-planning-day (&optional origin)
+    "Get the next day after the sprint review from ORIGIN or today.
+
+  Returns a calendar date '(MM DD YYYY)."
+    (calendar-gregorian-from-absolute
+     (+ 1 (calendar-absolute-from-gregorian
+           (aleks/next-sprint-review-day origin)))))
+
+  (defun aleks/org-active-timestamp-from-gregorian (date &optional time)
+    "Formats an active org-timestamp from DATE and TIME.
+
+  DATE is the format of `calendar-current-date' time is a list
+  '(HH MM) in 24-hour format."
+    (let ((seconds (if time
+                       (+ (* 60 (nth 1 time)) (* 3600 (car time)))
+                     0)))
+      (format-time-string
+       (if (= seconds 0) "<%Y-%m-%d %a>" "<%Y-%m-%d %a %H:%M>")
+       (calendar-time-from-absolute
+        (calendar-absolute-from-gregorian date)
+        seconds)
+       t)))
+#+end_src
 
 ** Company
 
