@@ -561,6 +561,7 @@ And we set a lot of configuration options for org.
    '(org-hide-emphasis-markers t)
    '(org-babel-confirm-evaluate nil)
    '(org-log-into-drawer t)
+   '(org-image-actual-width nil) ; Take the width from ORG_ATTRs
    '(org-outline-path-complete-in-steps nil) ; use a flat list instead of hierarchichal steps
    '(org-refile-targets
      '((nil . (:maxlevel . 4)))) ; don't descend more than 4 levels when refiling
