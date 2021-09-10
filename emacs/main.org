@@ -687,10 +687,29 @@ Org-appear allows easy editing of inline markup when it's hidden.
 #+end_src
 ** Python
 
+LSP support with MS's server:
+
 #+begin_src emacs-lisp
   (use-package lsp-python-ms
     :custom (lsp-python-ms-auto-install-server t)
-    :hook (python-mode . lsp-mode))
+    :hook (python-mode . lsp))
+#+end_src
+
+Jupyter notebook support (mainly for org.)
+
+#+begin_src emacs-lisp
+  (use-package ein
+    :config
+    (aleks/org-babel-load-languages '((ein . t))))
+#+end_src
+
+Add =elpy=
+
+#+begin_src emacs-lisp
+  (use-package elpy
+    :defer t
+    :init
+    (advice-add 'python-mode :before 'elpy-enable))
 #+end_src
 
 ** R
