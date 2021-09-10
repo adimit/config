@@ -198,7 +198,7 @@ following definition takes care of setting up which parts of
             org-block-end-line
             org-block-begin-line
             org-table org-verbatim)))
-  
+
   (with-eval-after-load "org"
    (aleks/set-org-mode-fixed-pitch-faces))
 #+end_src
@@ -281,6 +281,20 @@ to Emacs now, but we're loading the latest version here.
     (aleks/set-light-mode-faces))
 #+end_src
 
+** Utility functions
+
+*** Append to =org-babel-load-languages=
+
+I'd like to append to =org-babel-load-languages= right from a =use-package= =:config= declaration, to keep configuration neat. The following macro loads the Org Babel definition and appends it to =org-babel-load-languages=, instead of overwriting the content of the variable. Accepts a list in the form ='((R . t))=.
+
+#+begin_src emacs-lisp
+  (defmacro aleks/org-babel-load-languages (list)
+    "Load the language definitions in LIST and add them to `org-babel-load-languages'."
+    `(org-babel-do-load-languages
+      'org-babel-load-languages
+      (append org-babel-load-languages ,list)))
+#+end_src
+
 * Major Modes
 
 A list of supported major modes and their configuration.
@@ -324,6 +338,20 @@ A list of supported major modes and their configuration.
     :mode "\\.graphql$"
     :custom (graphql-indent-level 4))
 #+END_SRC
+
+** Graphviz
+
+Add =graphviz-dot-mode= and its =company= extension to facilitate writing of graphviz graphs
+
+#+begin_src emacs-lisp
+  (use-package graphviz-dot-mode)
+#+end_src
+
+Also add =ob-dot= to embed graphs in Org mode
+
+#+begin_src emacs-lisp
+  (aleks/org-babel-load-languages '((dot . t)))
+#+end_src
 
 ** Groovy
 
@@ -429,15 +457,6 @@ Redisplay images after code block evaluation. Handy if the result of your comput
 
 #+begin_src emacs-lisp
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-#+end_src
-
-Load the following languages into org babel by default:
-
-#+begin_src emacs-lisp
-  (custom-set-variables
-   '(org-babel-load-languages
-     '((dot . t)
-       (emacs-lisp . t))))
 #+end_src
 
 *** Capture
@@ -679,8 +698,7 @@ Org-appear allows easy editing of inline markup when it's hidden.
 #+begin_src emacs-lisp
   (use-package ess
     :config
-    (add-to-list 'org-babel-load-languages
-                 '(R . t)))
+    (aleks/org-babel-load-languages '((R . t))))
 #+end_src
 
 ** REST
@@ -698,8 +716,7 @@ Rest client with company backend & org support.
 
   (use-package ob-restclient
     :after (restclient)
-    :config
-    (add-to-list 'org-babel-load-languages '(restclient . t)))
+    (aleks/org-babel-load-languages '((restclient . t))))
 #+end_src
 
 ** Rust
