@@ -736,6 +736,7 @@ Rest client with company backend & org support.
 
   (use-package ob-restclient
     :after (restclient)
+    :config
     (aleks/org-babel-load-languages '((restclient . t))))
 #+end_src
 
