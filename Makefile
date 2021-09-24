@@ -8,7 +8,7 @@ else
 $(error Could not find dpkg or dnf)
 endif
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki /inkscape
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki /inkscape /mvn /tlp
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=${HOME}/.local/bin/%)
@@ -108,10 +108,13 @@ endif
 	${INSTALL_CMD} texlive
 
 /usr/bin/xelatex:
-	${INSTALL_CMD} texlive-xetex
+	${INSTALL_CMD} texlive-xetex texlive-fonts-extra
 
 /usr/bin/R:
 	${INSTALL_CMD} r-base r-cran-ggplot2
+
+/usr/bin/mvn:
+	${INSTALL_CMD} maven
 
 /usr/bin/%:
 	${INSTALL_CMD} $*
