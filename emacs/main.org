@@ -478,6 +478,15 @@ Capture templates:
           ":CREATED: %U"
           ":END:"
           "")))
+     ("W" "Plan Week" entry (file my-org-main-file)
+      ,(join-lines
+        '("* Week %(aleks/get-next-week-number)"
+          "** TODO Prepare Cat Meds"
+          "** TODO Clean Bathroom"
+          "** TODO Weekly Review"
+          "** TODO Vacuum & Mop"
+          "** TODO Make Yogurt"
+          "** TODO Feed Sourdough")))
      ("s" "Add task to sprint" entry
       (file+headline my-org-work-file "Tasks")
       ,(join-lines
@@ -810,9 +819,12 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
 
 A utility function to calculate the next sprint review's date (usually) from today.
 
+Note that we have to wrap =calendar-day-of-week= even though I've already set =calendar-week-start-day= to =1=, because weekdays are always 0-indexed at Sunday.
+
 #+begin_src emacs-lisp
   (require 'calendar)
   (require 'cal-dst)
+  (require 'cal-iso)
 
   (defun aleks/calendar-day-of-week (arg)
     "Get the day of week for ARG, European style.
@@ -822,6 +834,13 @@ A utility function to calculate the next sprint review's date (usually) from tod
       (if (= 0 anglo-day-of-week)
           6
         (- anglo-day-of-week 1))))
+
+  (defun aleks/get-next-week-number ()
+    "Return next week's ISO week number, based on `calendar-current-date'."
+    (let* ((monday (aleks/monday-this-week (calendar-current-date)))
+           (monday-next-week (+ (calendar-absolute-from-gregorian monday) 7))
+           (monday-midnight-next-week (calendar-time-from-absolute monday-next-week 0)))
+      (format-time-string "%U"  monday-midnight-next-week t)))
 
   (defun aleks/monday-this-week (&optional origin)
     "Returns the date of the week's monday relative to ORIGIN."
