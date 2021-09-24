@@ -1145,6 +1145,14 @@ Select something visually, hit =R=, and use =n=, =N=, =<return>=  and =<space>= 
              "S-SPC" 'evil-multiedit-match-and-prev))
 #+END_SRC
 
+** Org -Journal
+
+An alternative might be to use =org-roam-dailies= but I saw no benefits so far.
+
+#+begin_src emacs-lisp
+  (use-package org-journal)
+#+end_src
+
 ** Org-Ref
 
 I'm using org-cite nowadays, but org-ref still has important goodies.
