@@ -93,7 +93,8 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((0,       xF86XK_AudioPlay       ), spawn $ gdbusLollypop "PlayPause")
   , ((0,       xF86XK_AudioPause      ), spawn $ gdbusLollypop "Pause")
   , ((0,       xF86XK_AudioNext       ), spawn $ gdbusLollypop "Next")
-  , ((0,       xF86XK_AudioPrev       ), spawn $ gdbusLollypop "Prev") ]
+  , ((0,       xF86XK_AudioPrev       ), spawn $ gdbusLollypop "Prev")
+  , ((0,       xK_Pause               ), spawn "/home/aleks/.local/bin/headset toggle") ]
   where
     gdbusLollypop c = "gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player." ++ c
     volumeControl v = "notify-send -t 400 \"Sound Level\" \"🔊 \"$(amixer -D pulse sset Master "
