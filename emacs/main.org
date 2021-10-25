@@ -520,13 +520,21 @@ Capture templates:
           ":PROPERTIES:"
           ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get 'issue)"
           ":Reporter: %(xjira-get 'reporter)"
+          ":Parent: [[%(eval xjira-host)/browse/%(xjira-get 'parent)][%(xjira-get 'parent-title)]]"
           ":END:"
           ""
           "%(xjira-get 'description)")))
+     ("m" "Add meeting" entry
+      (file+headline my-org-work-file "Meetings")
+      ,(join-lines
+        '("* MEET %?"
+          "SCHEDULED: %^T"
+          ":PROPERTIES:"
+          ":REFERENCE:"
+          ":END:")))
      ("S" "Sprint" entry (file my-org-work-file)
       ,(join-lines
         '("* Sprint %^{Title}"
-          ""
           "** Meetings"
           "*** MEET Sprint Review"
           "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
