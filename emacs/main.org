@@ -21,6 +21,19 @@ For general package management use use-package, and instruct it to always use st
    '(straight-use-package-by-default t))
 #+end_src
 
+** Environment
+
+Slurp the shell environment into Emacs when started as a daemon.
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :custom exec-path-from-shell-variables
+    '("PATH" "MANPATH"))
+
+  (when (daemonp)
+    (exec-path-from-shell-initialize))
+#+end_src
+
 ** Evil
 
 We set =evil-want-keybinding= to =nil= for =evil-collection=. I rarely use prefix arguments, and if I do, I'm probably in normal mode, whereas =C-u= is a very useful insert mode shortcut. Finally, we're using Emacs 28's new =undo-redo= instead of relying on outside packages.
