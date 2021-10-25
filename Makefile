@@ -8,8 +8,10 @@ else
 $(error Could not find dpkg or dnf)
 endif
 
-EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki /inkscape /mvn /tlp
+EXECUTABLE_NAMES = /tmux /seafile-applet /git /fish /pass /vlc /htop /kitty /compton /dunst /nitrogen /offlineimap /lollypop /flac /oggenc /picard /gimp /npm /chromium-browser /jq /ledger /curl /sqlite3 /stalonetray /i3lock /psql /javac /rg /virtualenv /syncthing /pip3 /dot /latex /xelatex /dvipng /scrot /biber /R /black /stellarium /pipenv /anki /inkscape /mvn /nmap /weechat /calibre /meson /hugin
+SBIN_EXECUTABLE_NAMES = /tlp
 EXECUTABLES = $(EXECUTABLE_NAMES:/%=/usr/bin/%)
+SBIN_EXECUTABES = $(SBIN_EXECUTABLE_NAMES:/%=/usr/sbin/%)
 NPM_EXECUTABLES = /tsc /eslint /prettier
 NPM_BINARIES = $(NPM_EXECUTABLES:/%=${HOME}/.local/bin/%)
 X_TOUCHPAD_CONFIGURATION = /etc/X11/xorg.conf.d/50-touchpad.conf
@@ -51,7 +53,7 @@ FD = ${CARGO_LOCAL}/bin/fd
 CASK = ${LOCAL}/bin/cask
 
 .PHONY: install
-install: links ${EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER} ${ALACRITTY} ${FD}
+install: links ${EXECUTABLES} ${SBIN_EXECUTABLES} ${FOREIGN_SOURCE} ${XMONAD} ${EMACS} ${MU} ${XMONAD_XSESSION} ${XMONAD_START_FILE} ${X_TOUCHPAD_CONFIGURATION} ${RUST} ${WASM_PACK} ${CARGO_GENERATE} ${RUST_ANALYZER} ${FIRA_CODE} ${FIRA_GO} ${NPM_BINARIES} ${BITTER} ${HLEDGER} ${ALACRITTY} ${FD}
 
 ${X_TOUCHPAD_CONFIGURATION}:
 	sudo mkdir -p $$(dirname ${X_TOUCHPAD_CONFIGURATION})
