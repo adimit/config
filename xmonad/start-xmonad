@@ -1,22 +1,24 @@
 #!/usr/bin/bash
 
-emacs --daemon&
+
+if [ -n "$DESKTOP_SESSION" ]; then
+    eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK
+fi
 setxkbmap -layout us,bg -variant dvorak, \
 	-option caps:swapescape \
 	-option compose:ralt \
 	-option grp:rctrl_rshift_toggle
 
-gnome-keyring-daemon &
-
 xsetroot -cursor_name left_ptr
 
-nitrogen --restore
-
-picom -C -c -f --vsync -I 0.09 -O 0.05 --experimental-backends --backend glx &
+emacs --daemon&
 seafile-applet &
 syncthing &
+xcompmgr &
+nitrogen --restore
 
-dbus-launch ssh-agent xmonad > $HOME/.x-debug &
+dbus-launch xmonad > $HOME/.x-debug &
 XMONADPID=$!
 
 wait $XMONADPID
