@@ -815,9 +815,8 @@ Syntax highlighting via tree-sitter.
 #+begin_src emacs-lisp
   (use-package typescript-mode
     :hook
-    (typescript-mode . tree-sitter-mode)
     (typescript-mode . lsp)
-    :mode "\\.tsx?$"
+    :mode "\\.tsx?\\'"
     :custom
     (typescript-indent-level 2))
 #+end_src
@@ -832,7 +831,7 @@ Syntax highlighting via tree-sitter.
 
 Various add-ons outside of major mode functionality and Emacs core functionality.
 
-** Apheleia
+** Apheleia (Auto-format on save)
 Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g. =prettier=, =black=, =rustfmt=.
 
 =rustfmt= isn't supported out of the box. I've opened a [[https://github.com/raxod502/apheleia/pull/45][PR]]. In the meantime, we define our own.
@@ -1446,7 +1445,10 @@ Tree-sitter provides editor-agnostic syntax highlighting. For now it's just used
 
 #+begin_src emacs-lisp
   (use-package tree-sitter)
-  (use-package tree-sitter-langs :after tree-sitter)
+  (use-package tree-sitter-langs
+    :after tree-sitter
+    :config
+    (tree-sitter-require 'tsx))
 #+end_src
 
 ** Which-Key
