@@ -247,6 +247,17 @@ Using the global leader, these are valid everywhere.
 
 
 
+** Mode Line
+
+An experimental minimalist modeline. I've always been too lazy to write my own.
+
+#+begin_src emacs-lisp
+  (use-package nano-modeline
+    :straight (:type git :host github :repo "rougier/nano-modeline")
+    :config (nano-modeline-mode)
+    :custom (nano-modeline-position 'bottom))
+#+end_src
+
 ** Text buffers
 
 When reading text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
