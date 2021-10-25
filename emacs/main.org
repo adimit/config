@@ -1175,10 +1175,11 @@ The context definitions are in =private.org=.
         (setq user-mail-address (cdr (car (mu4e-message-field mu4e-compose-parent-message :to)))))
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
         (setq user-mail-address "org@list.aleks.bg")))))
-
+  
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
     :commands mu4e
+    :straight (:branch "1.6.6")
     :config
     (aleks/load-org-file "private.org")
     (evil-set-initial-state 'mu4e-headers-mode 'normal)
