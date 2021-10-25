@@ -6,6 +6,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.Navigation2D
 import XMonad.Actions.SpawnOn
+import XMonad.Actions.WindowGo (raiseMaybe)
 import XMonad.Config.Gnome
 import XMonad.Prompt
 import qualified XMonad.StackSet as W
@@ -82,6 +83,9 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_s           ), sendMessage Expand)
   , ((mask                , xK_u           ), sendMessage ShrinkSlave)
   , ((mask                , xK_i           ), sendMessage ExpandSlave) ]
+  ++ -- Raise windows
+  [ ((mask                , xK_m           ), raiseMaybe (spawn "lollypop") (className =? "Lollypop"))
+  , ((mask                , xK_c           ), raiseMaybe (spawn "signal-desktop") (className =? "signal")) ]
   ++ -- Multimedia
   [ ((0,       xF86XK_AudioRaiseVolume), spawn $ volumeControl "5%+")
   , ((0,       xF86XK_AudioLowerVolume), spawn $ volumeControl "5%-")
