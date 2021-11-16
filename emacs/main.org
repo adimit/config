@@ -753,6 +753,8 @@ Jupyter notebook support (mainly for org.)
 
 #+begin_src emacs-lisp
   (use-package ein
+    :custom
+    (ein:output-area-inlined-images t)
     :config
     (aleks/org-babel-load-languages '((ein . t))))
 #+end_src
