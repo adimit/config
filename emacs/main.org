@@ -602,6 +602,16 @@ We set the export backend to biblatex for latex.
        (t csl))))
 #+end_src
 
+*** Contrib
+
+=org-contrib= is its own repo now, so we need to make it available.
+
+#+begin_src emacs-lisp
+  (use-package org-contrib
+    :config
+    (require 'ox-confluence))
+#+end_src
+
 *** Customisation
 
 And we set a lot of configuration options for org.
