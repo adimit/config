@@ -223,9 +223,9 @@ And here's a function to set the different faces.
   (defun aleks/set-light-mode-faces ()
       "Set the faces for light mode."
       (custom-set-faces
-       '(variable-pitch ((t (:family "Bitter" :height 180))))
-       '(fixed-pitch ((t (:family "Fira Code" :height 170))))
-       '(default ((t (:family "Fira Code" :height 170))))))
+       '(variable-pitch ((t (:family "Bitter" :height 170))))
+       '(fixed-pitch ((t (:family "Fira Code" :height 160))))
+       '(default ((t (:family "Fira Code" :height 160))))))
 #+end_src
 
 These are triggered after [[Theme]] selection.
