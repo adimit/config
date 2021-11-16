@@ -247,6 +247,17 @@ Using the global leader, these are valid everywhere.
 
 
 
+** Mime Types
+
+Handle specific file types. This is used especially by =ein-python=.
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(mailcap-user-mime-data
+     '((viewer . "eog %s")
+       (type . "image/.*"))))
+#+end_src
+
 ** Mode Line
 
 An experimental minimalist modeline. I've always been too lazy to write my own.
