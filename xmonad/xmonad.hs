@@ -60,12 +60,12 @@ myKeys XConfig { modMask = mask } = M.fromList $
   ++ -- general keys
   [ ((mask                , xK_Return      ), spawn "alacritty")
   , ((mask .|. shiftMask  , xK_Return      ), windows W.swapMaster)
-  , ((mask                , xK_l           ), spawn "gnome-screensaver-command -l")
+  , ((mask                , xK_l           ), spawn "i3lock")
   , ((mask                , xK_a           ), withFocused $ windows . W.sink) -- %! Push window back into tiling
   , ((mask                , xK_BackSpace   ), shellPromptHere promptConfig)
   , ((mask                , xK_e           ), spawn "emacsclient -c -n -e '(switch-to-buffer nil)'")
   , ((mask                , xK_grave       ), toggleWS) ]
-  ++ -- Dynamic Workspac  es
+  ++ -- Dynamic Workspaces
   [ ((mask                , xK_d           ), selectWorkspace promptConfig)
   , ((mask .|. shiftMask  , xK_d           ), withWorkspace promptConfig (windows . W.shift))
   , ((mask .|. shiftMask  , xK_BackSpace   ), removeWorkspace) ]
