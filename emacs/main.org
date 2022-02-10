@@ -872,6 +872,19 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
                  '(rustic-mode . rustfmt)))
 #+end_src
 
+** Avy
+
+Jump to arbitrary points in the buffer
+
+#+begin_src emacs-lisp
+  (use-package avy
+    :custom (avy-all-windows 'all-frames)
+    :general
+    (:states 'normal
+             "g l" 'avy-goto-line
+             "g c" 'avy-goto-char))
+#+end_src
+
 ** Beacon
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
