@@ -307,9 +307,8 @@ to Emacs now, but we're loading the latest version here.
           modus-themes-scale-2 1.2
           modus-themes-scale-3 1.3
           modus-themes-scale-4 1.4
-          modus-themes-scale-5 1.5
-          modus-themes-mode-line '3d)
-  
+          modus-themes-scale-5 1.5)
+
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
     :config
