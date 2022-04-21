@@ -1213,7 +1213,7 @@ The context definitions are in =private.org=.
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
     :commands mu4e
-    :straight (:branch "1.6.10")
+    :straight
     :config
     (aleks/load-org-file "private.org")
     (evil-set-initial-state 'mu4e-headers-mode 'normal)
