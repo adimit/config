@@ -818,18 +818,6 @@ Rustic mode works well with =rust-analyzer=. Format on save is done with [[Aphel
     (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer")))
 #+end_src
 
-** Systemd
-
-Support for =systemd= unit files. Allows browsing help for systemd using =C-c C-o=. It should automatically get loaded for stuff in =/etc/systemd/= and files ending in =.service=. Includes a company backend.
-
-It does have a few bugs. The [[https://github.com/holomorph/systemd-mode/issues/16][company-backend]] isn't working properly (so we attempt to work around that) and flycheck integration also doesn't seem to work.
-
-#+begin_src emacs-lisp
-  (use-package systemd
-    :config
-    (push #'systemd-company-backend company-backends))
-#+end_src
-
 ** Typescript
 
 Syntax highlighting via tree-sitter.
