@@ -283,6 +283,9 @@ ${LOCAL}/bin/prettier:
 	${NPM_PREFIX}
 	npm i -g prettier
 
+/etc/default/keyboard:
+	sudo cp keyboard /etc/default/keyboard
+
 ifeq (${OS},Fedora)
 DEPENDENCIES=cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++
 else
