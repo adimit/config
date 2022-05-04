@@ -376,7 +376,7 @@ A list of supported major modes and their configuration.
 
 ** Graphviz
 
-Add =graphviz-dot-mode= and its =company= extension to facilitate writing of graphviz graphs
+Add =graphviz-dot-mode= to facilitate writing of graphviz graphs
 
 #+begin_src emacs-lisp
   (use-package graphviz-dot-mode)
@@ -748,6 +748,21 @@ Org-appear allows easy editing of inline markup when it's hidden.
                 :host github
                 :repo "awth13/org-appear"))
 #+end_src
+** Protobuf
+
+For Google's =.proto= spec files
+
+#+begin_src emacs-lisp
+  (use-package protobuf-mode)
+
+  (defconst aleks/protobuf-style
+    '((c-basic-offset . 2)
+      (indent-tabs-mode . nil)))
+
+  (add-hook 'protobuf-mode-hook
+    (lambda () (c-add-style "mp-protobuf-style" aleks/protobuf-style t)))
+#+end_src
+
 ** Python
 
 LSP support with MS's server:
@@ -787,16 +802,11 @@ Add =elpy=
 
 ** REST
 
-Rest client with company backend & org support.
+Rest client with org support.
 
 #+begin_src emacs-lisp
   (use-package restclient
     :mode "\\.rest$")
-
-  (use-package company-restclient
-    :after (restclient)
-    :config
-    (add-to-list 'company-backends 'company-restclient))
 
   (use-package ob-restclient
     :after (restclient)
@@ -970,27 +980,29 @@ Note that we have to wrap =calendar-day-of-week= even though I've already set =c
        t)))
 #+end_src
 
-** Company
+** Corfu (Completion)
 
-Completion using =company=
+An alternative to =company=.
 
-#+BEGIN_SRC emacs-lisp
-  (use-package company
+#+begin_src emacs-lisp
+  (use-package corfu
     :custom
-    (company-dabbrev-downcase nil)
-    (company-dabbrev-ignore-case nil)
-    (company-idle-delay 0)
-    :hook
-    (after-init . global-company-mode)
-    :general
-    (:keymaps 'company-active-map
-              "C-n" 'company-select-next
-              "C-p" 'company-select-previous
-              "C-f" 'company-filter-candidates))
-#+END_SRC
+    (corfu-auto t)
+    :init
+    (global-corfu-mode))
 
-Unfortunately, it doesn't work very well for variable-pitch-mode. Pos-frame mode, on the other hand, doesn't work well with [[https://github.com/emacs-lsp/lsp-ui/issues/464][xmonad]].
+  (use-package kind-icon
+    :after corfu
+    :custom
+    (kind-icon-default-face 'corfu-default)
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+  (use-package emacs
+    :init
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p))
+#+end_src
 
 ** Consult
 
