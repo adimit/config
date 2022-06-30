@@ -630,6 +630,16 @@ And we set a lot of configuration options for org.
    '(org-footnote-section nil)) ; place footnotes in same section
 #+end_src
 
+*** Export
+
+Enable export back ends not enabled by default.
+
+#+begin_src emacs-lisp
+  (require 'org)
+  (customize-set-variable
+   'org-export-backends (append org-export-backends '(md)))
+#+end_src
+
 *** Evil
 
 The agenda is a pain with evil.
