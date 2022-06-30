@@ -1512,6 +1512,14 @@ Snippets live in version control under the Emacs directory.
     (yas-snippet-dirs '("~/config/emacs/snippets")))
 #+end_src
 
+** String Inflection
+
+Useful to cycle between =CamelCase=, =snake_case=, etc. No keybindings, I just call it with =M-x=.
+
+#+begin_src emacs-lisp
+  (use-package string-inflection)
+#+end_src
+
 ** Treesitter
 
 Tree-sitter provides editor-agnostic syntax highlighting. For now it's just used for [[Typescript]] here.
