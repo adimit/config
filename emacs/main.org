@@ -998,6 +998,10 @@ An alternative to =company=.
   (use-package corfu
     :custom
     (corfu-auto t)
+    (corfu-auto-delay 0.1)
+    (corfu-auto-prefix 0)
+    (corfu-quit-no-match 'separator)
+    (completion-styles '(basic))
     :init
     (global-corfu-mode))
 
@@ -1010,6 +1014,7 @@ An alternative to =company=.
 
   (use-package emacs
     :init
+    (setq completion-cycle-threshold 3)
     (setq read-extended-command-predicate
           #'command-completion-default-include-p))
 #+end_src
@@ -1247,7 +1252,7 @@ The context definitions are in =private.org=.
         (setq user-mail-address (cdr (car (mu4e-message-field mu4e-compose-parent-message :to)))))
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
         (setq user-mail-address "org@list.aleks.bg")))))
-  
+
   (use-package mu4e
     :load-path "~/.local/share/emacs/site-lisp/mu4e/"
     :commands mu4e
