@@ -758,6 +758,23 @@ Org-appear allows easy editing of inline markup when it's hidden.
                 :host github
                 :repo "awth13/org-appear"))
 #+end_src
+
+** PlantUML
+
+=plantuml-mode= doesn't seem actively developed, but then again, PlantUML isn't exactly the latest and greatest either.
+
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :mode "\\.plantuml\\'"
+    :custom
+    (plantuml-executable-path "/usr/bin/plantuml")
+    (plantuml-default-exec-mode 'executable)
+    (org-plantuml-jar-path "/usr/share/plantuml/plantuml.jar")
+    :init
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
+
 ** Protobuf
 
 For Google's =.proto= spec files
