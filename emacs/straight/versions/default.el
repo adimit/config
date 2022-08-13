@@ -9,8 +9,6 @@
  ("biblio.el" . "517ec18f00f91b61481214b178f7ae0b8fbc499b")
  ("citeproc-el" . "ba49516265fa24b138346c4918d39d19b4de8a62")
  ("closql" . "522cc52a4df6b55099888e89a18f48f7c9275c3d")
- ("company-mode" . "1005540b1cdf176cbcf893b2fa83d2075cbbe3ca")
- ("company-restclient" . "e5a3ec54edb44776738c13e13e34c85b3085277b")
  ("consult" . "c0bdc7030ec484043e7d60360f1abf517bbdaf2c")
  ("csv-mode" . "180e0207be3f20a0054644b60e0cdda29b5ece4c")
  ("dash.el" . "dc61f4641779616122692e34a32ba2a158ee034c")
