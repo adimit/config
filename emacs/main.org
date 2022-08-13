@@ -1040,7 +1040,8 @@ An alternative to =company=.
     (corfu-quit-no-match 'separator)
     (completion-styles '(basic))
     :init
-    (global-corfu-mode))
+    (global-corfu-mode)
+    (global-company-mode -1))
 
   (use-package kind-icon
     :after corfu
