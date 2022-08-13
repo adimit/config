@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: useCallback
+# key: useCallback
+# --
+
+useCallback(() => {$0}, [])

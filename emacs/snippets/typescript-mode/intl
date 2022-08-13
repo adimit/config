@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: intl
+# key: intl
+# --
+
+const intl = useIntl();
+$0
