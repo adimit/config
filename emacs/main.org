@@ -1284,21 +1284,28 @@ The context definitions are in =private.org=.
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
         (setq user-mail-address "org@list.aleks.bg")))))
 
+  (defun aleks/sequence-to-directory (&rest args)
+    "Turn ARGS into a valid path, each item a segment."
+    (mapconcat #'file-name-as-directory args nil))
+
   (use-package mu4e
-    :load-path "~/.local/share/emacs/site-lisp/mu4e/"
     :commands mu4e
-    :straight (:tag "v1.8.4")
+    :straight (:host github :files ("build/mu4e/*.el") :repo "djcb/mu" :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
     :config
     (aleks/load-org-file "private.org")
     (evil-set-initial-state 'mu4e-headers-mode 'normal)
     (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
     (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
+    (require 'org-mu4e)
     :hook
     (mu4e-view-mode . aleks/disable-show-trailing-whitespace)
     (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
     (mu4e-compose-mode . aleks/set-from-line)
     :custom
-    (require 'org-mu4e)
+    (mu4e-mu-binary
+     (concat
+      (aleks/sequence-to-directory (getenv "HOME") ".emacs.d" "straight" "repos" "mu" "build" "mu")
+      "mu"))
     (shr-color-visible-luminance-min 80)
     (mail-user-agent 'mu4e-user-agent)
     (mu4e-update-interval 60)
@@ -1502,7 +1509,7 @@ Use =prescient= for sorting options by /frecency/:
 
 #+begin_src emacs-lisp
   (use-package prescient)
-  
+
   (use-package selectrum-prescient
     :config
     (selectrum-prescient-mode +1)
