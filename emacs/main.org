@@ -890,6 +890,20 @@ LSP lacks a general entrypoint to filter these out. See [[https://github.com/ema
   (advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
 #+end_src
 
+There's experimental support for inlay hints in typescript language server. Inline hints are actually much nicer in Rust mode, but I haven't been able to configure the face yet. The enum inlay hints are so far causing the language server to error out quite often, so they're disabled.
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :defer t
+    :custom
+    (lsp-javascript-display-inlay-hints t)
+    (lsp-javascript-display-enum-member-value-hints nil)
+    (lsp-javascript-display-parameter-type-hints t)
+    (lsp-javascript-display-parameter-name-hints t)
+    (lsp-javascript-display-return-type-hints t)
+    (lsp-javascript-display-property-declaration-type-hints t)
+    (lsp-javascript-display-variable-type-hints t))
+#+end_src
 
 ** YAML
 
