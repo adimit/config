@@ -890,7 +890,7 @@ LSP lacks a general entrypoint to filter these out. See [[https://github.com/ema
   (advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
 #+end_src
 
-There's experimental support for inlay hints in typescript language server. The enum inlay hints are so far causing the language server to error out quite often, so they're disabled.
+There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance.
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -898,8 +898,8 @@ There's experimental support for inlay hints in typescript language server. The 
     :custom
     (lsp-javascript-display-inlay-hints t)
     (lsp-javascript-display-enum-member-value-hints nil)
-    (lsp-javascript-display-parameter-type-hints t)
-    (lsp-javascript-display-parameter-name-hints t)
+    (lsp-javascript-display-parameter-type-hints nil)
+    (lsp-javascript-display-parameter-name-hints nil)
     (lsp-javascript-display-return-type-hints t)
     (lsp-javascript-display-property-declaration-type-hints t)
     (lsp-javascript-display-variable-type-hints t)
@@ -910,6 +910,33 @@ There's experimental support for inlay hints in typescript language server. The 
      :foreground "#a8a8a8"
      :height 0.9))
 #+end_src
+
+*** Work around null bytes in JSON response
+
+=ts-ls= sends null bytes sometimes in responses like these:
+
+#+begin_src json
+{"jsonrpc":"2.0","id":103,"result":{"items":[{"label":"extraOptions?","kind":5,"sortText":"12\u0000extraOptions\u0000"}]}}
+#+end_src
+
+(This snippet is abbreviated.)
+
+That makes JSON processing inside Emacs quite upset, and it errors out with:
+
+#+begin_src
+  json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL
+#+end_src
+
+We just replace all null bytes before they're sent to =json-parse= here to avoid bugs in LSP-servers causing problems:
+
+#+begin_src emacs-lisp
+(advice-add 'json-parse-string :around
+            (lambda (orig string &rest rest)
+              (apply orig (s-replace "\\u0000" "" string)
+                     rest)))
+#+end_src
+
+The suggestion comes from a response to a  [[https://github.com/emacs-lsp/lsp-mode/issues/2681][github bug on LSP]] for a similar issue. The clean way to fix this is to avoid null bytes in =typescript-language-server=. However, [[https://github.com/typescript-language-server/typescript-language-server/issues/559][they don't think it's their problem]], but that it's coming from TS-side. In any case, Emacs 29 is probably going to make that problem go away, too.
 
 ** YAML
 
