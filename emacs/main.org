@@ -907,8 +907,8 @@ There's experimental support for inlay hints in typescript language server. I've
     (set-face-attribute
      'lsp-javascript-inlay-face nil
      :inherit 'variable-pitch
-     :foreground "#a8a8a8"
-     :height 0.9))
+     :foreground "#787878"
+     :height 1.0))
 #+end_src
 
 *** Work around null bytes in JSON response
