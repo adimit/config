@@ -938,6 +938,18 @@ We just replace all null bytes before they're sent to =json-parse= here to avoid
 
 The suggestion comes from a response to a  [[https://github.com/emacs-lsp/lsp-mode/issues/2681][github bug on LSP]] for a similar issue. The clean way to fix this is to avoid null bytes in =typescript-language-server=. However, [[https://github.com/typescript-language-server/typescript-language-server/issues/559][they don't think it's their problem]], but that it's coming from TS-side. In any case, Emacs 29 is probably going to make that problem go away, too.
 
+Note that LSP actually uses =json-parse-buffer= in its =lsp--create-filter-function= (via its own macro =lsp-json-read-buffer=). Since =json-parse-buffer= is C-code, it doesn't actually use =json-parse-string= which was patched above. We need to instead patch =json-parse-buffer=.
+
+#+begin_src emacs-lisp
+  (advice-add 'json-parse-buffer :around
+              (lambda (orig &rest rest)
+                (while (re-search-forward "\\u0000" nil t)
+                  (replace-match ""))
+                (apply orig rest)))
+#+end_src
+
+This solution may not be terribly fast. In particular, I'm not at all sure that the =(while (re-search-forward needle …))= loop is the most optimal way to replace all occurrences of =needle= in the current buffer. But it gets the job done.
+
 ** YAML
 
 #+BEGIN_SRC emacs-lisp
