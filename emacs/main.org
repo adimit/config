@@ -903,7 +903,7 @@ There's experimental support for inlay hints in typescript language server. I've
     (lsp-javascript-display-return-type-hints t)
     (lsp-javascript-display-property-declaration-type-hints t)
     (lsp-javascript-display-variable-type-hints t)
-    :init
+    :config
     (set-face-attribute
      'lsp-javascript-inlay-face nil
      :inherit 'variable-pitch
