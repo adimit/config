@@ -543,6 +543,15 @@ Capture templates:
           ":END:"
           ""
           "%(xjira-get 'description)")))
+     ("M" "Morning routine tasks" entry
+      (file+headline my-org-work-file "Tasks")
+      ,(join-lines
+        '("* TODO Morning Routine on %(calendar-date-string (calendar-current-date))"
+          "SCHEDULED: %t"
+          ""
+          "- [ ] [[https://sentry.io/organizations/meisterplan/issues/][Sentry]]"
+          "- [ ] [[https://meisterplan.zendesk.com/agent/dashboard][Support Tickets]]"
+          "- [ ] Tests & CVEs")))
      ("m" "Add meeting" entry
       (file+headline my-org-work-file "Meetings")
       ,(join-lines
