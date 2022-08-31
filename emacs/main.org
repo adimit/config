@@ -1038,6 +1038,16 @@ Note that we have to wrap =calendar-day-of-week= even though I've already set =c
        t)))
 #+end_src
 
+** Code Review
+
+Rudimentary support for code reviews. Missing line numbers, syntax highlighting. The interface is somewhat clunky, but workable. Integrates with forge and thus magit.
+
+#+begin_src emacs-lisp
+  (use-package code-review
+    :hook (code-review-mode . emojify-mode)
+    :custom (code-review-auth-login-marker 'forge))
+#+end_src
+
 ** Corfu (Completion)
 
 An alternative to =company=.
