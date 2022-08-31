@@ -1251,7 +1251,7 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :custom
-    (read-process-output-max (* 1024 1024))
+    (read-process-output-max (* 5 1024 1024))
     (lsp-eslint-validate '("typescript" "svelte"))
     :general
     (:states
