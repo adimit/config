@@ -1060,9 +1060,15 @@ An alternative to =company=.
     (corfu-auto-prefix 0)
     (corfu-quit-no-match 'separator)
     (completion-styles '(basic))
+    (corfu-cycle t)
+    :bind
+    (:map corfu-map
+          ("TAB" . corfu-next)
+          ([tab] . corfu-next)
+          ("S-TAB" . corfu-previous)
+          ([backtab] . corfu-previous))
     :init
-    (global-corfu-mode)
-    (global-company-mode -1))
+    (global-corfu-mode))
 
   (use-package kind-icon
     :after corfu
@@ -1131,14 +1137,21 @@ With crowd sourced bindings for various packages:
 
 #+begin_src emacs-lisp
   (use-package evil-collection
-    :init
-    (setq evil-collection-outline-bind-tab-p t)
+    :custom
+    (evil-collection-outline-bind-tab-p t)
+    (evil-collection-calendar-want-org-bindings t)
     :after evil
     :config
     (evil-collection-init
      '(calendar
+       corfu
+       debug
+       dired
+       dired-sidebar
+       ediff
        flycheck
        magit
+       magit-section
        mu4e
        mu4e-conversation
        outline
