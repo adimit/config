@@ -198,4 +198,6 @@ set -x _JAVA_AWT_WM_NONREPARENTING 1
 
 set -gx WASMTIME_HOME "$HOME/.wasmtime"
 
+set -gx LSP_USE_PLISTS true
+
 string match -r ".wasmtime" "$PATH" >/dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
