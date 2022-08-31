@@ -1253,6 +1253,7 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
     :custom
     (read-process-output-max (* 5 1024 1024))
     (lsp-eslint-validate '("typescript" "svelte"))
+    (lsp-use-plists t)
     :general
     (:states
      'normal
