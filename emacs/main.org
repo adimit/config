@@ -463,11 +463,12 @@ Also add =ob-dot= to embed graphs in Org mode
 
 ** Kotlin
 
-Only basic support :(
+There's some support via Kotlin's LSP server. It isn't nearly good enough yet, but it gets you most of the way there.
 
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode
-    :mode "\\.kt$")
+    :mode "\\.kt$"
+    :hook (kotlin-mode . lsp))
 #+END_SRC
 
 ** Ledger
