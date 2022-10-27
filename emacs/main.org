@@ -266,6 +266,34 @@ An experimental minimalist modeline. I've always been too lazy to write my own.
     :custom (nano-modeline-position 'bottom))
 #+end_src
 
+** Scrolling
+
+This mimics helix editor: scroll one line at a time, leaving some margin at the edges:
+
+#+begin_src emacs-lisp
+  (custom-set-variables
+   '(mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+   '(mouse-wheel-progressive-speed nil)
+   '(mouse-wheel-follow-mouse 't)
+   '(scroll-step 1)
+   '(scroll-margin 6)
+   '(scroll-conservatively 101))
+#+end_src
+
+The weird thing here is =scroll-conservatively=. It controls how Emacs scrolls once the point moves out of view. The default (0) means that it will always recenter the screen on the point. A value greater than 100 means that it will never do that, and always just try to scoot the buffer so the cursor is visible on the edge.
+
+Since Emacs 29, we've got smooth scrolling, too.
+
+#+begin_src emacs-lisp
+  (if (>= emacs-major-version 29)
+      (custom-set-variables
+       '(pixel-scroll-precision-mode 't)
+       '(pixel-scroll-precision-large-scroll-height 40.0)
+       '(pixel-scroll-precision-interpolation-factor 8.0)))
+#+end_src
+
+The interpolation factor dictates scroll speed.
+
 ** Text buffers
 
 When reading text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
