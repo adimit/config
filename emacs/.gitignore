@@ -9,3 +9,5 @@
 !/straight
 !/straight/versions
 !/straight/versions/default.el
+!/eshell/
+!/eshell/alias

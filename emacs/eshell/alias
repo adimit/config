@@ -1,0 +1,2 @@
+alias q quit-window
+alias ec find-file $1
