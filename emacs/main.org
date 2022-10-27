@@ -871,6 +871,7 @@ Syntax highlighting via tree-sitter.
   (use-package typescript-mode
     :hook
     (typescript-mode . lsp)
+    (typescript-mode . tree-sitter-hl-mode)
     :mode "\\.tsx?\\'"
     :custom
     (typescript-indent-level 2))
