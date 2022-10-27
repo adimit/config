@@ -193,6 +193,31 @@ There are two shell aliases that help with server mode:
 #+end_src
 
 =ecc= opens another frame, and =ec= just re-uses an existing frame.
+** Eshell
+
+A function to open a new shell in the current buffer's file's directory. It's lifted [[https://www.reddit.com/r/emacs/comments/1zkj2d/advanced_usage_of_eshell/][from here]].
+
+#+begin_src emacs-lisp
+  (defun eshell-here ()
+    "Opens up a new shell in the directory associated with the current buffer's file."
+    (interactive)
+    (let* ((parent (file-name-directory (buffer-file-name)))
+           (name   (car
+                    (last
+                     (split-string parent "/" t)))))
+      (split-window-vertically)
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: " name "*"))
+      (insert (concat "ls"))
+      (eshell-send-input)))
+
+  (general-define-key
+   :states 'normal
+   :prefix ","
+   "e" 'eshell-here)
+#+end_src
+
 ** Font
 
 Instead of using a package like =org-variable-pitch-mode=, the
@@ -241,7 +266,6 @@ Using the global leader, these are valid everywhere.
     "c" 'org-capture
     "a" 'org-agenda)
 #+end_src
-
 
 
 ** Mime Types
@@ -1656,7 +1680,6 @@ Tree-sitter provides editor-agnostic syntax highlighting. For now it's just used
     (which-key-mode))
 #+END_SRC
 
-
 ** Whitespace
 
 Switch on highlighting of trailing white space, and provide a facility to turn it off on a per-mode base, as for some modes it's not useful.
@@ -1670,7 +1693,6 @@ Switch on highlighting of trailing white space, and provide a facility to turn i
 
   (add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
 #+end_src
-
 
 ** XJira
 
