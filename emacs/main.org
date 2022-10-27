@@ -1085,7 +1085,7 @@ An alternative to =company=.
   (use-package corfu
     :custom
     (corfu-auto t)
-    (corfu-auto-delay 0.1)
+    (corfu-auto-delay 0.0)
     (corfu-auto-prefix 0)
     (corfu-quit-no-match 'separator)
     (completion-styles '(basic))
