@@ -1575,8 +1575,8 @@ I haven't configured =projectile= to use =selectrum=, but it's working alright f
       :states 'normal
       "p p" 'projectile-switch-project
       "p f" 'projectile-find-file
-      "p b" 'projectile-switch-buffer))
-  
+      "p b" 'projectile-switch-buffer
+      "p e" 'projectile-run-eshell))
 #+END_SRC
 
 ** Ripgrep
