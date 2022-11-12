@@ -1390,6 +1390,7 @@ The context definitions are in =private.org=.
     :commands mu4e
     :straight (:host github :files ("build/mu4e/*.el") :repo "djcb/mu" :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
     :config
+    (require 'mu4e-contrib)
     (aleks/load-org-file "private.org")
     (evil-set-initial-state 'mu4e-headers-mode 'normal)
     (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
