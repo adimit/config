@@ -1327,13 +1327,16 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
 The best =git= porcelain ever.
 
 #+begin_src emacs-lisp
-  (use-package magit
-    :general
-    (aleks/global-leader
-      :states 'normal
-      "g s" 'magit-status
-      "g f" 'magit-file-dispatch
-      "g b" 'magit-blame))
+    (use-package magit
+      :general
+      (aleks/global-leader
+        :states 'normal
+        "g s" 'magit-status
+        "g f" 'magit-file-dispatch
+        "g b" 'magit-blame)
+      :config
+      (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task))
+  )
 #+end_src
 
 Integration for Github.
@@ -1341,6 +1344,27 @@ Integration for Github.
 #+begin_src emacs-lisp
   (use-package forge
     :after magit)
+#+end_src
+
+*** Integration into org-mode
+
+This allows creating a branch from the currently clocked in org-mode task. Using this alongside my Jira-Bindings allows me to create org-headlines from Jira tickets, clock in, then create a branch for that ticket.
+
+#+begin_src emacs-lisp
+  (defun aleks/branchify (string)
+    "Make STRING a valid git branch name."
+    (replace-regexp-in-string
+     (rx (or (any "~" "^" ":" "\\") (seq bos "\.") "\.\." (seq "/" eos) (seq "\.lock" eos)))
+     "" (string-replace " " "-" string)))
+
+  (defun aleks/create-branch-from-current-task ()
+    "Create a new git branch using the current org task's name."
+    (interactive)
+    (if (and (boundp 'org-clock-current-task) org-clock-current-task)
+        (let ((branch-name (aleks/branchify org-clock-current-task)))
+          (magit-branch-and-checkout branch-name (magit-read-starting-point "Create and checkout branch starting at"))
+          (message "Created and checked out `%s'" branch-name))
+      (message "No current task.")))
 #+end_src
 
 ** Move File and Buffer
