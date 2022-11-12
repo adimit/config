@@ -12,7 +12,7 @@ setxkbmap -layout us,bg -variant dvorak, \
 
 xsetroot -cursor_name left_ptr
 
-emacs --daemon&
+LSP_USE_PLISTS=true emacs --daemon&
 seafile-applet &
 syncthing &
 xcompmgr &
