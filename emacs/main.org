@@ -91,6 +91,8 @@ Some basic appearance & behaviour settings
   (fset 'yes-or-no-p 'y-or-n-p)
   (custom-set-variables
    '(inhibit-startup-screen t)
+   ; prevent emacs from trying to resize the frame
+   '(frame-inhibit-implied-resize t)
    '(indent-tabs-mode nil)
    '(initial-scratch-message "")
    '(mouse-yank-at-point t))
@@ -311,7 +313,7 @@ Since Emacs 29, we've got smooth scrolling, too.
 #+begin_src emacs-lisp
   (if (>= emacs-major-version 29)
       (custom-set-variables
-       '(pixel-scroll-precision-mode 't)
+       '(pixel-scroll-precision-mode t)
        '(pixel-scroll-precision-large-scroll-height 40.0)
        '(pixel-scroll-precision-interpolation-factor 8.0)))
 #+end_src
