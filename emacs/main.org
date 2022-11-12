@@ -467,10 +467,15 @@ Also add =ob-dot= to embed graphs in Org mode
 
 There's some support via Kotlin's LSP server. It isn't nearly good enough yet, but it gets you most of the way there.
 
+We enable =display-fill-column-indicator-mode= because =ktlint= errors out when the line is too long.
+
 #+BEGIN_SRC emacs-lisp
-  (use-package kotlin-mode
-    :mode "\\.kt$"
-    :hook (kotlin-mode . lsp))
+    (use-package kotlin-mode
+      :mode "\\.kt$"
+      :hook
+      (kotlin-mode . lsp)
+      (kotlin-mode . display-fill-column-indicator-mode)
+  )
 #+END_SRC
 
 ** Ledger
