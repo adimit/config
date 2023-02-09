@@ -248,10 +248,13 @@ And here's a function to set the different faces.
   (defun aleks/set-light-mode-faces ()
       "Set the faces for light mode."
       (custom-set-faces
-       '(variable-pitch ((t (:family "Bitter" :height 150))))
-       '(fixed-pitch ((t (:family "Fira Code" :height 140))))
-       '(default ((t (:family "Fira Code" :height 140))))))
+       '(variable-pitch ((t (:family "Bitter" :height 180))))
+       '(fixed-pitch ((t (:family "Fira Code" :height 160))))
+       '(default ((t (:family "Fira Code" :height 160)))))
+      (set-fontset-font "fontset-default" 'greek-iso8859-7 '("Fira Code Regular")))
 #+end_src
+
+We're setting the fontset font for the Greek code page explicitly, because Emacs had trouble finding it and would use some ugly serif font instead. Ideally, this shouldn't be necessary. I think this is a bug, but I've not yet tried reproducing it in a minimal session.
 
 These are triggered after [[Theme]] selection.
 
@@ -269,7 +272,6 @@ Using the global leader, these are valid everywhere.
     "c" 'org-capture
     "a" 'org-agenda)
 #+end_src
-
 
 ** Mime Types
 
