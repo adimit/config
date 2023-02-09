@@ -889,6 +889,24 @@ Add =elpy=
     (aleks/org-babel-load-languages '((R . t))))
 #+end_src
 
+** Racket
+
+Support for the Racket programming language. I used this for AoC.
+
+#+begin_src emacs-lisp
+  (use-package racket-mode
+    :custom
+    (racket-program "/usr/bin/racket")
+    :hook
+    (racket-mode . racket-xp-mode)
+    :custom-face
+    (racket-xp-unused-face ((t (:foreground "dark gray" :strike-through nil))))
+    :init
+    )
+#+end_src
+
+
+
 ** REST
 
 Rest client with org support.
