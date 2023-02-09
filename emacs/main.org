@@ -1430,7 +1430,11 @@ The context definitions are in =private.org=.
 
   (use-package mu4e
     :commands mu4e
-    :straight (:host github :files ("build/mu4e/*.el") :repo "djcb/mu" :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
+    :straight (:host github
+                     :files ("build/mu4e/*.el")
+                     :branch "v1.8.14"
+                     :repo "djcb/mu"
+                     :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
     :config
     (require 'mu4e-contrib)
     (aleks/load-org-file "private.org")
