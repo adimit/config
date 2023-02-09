@@ -1464,30 +1464,6 @@ The context definitions are in =private.org=.
                            (:thread-subject . nil))))
 #+END_SRC
 
-** Multi-cursor
-
-Select something visually, hit =R=, and use =n=, =N=, =<return>=  and =<space>= to select other such regions, then edit them all together seamlessly.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-multiedit
-    :config
-    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
-    :general
-    (:states 'visual
-             "R" 'evil-multiedit-match-all
-             "r" 'evil-multiedit-match-and-next)
-    (:states 'normal :prefix ", r"
-             "r" 'evil-multiedit-match-and-next
-             "R" 'evil-multiedit-match-all)
-    (:states 'multiedit
-             "RET" 'evil-multiedit-toggle-or-restrict-region
-             "n" 'evil-multiedit-next
-             "N" 'evil-multiedit-prev
-             "M-r" 'evil-multiedit-match-all
-             "SPC" 'evil-multiedit-match-and-next
-             "S-SPC" 'evil-multiedit-match-and-prev))
-#+END_SRC
-
 ** Org -Journal
 
 An alternative might be to use =org-roam-dailies= but I saw no benefits so far.
