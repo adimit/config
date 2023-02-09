@@ -28,6 +28,7 @@
 	type = cat-file -t
 	dump = cat-file -p
 	puush = push --force-with-lease
+	rank = "shortlog -s -n --no-merges"
 [push]
 	default = simple
 [sendmail]
