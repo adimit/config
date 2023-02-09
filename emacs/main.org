@@ -1,3 +1,15 @@
+* Info
+This configuration assumes Emacs has been compiled like this:
+
+#+begin_src shell
+  make bootstrap && ./autogen.sh && CC=/usr/bin/gcc-10 CXX=/usr/bin/gcc-10 ./configure  --prefix=$HOME/.local/ --with-xwidgets --with-cairo --with-modules --without-compress-install --with-x-toolkit=yes --with-gnutls --without-gconf --without-toolkit-scroll-bars --without-xaw3d --without-gsettings --with-mailutils --with-native-compilation --with-json --with-harfbuzz --with-imagemagick --with-jpeg --with-png --with-rsvg --with-tiff --with-wide-int --without-xft --with-xml2 --with-tree-sitter --with-xpm CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer" && make -j8 &&
+make install
+#+end_src
+
+My current Emacs version is:
+
+GNU Emacs 30.0.50 (build 3, x86_64-pc-linux-gnu, GTK+ Version 3.24.33, cairo version 1.16.0) of 2023-02-08
+
 * Early Initialisation
 
 Everything that is in here needs to happen early.
@@ -943,7 +955,7 @@ Syntax highlighting via tree-sitter.
   (use-package typescript-mode
     :hook
     (typescript-mode . lsp)
-    (typescript-mode . tree-sitter-hl-mode)
+    (typescript-mode . typescript-ts-mode)
     :mode "\\.tsx?\\'"
     :custom
     (typescript-indent-level 2))
@@ -1686,14 +1698,32 @@ Useful to cycle between =CamelCase=, =snake_case=, etc. No keybindings, I just c
 
 ** Treesitter
 
-Tree-sitter provides editor-agnostic syntax highlighting. For now it's just used for [[Typescript]] here.
+Treesitter is now built-into Emacs 29.
+
+First, compile tree-sitter and update your LD cache:
+
+#+begin_src shell
+  git clone https://github.com/tree-sitter/tree-sitter
+  cd tree-sitter
+  make all
+  sudo make install
+  sudo ldconfig
+#+end_src
+
+Then download some grammars. There's a little helper script:
+
+#+begin_src shell
+  git clone https://github.com/casouri/tree-sitter-module
+  cd tree-sitter-module
+  ./batch.sh
+#+end_src
+
+Then compile Emacs with ~--with-tree-sitter~. Finally, point ~treesit-extra-load-path~ to the above =tree-sitter-module= project.
 
 #+begin_src emacs-lisp
-  (use-package tree-sitter)
-  (use-package tree-sitter-langs
-    :after tree-sitter
-    :config
-    (tree-sitter-require 'tsx))
+  (require 'treesit)
+  (setq treesit-extra-load-path
+        (list "~/var/src/tree-sitter-module/dist"))
 #+end_src
 
 ** Which-Key
