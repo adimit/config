@@ -228,12 +228,13 @@ following definition takes care of setting up which parts of
 
 #+begin_src emacs-lisp
   (defun aleks/set-org-mode-fixed-pitch-faces ()
-    (mapc (lambda (face) (set-face-attribute face nil :inherit 'fixed-pitch))
+    (mapc (lambda (face) (set-face-attribute face nil :family (face-attribute 'fixed-pitch :family)))
           `(org-block
             org-special-keyword
             org-drawer
             org-todo
             org-done
+            org-code
             org-priority
             org-checkbox
             org-block-end-line
