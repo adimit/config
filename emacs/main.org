@@ -298,13 +298,21 @@ Handle specific file types. This is used especially by =ein-python=.
 
 ** Mode Line
 
-An experimental minimalist modeline. I've always been too lazy to write my own.
+Doom's mode line. Not the prettiest thing in the world, but it just works. There's also [[https://github.com/rougier/nano-modeline][nano-modeline]] which I like more, but it doesn't work with LSP ootb, and I can't be bothered to make it work with LSP.
 
 #+begin_src emacs-lisp
-  (use-package nano-modeline
-    :straight (:type git :host github :repo "rougier/nano-modeline")
-    :config (nano-modeline-mode)
-    :custom (nano-modeline-position 'bottom))
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom
+    (doom-modeline-icon t)
+    (doom-modeline-major-mode-icon t)
+    (doom-modeline-buffer-state-icon t)
+    (doom-modeline-buffer-encoding nil)
+    (doom-modeline-modal-icon t)
+    (doom-modeline-lsp t))
+
+  (use-package all-the-icons
+    :if (display-graphic-p))
 #+end_src
 
 ** Scrolling
@@ -918,7 +926,6 @@ Support for the Racket programming language. I used this for AoC.
 #+end_src
 
 
-
 ** REST
 
 Rest client with org support.
@@ -947,18 +954,17 @@ Rustic mode works well with =rust-analyzer=. Format on save is done with [[Aphel
     (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer")))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :hook (rust-ts-mode . lsp))
+#+end_src
+
 ** Typescript
 
-Syntax highlighting via tree-sitter.
+Syntax highlighting via newly integrated tree-sitter (Emacs 29).
 
 #+begin_src emacs-lisp
-  (use-package typescript-mode
-    :hook
-    (typescript-mode . lsp)
-    (typescript-mode . typescript-ts-mode)
-    :mode "\\.tsx?\\'"
-    :custom
-    (typescript-indent-level 2))
+  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-ts-mode))
 #+end_src
 
 When looking up React functional components, LSP returns React type signatures from React's own definitions in addition to the definition of the component itself. I'm not terribly interested in those, so we filter them out with a crude heuristic (a certain verbatim type signature and file location).
@@ -983,13 +989,16 @@ LSP lacks a general entrypoint to filter these out. See [[https://github.com/ema
   (advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
 #+end_src
 
-There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance.
+There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance. I'm using =corfu= and hence I've turned off ~lsp-completion-provider~ here
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :defer t
+    :hook
+    (typescript-ts-mode . lsp)
+    (tsx-ts-mode . lsp)
     :custom
-    (lsp-completion-provider :none)
+    (lsp-completion-provider :capf)
     (lsp-javascript-display-inlay-hints nil)
     (lsp-javascript-display-enum-member-value-hints nil)
     (lsp-javascript-display-parameter-type-hints nil)
@@ -1005,7 +1014,6 @@ There's experimental support for inlay hints in typescript language server. I've
        :foreground "#787878"
        :height 1.0)))
 #+end_src
-
 
 ** YAML
 
@@ -1336,20 +1344,33 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
+    :hook (lsp-mode . lsp-enable-which-key-integration)
     :custom
     (read-process-output-max (* 5 1024 1024))
     (lsp-eslint-validate '("typescript" "svelte"))
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    (lsp-eldoc-render-all nil)
     (lsp-use-plists t)
     :general
     (:states
      'normal
-     "M-RET" 'lsp-execute-code-action))
+     "M-RET" 'lsp-execute-code-action
+     "M-d" 'lsp-ui-doc-glance
+     "M-D" 'lsp-ui-doc-show)
+    :config
+    (setq lsp-keymap-prefix "SPC")
+    (general-def 'normal lsp-mode :definer 'minor-mode
+    "SPC" lsp-command-map))
 #+end_src
 
 LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
 
 #+begin_src emacs-lisp
-  (use-package lsp-ui)
+  (use-package lsp-ui
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-enable nil)
+    (lsp-ui-doc-enable t))
 #+end_src
 
 ** Magit
@@ -1596,7 +1617,7 @@ Smartparens to make handling parentheses easier.
      "M-s" 'sp-split-sexp
      "M-l" 'sp-join-sexp ; link
      "C-/" 'sp-forward-barf-sexp
-     "C-=" 'sp-forward-slurp-sexp))
+     "C-=" 'sp-slurp-hybrid-sexp))
 #+end_src
 
 ** Projectile
