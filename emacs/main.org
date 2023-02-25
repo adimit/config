@@ -469,9 +469,16 @@ Also add =ob-dot= to embed graphs in Org mode
 
 ** Haskell
 
+Haskell support via =haskell-mode= and LSP.
+
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
-    :mode "\\.hs$")
+    :mode "\\.l?hs\\'")
+
+  (use-package lsp-haskell
+    :hook
+    (haskell-mode . lsp)
+    (haskell-literate-mode . lsp))
 #+END_SRC
 
 ** Json
