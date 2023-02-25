@@ -279,7 +279,8 @@ Using the global leader, these are valid everywhere.
     :states 'normal
     :keymaps 'override
     "" nil ; make sure global-leader can be used as a prefix key
-    "b" 'switch-to-buffer
+    "b" 'consult-buffer
+    "B" 'consult-buffer-other-frame
     "f" 'find-file
     "c" 'org-capture
     "a" 'org-agenda)
@@ -1207,11 +1208,23 @@ Read =.editorconfig= files and adjust settings correspondingly.
 #+END_SRC
 
 ** Embark
-#+begin_src emacs-lisp :tangle no
+
+#+begin_src emacs-lisp
   (use-package embark
     :general
-    ("C-<return>" 'embark-act)
-    (aleks/local-leader 'normal "." 'embark-act))
+    ("C--" 'embark-act)
+    ("C-\\" 'embark-dwim)
+    ("C-h B" 'embark-bindings)
+    :init
+    (evil-set-initial-state 'grep-mode 'normal))
+#+end_src
+
+There's a package that allows using embark commands in consult.
+
+#+begin_src emacs-lisp
+  (use-package embark-consult
+    :after (embark consult)
+    :hook (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
 ** Emojis
@@ -1238,17 +1251,21 @@ With crowd sourced bindings for various packages:
     :config
     (evil-collection-init
      '(calendar
+       consult
        corfu
        debug
        dired
        dired-sidebar
        ediff
+       embark
        flycheck
+       grep
        magit
        magit-section
        mu4e
        mu4e-conversation
        outline
+       replace
        rg
        xref)))
 #+end_src
@@ -1651,23 +1668,76 @@ Near-instant full-text-search across projects.
 #+END_SRC
 
 ** Selection
+
+=helm= → =ivy= → =selectrum= → =vertico=. You'd think something as simple as selecting which command to issue would be easy. Well, seems like the design space is unlimited.
+
+
 Try out =selectrum= as an alternative to =ivy=.
 
 #+begin_src emacs-lisp
-  (use-package selectrum
-    :config
-    (selectrum-mode +1))
+  (use-package vertico
+    :init
+    (vertico-mode)
+    :custom
+    (vertico-cycle t))
+
+  (use-package savehist
+    :init
+    (savehist-mode))
+#+end_src
+
+I've taken this verbatim from Vertico's readme. To be honest, I don't quite understand what these do.
+
+#+begin_src emacs-lisp
+  ;; A few more useful configurations...
+  (use-package emacs
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+    (setq enable-recursive-minibuffers t))
+#+end_src
+
+Quicker matching with =orderless=
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
 Use =prescient= for sorting options by /frecency/:
 
 #+begin_src emacs-lisp
-  (use-package prescient)
-
-  (use-package selectrum-prescient
+  (use-package prescient
     :config
-    (selectrum-prescient-mode +1)
     (prescient-persist-mode +1))
+
+  (use-package vertico-prescient
+    :after vertico
+    :init (vertico-prescient-mode +1))
 #+end_src
 
 Add documentation to each selection entry if possible.
