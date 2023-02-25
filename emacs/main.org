@@ -1010,7 +1010,7 @@ There's experimental support for inlay hints in typescript language server. I've
     (typescript-ts-mode . lsp)
     (tsx-ts-mode . lsp)
     :custom
-    (lsp-completion-provider :capf)
+    (lsp-completion-provider :none)
     (lsp-javascript-display-inlay-hints nil)
     (lsp-javascript-display-enum-member-value-hints nil)
     (lsp-javascript-display-parameter-type-hints nil)
