@@ -346,22 +346,26 @@ The interpolation factor dictates scroll speed.
 
 ** Text buffers
 
-When reading text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
+When reading and writing text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
+
+Moreover, =text-mode= buffers should have spell check enabled, be narrowed, and use variable pitch and word wrap. However, a variety of buffers seem to trigger =text-mode-hook= that, in my opinion, have no business doing so. So we also define an exclusion list.
 
 #+begin_src emacs-lisp
-  (use-package olivetti)
-#+end_src
+  (defconst not-really-text-modes
+    '(yaml-mode nxml-mode mhtml-mode)
+    "Modes that somehow trigger the `text-mode-hook' but aren't really text.")
 
-Text mode buffers have spell check enabled, are narrowed, and use variable pitch and word wrap.
-
-#+begin_src emacs-lisp
   (defun aleks/text-mode-hook ()
-    (flyspell-mode)
-    (visual-line-mode)
-    (variable-pitch-mode)
-    (olivetti-mode))
-  
-  (add-hook 'text-mode-hook 'aleks/text-mode-hook)
+    "Set up the current `major-mode' for writing text unless it's a member of `not-really-text-modes'."
+    (unless (member major-mode not-really-text-modes)
+      (message (format "Setting up %s for writing prose." major-mode))
+      (flyspell-mode)
+      (visual-line-mode)
+      (variable-pitch-mode)
+      (olivetti-mode)))
+
+  (use-package olivetti
+    :hook (text-mode . aleks/text-mode-hook))
 #+end_src
 
 ** Theme
