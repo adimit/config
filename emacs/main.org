@@ -1792,6 +1792,7 @@ Add documentation to each selection entry if possible.
 
 #+begin_src emacs-lisp
   (use-package marginalia
+    :bind (:map minibuffer-local-map ("M-a" . marginalia-cycle))
     :init
     (marginalia-mode))
 #+end_src
