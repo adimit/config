@@ -564,6 +564,25 @@ Add diary and agenda files.
    '(diary-file (concat (file-name-as-directory org-directory) "diary")))
 #+end_src
 
+And here's a plugin to put everything into nice sections, and get a better overview of the agenda
+
+#+begin_src emacs-lisp
+  (use-package org-super-agenda
+    :hook
+    (org-agenda-mode . org-super-agenda-mode)
+    :config
+    (setq org-super-agenda-groups
+      '((:name "Work"
+               :file-path "work.org")
+        (:name "Meetings"
+               :file-path "work.org"
+               :todo "MEET")
+        (:name "Personal"
+               :todo "TODO"
+               :tag "family"
+               :file-path "main.org"))))
+#+end_src
+
 *** Babel
 
 Tangle every block by default.
