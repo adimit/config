@@ -1562,6 +1562,14 @@ The context definitions are in =private.org=.
                            (:thread-subject . nil))))
 #+END_SRC
 
+** Org-Mode with SVG eye candy
+
+There's a way to dynamically generate SVGs and inline them in =org= to improve the visuals, but it needs pretty complex configuration that I haven't done yet.
+
+#+begin_src emacs-lisp :tangle no
+  (use-package svg-lib)
+#+end_src
+
 ** Org -Journal
 
 An alternative might be to use =org-roam-dailies= but I saw no benefits so far.
