@@ -46,45 +46,6 @@ Slurp the shell environment into Emacs when started as a daemon.
     (exec-path-from-shell-initialize))
 #+end_src
 
-** Evil
-
-We set =evil-want-keybinding= to =nil= for =evil-collection=. I rarely use prefix arguments, and if I do, I'm probably in normal mode, whereas =C-u= is a very useful insert mode shortcut. Finally, we're using Emacs 28's new =undo-redo= instead of relying on outside packages.
-
-#+begin_src emacs-lisp
-  (use-package evil
-    :init
-    (setq evil-want-keybinding nil
-          evil-want-integration t)
-    :config
-    (evil-mode 1)
-    :custom
-    (evil-want-C-u-delete t)
-    (evil-want-Y-yank-to-eol t)
-    (evil-undo-system 'undo-redo))
-#+end_src
-
-** General
-=general= seems rather unmaintained, but it still is the most convenient way to set up key bindings. This needs to be very high up so that every following =use-package= declaration can make use of =:general=.
-
-#+begin_src emacs-lisp
-  (use-package general
-    :after evil
-    :config
-    (general-define-key
-     :states 'normal
-     "RET" 'save-buffer
-     :states 'motion
-     ";" 'evil-ex
-     ":" 'evil-repeat-find-char)
-    :config
-    (general-create-definer
-     aleks/global-leader
-     :prefix ",")
-    (general-create-definer
-     aleks/local-leader
-     :prefix ", ."))
-#+end_src
-
 * Emacs
 
 Tweak various aspects of Emacs' visuals and behaviour.
@@ -225,11 +186,6 @@ A function to open a new shell in the current buffer's file's directory. It's li
       (rename-buffer (concat "*eshell: " name "*"))
       (insert (concat "ls"))
       (eshell-send-input)))
-
-  (general-define-key
-   :states 'normal
-   :prefix ","
-   "e" 'eshell-here)
 #+end_src
 
 ** Font
@@ -273,18 +229,6 @@ These are triggered after [[Theme]] selection.
 ** Global Keybindings
 
 Using the global leader, these are valid everywhere.
-
-#+begin_src emacs-lisp
-  (aleks/global-leader
-    :states 'normal
-    :keymaps 'override
-    "" nil ; make sure global-leader can be used as a prefix key
-    "b" 'consult-buffer
-    "B" 'consult-buffer-other-frame
-    "f" 'find-file
-    "c" 'org-capture
-    "a" 'org-agenda)
-#+end_src
 
 ** Mime Types
 
@@ -515,11 +459,7 @@ The function =browse-amazon-history-at-point= is useful to get to the Amazon ord
     (browse-url (concat "https://www.amazon.de/gp/your-account/order-history/?search=" (thing-at-point 'symbol 'no-props))))
 
   (use-package ledger-mode
-    :mode "hledger\\.journal$" "\\.ledger$"
-    :general
-    (aleks/local-leader :states 'normal :keymaps 'ledger-mode-map
-             "a" 'browse-amazon-history-at-point
-             "p" 'browse-paypal-history-at-point))
+    :mode "hledger\\.journal$" "\\.ledger$")
 
   (use-package flycheck-ledger
     :after flycheck ledger-mode)
@@ -752,24 +692,6 @@ Enable export back ends not enabled by default.
    'org-export-backends (append org-export-backends '(md)))
 #+end_src
 
-*** Evil
-
-The agenda is a pain with evil, so we have to work around that a little.
-
-#+begin_src emacs-lisp
-  (defun set-up-org-agenda-key-bindings ()
-    "Hook to set up agenda keybindings"
-    (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys)
-    ; this essentially resets `org-super-agenda-header-map' to an empty (pass-through) keymap
-    (setq org-super-agenda-header-map (make-sparse-keymap)))
-
-  (use-package evil-org
-    :hook
-    (org-mode . evil-org-mode)
-    (org-agenda-mode . set-up-org-agenda-key-bindings))
-#+end_src
-
 *** Indentation
 
 Indent mode keeps leading spaces out of org text files.
@@ -785,48 +707,6 @@ Render inline LaTeX fragments somewhat bigger, to match the font size.
   (plist-put org-format-latex-options :scale 2)
 #+end_src
 
-*** Keybindings
-**** General
-
-#+begin_src emacs-lisp
-  (aleks/local-leader
-    :states 'normal
-    :keymaps 'org-mode-map
-    "'" 'org-edit-special
-    "i" 'org-insert-structure-template
-    "o" 'org-open-at-point
-    "h" 'org-promote-subtree
-    "l" 'org-demote-subtree
-    "a" 'org-archive-subtree
-    "s" 'org-schedule
-    "d" 'org-deadline
-    "e" 'org-set-effort
-    "c c" 'org-clock-in
-    "c i" 'org-clock-in
-    "c o" 'org-clock-out
-    "c g" 'org-clock-goto
-    "c x" 'org-clock-cancel)
-#+end_src
-
-**** Edit Special
-
-A quicker shortcut for editing special environments in =org=.
-
-#+begin_src emacs-lisp
-  (aleks/global-leader :states 'normal :keymaps 'org-mode-map
-    "'" 'org-edit-special)
-#+end_src
-
-Interaction with special edits.
-
-#+begin_src emacs-lisp
-  (general-define-key
-   :states 'normal
-   :definer 'minor-mode
-   :keymaps 'org-src-mode
-   "<return>" 'org-edit-src-exit
-   "<backspace>" 'org-edit-src-abort)
-#+end_src
 
 *** Reveal
 
@@ -1085,11 +965,7 @@ Jump to arbitrary points in the buffer
 
 #+begin_src emacs-lisp
   (use-package avy
-    :custom (avy-all-windows 'all-frames)
-    :general
-    (:states 'normal
-             "g l" 'avy-goto-line
-             "g c" 'avy-goto-char))
+    :custom (avy-all-windows 'all-frames))
 #+end_src
 
 ** Beacon
@@ -1217,9 +1093,7 @@ An alternative to =company=.
 ** Consult
 
 #+begin_src emacs-lisp
-  (use-package consult
-    :general
-    (aleks/global-leader :states 'normal "b" 'consult-buffer))
+  (use-package consult)
 #+end_src
 
 ** Diff-hl
@@ -1245,13 +1119,7 @@ Read =.editorconfig= files and adjust settings correspondingly.
 ** Embark
 
 #+begin_src emacs-lisp
-  (use-package embark
-    :general
-    ("C--" 'embark-act)
-    ("C-\\" 'embark-dwim)
-    ("C-h B" 'embark-bindings)
-    :init
-    (evil-set-initial-state 'grep-mode 'normal))
+  (use-package embark)
 #+end_src
 
 There's a package that allows using embark commands in consult.
@@ -1271,56 +1139,6 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   
   (use-package emojify
     :hook (forge-post-mode . emojify-mode))
-#+end_src
-
-** Evil Collection
-
-With crowd sourced bindings for various packages:
-
-#+begin_src emacs-lisp
-  (use-package evil-collection
-    :custom
-    (evil-collection-outline-bind-tab-p t)
-    (evil-collection-calendar-want-org-bindings t)
-    :after evil
-    :config
-    (evil-collection-init
-     '(calendar
-       consult
-       corfu
-       debug
-       dired
-       dired-sidebar
-       ediff
-       embark
-       flycheck
-       grep
-       magit
-       magit-section
-       mu4e
-       mu4e-conversation
-       org
-       outline
-       replace
-       rg
-       xref)))
-#+end_src
-
-** Evil Extensions
-
-Surround bindings for text objects (e.g. =c s b [=.)
-
-#+begin_src emacs-lisp
-  (use-package evil-surround
-    :config
-    (global-evil-surround-mode t))
-#+end_src
-
-Swap text objects with one command.  (e.g. =g x w=)
-
-#+begin_src emacs-lisp
-  (use-package evil-exchange
-    :config (evil-exchange-install))
 #+end_src
 
 ** Extract Issue Numbers from Branch
@@ -1404,16 +1222,8 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
     (lsp-rust-analyzer-server-display-inlay-hints t)
     (lsp-eldoc-render-all nil)
     (lsp-use-plists t)
-    :general
-    (:states
-     'normal
-     "M-RET" 'lsp-execute-code-action
-     "M-d" 'lsp-ui-doc-glance
-     "M-D" 'lsp-ui-doc-show)
     :config
-    (setq lsp-keymap-prefix "SPC")
-    (general-def 'normal lsp-mode :definer 'minor-mode
-    "SPC" lsp-command-map))
+    (setq lsp-keymap-prefix "SPC"))
 #+end_src
 
 LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
@@ -1444,12 +1254,6 @@ The best =git= porcelain ever.
 
 #+begin_src emacs-lisp
     (use-package magit
-      :general
-      (aleks/global-leader
-        :states 'normal
-        "g s" 'magit-status
-        "g f" 'magit-file-dispatch
-        "g b" 'magit-blame)
       :config
       (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task))
   )
@@ -1536,7 +1340,6 @@ The context definitions are in =private.org=.
     :config
     (require 'mu4e-contrib)
     (aleks/load-org-file "private.org")
-    (evil-set-initial-state 'mu4e-headers-mode 'normal)
     (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
     (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
     (require 'org-mu4e)
@@ -1683,14 +1486,7 @@ Smartparens to make handling parentheses easier.
     (show-smartparens-global-mode 1)
     :custom
     (smartparens-strict-mode 1)
-    (sp-show-pair-delay 0)
-    :general
-    (:states
-     '(insert normal)
-     "M-s" 'sp-split-sexp
-     "M-l" 'sp-join-sexp ; link
-     "C-/" 'sp-forward-barf-sexp
-     "C-=" 'sp-slurp-hybrid-sexp))
+    (sp-show-pair-delay 0))
 #+end_src
 
 ** Projectile
@@ -1700,14 +1496,7 @@ I haven't configured =projectile= to use =selectrum=, but it's working alright f
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :config
-    (projectile-mode +1)
-    :general
-    (aleks/global-leader
-      :states 'normal
-      "p p" 'projectile-switch-project
-      "p f" 'projectile-find-file
-      "p b" 'projectile-switch-buffer
-      "p e" 'projectile-run-eshell))
+    (projectile-mode +1))
 #+END_SRC
 
 ** Ripgrep
@@ -1715,12 +1504,7 @@ I haven't configured =projectile= to use =selectrum=, but it's working alright f
 Near-instant full-text-search across projects.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package rg
-    :general
-    (aleks/global-leader 'normal
-     "s s" 'rg-dwim
-     "s p" 'rg-project
-     "s l" 'rg-list-searches))
+  (use-package rg)
 #+END_SRC
 
 ** Selection
@@ -1809,21 +1593,6 @@ Add documentation to each selection entry if possible.
 
 Awesome shortcuts to do complicated 3-way-merges with =git=.
 
-#+begin_src emacs-lisp
-  (general-define-key
-   :states 'normal
-   :modes 'smerge-mode
-   :prefix ", d"
-   "n" 'smerge-next
-   "p" 'smerge-prev
-   "j" 'smerge-keep-lower
-   "k" 'smerge-keep-upper
-   "c" 'smerge-keep-all
-   "X" 'smerge-keep-base
-   "x" 'smerge-swap
-   "r" 'smerge-resolve)
-#+end_src
-
 ** Snippets
 
 Snippets live in version control under the Emacs directory.
@@ -1850,17 +1619,7 @@ A bit too visual for my taste, but sometimes comes in handy. Let's see if it's w
 
 #+begin_src emacs-lisp
   (use-package treemacs
-    :defer t
-    :general
-    (:states 'normal :prefix ", t"
-             "t" 'treemacs))
-#+end_src
-
-Evil keybindings come in a separate package
-
-#+begin_src emacs-lisp
-  (use-package treemacs-evil
-    :after (treemacs evil))
+    :defer t)
 #+end_src
 
 And sync between projectile and treemacs
