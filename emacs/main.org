@@ -1431,6 +1431,13 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
     (define-key lsp-ui-peek-mode-map "K" 'lsp-ui-peek--select-prev-file))
 #+end_src
 
+Finally, treemacs can help orientation
+
+#+begin_src emacs-lisp
+  (use-package lsp-treemacs
+    :hook (lsp-mode . lsp-treemacs-sync-mode))
+#+end_src
+
 ** Magit
 
 The best =git= porcelain ever.
@@ -1826,6 +1833,39 @@ Useful to cycle between =CamelCase=, =snake_case=, etc. No keybindings, I just c
 
 #+begin_src emacs-lisp
   (use-package string-inflection)
+#+end_src
+
+** Treemacs
+
+A bit too visual for my taste, but sometimes comes in handy. Let's see if it's worth keeping it around
+
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :defer t
+    :general
+    (:states 'normal :prefix ", t"
+             "t" 'treemacs))
+#+end_src
+
+Evil keybindings come in a separate package
+
+#+begin_src emacs-lisp
+  (use-package treemacs-evil
+    :after (treemacs evil))
+#+end_src
+
+And sync between projectile and treemacs
+
+#+begin_src emacs-lisp
+  (use-package treemacs-projectile
+    :after (treemacs projectile))
+#+end_src
+
+And let treemacs know about staging files in git
+
+#+begin_src emacs-lisp
+  (use-package treemacs-magit
+    :after (treemacs magit))
 #+end_src
 
 ** Treesitter
