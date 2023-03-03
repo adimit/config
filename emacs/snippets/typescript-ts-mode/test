@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: new test
+# key: test
+# --
+it('${test_description}', () => {
+  // given
+  $0
+
+  // when
+
+  // then
+});
