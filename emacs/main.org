@@ -754,14 +754,20 @@ Enable export back ends not enabled by default.
 
 *** Evil
 
-The agenda is a pain with evil.
+The agenda is a pain with evil, so we have to work around that a little.
 
 #+begin_src emacs-lisp
-  (use-package evil-org
-    :hook (org-mode . evil-org-mode)
-    :config
+  (defun set-up-org-agenda-key-bindings ()
+    "Hook to set up agenda keybindings"
     (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys))
+    (evil-org-agenda-set-keys)
+    ; this essentially resets `org-super-agenda-header-map' to an empty (pass-through) keymap
+    (setq org-super-agenda-header-map (make-sparse-keymap)))
+
+  (use-package evil-org
+    :hook
+    (org-mode . evil-org-mode)
+    (org-agenda-mode . set-up-org-agenda-key-bindings))
 #+end_src
 
 *** Indentation
@@ -955,7 +961,6 @@ Support for the Racket programming language. I used this for AoC.
     :init
     )
 #+end_src
-
 
 ** REST
 
@@ -1294,6 +1299,7 @@ With crowd sourced bindings for various packages:
        magit-section
        mu4e
        mu4e-conversation
+       org
        outline
        replace
        rg
