@@ -156,7 +156,7 @@ Here's a function that returns whether it's currently dark outside, so you don't
 
 Enable emacs server mode.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (server-mode)
 #+end_src
 
@@ -1287,11 +1287,215 @@ This allows creating a branch from the currently clocked in org-mode task. Using
       (message "No current task.")))
 #+end_src
 
-** Move File and Buffer
+** Meow
 
-Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]].
+A replacement for =evil=. It follows Kakoune more closely. Ideally, I'd make it behave (mostly) like Helix. That would allow seamless switching.
+Unfortunately, it requires lots of setting up. I'm not sure it's really worth it over using plain evil mode. But it is nice in that it interferes less with Emacs as a whole. Much more lightweight and snappy than Evil, it's also been less error prone, at the cost of some custom definitions and partial loss in ergonomics (and partial gain in other places). Let's see if it's worth it.
+
+*** Initial setup
+
+Meow requires you to set every key manually.
+I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys here are funny, but that's how I like it.
 
 #+begin_src emacs-lisp
+  (defun meow-negative-find ()
+    "Like vim's F."
+    (interactive)
+    (let ((current-prefix-arg -1))
+      (call-interactively 'meow-find)))
+
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key))
+
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-kill)
+     '("D" . meow-backward-delete)
+     '("e" . meow-mark-word)
+     '("E" . meow-mark-symbol)
+     '("f" . meow-find)
+     '("F" . meow-negative-find)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-cancel-selection)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-cancel)
+     '("S" . meow-grab)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-next-word)
+     '("W" . meow-next-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("`" . meow-pop-selection)
+     '("'" . repeat)
+     '("RET" . save-buffer)
+     '("<escape>" . ignore)
+     '("=" . meow-indent)))
+  
+  (use-package meow
+    :config
+    (meow-setup)
+    (meow-global-mode 1))
+  
+  (meow-thing-register 'generic '(pair ("<") (">")) '(pair ("<") (">")))
+  (add-to-list 'meow-char-thing-table '(?< . generic))
+#+end_src
+
+*** C-w
+
+I don't use a lot of insert-mode key chords, but =C-w= is very important to my mental well-being.
+
+#+begin_src emacs-lisp
+  (defun aleks/delete-backward-word ()
+    "Delete previous word. This is a copy of `evil-delete-backward-word'"
+    (interactive)
+    (let ((beginning (save-excursion
+                       (call-interactively 'backward-word)
+                       (point)))
+          (end (point)))
+      (cond
+       ((not (bobp)) (delete-region
+                      (max beginning (line-beginning-position))
+                      end))
+       (t (user-error "Beginning of line or buffer.")))))
+
+  (global-set-key (kbd "C-w") 'aleks/delete-backward-word)
+#+end_src
+
+*** Go to definition
+We'll just use =xref=, which plays nicely with =lsp-mode=.
+
+#+begin_src emacs-lisp
+  (meow-normal-define-key
+   '("g d" . xref-find-definitions))
+#+end_src
+*** Moving around the buffer
+
+Vim's way of moving around the buffer using =gg= and =G= (with prefix arguments) is rather useful, and I'm loathe to give it up (especially because it is so ubiquitous).
+
+#+begin_src emacs-lisp
+  (defun aleks/goto-line (&optional count)
+      "Jump to COUNT line, or to the end of the buffer."
+      (interactive "p")
+      (if current-prefix-arg
+          (call-interactively 'goto-line)
+        (call-interactively 'end-of-buffer)))
+
+  (meow-normal-define-key
+     '("g g" . beginning-of-buffer)
+     '("G" . aleks/goto-line))
+#+end_src
+
+*** Window management commands
+
+These emulate Vim's window splitting commands.
+
+#+begin_src emacs-lisp
+  (defun aleks/split-window ()
+    (interactive)
+    (split-window (selected-window) nil 'below))
+  (defun aleks/vsplit-window ()
+    (interactive)
+    (split-window (selected-window) nil 'right))
+
+  (meow-normal-define-key
+    '("C-w o" . delete-other-windows)
+    '("C-w o" . delete-other-windows)
+    '("C-w c" . delete-window)
+    '("C-w j" . windmove-down)
+    '("C-w k" . windmove-up)
+    '("C-w l" . windmove-right)
+    '("C-w h" . windmove-left)
+    '("C-w s" . aleks/split-window)
+    '("C-w v" . aleks/vsplit-window))
+#+end_src
+
+*** Shortcuts
+
+The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
+
+#+begin_src emacs-lisp  :tangle no
+  (defun global-key (&rest keys)
+    "Convenience function to define KEYS like `meow-define-keys'"
+    (pcase-dolist (`(,key . ,def) keys)
+      (global-set-key (kbd key) def)))
+
+  (global-key
+   '("C-c f" . projectile-find-file)
+   '("C-c p p" . projectile-switch-project)
+   '("C-c p f" . projectile-find-file)
+   '("C-c b b" . consult-buffer)
+   '("C-c b k" . kill-this-buffer)
+   '("C-c G s" . magit-status)
+   '("C-c G b" . magit-blame))
+#+end_src
+
+** Move File and Buffer
+
+Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
+
+#+begin_src emacs-lisp :tangle no
   (defun rename-file-and-buffer (new-name)
     "Renames both current buffer and file it's visiting to NEW-NAME."
     (interactive "sNew name: ")
