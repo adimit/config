@@ -228,7 +228,13 @@ These are triggered after [[Theme]] selection.
 
 ** Global Keybindings
 
-Using the global leader, these are valid everywhere.
+Using =meow= keypad mode, these can be selected without the need for key chords.
+
+#+begin_src emacs-lisp
+  (global-key
+   '("C-c b b" . consult-buffer)
+   '("C-c b k" . kill-this-buffer))
+#+end_src
 
 ** Mime Types
 
