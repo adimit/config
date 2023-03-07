@@ -1314,7 +1314,6 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 #+end_src
 
 ** Meow
-
 A replacement for =evil=. It follows Kakoune more closely. Ideally, I'd make it behave (mostly) like Helix. That would allow seamless switching.
 Unfortunately, it requires lots of setting up. I'm not sure it's really worth it over using plain evil mode. But it is nice in that it interferes less with Emacs as a whole. Much more lightweight and snappy than Evil, it's also been less error prone, at the cost of some custom definitions and partial loss in ergonomics (and partial gain in other places). Let's see if it's worth it.
 
@@ -1389,7 +1388,7 @@ Because of the way meow works, I'll need to rebind =C-/= as I need that shortcut
   (setq meow--kbd-undo "C-c x u")
 #+end_src
 
-*** Setup
+*** Keybindings
 
 Meow requires you to set every key manually.
 I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys here are funny, but that's how I like it.
@@ -1422,7 +1421,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("9" . meow-digit-argument)
      '("0" . meow-digit-argument)
      '("/" . meow-keypad-describe-key))
-  
+
     (meow-normal-define-key
      '("0" . meow-expand-0)
      '("9" . meow-expand-9)
@@ -1500,16 +1499,21 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("C-w v" . aleks/vsplit-window)
      '("C-o" . pop-global-mark)
      '("=" . meow-indent)))
-  
+#+end_src
+
+*** Initialise
+
+#+begin_src emacs-lisp
   (use-package meow
     :bind (("C-=" . meow-forward-slurp)
            ("C-/" . meow-forward-barf))
     :demand t
+    :custom
+    (meow-expand-hint-counts '())
     :config
     (meow-global-mode 1)
     (meow-setup))
 #+end_src
-
 ** Move File and Buffer
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
