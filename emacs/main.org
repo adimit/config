@@ -1357,7 +1357,6 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("E" . meow-mark-symbol)
      '("f" . meow-find)
      '("F" . meow-negative-find)
-     '("G" . meow-grab)
      '("h" . meow-left)
      '("H" . meow-left-expand)
      '("i" . meow-insert)
