@@ -1441,9 +1441,9 @@ Vim's way of moving around the buffer using =gg= and =G= (with prefix arguments)
   (defun aleks/goto-line (&optional count)
       "Jump to COUNT line, or to the end of the buffer."
       (interactive "p")
-      (if current-prefix-arg
-          (call-interactively 'goto-line)
-        (call-interactively 'end-of-buffer)))
+      (if (null current-prefix-arg)
+          (call-interactively 'end-of-buffer)
+        (call-interactively 'goto-line)))
 
   (meow-normal-define-key
      '("g g" . beginning-of-buffer)
