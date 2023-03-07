@@ -1068,6 +1068,11 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 An alternative to =company=.
 
 #+begin_src emacs-lisp
+  (defun quit-corfu-and-exit-to-normal-mode ()
+    (interactive)
+    (corfu-quit)
+    (meow-normal-mode))
+
   (use-package corfu
     :custom
     (corfu-auto t)
@@ -1082,6 +1087,7 @@ An alternative to =company=.
           ("TAB" . corfu-next)
           ([tab] . corfu-next)
           ("S-TAB" . corfu-previous)
+          ("<escape>" . quit-corfu-and-exit-to-normal-mode)
           ([backtab] . corfu-previous))
     :init
     (global-corfu-mode))
