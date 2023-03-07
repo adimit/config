@@ -1253,10 +1253,12 @@ Finally, treemacs can help orientation
 The best =git= porcelain ever.
 
 #+begin_src emacs-lisp
-    (use-package magit
-      :config
-      (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task))
-  )
+  (use-package magit
+    :bind (("C-c G g" . magit-status)
+           ("C-c G G" . magit-status)
+           ("C-c G b" . magit-blame))
+    :config
+    (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task)))
 #+end_src
 
 Integration for Github.
