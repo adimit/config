@@ -1379,7 +1379,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("t" . meow-till)
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
+     '("V" . meow-line)
      '("w" . meow-next-word)
      '("W" . meow-next-symbol)
      '("x" . meow-line)
