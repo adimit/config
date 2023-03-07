@@ -1588,6 +1588,12 @@ The context definitions are in =private.org=.
                            (:thread-subject . nil))))
 #+END_SRC
 
+** Multiple Cursors
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors)
+#+end_src
+
 ** Org-Mode with SVG eye candy
 
 There's a way to dynamically generate SVGs and inline them in =org= to improve the visuals, but it needs pretty complex configuration that I haven't done yet.
