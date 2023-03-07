@@ -1701,7 +1701,10 @@ I haven't configured =projectile= to use =selectrum=, but it's working alright f
 
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :config
+    :bind (("C-c p p" . projectile-switch-project)
+           ("C-c p b" . projectile-switch-to-buffer)
+           ("C-c p f" . projectile-find-file))
+   :config
     (projectile-mode +1))
 #+END_SRC
 
