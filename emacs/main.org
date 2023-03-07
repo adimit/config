@@ -1391,13 +1391,17 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("'" . repeat)
      '("RET" . save-buffer)
      '("<escape>" . meow-cancel-selection)
+     '("C-=" . meow-forward-slurp)
+     '("C-/" . meow-forward-barf)
      '("=" . meow-indent)))
-  
+
   (use-package meow
+    :bind (("C-=" . meow-forward-slurp)
+           ("C-/" . meow-forward-barf))
     :config
     (meow-setup)
     (meow-global-mode 1))
-  
+
   (meow-thing-register 'generic '(pair ("<") (">")) '(pair ("<") (">")))
   (add-to-list 'meow-char-thing-table '(?< . generic))
 #+end_src
@@ -1489,6 +1493,14 @@ The idea behind Meow is to be minimally invasive wrt Emacs. So we just define ou
    '("C-c b k" . kill-this-buffer)
    '("C-c G s" . magit-status)
    '("C-c G b" . magit-blame))
+#+end_src
+
+*** Undo
+Undo with Emacs isn't the greatest experience. First, we'll need to rebind =C-/= as I need that shortcut for ~sp-forward-barf-sexp~ later on.
+
+#+begin_src emacs-lisp
+  (global-key '("C-c x u" . undo))
+  (setq meow--kbd-undo "C-c x u")
 #+end_src
 
 ** Move File and Buffer
@@ -1685,9 +1697,13 @@ Smartparens to make handling parentheses easier.
   (use-package smartparens
     :init
     (require 'smartparens-config)
+    :bind (("C-c x p ]" . sp-forward-slurp-sexp)
+           ("C-c x p [" . sp-forward-barf-sexp))
     :config
     (smartparens-global-mode 1)
     (show-smartparens-global-mode 1)
+    (setq meow--kbd-forward-slurp "C-c x p ]"
+          meow--kbd-forward-barf "C-c x p [")
     :custom
     (smartparens-strict-mode 1)
     (sp-show-pair-delay 0))
