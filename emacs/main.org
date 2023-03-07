@@ -975,6 +975,8 @@ Jump to arbitrary points in the buffer
 
 #+begin_src emacs-lisp
   (use-package avy
+    :bind (("C-c r" . avy-goto-char)
+           ("C-c l" . avy-goto-line))
     :custom (avy-all-windows 'all-frames))
 #+end_src
 
