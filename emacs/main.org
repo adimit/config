@@ -1266,6 +1266,7 @@ The best =git= porcelain ever.
   (use-package magit
     :bind (("C-c G g" . magit-status)
            ("C-c G G" . magit-status)
+           ("C-c G s" . magit-status)
            ("C-c G b" . magit-blame))
     :config
     (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task)))
