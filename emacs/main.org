@@ -987,14 +987,6 @@ Jump to arbitrary points in the buffer
 #+end_src
 
 ** Beacon
-#+BEGIN_SRC emacs-lisp
-  (use-package beacon
-    :config
-    (beacon-mode 1)
-    :custom
-    (beacon-blink-delay 0.15)
-    (beacon-blink-duration 0.15))
-#+END_SRC
 
 ** Calculate Sprints
 
@@ -1741,7 +1733,6 @@ Smartparens to make handling parentheses easier.
 #+end_src
 
 ** Projectile
-
 I haven't configured =projectile= to use =selectrum=, but it's working alright for now.
 
 #+BEGIN_SRC emacs-lisp
@@ -1752,6 +1743,21 @@ I haven't configured =projectile= to use =selectrum=, but it's working alright f
    :config
     (projectile-mode +1))
 #+END_SRC
+
+** Pulsar
+Protesilaos' take on beacon-mode is somewhat more lightweight and seems to be less error-prone.
+
+#+begin_src emacs-lisp
+  (use-package pulsar
+    :custom
+    (pulsar-pulse t)
+    (pulsar-delay 0.025)
+    (pulsar-iterations 10)
+    (pulsar-face 'pulsar-generic)
+    (pulsar-highlight-face 'pulsar-yellow)
+    :config
+    (pulsar-global-mode 1))
+#+end_src
 
 ** Ripgrep
 
