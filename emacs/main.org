@@ -1427,10 +1427,10 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
            ("C-/" . meow-forward-barf))
     :config
     (meow-setup)
-    (meow-global-mode 1))
+    (meow-global-mode 1)
 
   (meow-thing-register 'generic '(pair ("<") (">")) '(pair ("<") (">")))
-  (add-to-list 'meow-char-thing-table '(?< . generic))
+  (add-to-list 'meow-char-thing-table '(?< . generic)))
 #+end_src
 
 *** C-w
