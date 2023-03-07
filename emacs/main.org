@@ -1423,6 +1423,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("<escape>" . meow-cancel-selection)
      '("C-=" . meow-forward-slurp)
      '("C-/" . meow-forward-barf)
+     '("C-o" . pop-global-mark)
      '("=" . meow-indent)))
 
   (use-package meow
