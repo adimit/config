@@ -1137,7 +1137,10 @@ Read =.editorconfig= files and adjust settings correspondingly.
 ** Embark
 
 #+begin_src emacs-lisp
-  (use-package embark)
+  (use-package embark
+    :bind (("C--" . embark-act)
+           ("C-\\" . embark-dwim)
+           ("C-h B" . embark-bindings)))
 #+end_src
 
 There's a package that allows using embark commands in consult.
@@ -1240,6 +1243,9 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
     (lsp-rust-analyzer-server-display-inlay-hints t)
     (lsp-eldoc-render-all nil)
     (lsp-use-plists t)
+    :bind (("M-RET" . lsp-execute-code-action)
+           ("M-d" . lsp-ui-doc-glance)
+           ("M-D" . lsp-ui-doc-show))
     :config
     (setq lsp-keymap-prefix "SPC"))
 #+end_src
