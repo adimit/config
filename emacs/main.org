@@ -1368,7 +1368,6 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("K" . meow-prev-expand)
      '("l" . meow-right)
      '("L" . meow-right-expand)
-     '("m" . meow-cancel-selection)
      '("n" . meow-search)
      '("o" . meow-block)
      '("O" . meow-to-block)
@@ -1377,7 +1376,6 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("Q" . meow-goto-line)
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
-     '("s" . meow-cancel)
      '("S" . meow-grab)
      '("t" . meow-till)
      '("u" . meow-undo)
@@ -1392,7 +1390,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
      '("`" . meow-pop-selection)
      '("'" . repeat)
      '("RET" . save-buffer)
-     '("<escape>" . ignore)
+     '("<escape>" . meow-cancel-selection)
      '("=" . meow-indent)))
   
   (use-package meow
