@@ -231,6 +231,10 @@ These are triggered after [[Theme]] selection.
 Using =meow= keypad mode, these can be selected without the need for key chords.
 
 #+begin_src emacs-lisp
+    (defun global-key (&rest keys)
+    "Convenience function to define KEYS like `meow-define-keys'"
+    (pcase-dolist (`(,key . ,def) keys)
+      (global-set-key (kbd key) def)))
   (global-key
    '("C-c b b" . consult-buffer)
    '("C-c b k" . kill-this-buffer))
@@ -1503,10 +1507,7 @@ These emulate Vim's window splitting commands.
 The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
 
 #+begin_src emacs-lisp  :tangle no
-  (defun global-key (&rest keys)
-    "Convenience function to define KEYS like `meow-define-keys'"
-    (pcase-dolist (`(,key . ,def) keys)
-      (global-set-key (kbd key) def)))
+
 
   (global-key
    '("C-c f" . projectile-find-file)
