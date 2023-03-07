@@ -156,7 +156,7 @@ Here's a function that returns whether it's currently dark outside, so you don't
 
 Enable emacs server mode.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (server-mode)
 #+end_src
 
