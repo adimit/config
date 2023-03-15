@@ -1439,8 +1439,24 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 #+end_src
 
 ** Meow
+
 A replacement for =evil=. It follows Kakoune more closely. Ideally, I'd make it behave (mostly) like Helix. That would allow seamless switching.
-Unfortunately, it requires lots of setting up. I'm not sure it's really worth it over using plain evil mode. But it is nice in that it interferes less with Emacs as a whole. Much more lightweight and snappy than Evil, it's also been less error prone, at the cost of some custom definitions and partial loss in ergonomics (and partial gain in other places). Let's see if it's worth it.
+Unfortunately, it requires lots of setting up. I'm not sure it's really worth it over using plain evil mode. But it is nice in that it interferes less with Emacs as a whole. Much more lightweight and snappy than Evil, it's also been less error prone, at the cost of some custom definitions and partial loss in ergonomics (and partial gain in other places). Let's see if it's worth it. The biggest drawback seems to be that it's not very maintained.
+
+*** Keep selection when entering insert mode
+Usually, Meow kills the selection when entering insert mode. These functions are copies of Meow's insert and append functions that don't cancel the selection. This is especially useful when you use =smartparens= to insert delimiters.
+
+#+begin_src emacs-lisp
+(defun meow-insert-with-selection ()
+  "Preserve the region when executing `meow-insert'"
+  (interactive)
+  (let ((history-copy meow--selection-history)
+        (selection-copy meow--selection))
+    (meow-insert)
+    (setq meow--selection-history history-copy
+          meow--selection selection-copy)
+    (activate-mark)))
+#+end_src
 
 *** C-w
 
@@ -1477,6 +1493,13 @@ Vim's way of moving around the buffer using =gg= and =G= (with prefix arguments)
           (call-interactively 'goto-line)))
 #+end_src
 
+Additionally, we'll use Vim-style =C-f= and =C-b= in normal mode, so we'll remap these for Meow's internal calls, otherwise it gets confused.
+
+#+begin_src emacs-lisp
+(setq meow--kbd-forward-char "<right>"
+      meow--kbd-backward-char "<left>")
+#+end_src
+
 *** Window management commands
 
 These emulate Vim's window splitting commands.
@@ -1494,14 +1517,19 @@ These emulate Vim's window splitting commands.
 The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
 
 #+begin_src emacs-lisp
-  (global-key
-   '("C-c f" . projectile-find-file)
-   '("C-c p p" . projectile-switch-project)
-   '("C-c p f" . projectile-find-file)
-   '("C-c b b" . consult-buffer)
-   '("C-c b k" . kill-this-buffer)
-   '("C-c G s" . magit-status)
-   '("C-c G b" . magit-blame))
+(global-key
+ '("C-c f" . projectile-find-file)
+ '("C-c p p" . projectile-switch-project)
+ '("C-c p f" . projectile-find-file)
+ '("C-c b b" . consult-buffer)
+ '("C-c b k" . kill-this-buffer)
+ '("C-c G s" . magit-status)
+ '("C-c G b" . magit-blame)
+ '("C-c s e" . eval-last-sexp)
+ '("C-c s b" . eval-buffer)
+ '("C-c s d" . eval-defun)
+ '("C-c s r" . eval-region)
+ '("C-c s x" . eval-expression))
 #+end_src
 
 *** Undo
@@ -1513,117 +1541,127 @@ Because of the way meow works, I'll need to rebind =C-/= as I need that shortcut
   (setq meow--kbd-undo "C-c x u")
 #+end_src
 
+*** Select Angle Brackets
+
+#+begin_src emacs-lisp
+(defun aleks/create-angle-brackets-object ()
+  (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">")))
+  (add-to-list 'meow-char-thing-table '(?a . angle)))
+#+end_src
+
 *** Keybindings
 
 Meow requires you to set every key manually.
 I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys here are funny, but that's how I like it.
 
 #+begin_src emacs-lisp
-  (defun meow-negative-find ()
-    "Like vim's F."
-    (interactive)
-    (let ((current-prefix-arg -1))
-      (call-interactively 'meow-find)))
-  (defun meow-setup ()
-    (aleks/meow-set-up-c-w)
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
-    (meow-leader-define-key
-     ;; SPC j/k will run the original command in MOTION state.
-     '("j" . "H-j")
-     '("k" . "H-k")
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key))
+(defun meow-negative-find ()
+  "Like vim's F."
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-find)))
+(defun meow-setup ()
+  (aleks/meow-set-up-c-w)
+  (aleks/create-angle-brackets-object)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key))
 
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-kill)
-     '("D" . meow-backward-delete)
-     '("e" . meow-mark-word)
-     '("E" . meow-mark-symbol)
-     '("f" . meow-find)
-     '("F" . meow-negative-find)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("S" . meow-grab)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("V" . meow-line)
-     '("w" . meow-next-word)
-     '("W" . meow-next-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("`" . meow-pop-selection)
-     '("'" . repeat)
-     '("RET" . save-buffer)
-     '("<escape>" . meow-cancel-selection)
-     '("C-=" . meow-forward-slurp)
-     '("C-/" . meow-forward-barf)
-     '("g g" . beginning-of-buffer)
-     '("G" . aleks/goto-line)
-     '("g d" . xref-find-definitions)
-     '("C-w o" . delete-other-windows)
-     '("C-w o" . delete-other-windows)
-     '("C-w c" . delete-window)
-     '("C-w j" . windmove-down)
-     '("C-w k" . windmove-up)
-     '("C-w l" . windmove-right)
-     '("C-w h" . windmove-left)
-     '("C-w s" . aleks/split-window)
-     '("C-w v" . aleks/vsplit-window)
-     '("C-o" . pop-global-mark)
-     '("=" . meow-indent)))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-kill)
+   '("D" . meow-backward-delete)
+   '("e" . meow-mark-word)
+   '("E" . meow-mark-symbol)
+   '("f" . meow-find)
+   '("F" . meow-negative-find)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-insert-with-selection)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("n" . meow-search)
+   '("o" . meow-open-below)
+   '("O" . meow-open-above)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("S" . meow-grab)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("V" . meow-line)
+   '("w" . meow-next-word)
+   '("W" . meow-next-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("`" . meow-pop-selection)
+   '("'" . repeat)
+   '("RET" . save-buffer)
+   '("<escape>" . meow-cancel-selection)
+   '("C-=" . meow-forward-slurp)
+   '("C-/" . meow-forward-barf)
+   '("g g" . beginning-of-buffer)
+   '("G" . aleks/goto-line)
+   '("g d" . xref-find-definitions)
+   '("C-w o" . delete-other-windows)
+   '("C-w o" . delete-other-windows)
+   '("C-w c" . delete-window)
+   '("C-w j" . windmove-down)
+   '("C-w k" . windmove-up)
+   '("C-w l" . windmove-right)
+   '("C-w h" . windmove-left)
+   '("C-w s" . aleks/split-window)
+   '("C-w v" . aleks/vsplit-window)
+   '("C-o" . pop-global-mark)
+   '("C-f" . scroll-up-command)
+   '("C-b" . scroll-down-command)
+   '("=" . meow-indent)))
 #+end_src
 
 *** Initialise
@@ -1634,7 +1672,11 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
            ("C-/" . meow-forward-barf))
     :demand t
     :custom
-    (meow-expand-hint-counts '())
+    (meow-expand-hint-counts '((word . 0)
+                               (line . 0)
+                               (block .0)
+                               (find . 0)
+                               (till . 0)))
     :config
     (meow-global-mode 1)
     (meow-setup))
