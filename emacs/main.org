@@ -1060,6 +1060,12 @@ Jump to arbitrary points in the buffer
 #+end_src
 
 ** Beacon
+** Buttercup
+This is just for testing elisp files. Having it in the config allows me to execute the tests from within my active Emacs session, and not just using =eldev=.
+
+#+begin_src emacs-lisp
+(use-package buttercup)
+#+end_src
 
 ** Calculate Sprints
 
