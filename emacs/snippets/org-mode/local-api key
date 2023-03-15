@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: local-api key
+# key: local-api
+# --
+:header-args:restclient: :var auth="Authorization: ${1:api-key}\nUser-Agent: ADI\nContent-Type: application/json" report="http://mp.local:8490/v1" rest="http://mp.local:8360/v1"
