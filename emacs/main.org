@@ -724,7 +724,6 @@ Render inline LaTeX fragments somewhat bigger, to match the font size.
   (plist-put org-format-latex-options :scale 2)
 #+end_src
 
-
 *** Reveal
 
 #+BEGIN_SRC emacs-lisp
@@ -1059,7 +1058,6 @@ Jump to arbitrary points in the buffer
   :custom (avy-all-windows 'all-frames))
 #+end_src
 
-** Beacon
 ** Buttercup
 This is just for testing elisp files. Having it in the config allows me to execute the tests from within my active Emacs session, and not just using =eldev=.
 
