@@ -195,19 +195,19 @@ following definition takes care of setting up which parts of
 =org-mode= are fixed pitch.
 
 #+begin_src emacs-lisp
-  (defun aleks/set-org-mode-fixed-pitch-faces ()
-    (mapc (lambda (face) (set-face-attribute face nil :family (face-attribute 'fixed-pitch :family)))
-          `(org-block
-            org-special-keyword
-            org-drawer
-            org-todo
-            org-done
-            org-code
-            org-priority
-            org-checkbox
-            org-block-end-line
-            org-block-begin-line
-            org-table org-verbatim)))
+(defun aleks/set-org-mode-fixed-pitch-faces ()
+  (mapc (lambda (face) (set-face-attribute face nil :family (face-attribute 'fixed-pitch :family)))
+        `(org-block
+          org-special-keyword
+          org-drawer
+          org-todo
+          org-code
+          org-priority
+          org-checkbox
+          org-block-end-line
+          org-block-begin-line
+          org-table
+          org-verbatim)))
 #+end_src
 
 And here's a function to set the different faces.
@@ -736,6 +736,12 @@ Render inline LaTeX fragments somewhat bigger, to match the font size.
 #+END_SRC
 
 *** Visuals
+
+I don't like the bold red colour for TODO items. I dread them enough without them screaming into my face.
+
+#+begin_src emacs-lisp
+(set-face-attribute 'org-todo nil :foreground (car (alist-get 'blue modus-vivendi-palette)))
+#+end_src
 
 Prettier lists, by substituting bullet points for list item markers.
 
