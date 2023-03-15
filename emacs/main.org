@@ -295,6 +295,15 @@ Since Emacs 29, we've got smooth scrolling, too.
 
 The interpolation factor dictates scroll speed.
 
+** Search
+Since I'm not using =evil= anymore, =isearch= needs some tweaking.
+
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(isearch-lazy-count t)
+ '(isearch-yank-on-move t))
+#+end_src
+
 ** Text buffers
 
 When reading and writing text, the buffer shouldn't get too wide. Olivetti mode takes care of that.
