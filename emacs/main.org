@@ -516,17 +516,22 @@ The function =browse-amazon-history-at-point= is useful to get to the Amazon ord
 #+END_SRC
 
 ** Org
-
 Loading org already happened in =init.el=.
 
 *** Keybindings
 #+begin_src emacs-lisp
-  (use-package org
-    :bind (("C-c o a" . org-agenda)
-           ("C-c o C" . org-capture)
-           ("C-c o c o" . org-clock-out)
-           ("C-c o c g" . org-clock-goto)))
+(use-package org
+  :bind (("C-c o a" . org-agenda)
+         ("C-c o C" . org-capture)
+         ("C-c o c c" . org-capture)
+         ("C-c o n" . org-toggle-narrow-to-subtree)
+         ("C-c o l" . org-demote-subtree)
+         ("C-c o h" . org-promote-subtree)
+         ("C-c o c o" . org-clock-out)
+         ("C-c o c i" . org-clock-in)
+         ("C-c o c g" . org-clock-goto)))
 #+end_src
+
 *** Agenda
 
 The most important files get their own variables.
