@@ -685,18 +685,26 @@ We set the export backend to biblatex for latex.
 And we set a lot of configuration options for org.
 
 #+begin_src emacs-lisp
-  (custom-set-variables
-   '(org-tags-column 0) ; alignment broken with variable pitch
-   '(org-confirm-babel-evaluate nil) ; don't prompt when evaluating
-   '(org-startup-folded t)
-   '(org-hide-emphasis-markers t)
-   '(org-babel-confirm-evaluate nil)
-   '(org-log-into-drawer t)
-   '(org-image-actual-width nil) ; Take the width from ORG_ATTRs
-   '(org-outline-path-complete-in-steps nil) ; use a flat list instead of hierarchichal steps
-   '(org-refile-targets
-     '((nil . (:maxlevel . 4)))) ; don't descend more than 4 levels when refiling
-   '(org-footnote-section nil)) ; place footnotes in same section
+(custom-set-variables
+ '(org-tags-column 0) ; alignment broken with variable pitch
+ '(org-confirm-babel-evaluate nil) ; don't prompt when evaluating
+ '(org-startup-folded t)
+ '(org-hide-emphasis-markers t)
+ '(org-babel-confirm-evaluate nil)
+ '(org-log-into-drawer t)
+ '(org-catch-invisible-edits 'show-and-error)
+ '(org-special-ctrl-a/e t)
+ '(org-log-into-drawer t)
+ '(org-ellipsis "…")
+ '(org-fontify-whole-heading-line t)
+ '(org-pretty-entities t)
+ '(org-agenda-tags-column 0)
+ '(org-edit-src-content-indentation 0)
+ '(org-image-actual-width nil) ; Take the width from ORG_ATTRs
+ '(org-outline-path-complete-in-steps nil) ; use a flat list instead of hierarchichal steps
+ '(org-refile-targets
+   '((nil . (:maxlevel . 4)))) ; don't descend more than 4 levels when refiling
+ '(org-footnote-section nil)) ; place footnotes in same section
 #+end_src
 
 *** Export
@@ -707,14 +715,6 @@ Enable export back ends not enabled by default.
   (require 'org)
   (customize-set-variable
    'org-export-backends (append org-export-backends '(md)))
-#+end_src
-
-*** Indentation
-
-Indent mode keeps leading spaces out of org text files.
-
-#+begin_src emacs-lisp
-  (add-hook 'org-mode-hook #'org-indent-mode)
 #+end_src
 
 *** Inline Latex
@@ -755,18 +755,6 @@ Prettier lists, by substituting bullet points for list item markers.
                     "•"))))))
 #+END_SRC
 
-This hides heading bullets for a cleaner look.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :hook
-    (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '(" "))
-    (org-fontify-whole-heading-line t)
-    (org-pretty-entities t))
-#+END_SRC
-
 Org-appear allows easy editing of inline markup when it's hidden.
 
 #+begin_src emacs-lisp
@@ -779,6 +767,81 @@ Org-appear allows easy editing of inline markup when it's hidden.
     :straight (org-appear :type git
                 :host github
                 :repo "awth13/org-appear"))
+#+end_src
+
+There's a way to dynamically generate SVGs and inline them in =org= to improve the visuals, but it needs pretty complex configuration that I haven't done yet.
+
+*** Org -Journal
+
+An alternative might be to use =org-roam-dailies= but I saw no benefits so far.
+
+#+begin_src emacs-lisp
+(use-package org-journal)
+#+end_src
+*** Org Modern
+A modern look for org mode.
+
+#+begin_src emacs-lisp
+(use-package org-modern
+  :custom
+  '(org-modern-star '("🞴" "🞳" "🞲" "🞱" "🞰"))
+  :config
+  (global-org-modern-mode)
+  (set-face-attribute 'org-modern-done nil :family (face-attribute 'fixed-pitch :family))
+  (set-face-background 'fringe (face-attribute 'default :background)))
+#+end_src
+*** Org-Ref
+
+I'm using org-cite nowadays, but org-ref still has important goodies.
+
+#+begin_src emacs-lisp
+  (use-package org-ref
+    :custom
+    (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
+    (org-ref-pdf-directory '("~/doc/lib")))
+#+end_src
+*** Org-Roam
+
+
+Mostly for lecture notes, ideas for talks, but also random thoughts.
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (file-truename (concat (file-name-as-directory (getenv "HOME")) "org/roam")))
+    :config
+    (org-roam-setup))
+#+end_src
+
+**** UI
+
+Not very useful, except as a motivation to have the network grow.
+
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    :straight
+      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start t))
+#+end_src
+
+*** Org-tufte
+This is a small package that bundles [[https://edwardtufte.github.io/tufte-css/][Tufte's CSS]] with org mode to make something on the web that resembles [[https://tufte-latex.github.io/tufte-latex/][Tufte's handouts]]. It might come in useful for presentations or blogs, but I'd probably want to modify the CSS a bit.
+
+#+begin_src emacs-lisp
+(use-package org-tufte
+  :straight
+  (org-tufte :type git :host github :repo "Zilong-Li/org-tufte")
+  :config
+  (require 'org-tufte)
+  (setq org-tufte-htmlize-code t))
 #+end_src
 
 ** PlantUML
@@ -1602,64 +1665,6 @@ The context definitions are in =private.org=.
 
 #+begin_src emacs-lisp
   (use-package multiple-cursors)
-#+end_src
-
-** Org-Mode with SVG eye candy
-
-There's a way to dynamically generate SVGs and inline them in =org= to improve the visuals, but it needs pretty complex configuration that I haven't done yet.
-
-#+begin_src emacs-lisp :tangle no
-  (use-package svg-lib)
-#+end_src
-
-** Org -Journal
-
-An alternative might be to use =org-roam-dailies= but I saw no benefits so far.
-
-#+begin_src emacs-lisp
-  (use-package org-journal)
-#+end_src
-
-** Org-Ref
-
-I'm using org-cite nowadays, but org-ref still has important goodies.
-
-#+begin_src emacs-lisp
-  (use-package org-ref
-    :custom
-    (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
-    (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
-    (org-ref-pdf-directory '("~/doc/lib")))
-#+end_src
-
-** Org-Roam
-
-Mostly for lecture notes, ideas for talks, but also random thoughts.
-
-#+begin_src emacs-lisp
-  (use-package org-roam
-    :init
-    (setq org-roam-v2-ack t)
-    :custom
-    (org-roam-directory (file-truename (concat (file-name-as-directory (getenv "HOME")) "org/roam")))
-    :config
-    (org-roam-setup))
-#+end_src
-
-*** UI
-
-Not very useful, except as a motivation to have the network grow.
-
-#+begin_src emacs-lisp
-  (use-package org-roam-ui
-    :straight
-      (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-      :after org-roam
-      :config
-      (setq org-roam-ui-sync-theme t
-            org-roam-ui-follow t
-            org-roam-ui-update-on-save t
-            org-roam-ui-open-on-start t))
 #+end_src
 
 ** Pair Programmer Mode
