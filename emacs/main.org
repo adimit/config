@@ -1717,19 +1717,20 @@ Highlight parentheses in different colours according to their nesting level.
 Smartparens to make handling parentheses easier.
 
 #+begin_src emacs-lisp
-  (use-package smartparens
-    :init
-    (require 'smartparens-config)
-    :bind (("C-c x p ]" . sp-forward-slurp-sexp)
-           ("C-c x p [" . sp-forward-barf-sexp))
-    :config
-    (smartparens-global-mode 1)
-    (show-smartparens-global-mode 1)
-    (setq meow--kbd-forward-slurp "C-c x p ]"
-          meow--kbd-forward-barf "C-c x p [")
-    :custom
-    (smartparens-strict-mode 1)
-    (sp-show-pair-delay 0))
+(use-package smartparens
+  :init
+  (require 'smartparens-config)
+  :bind (("C-c x p ]" . sp-forward-slurp-sexp)
+         ("C-c x p [" . sp-forward-barf-sexp))
+  :config
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode 1)
+  (setq meow--kbd-forward-slurp "C-c x p ]"
+        meow--kbd-forward-barf "C-c x p [")
+  :custom
+  (sp-wrap-repeat-last 2) ;; repeat wrap with different pair
+  (smartparens-strict-mode 1)
+  (sp-show-pair-delay 0))
 #+end_src
 
 ** Projectile
