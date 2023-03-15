@@ -395,6 +395,17 @@ This is useful for ecukes tests. I don't use those myself, but some other packag
   (use-package dockerfile-mode :mode "Dockerfile")
 #+END_SRC
 
+** Emacs Lisp
+ELisp mode is, of course, built in, but there are some ways to enhance it.
+
+Eros mode shows you the result of elisp expressions in-band, instead of in the mini-buffer. It also has an embark style functionality where you can just inspect the last result which we bind to a useful key.
+
+#+begin_src emacs-lisp
+(use-package eros
+  :bind (("C-c s i" . eros-inspect-last-result))
+  :config
+  (eros-mode 1))
+#+end_src
 ** Fish
 
 #+BEGIN_SRC emacs-lisp
