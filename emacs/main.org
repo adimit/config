@@ -1317,9 +1317,18 @@ Insert the current ticket number if we're on a =KNUTH= feature branch.
 ** Flycheck
 
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :config (global-flycheck-mode))
+(use-package flycheck
+  ;; setting the load path so flycheck knows about includes
+  :custom (flycheck-emacs-lisp-load-path 'inherit)
+  :config (global-flycheck-mode))
 #+END_SRC
+
+*** Correct dependencies in eldev projects
+In order to be able to ~require~ things in Elisp projects using =eldev= and for =flycheck= to pick that up, we'll need this extension.
+
+#+begin_src emacs-lisp
+(use-package flycheck-eldev)
+#+end_src
 
 *** Checkdoc in org src edit buffers
 =checkdoc= will insist on headers, footers, commentary sections etc. in all your elisp code, including code that's opened with =org-src-edit=, which makes no sense at all. The corresponding function is =checkdoc-comments= and it runs whenever =buffer-file-name= is set. Org src edit buffers do set a file name, so =checkdoc= happily checks their comments. There's no way to exclude just one kind of check, so we just disable checkdoc in =org-src-edit= buffers.
