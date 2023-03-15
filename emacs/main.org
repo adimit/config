@@ -382,6 +382,13 @@ A list of supported major modes and their configuration.
     :mode "\\.[ct]sv$")
 #+END_SRC
 
+** Cucumber
+This is useful for ecukes tests. I don't use those myself, but some other packages are covered by ecukes.
+
+#+begin_src emacs-lisp
+(use-package feature-mode
+  :mode "\\.feature\\'")
+#+end_src
 ** Docker
 
 #+BEGIN_SRC emacs-lisp
