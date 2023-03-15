@@ -1524,23 +1524,23 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
 
-#+begin_src emacs-lisp :tangle no
-  (defun rename-file-and-buffer (new-name)
-    "Renames both current buffer and file it's visiting to NEW-NAME."
-    (interactive "sNew name: ")
-    (let ((name (buffer-name))
-          (filename (buffer-file-name)))
-      (if (buffer-modified-p)
-          (message "Buffer is modified, save it first.")
-        (if (not filename)
-            (message "Buffer '%s' is not visiting a file." name)
-          (if (get-buffer new-name)
-              (message "A buffer named '%s' already exists." new-name)
-            (progn
-              (rename-file filename new-name 1)
-              (rename-buffer new-name)
-              (set-visited-file-name new-name)
-              (set-buffer-modified-p nil)))))))
+#+begin_src emacs-lisp
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (buffer-modified-p)
+        (message "Buffer is modified, save it first.")
+      (if (not filename)
+          (message "Buffer '%s' is not visiting a file." name)
+        (if (get-buffer new-name)
+            (message "A buffer named '%s' already exists." new-name)
+          (progn
+            (rename-file filename new-name 1)
+            (rename-buffer new-name)
+            (set-visited-file-name new-name)
+            (set-buffer-modified-p nil)))))))
 #+end_src
 
 ** Mu4e
