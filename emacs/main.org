@@ -1233,6 +1233,14 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
     :hook (forge-post-mode . emojify-mode))
 #+end_src
 
+** Expand Region
+Meow has its own expand region, but we can also use the more venerable expand-region. I've added my own extension to ER that leverages tree-sitter. The PR isn't merged yet.
+#+begin_src emacs-lisp
+(use-package expand-region
+  :straight (expand-region :type git :host github :repo "adimit/expand-region.el")
+  :bind (("C-c e" . er/expand-region)))
+#+end_src
+
 ** Extract Issue Numbers from Branch
 Insert the current ticket number if we're on a =KNUTH= feature branch.
 
