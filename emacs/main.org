@@ -1050,10 +1050,13 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
 Jump to arbitrary points in the buffer
 
 #+begin_src emacs-lisp
-  (use-package avy
-    :bind (("C-c r" . avy-goto-char)
-           ("C-c l" . avy-goto-line))
-    :custom (avy-all-windows 'all-frames))
+(use-package avy
+  :after (meow)
+  :config
+  (meow-normal-define-key
+   '("g c" . avy-goto-char)
+   '("g l" . avy-goto-line))
+  :custom (avy-all-windows 'all-frames))
 #+end_src
 
 ** Beacon
