@@ -870,9 +870,8 @@ This is a small package that bundles [[https://edwardtufte.github.io/tufte-css/]
 (use-package org-tufte
   :straight
   (org-tufte :type git :host github :repo "Zilong-Li/org-tufte")
-  :config
-  (require 'org-tufte)
-  (setq org-tufte-htmlize-code t))
+  :custom
+  (org-tufte-htmlize-code t))
 #+end_src
 
 ** PlantUML
