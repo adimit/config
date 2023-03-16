@@ -1623,6 +1623,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("K" . meow-prev-expand)
    '("l" . meow-right)
    '("L" . meow-right-expand)
+   '("m" . er/expand-region)
    '("n" . meow-search)
    '("o" . meow-open-below)
    '("O" . meow-open-above)
@@ -1669,20 +1670,21 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
 *** Initialise
 
 #+begin_src emacs-lisp
-  (use-package meow
-    :bind (("C-=" . meow-forward-slurp)
-           ("C-/" . meow-forward-barf))
-    :demand t
-    :custom
-    (meow-expand-hint-counts '((word . 0)
-                               (line . 0)
-                               (block .0)
-                               (find . 0)
-                               (till . 0)))
-    :config
-    (meow-global-mode 1)
-    (meow-setup))
+(use-package meow
+  :bind (("C-=" . meow-forward-slurp)
+         ("C-/" . meow-forward-barf))
+  :demand t
+  :custom
+  (meow-expand-hint-counts '((word . 0)
+                             (line . 0)
+                             (block .0)
+                             (find . 0)
+                             (till . 0)))
+  :config
+  (meow-global-mode 1)
+  (meow-setup))
 #+end_src
+
 ** Move File and Buffer
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
