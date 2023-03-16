@@ -1024,27 +1024,30 @@ LSP lacks a general entrypoint to filter these out. See [[https://github.com/ema
 There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance. I'm using =corfu= and hence I've turned off ~lsp-completion-provider~ here
 
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :defer t
-    :hook
-    (typescript-ts-mode . lsp)
-    (tsx-ts-mode . lsp)
-    :custom
-    (lsp-completion-provider :none)
-    (lsp-javascript-display-inlay-hints nil)
-    (lsp-javascript-display-enum-member-value-hints nil)
-    (lsp-javascript-display-parameter-type-hints nil)
-    (lsp-javascript-display-parameter-name-hints nil)
-    (lsp-javascript-display-return-type-hints nil)
-    (lsp-javascript-display-property-declaration-type-hints nil)
-    (lsp-javascript-display-variable-type-hints nil)
-    :config
-    (defun js-set-inlay-face ()
-      (set-face-attribute
-       'lsp-javascript-inlay-face nil
-       :inherit 'variable-pitch
-       :foreground "#787878"
-       :height 1.0)))
+(use-package lsp-mode
+  :defer t
+  :mode
+  ("\\.ts\\'" . typescript-ts-mode)
+  ("\\.tsx\\'" . tsx-ts-mode)
+  :hook
+  (typescript-ts-mode . lsp)
+  (tsx-ts-mode . lsp)
+  :custom
+  (lsp-completion-provider :none)
+  (lsp-javascript-display-inlay-hints nil)
+  (lsp-javascript-display-enum-member-value-hints nil)
+  (lsp-javascript-display-parameter-type-hints nil)
+  (lsp-javascript-display-parameter-name-hints nil)
+  (lsp-javascript-display-return-type-hints nil)
+  (lsp-javascript-display-property-declaration-type-hints nil)
+  (lsp-javascript-display-variable-type-hints nil)
+  :config
+  (defun js-set-inlay-face ()
+    (set-face-attribute
+     'lsp-javascript-inlay-face nil
+     :inherit 'variable-pitch
+     :foreground "#787878"
+     :height 1.0)))
 #+end_src
 
 ** YAML
