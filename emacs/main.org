@@ -815,7 +815,7 @@ A modern look for org mode.
 #+begin_src emacs-lisp
 (use-package org-modern
   :custom
-  '(org-modern-star '("🞴" "🞳" "🞲" "🞱" "🞰"))
+  (org-modern-star '("🞴" "🞳" "🞲" "🞱" "🞰"))
   :config
   (global-org-modern-mode)
   (set-face-attribute 'org-modern-done nil :family (face-attribute 'fixed-pitch :family))
@@ -1406,8 +1406,9 @@ The best =git= porcelain ever.
          ("C-c G G" . magit-status)
          ("C-c G s" . magit-status)
          ("C-c G b" . magit-blame))
-  :config
+  :custom
   (magit-save-repository-buffers 'dontask)
+  :config
   (transient-append-suffix 'magit-branch "F" '("o" "from current task" aleks/create-branch-from-current-task)))
 #+end_src
 
