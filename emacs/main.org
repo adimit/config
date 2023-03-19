@@ -1508,6 +1508,29 @@ Additionally, we'll use Vim-style =C-f= and =C-b= in normal mode, so we'll remap
       meow--kbd-backward-char "<left>")
 #+end_src
 
+*** Yanking
+=C-y= is really hard to type on Dvorak, and Vim uses =C-r= in insert mode. So we'll move it out of the way with global keybindings. We'll also need to tell meow to look for yank keybinds somewhere else. Finally, ~cua-paste~ is a useful tool to copy things from other applications explicitly without much guesswork.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'meow
+  (setq meow--kbd-yank "S-<insert>")
+  (global-set-key (kbd "C-r") 'yank)
+  (global-set-key (kbd "M-r") 'cua-paste))
+#+end_src
+
+When meow yanks, it does so in Emacs-style, which is equivalent to inserting *before* the cursor in Vim. But default Vim (and Kakoune) behaviour is to paste *after* the cursor.
+
+#+begin_src emacs-lisp
+(defun aleks/meow-yank-forward ()
+  "Command to yank (like `meow-yank') but after the cursor, not before."
+  (interactive)
+  (let ((str (current-kill 1)))
+    (if (string-match-p "\n\\'" str)
+        (meow--execute-kbd-macro meow--kbd-forward-line)
+      (meow--execute-kbd-macro meow--kbd-forward-char))
+    (insert-for-yank str)))
+#+end_src
+
 *** Window management commands
 
 These emulate Vim's window splitting commands.
@@ -1633,7 +1656,8 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("n" . meow-search)
    '("o" . meow-open-below)
    '("O" . meow-open-above)
-   '("p" . meow-yank)
+   '("P" . meow-yank)
+   '("p" . aleks/meow-yank-forward)
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
@@ -1650,6 +1674,8 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
    '("`" . meow-pop-selection)
+   '("/" . isearch-forward)
+   '("?" . isearch-backward)
    '("'" . repeat)
    '("RET" . save-buffer)
    '("<escape>" . meow-cancel-selection)
