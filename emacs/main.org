@@ -1273,9 +1273,13 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
 
 ** Expand Region
 Meow has its own expand region, but we can also use the more venerable expand-region. I've added my own extension to ER that leverages tree-sitter. The PR isn't merged yet.
+
 #+begin_src emacs-lisp
 (use-package expand-region
-  :straight (expand-region :type git :host github :repo "adimit/expand-region.el")
+  :straight (expand-region
+             :host nil
+             :branch "treesit-er"
+             :repo "/home/aleks/src/expand-region.el")
   :bind (("C-c e" . er/expand-region)))
 #+end_src
 
