@@ -1628,8 +1628,6 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("1" . meow-expand-1)
    '("-" . negative-argument)
    '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("a" . meow-append)
