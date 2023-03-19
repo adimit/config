@@ -1533,18 +1533,6 @@ When meow yanks, it does so in Emacs-style, which is equivalent to inserting *be
 
 *** Window management commands
 
-These emulate Vim's window splitting commands.
-
-#+begin_src emacs-lisp :tangle no
-  (defun aleks/split-window ()
-    (interactive)
-    (split-window (selected-window) nil 'below))
-  (defun aleks/vsplit-window ()
-    (interactive)
-    (split-window (selected-window) nil 'right))
-#+end_src
-
-
 The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
 
 #+begin_src emacs-lisp
@@ -1578,6 +1566,80 @@ Because of the way meow works, I'll need to rebind =C-/= as I need that shortcut
 (defun aleks/create-angle-brackets-object ()
   (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">")))
   (add-to-list 'meow-char-thing-table '(?a . angle)))
+#+end_src
+
+*** Transient
+Helix pops up little menus every time you press ~SPC~ or ~g~ or ~m~ (and others). Those are very helpful for discovery and don't slow down the workflow.
+
+We'll attempt something similar with Emacs' =transient= feature, which is now part of mainline emacs
+
+**** Goto Menu
+
+#+begin_src emacs-lisp
+(defmacro with-prefix (arg symbol)
+  "Executes SYMBOL interactively setting `current-prefix-arg' to ARG."
+  `(let ((current-prefix-arg ,arg))
+     (call-interactively ',symbol)))
+
+(defun aleks/top-of-window ()
+  "Move to the top of the window, respecting `scroll-margin'."
+  (interactive)
+  (with-prefix (or scroll-margin 0) move-to-window-line))
+
+(defun aleks/bottom-of-window ()
+  "Move to the bottom of the windo, respecting `scroll-margin'."
+  (interactive)
+  (with-prefix (- -1 (or scroll-margin 0)) move-to-window-line))
+
+(transient-define-prefix dispatch-goto-menu () "this isn't documentation."
+  [("g" "beginning of buffer" beginning-of-buffer)
+   ("e" "end of buffer" end-of-buffer)
+   ("d" "definition using xref" xref-find-definitions)
+   ("h" "beginning of line" beginning-of-line)
+   ("l" "end of line" end-of-line)
+   ("s" "first non-blank in line" beginning-of-line-text)
+   ("t" "top of window" aleks/top-of-window)
+   ("b" "bottom of window" aleks/bottom-of-window)
+   ;; ("c" "centre of window" move-to-window-line)
+   ("c" "go to character" avy-goto-char)
+   ("n" "next buffer" next-buffer)
+   ("p" "previous buffer" previous-buffer)])
+#+end_src
+
+**** Window Menu
+
+#+begin_src emacs-lisp
+(defun aleks/split-window ()
+  (interactive)
+  (split-window (selected-window) nil 'below))
+(defun aleks/vsplit-window ()
+  (interactive)
+  (split-window (selected-window) nil 'right))
+
+(defun nyi ()
+  "signal to the user that this functionality is not yet implemented"
+  (interactive)
+  (user-error "Not yet implemented."))
+
+(transient-define-prefix dispatch-window-menu () "this isn't documentation"
+  [("w" "next window" nyi)
+   ("s" "horizontally split window" aleks/split-window)
+   ("v" "vertically split window" aleks/vsplit-window)
+   ("t" "transpose window split" nyi)
+   ("f" "split with files in selection" nyi)
+   ("F" "split with files in sleection vertically" nyi)
+   ("q" "close window" delete-window)
+   ("c" "close window" delete-window)
+   ("o" "close windows except current" delete-other-windows)
+   ("h" "left window" windmove-left)
+   ("l" "right window" windmove-right)
+   ("k" "top window" windmove-up)
+   ("j" "bottom window" windmove-down)
+   ("H" "swap left window" nyi)
+   ("L" "swap right window" nyi)
+   ("K" "swap top window" nyi)
+   ("J" "swap bottom window" nyi)
+   ("n" "new split scratch buffer" nyi)])
 #+end_src
 
 *** Keybindings
@@ -1679,18 +1741,9 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("<escape>" . meow-cancel-selection)
    '("C-=" . meow-forward-slurp)
    '("C-/" . meow-forward-barf)
-   '("g g" . beginning-of-buffer)
+   '("g" . dispatch-goto-menu)
    '("G" . aleks/goto-line)
-   '("g d" . xref-find-definitions)
-   '("C-w o" . delete-other-windows)
-   '("C-w o" . delete-other-windows)
-   '("C-w c" . delete-window)
-   '("C-w j" . windmove-down)
-   '("C-w k" . windmove-up)
-   '("C-w l" . windmove-right)
-   '("C-w h" . windmove-left)
-   '("C-w s" . aleks/split-window)
-   '("C-w v" . aleks/vsplit-window)
+   '("C-w" . dispatch-window-menu)
    '("C-o" . pop-global-mark)
    '("C-f" . scroll-up-command)
    '("C-b" . scroll-down-command)
