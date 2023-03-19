@@ -1556,8 +1556,19 @@ Undo with Emacs isn't the greatest experience.
 Because of the way meow works, I'll need to rebind =C-/= as I need that shortcut for ~sp-forward-barf-sexp~ later on.
 
 #+begin_src emacs-lisp
-  (global-key '("C-c x u" . undo))
-  (setq meow--kbd-undo "C-c x u")
+(global-key '("C-c x u" . undo-only))
+(setq meow--kbd-undo "C-c x u")
+#+end_src
+
+Redo is a bit more complicated. First, we'll replicate ~meow-undo~ for redo:
+
+#+begin_src emacs-lisp
+(defun aleks/meow-redo ()
+  "Like `meow-undo' but with redo."
+  (interactive)
+  (when (region-active-p)
+    (meow--cancel-selection))
+  (undo-redo))
 #+end_src
 
 *** Select Angle Brackets
@@ -1725,7 +1736,7 @@ I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys he
    '("S" . meow-grab)
    '("t" . meow-till)
    '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
+   '("U" . aleks/meow-redo)
    '("V" . meow-line)
    '("w" . meow-next-word)
    '("W" . meow-next-symbol)
