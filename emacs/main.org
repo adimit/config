@@ -1602,18 +1602,19 @@ We'll attempt something similar with Emacs' =transient= feature, which is now pa
   (with-prefix (- -1 (or scroll-margin 0)) move-to-window-line))
 
 (transient-define-prefix dispatch-goto-menu () "this isn't documentation."
-  [("g" "beginning of buffer" beginning-of-buffer)
-   ("e" "end of buffer" end-of-buffer)
-   ("d" "definition using xref" xref-find-definitions)
-   ("h" "beginning of line" beginning-of-line)
-   ("l" "end of line" end-of-line)
-   ("s" "first non-blank in line" beginning-of-line-text)
-   ("t" "top of window" aleks/top-of-window)
-   ("b" "bottom of window" aleks/bottom-of-window)
+  [[("g" "beginning of buffer" beginning-of-buffer)
+    ("e" "end of buffer" end-of-buffer)
+    ("d" "definition using xref" xref-find-definitions)
+    ("h" "beginning of line" beginning-of-line)]
+   [("l" "end of line" end-of-line)
+    ("s" "first non-blank in line" beginning-of-line-text)
+    ("t" "top of window" aleks/top-of-window)
+    ("b" "bottom of window" aleks/bottom-of-window)]
    ;; ("c" "centre of window" move-to-window-line)
-   ("c" "go to character" avy-goto-char)
-   ("n" "next buffer" next-buffer)
-   ("p" "previous buffer" previous-buffer)])
+   [("c" "go to character" avy-goto-char)
+    ("f" "file at point" find-file-at-point)
+    ("n" "next buffer" next-buffer)
+    ("p" "previous buffer" previous-buffer)]])
 #+end_src
 
 **** Window Menu
@@ -1631,26 +1632,40 @@ We'll attempt something similar with Emacs' =transient= feature, which is now pa
   (interactive)
   (user-error "Not yet implemented."))
 
-(transient-define-prefix dispatch-window-menu () "this isn't documentation"
-  [("w" "next window" nyi)
-   ("s" "horizontally split window" aleks/split-window)
-   ("v" "vertically split window" aleks/vsplit-window)
-   ("t" "transpose window split" nyi)
-   ("f" "split with files in selection" nyi)
-   ("F" "split with files in sleection vertically" nyi)
-   ("q" "close window" delete-window)
-   ("c" "close window" delete-window)
-   ("o" "close windows except current" delete-other-windows)
-   ("h" "left window" windmove-left)
-   ("l" "right window" windmove-right)
-   ("k" "top window" windmove-up)
-   ("j" "bottom window" windmove-down)
-   ("H" "swap left window" nyi)
-   ("L" "swap right window" nyi)
-   ("K" "swap top window" nyi)
-   ("J" "swap bottom window" nyi)
-   ("n" "new split scratch buffer" nyi)])
+(transient-define-prefix dispatch-window-menu ()
+  "this isn't documentation"
+  ["Windows\n"
+   ["Traverse"
+    ("w" "next window" nyi)
+    ("h" "left window" windmove-left)
+    ("l" "right window" windmove-right)
+    ("k" "top window" windmove-up)
+    ("j" "bottom window" windmove-down)]
+   ["Open & Close"
+    ("s" "horizontally split window" aleks/split-window)
+    ("v" "vertically split window" aleks/vsplit-window)
+    ("q" "close window" delete-window)
+    ("c" "close window" delete-window)
+    ("n" "open scratch in split" next-window-any-frame)
+    ("o" "close windows except current" delete-other-windows)]])
+
+(global-key '("C-c w" . dispatch-window-menu))
 #+end_src
+
+Emacs doesn't support transposing windows natively, but there's an extension, which is probably unmaintained but gets the job done. (The code of ~transpose-frame~ is nightmarish, though. I hope it never breaks.)
+
+#+begin_src emacs-lisp
+(use-package transpose-frame
+  :config
+  (transient-append-suffix
+    'dispatch-window-menu
+    '(0 1)
+    ["Shift"
+     ("V" "flip windows around vertically" flip-frame)
+     ("v" "flop windows around horizontally" flop-frame)
+     ("t" "transpose windows" transpose-frame)]))
+#+end_src
+
 
 *** Keybindings
 
