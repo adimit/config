@@ -1866,7 +1866,7 @@ The context definitions are in =private.org=.
     (when mu4e-compose-parent-message
       (cond
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :to "aleks.bg")
-        (setq user-mail-address (cdr (car (mu4e-message-field mu4e-compose-parent-message :to)))))
+        (setq user-mail-address (plist-get (car (mu4e-message-field mu4e-compose-parent-message :to)) :email)))
        ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
         (setq user-mail-address "org@list.aleks.bg")))))
 
