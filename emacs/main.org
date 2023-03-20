@@ -1468,7 +1468,7 @@ Usually, Meow kills the selection when entering insert mode. These functions are
 
 *** C-w
 
-I don't use a lot of insert-mode key chords, but =C-w= is very important to my mental well-being. But since =C-w= is also used for ~kill-region~ we'll need to tell meow to expect it somewhere else. Luckily, it's also bound to =S-<delete>=.
+I don't use a lot of insert-mode key chords, but =C-w= is very important to my mental well-being. Since =C-w= is also used for ~kill-region~ we'll need to tell meow to expect it somewhere else. Luckily, it's also bound to =S-<delete>=.
 
 #+begin_src emacs-lisp
   (defun aleks/delete-backward-word ()
@@ -1531,8 +1531,7 @@ When meow yanks, it does so in Emacs-style, which is equivalent to inserting *be
     (insert-for-yank str)))
 #+end_src
 
-*** Window management commands
-
+*** C-c keybindings
 The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
 
 #+begin_src emacs-lisp
