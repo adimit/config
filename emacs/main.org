@@ -821,16 +821,54 @@ A modern look for org mode.
   (set-face-attribute 'org-modern-done nil :family (face-attribute 'fixed-pitch :family))
   (set-face-background 'fringe (face-attribute 'default :background)))
 #+end_src
+*** Org Present
+A thin presentation mode for org documents. I'll be using this for sprint reviews  and similar occasions.
+
+#+begin_src emacs-lisp
+(defun aleks/org-present-enter ()
+  "Called by `org-present-mode-hook' to set up presentations."
+  (org-present-big)
+  (org-display-inline-images)
+  (org-present-hide-cursor)
+  (org-present-read-only)
+  (setq header-line-format " ")
+  (org-overview)
+  (setq-local face-remapping-alist
+              '((default (:height 1.5) variable-pitch)
+                (header-line (:height 4.0) variable-pitch)
+                (org-document-title (:height 1.75) org-document-title)
+                (org-code (:height 1.25) org-code)
+                (org-verbatim (:height 1.25) org-verbatim)
+                (org-block (:height 1.25) org-block)
+                (org-block-begin-line (:height 0.7) org-block))))
+
+
+(defun aleks/org-present-leave ()
+  "Called by `org-present-mode-quit-hook' to roll back all changes to the buffer."
+  (org-present-small)
+  (org-present-show-cursor)
+  (org-present-read-write)
+  (setq-local face-remapping-alist '((default variable-pitch default)))
+  (setq header-line-format nil))
+
+(use-package org-present
+  :commands org-present
+  :hook
+  (org-present-mode . aleks/org-present-enter)
+  (org-present-mode-quit . aleks/org-present-leave))
+#+end_src
+
 *** Org-Ref
 
 I'm using org-cite nowadays, but org-ref still has important goodies.
 
 #+begin_src emacs-lisp
-  (use-package org-ref
-    :custom
-    (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
-    (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
-    (org-ref-pdf-directory '("~/doc/lib")))
+(use-package org-ref
+  :custom
+  (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
+  (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
+  (org-ref-pdf-directory '("~/doc/lib")))
+
 #+end_src
 *** Org-Roam
 
@@ -1352,12 +1390,12 @@ This guesses the language a text is in per-paragraph. This means that you can co
 Currently, only German and English are supported here, as I don't write much else with Emacs.
 
 #+begin_src emacs-lisp
-  (use-package guess-language
-    :hook (text-mode . (lambda () (guess-language-mode 1)))
-    :custom
-    (guess-language-languages '(en de))
-    (guess-language-langcodes '((en . ("en_GB" "English"))
-                                (de . ("de_DE" "German")))))
+(use-package guess-language
+  :hook (text-mode . (lambda () (guess-language-mode 1)))
+  :custom
+  (guess-language-languages '(en de bg))
+  (guess-language-langcodes '((en . ("en_GB" "English"))
+                              (de . ("de_DE" "German")))))
 #+end_src
 
 ** LSP
