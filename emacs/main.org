@@ -2030,15 +2030,24 @@ Near-instant full-text-search across projects.
 Try out =selectrum= as an alternative to =ivy=.
 
 #+begin_src emacs-lisp
-  (use-package vertico
-    :init
-    (vertico-mode)
-    :custom
-    (vertico-cycle t))
+(use-package vertico
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-cycle t))
 
-  (use-package savehist
-    :init
-    (savehist-mode))
+(use-package vertico-directory
+  :straight (vertico-directory :type git :host github :repo "minad/vertico" :files ("extensions/*.el"))
+  :after vertico
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+(use-package savehist
+  :init
+  (savehist-mode))
 #+end_src
 
 I've taken this verbatim from Vertico's readme. To be honest, I don't quite understand what these do.
