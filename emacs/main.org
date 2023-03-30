@@ -473,13 +473,14 @@ There's some support via Kotlin's LSP server. It isn't nearly good enough yet, b
 
 We enable =display-fill-column-indicator-mode= because =ktlint= errors out when the line is too long.
 
+The Kotlin language server likes to eat gigabytes of RAM, so I only activate it manually.
+
 #+BEGIN_SRC emacs-lisp
-    (use-package kotlin-mode
-      :mode "\\.kt$"
-      :hook
-      (kotlin-mode . lsp)
-      (kotlin-mode . display-fill-column-indicator-mode)
-  )
+(use-package kotlin-mode
+  :mode "\\.kt$"
+  :hook
+  ;; (kotlin-mode . lsp)
+  (kotlin-mode . display-fill-column-indicator-mode))
 #+END_SRC
 
 ** Ledger
