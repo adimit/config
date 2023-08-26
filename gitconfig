@@ -29,6 +29,7 @@
 	dump = cat-file -p
 	puush = push --force-with-lease
 	rank = "shortlog -s -n --no-merges"
+	pfusch = push --force
 [push]
 	default = simple
 [sendmail]
