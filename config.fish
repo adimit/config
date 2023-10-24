@@ -198,8 +198,10 @@ set -x _JAVA_AWT_WM_NONREPARENTING 1
 
 set -gx WASMTIME_HOME "$HOME/.wasmtime"
 
+# Emacs LSP mode performance improvement
 set -gx LSP_USE_PLISTS true
 
 string match -r ".wasmtime" "$PATH" >/dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
 
-set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin $PATH /home/aleks/.ghcup/bin # ghcup-env
+set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME
+set -gx PATH $HOME/.cabal/bin $PATH /home/aleks/.ghcup/bin # ghcup-env
