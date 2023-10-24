@@ -263,7 +263,7 @@ Doom's mode line. Not the prettiest thing in the world, but it just works. There
     (doom-modeline-modal-icon t)
     (doom-modeline-lsp t))
 
-  (use-package all-the-icons
+  (use-package nerd-icons
     :if (display-graphic-p))
 #+end_src
 
