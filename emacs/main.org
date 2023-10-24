@@ -2037,7 +2037,7 @@ Try out =selectrum= as an alternative to =ivy=.
   (vertico-cycle t))
 
 (use-package vertico-directory
-  :straight (vertico-directory :type git :host github :repo "minad/vertico" :files ("extensions/*.el"))
+  :straight (vertico-directory :type git :host github :repo "emacs-straight/vertico" :files ("extensions/*.el"))
   :after vertico
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
