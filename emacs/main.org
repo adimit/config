@@ -772,7 +772,7 @@ Render inline LaTeX fragments somewhat bigger, to match the font size.
 I don't like the bold red colour for TODO items. I dread them enough without them screaming into my face.
 
 #+begin_src emacs-lisp
-(set-face-attribute 'org-todo nil :foreground (car (alist-get 'blue modus-vivendi-palette)))
+(set-face-attribute 'org-todo nil :foreground (alist-get 'blue modus-themes-vivendi-colors))
 #+end_src
 
 Prettier lists, by substituting bullet points for list item markers.
