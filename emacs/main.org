@@ -1262,6 +1262,14 @@ An alternative to =company=.
   (use-package consult)
 #+end_src
 
+** Copilot
+Github Co-Pilot support. It has no hook, I enable it on an as-need basis.
+
+#+begin_src emacs-lisp
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :bind (:map copilot-mode-map ("S-RET" . copilot-complete)))
+#+end_src
 ** Diff-hl
 
 Display git diff hint in the gutter.
