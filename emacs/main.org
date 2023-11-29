@@ -89,9 +89,15 @@ Let Emacs query the pass phrase instead of an external pinentry dialogue.
 No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
 
 #+BEGIN_SRC emacs-lisp
-  (custom-set-variables
-   '(backup-directory-alist `(("." . "~/.saves")))
-   '(create-lockfiles nil))
+(custom-set-variables
+ '(backup-directory-alist `(("." . "~/.saves")))
+ '(delete-old-versions t)
+ '(kept-new-versions 6)
+ '(kept-old-versions 2)
+ '(version-control t)
+ '(backup-by-copying t)
+ '(make-backup-files t)
+ '(create-lockfiles nil))
 #+END_SRC
 
 ** Calendar
