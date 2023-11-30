@@ -345,6 +345,16 @@ Use Prot's awesome Modus theme, vivendi by default. They're built-in.
   (aleks/set-org-mode-fixed-pitch-faces)
 #+end_src
 
+** Undo
+We want more generous undo limits, because I make mistakes quite often and I use modern computers.
+
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(undo-limit (expt 2 24)) ; 16MiB
+ '(undo-strong-limit (expt 2 26)) ; 64MiB
+ '(undo-outer-limit (expt 2 28))) ; 256MiB
+#+end_src
+
 ** Utility functions
 
 *** Append to =org-babel-load-languages=
