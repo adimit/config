@@ -38,12 +38,12 @@ For general package management use use-package, and instruct it to always use st
 Slurp the shell environment into Emacs when started as a daemon.
 
 #+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :custom exec-path-from-shell-variables
-    '("PATH" "MANPATH"))
-
-  (when (daemonp)
-    (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :custom exec-path-from-shell-variables
+  '("PATH" "MANPATH"))
+(use-package general)
+(when (daemonp)
+  (exec-path-from-shell-initialize))
 #+end_src
 
 * Emacs
