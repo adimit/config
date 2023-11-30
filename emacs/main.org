@@ -293,8 +293,6 @@ Since Emacs 29, we've got smooth scrolling, too.
 The interpolation factor dictates scroll speed.
 
 ** Search
-Since I'm not using =evil= anymore, =isearch= needs some tweaking.
-
 #+begin_src emacs-lisp
 (custom-set-variables
  '(isearch-lazy-count t)
@@ -1133,11 +1131,10 @@ Jump to arbitrary points in the buffer
 
 #+begin_src emacs-lisp
 (use-package avy
-  :after (meow)
   :config
-  (meow-normal-define-key
-   '("g c" . avy-goto-char)
-   '("g l" . avy-goto-line))
+  :general (:states 'normal
+                    "g c" 'avy-goto-char
+                    "g l" 'avy-goto-line)
   :custom (avy-all-windows 'all-frames))
 #+end_src
 
@@ -1228,42 +1225,41 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 An alternative to =company=.
 
 #+begin_src emacs-lisp
-  (defun quit-corfu-and-exit-to-normal-mode ()
-    (interactive)
-    (corfu-quit)
-    (meow-normal-mode))
+(defun quit-corfu-and-exit-to-normal-mode ()
+  (interactive)
+  (corfu-quit))
 
-  (use-package corfu
-    :custom
-    (corfu-auto t)
-    (corfu-preselect 'prompt)
-    (corfu-auto-delay 0.0)
-    (corfu-auto-prefix 0)
-    (corfu-quit-no-match 'separator)
-    (completion-styles '(basic))
-    (corfu-cycle t)
-    :bind
-    (:map corfu-map
-          ("TAB" . corfu-next)
-          ([tab] . corfu-next)
-          ("S-TAB" . corfu-previous)
-          ("<escape>" . quit-corfu-and-exit-to-normal-mode)
-          ([backtab] . corfu-previous))
-    :init
-    (global-corfu-mode))
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  (corfu-preselect 'prompt)
+  (corfu-auto-delay 0.0)
+  (corfu-auto-prefix 0)
+  (corfu-quit-no-match 'separator)
+  (completion-styles '(basic))
+  (corfu-cycle t)
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ("<escape>" . quit-corfu-and-exit-to-normal-mode)
+        ([backtab] . corfu-previous))
+  :init
+  (global-corfu-mode))
 
-  (use-package kind-icon
-    :after corfu
-    :custom
-    (kind-icon-default-face 'corfu-default)
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-  (use-package emacs
-    :init
-    (setq completion-cycle-threshold 3)
-    (setq read-extended-command-predicate
-          #'command-completion-default-include-p))
+(use-package emacs
+  :init
+  (setq completion-cycle-threshold 3)
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p))
 #+end_src
 
 ** Consult
@@ -1276,10 +1272,13 @@ An alternative to =company=.
 Github Co-Pilot support. It has no hook, I enable it on an as-need basis.
 
 #+begin_src emacs-lisp
-  (use-package copilot
-   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-   :bind (:map copilot-mode-map ("C-f" . copilot-accept-completion)))
+(use-package copilot
+ :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+ :general (:definer 'minor-mode :states 'insert :keymaps 'copilot-mode
+                    "C-f" 'copilot-accept-completion
+                    "C-M-f" 'copilot-accept-completion-by-word))
 #+end_src
+
 ** Diff-hl
 
 Display git diff hint in the gutter.
@@ -1318,18 +1317,73 @@ There's a package that allows using embark commands in consult.
 #+end_src
 
 ** Emojis
+
 You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Display via Noto Color Emoji font. Enable Emojify mode for github style emojis in Forge Post mode.
 
 #+begin_src emacs-lisp
-  (set-fontset-font t 'symbol "Noto Color Emoji")
-  (set-fontset-font t 'symbol "Symbola" nil 'append)
-  
-  (use-package emojify
-    :hook (forge-post-mode . emojify-mode))
+(set-fontset-font t 'symbol "Noto Color Emoji")
+(set-fontset-font t 'symbol "Symbola" nil 'append)
+
+(use-package emojify
+  :hook (forge-post-mode . emojify-mode))
+#+end_src
+
+** Evil
+#+begin_src emacs-lisp
+(use-package evil
+  :hook (after-init . evil-mode)
+  :init
+  (setq evil-want-keybinding nil
+        evil-want-integration t)
+  :custom
+  (evil-want-Y-yank-to-eol t)
+  (evil-move-beyond-eol t)
+  (evil-undo-system 'undo-redo)
+  (evil-want-C-d-scroll nil) ; C-u does nothing anyway
+  :general
+  (:states 'normal
+           "RET" 'save-buffer))
+
+(use-package evil-collection
+  :after evil
+  :custom (forge-add-default-bindings nil)
+  :config (evil-collection-init '(calendar dired calc ediff magit corfu edebug eglot eldoc elisp-mode elisp-refs elisp-slime-nav embark emoji eshell eww flycheck flymake forge gnus grep help lsp-ui-imenu mu4e mu4e-conversation org org-present org-roam pdf pdf-view image racket-describe reftex restclient rg ripgrep selectrum tetris vc-dir vc-annotate vc-git vdiff vertico wgrep which-key )))
+
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+#+end_src
+
+Dispatch with space
+
+#+begin_src emacs-lisp
+(transient-define-prefix dispatch-space-menu () "This isn't documentation."
+  [[
+    ("e" "expand region" er/expand-region)
+    "Buffers"
+    ("b b" "consult buffer" consult-buffer)
+    ("b k" "kill buffer" kill-this-buffer)
+    "Projectile"
+    ("p p" "switch project" projectile-switch-project)
+    ("p f" "find file in project" projectile-find-file)
+    ("p r" "ripgrep in project" consult-ripgrep)]
+   ["Org"
+    ("o a" "org agenda" org-agenda)
+    ("o c o" "org clock out" org-clock-out)
+    ("o c g" "org clock goto" org-clock-goto)
+    ("o c i" "org clock in" org-clock-in)
+    ("o c c" "org capture" org-capture)]
+   ["Git"
+    ("g s" "git status" magit-status)
+    ("g b" "git blame" magit-blame)
+    ("g f" "git find file" magit-find-file)]])
+
+(general-define-key
+ :states 'normal
+ "SPC" 'dispatch-space-menu)
 #+end_src
 
 ** Expand Region
-Meow has its own expand region, but we can also use the more venerable expand-region. I've added my own extension to ER that leverages tree-sitter. The PR isn't merged yet.
 
 #+begin_src emacs-lisp
 (use-package expand-region
@@ -1440,16 +1494,19 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
 LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
 
 #+begin_src emacs-lisp
-  (use-package lsp-ui
-    :custom
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-enable nil)
-    (lsp-ui-doc-enable t)
-    :config
-    (define-key lsp-ui-peek-mode-map "j" 'lsp-ui-peek--select-next)
-    (define-key lsp-ui-peek-mode-map "k" 'lsp-ui-peek--select-prev)
-    (define-key lsp-ui-peek-mode-map "J" 'lsp-ui-peek--select-next-file)
-    (define-key lsp-ui-peek-mode-map "K" 'lsp-ui-peek--select-prev-file))
+(use-package lsp-ui
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-doc-enable t)
+  :general
+  (:states 'normal
+           "g r" 'lsp-ui-peek-find-references)
+  :config
+  (define-key lsp-ui-peek-mode-map "j" 'lsp-ui-peek--select-next)
+  (define-key lsp-ui-peek-mode-map "k" 'lsp-ui-peek--select-prev)
+  (define-key lsp-ui-peek-mode-map "J" 'lsp-ui-peek--select-next-file)
+  (define-key lsp-ui-peek-mode-map "K" 'lsp-ui-peek--select-prev-file))
 #+end_src
 
 Finally, treemacs can help orientation
@@ -1501,138 +1558,6 @@ This allows creating a branch from the currently clocked in org-mode task. Using
           (magit-branch-and-checkout branch-name (magit-read-starting-point "Create and checkout branch starting at"))
           (message "Created and checked out `%s'" branch-name))
       (message "No current task.")))
-#+end_src
-
-** Meow
-
-A replacement for =evil=. It follows Kakoune more closely. Ideally, I'd make it behave (mostly) like Helix. That would allow seamless switching.
-Unfortunately, it requires lots of setting up. I'm not sure it's really worth it over using plain evil mode. But it is nice in that it interferes less with Emacs as a whole. Much more lightweight and snappy than Evil, it's also been less error prone, at the cost of some custom definitions and partial loss in ergonomics (and partial gain in other places). Let's see if it's worth it. The biggest drawback seems to be that it's not very maintained.
-
-*** Keep selection when entering insert mode
-Usually, Meow kills the selection when entering insert mode. These functions are copies of Meow's insert and append functions that don't cancel the selection. This is especially useful when you use =smartparens= to insert delimiters.
-
-#+begin_src emacs-lisp
-(defun meow-insert-with-selection ()
-  "Preserve the region when executing `meow-insert'"
-  (interactive)
-  (let ((history-copy meow--selection-history)
-        (selection-copy meow--selection))
-    (meow-insert)
-    (setq meow--selection-history history-copy
-          meow--selection selection-copy)
-    (activate-mark)))
-#+end_src
-
-*** C-w
-
-I don't use a lot of insert-mode key chords, but =C-w= is very important to my mental well-being. Since =C-w= is also used for ~kill-region~ we'll need to tell meow to expect it somewhere else. Luckily, it's also bound to =S-<delete>=.
-
-#+begin_src emacs-lisp
-  (defun aleks/delete-backward-word ()
-    "Delete previous word. This is a copy of `evil-delete-backward-word'"
-    (interactive)
-    (let ((beginning (save-excursion
-                       (call-interactively 'backward-word)
-                       (point)))
-          (end (point)))
-      (cond
-       ((not (bobp)) (delete-region
-                      (max beginning (line-beginning-position))
-                      end))
-       (t (user-error "Beginning of line or buffer.")))))
-
-  (defun aleks/meow-set-up-c-w ()
-    (global-key '("C-w" . aleks/delete-backward-word))
-    (setq meow--kbd-kill-region "S-<delete>"))
-#+end_src
-*** Moving around the buffer
-
-Vim's way of moving around the buffer using =gg= and =G= (with prefix arguments) is rather useful, and I'm loathe to give it up (especially because it is so ubiquitous).
-
-#+begin_src emacs-lisp
-    (defun aleks/goto-line (&optional count)
-        "Jump to COUNT line, or to the end of the buffer."
-        (interactive "p")
-        (if (null current-prefix-arg)
-            (call-interactively 'end-of-buffer)
-          (call-interactively 'goto-line)))
-#+end_src
-
-Additionally, we'll use Vim-style =C-f= and =C-b= in normal mode, so we'll remap these for Meow's internal calls, otherwise it gets confused.
-
-#+begin_src emacs-lisp
-(setq meow--kbd-forward-char "<right>"
-      meow--kbd-backward-char "<left>")
-#+end_src
-
-*** Yanking
-=C-y= is really hard to type on Dvorak, and Vim uses =C-r= in insert mode. So we'll move it out of the way with global keybindings. We'll also need to tell meow to look for yank keybinds somewhere else. Finally, ~cua-paste~ is a useful tool to copy things from other applications explicitly without much guesswork.
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'meow
-  (setq meow--kbd-yank "S-<insert>")
-  (global-set-key (kbd "C-r") 'yank)
-  (global-set-key (kbd "M-r") 'cua-paste))
-#+end_src
-
-When meow yanks, it does so in Emacs-style, which is equivalent to inserting *before* the cursor in Vim. But default Vim (and Kakoune) behaviour is to paste *after* the cursor.
-
-#+begin_src emacs-lisp
-(defun aleks/meow-yank-forward ()
-  "Command to yank (like `meow-yank') but after the cursor, not before."
-  (interactive)
-  (let ((str (current-kill 1)))
-    (if (string-match-p "\n\\'" str)
-        (meow--execute-kbd-macro meow--kbd-forward-line)
-      (meow--execute-kbd-macro meow--kbd-forward-char))
-    (insert-for-yank str)))
-#+end_src
-
-*** C-c keybindings
-The idea behind Meow is to be minimally invasive wrt Emacs. So we just define our keybindings like we would in Emacs, and keypad mode spares us the key chords.
-
-#+begin_src emacs-lisp
-(global-key
- '("C-c f" . projectile-find-file)
- '("C-c p p" . projectile-switch-project)
- '("C-c p f" . projectile-find-file)
- '("C-c b b" . consult-buffer)
- '("C-c b k" . kill-this-buffer)
- '("C-c G s" . magit-status)
- '("C-c G b" . magit-blame)
- '("C-c s e" . eval-last-sexp)
- '("C-c s b" . eval-buffer)
- '("C-c s d" . eval-defun)
- '("C-c s r" . eval-region)
- '("C-c s x" . eval-expression))
-#+end_src
-
-*** Undo
-Undo with Emacs isn't the greatest experience.
-Because of the way meow works, I'll need to rebind =C-/= as I need that shortcut for ~sp-forward-barf-sexp~ later on.
-
-#+begin_src emacs-lisp
-(global-key '("C-c x u" . undo-only))
-(setq meow--kbd-undo "C-c x u")
-#+end_src
-
-Redo is a bit more complicated. First, we'll replicate ~meow-undo~ for redo:
-
-#+begin_src emacs-lisp
-(defun aleks/meow-redo ()
-  "Like `meow-undo' but with redo."
-  (interactive)
-  (when (region-active-p)
-    (meow--cancel-selection))
-  (undo-redo))
-#+end_src
-
-*** Select Angle Brackets
-
-#+begin_src emacs-lisp
-(defun aleks/create-angle-brackets-object ()
-  (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">")))
-  (add-to-list 'meow-char-thing-table '(?a . angle)))
 #+end_src
 
 *** Transient
@@ -1706,7 +1631,7 @@ We'll attempt something similar with Emacs' =transient= feature, which is now pa
     ("n" "open scratch in split" next-window-any-frame)
     ("o" "close windows except current" delete-other-windows)]])
 
-(global-key '("C-c w" . dispatch-window-menu))
+
 #+end_src
 
 Emacs doesn't support transposing windows natively, but there's an extension, which is probably unmaintained but gets the job done. (The code of ~transpose-frame~ is nightmarish, though. I hope it never breaks.)
@@ -1722,134 +1647,6 @@ Emacs doesn't support transposing windows natively, but there's an extension, wh
      ("v" "flop windows around horizontally" flop-frame)
      ("t" "transpose windows" transpose-frame)]))
 #+end_src
-
-
-*** Keybindings
-
-Meow requires you to set every key manually.
-I mostly follow the QWERTY layout, even though I'm using Dvorak. So some keys here are funny, but that's how I like it.
-
-#+begin_src emacs-lisp
-(defun meow-negative-find ()
-  "Like vim's F."
-  (interactive)
-  (let ((current-prefix-arg -1))
-    (call-interactively 'meow-find)))
-(defun meow-setup ()
-  (aleks/meow-set-up-c-w)
-  (aleks/create-angle-brackets-object)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key))
-
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-kill)
-   '("D" . meow-backward-delete)
-   '("e" . meow-mark-word)
-   '("E" . meow-mark-symbol)
-   '("f" . meow-find)
-   '("F" . meow-negative-find)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-insert-with-selection)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . er/expand-region)
-   '("n" . meow-search)
-   '("o" . meow-open-below)
-   '("O" . meow-open-above)
-   '("P" . meow-yank)
-   '("p" . aleks/meow-yank-forward)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("S" . meow-grab)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . aleks/meow-redo)
-   '("V" . meow-line)
-   '("w" . meow-next-word)
-   '("W" . meow-next-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("`" . meow-pop-selection)
-   '("/" . isearch-forward)
-   '("?" . isearch-backward)
-   '("'" . repeat)
-   '("RET" . save-buffer)
-   '("<escape>" . meow-cancel-selection)
-   '("C-=" . meow-forward-slurp)
-   '("C-/" . meow-forward-barf)
-   '("g" . dispatch-goto-menu)
-   '("G" . aleks/goto-line)
-   '("C-w" . dispatch-window-menu)
-   '("C-o" . pop-global-mark)
-   '("C-f" . scroll-up-command)
-   '("C-b" . scroll-down-command)
-   '("=" . meow-indent)))
-#+end_src
-
-*** Initialise
-
-#+begin_src emacs-lisp
-(use-package meow
-  :bind (("C-=" . meow-forward-slurp)
-         ("C-/" . meow-forward-barf))
-  :demand t
-  :custom
-  (meow-expand-hint-counts '((word . 0)
-                             (line . 0)
-                             (block .0)
-                             (find . 0)
-                             (till . 0)))
-  :config
-  (meow-global-mode 1)
-  (meow-setup))
-#+end_src
-
 ** Move File and Buffer
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
@@ -1992,13 +1789,13 @@ Smartparens to make handling parentheses easier.
 (use-package smartparens
   :init
   (require 'smartparens-config)
-  :bind (("C-c x p ]" . sp-forward-slurp-sexp)
-         ("C-c x p [" . sp-forward-barf-sexp))
+  :general
+  (:definer 'minor-mode :states 'insert :keymaps 'smartparens-mode
+            "C-=" 'sp-forward-slurp-sexp
+            "C-/" 'sp-forward-barf-sexp)
   :config
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1)
-  (setq meow--kbd-forward-slurp "C-c x p ]"
-        meow--kbd-forward-barf "C-c x p [")
   :custom
   (sp-wrap-repeat-last 2) ;; repeat wrap with different pair
   (smartparens-strict-mode 1)
