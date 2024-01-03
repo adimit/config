@@ -62,7 +62,7 @@ myKeys XConfig { modMask = mask } = M.fromList $
   , ((mask .|. shiftMask  , xK_Return      ), windows W.swapMaster)
   , ((mask                , xK_l           ), spawn "i3lock -c '200010'")
   , ((mask                , xK_a           ), withFocused $ windows . W.sink) -- %! Push window back into tiling
-  , ((mask                , xK_BackSpace   ), shellPromptHere promptConfig)
+  , ((mask                , xK_BackSpace   ), spawn "rofi -show run")
   , ((mask                , xK_e           ), spawn "emacsclient -c -n -e '(switch-to-buffer nil)'")
   , ((mask                , xK_grave       ), toggleWS) ]
   ++ -- Dynamic Workspaces
