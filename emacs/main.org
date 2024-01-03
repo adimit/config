@@ -1113,16 +1113,12 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
 =rustfmt= isn't supported out of the box. I've opened a [[https://github.com/raxod502/apheleia/pull/45][PR]]. In the meantime, we define our own.
 
 #+begin_src emacs-lisp
-  (use-package apheleia
-    :straight (apheleia :type git
-                        :host github
-                        :repo "raxod502/apheleia")
-    :config
-    (apheleia-global-mode +1)
-    (add-to-list 'apheleia-formatters
-                 '(rustfmt  . ("rustfmt" "--unstable-features" "--skip-children" "--quiet" "--emit" "stdout" file)))
-    (add-to-list 'apheleia-mode-alist
-                 '(rustic-mode . rustfmt)))
+(use-package apheleia
+  :straight (apheleia :type git
+                      :host github
+                      :repo "raxod502/apheleia")
+  :config
+  (apheleia-global-mode +1))
 #+end_src
 
 ** Avy
