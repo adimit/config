@@ -1265,7 +1265,7 @@ An alternative to =company=.
 #+end_src
 
 ** Copilot
-Github Co-Pilot support. It has no hook, I enable it on an as-need basis.
+Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The keychord for accepting completions mimics the one in Fish shell for accepting history items. It's muscle memory, and they look almost the same.
 
 #+begin_src emacs-lisp
 (use-package copilot
@@ -1350,12 +1350,11 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   (global-evil-surround-mode 1))
 #+end_src
 
-Dispatch with space
+Dispatch with space/space menu.
 
 #+begin_src emacs-lisp
 (transient-define-prefix dispatch-space-menu () "This isn't documentation."
   [[
-    ("e" "expand region" er/expand-region)
     "Buffers"
     ("b b" "consult buffer" consult-buffer)
     ("b k" "kill buffer" kill-this-buffer)
@@ -1364,15 +1363,21 @@ Dispatch with space
     ("p f" "find file in project" projectile-find-file)
     ("p r" "ripgrep in project" consult-ripgrep)]
    ["Org"
-    ("o a" "org agenda" org-agenda)
-    ("o c o" "org clock out" org-clock-out)
-    ("o c g" "org clock goto" org-clock-goto)
-    ("o c i" "org clock in" org-clock-in)
-    ("o c c" "org capture" org-capture)]
+    ("o a" "agenda" org-agenda)
+    ("o c o" "clock out" org-clock-out)
+    ("o c g" "clock goto" org-clock-goto)
+    ("o c i" "clock in" org-clock-in)
+    ("o c c" "capture" org-capture)
+    ("o p p" "present" aleks/org-present-enter)
+    ("o p x" "quit present" aleks/org-present-leave)]
    ["Git"
     ("g s" "git status" magit-status)
     ("g b" "git blame" magit-blame)
-    ("g f" "git find file" magit-find-file)]])
+    ("g f" "git find file" magit-find-file)]
+   ["Other"
+    ("e" "expand region" er/expand-region)
+    ("x f" "find file" find-file)
+    ("x e" "open eshell here" eshell-here)]])
 
 (general-define-key
  :states 'normal
@@ -1386,12 +1391,11 @@ Dispatch with space
   :straight (expand-region
              :host nil
              :branch "treesit-er"
-             :repo "/home/aleks/src/expand-region.el")
-  :bind (("C-c e" . er/expand-region)))
+             :repo "/home/aleks/src/expand-region.el"))
 #+end_src
 
 ** Extract Issue Numbers from Branch
-Insert the current ticket number if we're on a =KNUTH= feature branch.
+Insert the current ticket number if we're on a feature branch.
 
 #+begin_src emacs-lisp
   (defun buffer-insert-at-end (string)
@@ -1456,15 +1460,15 @@ In order to be able to ~require~ things in Elisp projects using =eldev= and for 
 
 This guesses the language a text is in per-paragraph. This means that you can code switch in your prose writing without having half the text turn up bright red (and *with* functioning spell-check in all languages.)
 
-Currently, only German and English are supported here, as I don't write much else with Emacs.
-
 #+begin_src emacs-lisp
 (use-package guess-language
   :hook (text-mode . (lambda () (guess-language-mode 1)))
   :custom
-  (guess-language-languages '(en de bg))
+  (guess-language-languages '(en de bg pl))
   (guess-language-langcodes '((en . ("en_GB" "English"))
-                              (de . ("de_DE" "German")))))
+                              (de . ("de_DE" "German"))
+                              (bg . ("bg_BG" "Bulgarian"))
+                              (pl . ("pl_PL" "Polish")))))
 #+end_src
 
 ** LSP
@@ -1556,114 +1560,17 @@ This allows creating a branch from the currently clocked in org-mode task. Using
       (message "No current task.")))
 #+end_src
 
-*** Transient
-Helix pops up little menus every time you press ~SPC~ or ~g~ or ~m~ (and others). Those are very helpful for discovery and don't slow down the workflow.
-
-We'll attempt something similar with Emacs' =transient= feature, which is now part of mainline emacs
-
-**** Goto Menu
-
-#+begin_src emacs-lisp
-(defmacro with-prefix (arg symbol)
-  "Executes SYMBOL interactively setting `current-prefix-arg' to ARG."
-  `(let ((current-prefix-arg ,arg))
-     (call-interactively ',symbol)))
-
-(defun aleks/top-of-window ()
-  "Move to the top of the window, respecting `scroll-margin'."
-  (interactive)
-  (with-prefix (or scroll-margin 0) move-to-window-line))
-
-(defun aleks/bottom-of-window ()
-  "Move to the bottom of the windo, respecting `scroll-margin'."
-  (interactive)
-  (with-prefix (- -1 (or scroll-margin 0)) move-to-window-line))
-
-(transient-define-prefix dispatch-goto-menu () "this isn't documentation."
-  [[("g" "beginning of buffer" beginning-of-buffer)
-    ("e" "end of buffer" end-of-buffer)
-    ("d" "definition using xref" xref-find-definitions)
-    ("h" "beginning of line" beginning-of-line)]
-   [("l" "end of line" end-of-line)
-    ("s" "first non-blank in line" beginning-of-line-text)
-    ("t" "top of window" aleks/top-of-window)
-    ("b" "bottom of window" aleks/bottom-of-window)]
-   ;; ("c" "centre of window" move-to-window-line)
-   [("c" "go to character" avy-goto-char)
-    ("f" "file at point" find-file-at-point)
-    ("n" "next buffer" next-buffer)
-    ("p" "previous buffer" previous-buffer)]])
-#+end_src
-
-**** Window Menu
-
-#+begin_src emacs-lisp
-(defun aleks/split-window ()
-  (interactive)
-  (split-window (selected-window) nil 'below))
-(defun aleks/vsplit-window ()
-  (interactive)
-  (split-window (selected-window) nil 'right))
-
-(defun nyi ()
-  "signal to the user that this functionality is not yet implemented"
-  (interactive)
-  (user-error "Not yet implemented."))
-
-(transient-define-prefix dispatch-window-menu ()
-  "this isn't documentation"
-  ["Windows\n"
-   ["Traverse"
-    ("w" "next window" nyi)
-    ("h" "left window" windmove-left)
-    ("l" "right window" windmove-right)
-    ("k" "top window" windmove-up)
-    ("j" "bottom window" windmove-down)]
-   ["Open & Close"
-    ("s" "horizontally split window" aleks/split-window)
-    ("v" "vertically split window" aleks/vsplit-window)
-    ("q" "close window" delete-window)
-    ("c" "close window" delete-window)
-    ("n" "open scratch in split" next-window-any-frame)
-    ("o" "close windows except current" delete-other-windows)]])
-
-
-#+end_src
-
-Emacs doesn't support transposing windows natively, but there's an extension, which is probably unmaintained but gets the job done. (The code of ~transpose-frame~ is nightmarish, though. I hope it never breaks.)
-
-#+begin_src emacs-lisp
-(use-package transpose-frame
-  :config
-  (transient-append-suffix
-    'dispatch-window-menu
-    '(0 1)
-    ["Shift"
-     ("V" "flip windows around vertically" flip-frame)
-     ("v" "flop windows around horizontally" flop-frame)
-     ("t" "transpose windows" transpose-frame)]))
-#+end_src
 ** Move File and Buffer
 
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
 
 #+begin_src emacs-lisp
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (buffer-modified-p)
-        (message "Buffer is modified, save it first.")
-      (if (not filename)
-          (message "Buffer '%s' is not visiting a file." name)
-        (if (get-buffer new-name)
-            (message "A buffer named '%s' already exists." new-name)
-          (progn
-            (rename-file filename new-name 1)
-            (rename-buffer new-name)
-            (set-visited-file-name new-name)
-            (set-buffer-modified-p nil)))))))
+(defun rename-file-and-buffer ()
+  "Renames both current buffer and file it's visiting.
+
+It's just an alias now to the built-in `rename-visited-file'."
+  (interactive)
+  (rename-visited-file))
 #+end_src
 
 ** Mu4e
