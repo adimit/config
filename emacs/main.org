@@ -1336,7 +1336,8 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   (evil-want-C-d-scroll nil) ; C-u does nothing anyway
   :general
   (:states 'normal
-           "RET" 'save-buffer))
+           "RET" 'save-buffer
+           "g b" 'bury-buffer))
 
 (use-package evil-collection
   :after evil
