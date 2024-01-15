@@ -1349,7 +1349,7 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   (global-evil-surround-mode 1))
 #+end_src
 
-Dispatch with space/space menu.
+*** Dispatch with space/space menu.
 
 #+begin_src emacs-lisp
 (transient-define-prefix dispatch-space-menu () "This isn't documentation."
@@ -1367,8 +1367,7 @@ Dispatch with space/space menu.
     ("o c g" "clock goto" org-clock-goto)
     ("o c i" "clock in" org-clock-in)
     ("o c c" "capture" org-capture)
-    ("o p p" "present" aleks/org-present-enter)
-    ("o p x" "quit present" aleks/org-present-leave)]
+    ("o p p" "present" org-present)]
    ["Git"
     ("g s" "git status" magit-status)
     ("g b" "git blame" magit-blame)
