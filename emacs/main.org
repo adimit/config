@@ -595,88 +595,104 @@ Redisplay images after code block evaluation. Handy if the result of your comput
 Capture templates:
 
 #+begin_src emacs-lisp
-  (defun join-lines (strings)
-    "Join STRINGS with newlines."
-    (string-join strings "\n"))
-  (customize-set-variable
-   'org-capture-templates
-   `(("c" "Add to today" entry
-      (file+regexp my-org-main-file "Week [0-9][0-9]?")
-      ,(join-lines
-        '("* TODO %?"
-          "SCHEDULED: %t"
-          ":PROPERTIES:"
-          ":CREATED: %U"
-          ":END:"
-          "")))
-     ("W" "Plan Week" entry (file my-org-main-file)
-      ,(join-lines
-        '("* Week %(aleks/get-next-week-number)"
-          "** TODO Prepare Cat Meds"
-          "** TODO Clean Bathroom"
-          "** TODO Weekly Review"
-          "** TODO Vacuum & Mop"
-          "** TODO Make Yogurt"
-          "** TODO Feed Sourdough")))
-     ("s" "Add task to sprint" entry
-      (file+headline my-org-work-file "Tasks")
-      ,(join-lines
-        '("* TODO %?"
-          "SCHEDULED: %t"
-          ":PROPERTIES:"
-          ":CREATED: %U"
-          ":REFERENCE: %f"
-          ":END:"
-          ""
-          "%i")))
-     ("j" "Add MP Jira ticket" entry
-      (file+headline my-org-work-file "Tasks")
-      ,(join-lines
-        '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title)"
-          "SCHEDULED: %t"
-          ":PROPERTIES:"
-          ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get 'issue)"
-          ":Reporter: %(xjira-get 'reporter)"
-          ":Parent: [[%(eval xjira-host)/browse/%(xjira-get 'parent)][%(xjira-get 'parent-title)]]"
-          ":END:"
-          ""
-          "%(xjira-get 'description)")))
-     ("M" "Morning routine tasks" entry
-      (file+headline my-org-work-file "Tasks")
-      ,(join-lines
-        '("* TODO Morning Routine on %(calendar-date-string (calendar-current-date))"
-          "SCHEDULED: %t"
-          ""
-          "- [ ] [[https://sentry.io/organizations/meisterplan/issues/][Sentry]]"
-          "- [ ] [[https://meisterplan.zendesk.com/agent/dashboard][Support Tickets]]"
-          "- [ ] Tests & CVEs")))
-     ("m" "Add meeting" entry
-      (file+headline my-org-work-file "Meetings")
-      ,(join-lines
-        '("* MEET %?"
-          "SCHEDULED: %^T"
-          ":PROPERTIES:"
-          ":REFERENCE:"
-          ":END:")))
-     ("S" "Sprint" entry (file my-org-work-file)
-      ,(join-lines
-        '("* Sprint %^{Title}"
-          "** Meetings"
-          "*** MEET Sprint Review"
-          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
-          "*** MEET Retro"
-          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
-          "*** MEET Next sprint SP1"
-          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(10 00))"
-          "*** MEET Next sprint SP2"
-          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(13 00))"
-          "** Tasks"
-          "*** TODO Update Metrics"
-          "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/monday-this-week (aleks/next-sprint-review-day)))"
-          ":PROPERTIES:"
-          ":REFERENCE: %(eval team-integration-metrics-sheet-link)"
-          ":END:"
-          "%i%?")))))
+(defun join-lines (strings)
+  "Join STRINGS with newlines."
+  (string-join strings "\n"))
+(customize-set-variable
+ 'org-capture-templates
+ `(("c" "Add to today" entry
+    (file+regexp my-org-main-file "Week [0-9][0-9]?")
+    ,(join-lines
+      '("* TODO %?"
+        "SCHEDULED: %t"
+        ":PROPERTIES:"
+        ":CREATED: %U"
+        ":END:"
+        "")))
+   ("W" "Plan Week" entry (file my-org-main-file)
+    ,(join-lines
+      '("* Week %(aleks/get-next-week-number)"
+        "** TODO Prepare Cat Meds"
+        "** TODO Clean Bathroom"
+        "** TODO Weekly Review"
+        "** TODO Vacuum & Mop"
+        "** TODO Make Yogurt"
+        "** TODO Feed Sourdough")))
+   ("s" "Add task to sprint" entry
+    (file+headline my-org-work-file "Tasks")
+    ,(join-lines
+      '("* TODO %?"
+        "SCHEDULED: %t"
+        ":PROPERTIES:"
+        ":CREATED: %U"
+        ":REFERENCE: %f"
+        ":END:"
+        ""
+        "%i")))
+   ("j" "Add MP Jira ticket" entry
+    (file+headline my-org-work-file "Tasks")
+    ,(join-lines
+      '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title)"
+        "SCHEDULED: %t"
+        ":PROPERTIES:"
+        ":REFERENCE: %(eval xjira-host)/browse/%(xjira-get 'issue)"
+        ":Reporter: %(xjira-get 'reporter)"
+        ":Parent: [[%(eval xjira-host)/browse/%(xjira-get 'parent)][%(xjira-get 'parent-title)]]"
+        ":END:"
+        ""
+        "%(xjira-get 'description)")))
+   ("M" "Morning routine tasks" entry
+    (file+headline my-org-work-file "Tasks")
+    ,(join-lines
+      '("* TODO Morning Routine on %(calendar-date-string (calendar-current-date))"
+        "SCHEDULED: %t"
+        ""
+        "- [ ] [[https://sentry.io/organizations/meisterplan/issues/][Sentry]]"
+        "- [ ] [[https://meisterplan.zendesk.com/agent/dashboard][Support Tickets]]"
+        "- [ ] Tests & CVEs")))
+   ("m" "Add meeting" entry
+    (file+headline my-org-work-file "Meetings")
+    ,(join-lines
+      '("* MEET %?"
+        "SCHEDULED: %^T"
+        ":PROPERTIES:"
+        ":REFERENCE:"
+        ":END:")))
+   ("S" "Sprint" entry (file my-org-work-file)
+    ,(join-lines
+      '("* Sprint %^{Title}"
+        "** Meetings"
+        "*** MEET EG Backend"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 7) '(10 30))"
+        ":PROPERTIES:"
+        ":REFERENCE: %(eval eg-backend-confluence-link)"
+        ":END:"
+        "*** MEET Refinement 1"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 8) '(9 30))"
+        "*** MEET Refinement 2"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 10) '(9 30))"
+        "*** MEET EG Frontend"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 14) '(10 00))"
+        ":PROPERTIES:"
+        ":REFERENCE: %(eval eg-frontend-confluence-link)"
+        ":END:"
+        "*** MEET Refinement 3"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 15) '(9 30))"
+        "*** MEET Sprint Review"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
+        "*** MEET Retro"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
+        "*** MEET Next sprint SP1"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(10 00))"
+        "*** MEET Next sprint SP2"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(13 00))"
+        "** Tasks"
+        "*** TODO Update Metrics"
+        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/monday-this-week (aleks/next-sprint-review-day)))"
+        ":PROPERTIES:"
+        ":REFERENCE: %(eval team-integration-metrics-sheet-link)"
+        ":END:"
+        "%i%?")))))
 #+end_src
 
 *** Citations
@@ -1146,62 +1162,66 @@ A utility function to calculate the next sprint review's date (usually) from tod
 Note that we have to wrap =calendar-day-of-week= even though I've already set =calendar-week-start-day= to =1=, because weekdays are always 0-indexed at Sunday.
 
 #+begin_src emacs-lisp
-  (require 'calendar)
-  (require 'cal-dst)
-  (require 'cal-iso)
+(require 'calendar)
+(require 'cal-dst)
+(require 'cal-iso)
 
-  (defun aleks/calendar-day-of-week (arg)
-    "Get the day of week for ARG, European style.
+(defun aleks/calendar-day-of-week (arg)
+  "Get the day of week for ARG, European style.
 
-  0 for Monday, … 6 for Sunday."
-    (let ((anglo-day-of-week (calendar-day-of-week arg)))
-      (if (= 0 anglo-day-of-week)
-          6
-        (- anglo-day-of-week 1))))
+0 for Monday, … 6 for Sunday."
+  (let ((anglo-day-of-week (calendar-day-of-week arg)))
+    (if (= 0 anglo-day-of-week)
+        6
+      (- anglo-day-of-week 1))))
 
-  (defun aleks/get-next-week-number ()
-    "Return next week's ISO week number, based on `calendar-current-date'."
-    (let* ((monday (aleks/monday-this-week (calendar-current-date)))
-           (monday-next-week (+ (calendar-absolute-from-gregorian monday) 7))
-           (monday-midnight-next-week (calendar-time-from-absolute monday-next-week 0)))
-      (format-time-string "%U"  monday-midnight-next-week t)))
+(defun aleks/get-next-week-number ()
+  "Return next week's ISO week number, based on `calendar-current-date'."
+  (let* ((monday (aleks/monday-this-week (calendar-current-date)))
+         (monday-next-week (+ (calendar-absolute-from-gregorian monday) 7))
+         (monday-midnight-next-week (calendar-time-from-absolute monday-next-week 0)))
+    (format-time-string "%U"  monday-midnight-next-week t)))
 
-  (defun aleks/monday-this-week (&optional origin)
-    "Returns the date of the week's monday relative to ORIGIN."
-    (let ((start-date (if origin origin (calendar-current-date))))
-      (calendar-gregorian-from-absolute
-       (- (calendar-absolute-from-gregorian start-date)
-          (aleks/calendar-day-of-week start-date)))))
-
-  (defun aleks/next-sprint-review-day (&optional origin)
-    "Get the next sprint review (Wednesday in 2 weeks) from ORIGIN or today.
-
-  Returns a calendar date '(MM DD YYYY)."
+(defun aleks/monday-this-week (&optional origin)
+  "Returns the date of the week's monday relative to ORIGIN."
+  (let ((start-date (if origin origin (calendar-current-date))))
     (calendar-gregorian-from-absolute
-     (+ 2 14 (calendar-absolute-from-gregorian (aleks/monday-this-week origin)))))
+     (- (calendar-absolute-from-gregorian start-date)
+        (aleks/calendar-day-of-week start-date)))))
 
-  (defun aleks/next-sprint-planning-day (&optional origin)
-    "Get the next day after the sprint review from ORIGIN or today.
+(defun aleks/gregorian-relative-to (offset &optional origin)
+  "Add OFFSET days to Monday in the week of ORIGIN (or this week) and return `(MM DD YYYY)'."
+  (calendar-gregorian-from-absolute (+ offset (calendar-absolute-from-gregorian (aleks/monday-this-week origin)))))
 
-  Returns a calendar date '(MM DD YYYY)."
-    (calendar-gregorian-from-absolute
-     (+ 1 (calendar-absolute-from-gregorian
-           (aleks/next-sprint-review-day origin)))))
+(defun aleks/next-sprint-review-day (&optional origin)
+  "Get the next sprint review (Wednesday in 2 weeks) from ORIGIN or today.
 
-  (defun aleks/org-active-timestamp-from-gregorian (date &optional time)
-    "Formats an active org-timestamp from DATE and TIME.
+Returns a calendar date '(MM DD YYYY)."
+  (calendar-gregorian-from-absolute
+   (+ 2 14 (calendar-absolute-from-gregorian (aleks/monday-this-week origin)))))
 
-  DATE is the format of `calendar-current-date' time is a list
-  '(HH MM) in 24-hour format."
-    (let ((seconds (if time
-                       (+ (* 60 (nth 1 time)) (* 3600 (car time)))
-                     0)))
-      (format-time-string
-       (if (= seconds 0) "<%Y-%m-%d %a>" "<%Y-%m-%d %a %H:%M>")
-       (calendar-time-from-absolute
-        (calendar-absolute-from-gregorian date)
-        seconds)
-       t)))
+(defun aleks/next-sprint-planning-day (&optional origin)
+  "Get the next day after the sprint review from ORIGIN or today.
+
+Returns a calendar date '(MM DD YYYY)."
+  (calendar-gregorian-from-absolute
+   (+ 1 (calendar-absolute-from-gregorian
+         (aleks/next-sprint-review-day origin)))))
+
+(defun aleks/org-active-timestamp-from-gregorian (date &optional time)
+  "Formats an active org-timestamp from DATE and TIME.
+
+DATE is the format of `calendar-current-date' time is a list
+'(HH MM) in 24-hour format."
+  (let ((seconds (if time
+                     (+ (* 60 (nth 1 time)) (* 3600 (car time)))
+                   0)))
+    (format-time-string
+     (if (= seconds 0) "<%Y-%m-%d %a>" "<%Y-%m-%d %a %H:%M>")
+     (calendar-time-from-absolute
+      (calendar-absolute-from-gregorian date)
+      seconds)
+     t)))
 #+end_src
 
 ** Code Review
