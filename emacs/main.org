@@ -1442,7 +1442,9 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
     ("o c g" "clock goto" org-clock-goto)
     ("o c i" "clock in" org-clock-in)
     ("o c c" "capture" org-capture)
-    ("o p p" "present" org-present)]
+    ("o p p" "present" org-present)
+    ("o i j" "jira link" xjira-org-insert-link-to-issue)
+    ("o i l" "insert link" org-insert-link)]
    ["Git"
     ("g s" "git status" magit-status)
     ("g b" "git blame" magit-blame)
