@@ -14,6 +14,57 @@ GNU Emacs 30.0.50 (build 3, x86_64-pc-linux-gnu, GTK+ Version 3.24.33, cairo ver
 
 Everything that is in here needs to happen early.
 
+** Performance
+There's a nice [[https://news.ycombinator.com/item?id=39124314][thread on HN]] about optimising Emacs. These are lifted from there.
+
+#+begin_src emacs-lisp
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right
+              bidi-inhibit-bpa t)
+(setq fast-but-imprecise-scrolling t
+      redisplay-skip-fontification-on-input t
+      inhibit-compacting-font-caches t)
+
+(setq idle-update-delay 1.0)
+#+end_src
+
+Don't do garbage collection in the minibuffer
+
+#+begin_src emacs-lisp
+(defun my-minibuffer-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun my-minibuffer-exit-hook ()
+  (setq gc-cons-threshold (* 32 1024 1024)))
+
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+#+end_src
+
+This shows me GC breaks, to help debug performance problems.
+
+#+begin_src emacs-lisp
+(defmacro aleks/trace (msg sym &optional threshold)
+  "Trace SYM with MSG, optionally only if duration is over THRESHOLD.
+
+If threshold is non-nil, suppresses the start message to keep things
+from getting too noisy."
+  `(advice-add
+    ,sym :around
+    (lambda (orig &rest args)
+      (progn
+        (unless ,threshold (message "tracing %s" ,msg))
+        (let* ((start-time (current-time))
+               (result (apply orig args))
+               (end-time (float-time (time-subtract (current-time) start-time))))
+          (if (or (not ,threshold)
+                  (< ,threshold end-time))
+              (message "tracing %s took %fs." ,msg end-time))
+          result)))))
+
+(aleks/trace "garbage collection" 'garbage-collect 0.2)
+#+end_src
+
 ** Straight
 The initialization code for =straight.el= that lives [[https://github.com/raxod502/straight.el#getting-started][in the straight.el readme]] is already loaded in =init.el=.
 
