@@ -1141,21 +1141,27 @@ When looking up React functional components, LSP returns React type signatures f
 LSP lacks a general entrypoint to filter these out. See [[https://github.com/emacs-lsp/lsp-mode/issues/2103][this issue]].
 
 #+begin_src emacs-lisp
-  (require 'cl-seq)
-  (require 'eieio)
-  (require 'xref)
+(require 'cl-seq)
+(require 'eieio)
+(require 'xref)
 
-  (defun aleks/xref-react-type-definition-p (item)
-    "Return t if `item' is a React type definition."
-    (and
-     (string-match-p "ReactElement<any, any>" (xref-item-summary item))
-     (string-suffix-p "@types/react/index.d.ts" (xref-file-location-file (xref-item-location item)))))
+(defun aleks/xref-react-type-definition-p (item)
+  "Return t if `item' is a React type definition."
+  (and
+   (string-match-p "ReactElement<any, any>" (xref-item-summary item))
+   (string-suffix-p "@types/react/index.d.ts" (xref-file-location-file (xref-item-location item)))))
 
-  (defun aleks/filter-react-type-definitions (items)
-    "Remove React FunctionComponent type definitions from xref-items."
-    (cl-remove-if #'aleks/xref-react-type-definition-p items))
+(defun aleks/filter-react-type-definitions (items)
+  "Remove React FunctionComponent type definitions from xref-items."
+  (cl-remove-if #'aleks/xref-react-type-definition-p items))
 
-  (advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
+(advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
+#+end_src
+
+While we're at it, =xref= defaults to popping up a window whenever there's more than one definition it could jump to. That's annoying, I'd prefer it to just use ~completing-read~, which would use =corfu=. We can set ~xref-show-definitions-function~ to achieve that. (This will work in Emacs 28.1 or higher only.) This is most useful in TS because a symbol may at the same time be a value definition and a type name.
+
+#+begin_src emacs-lisp
+(setq xref-show-definitions-function #'xref-show-definitions-completing-read)
 #+end_src
 
 There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance. I'm using =corfu= and hence I've turned off ~lsp-completion-provider~ here
