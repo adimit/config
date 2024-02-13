@@ -1172,13 +1172,18 @@ There's experimental support for inlay hints in typescript language server. I've
   :mode
   ("\\.ts\\'" . typescript-ts-mode)
   ("\\.tsx\\'" . tsx-ts-mode)
+  :init
+  (defun aleks/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
   :hook
+  (lsp-completion-mode . aleks/lsp-mode-setup-completion)
   (typescript-ts-mode . lsp)
   (tsx-ts-mode . lsp)
   (typescript-ts-mode . copilot-mode)
   (tsx-ts-mode . copilot-mode)
   :custom
-  (lsp-completion-provider :none)
+  (lsp-completion-provider :none) ; Corfu
   (lsp-javascript-display-inlay-hints nil)
   (lsp-javascript-display-enum-member-value-hints nil)
   (lsp-javascript-display-parameter-type-hints nil)
@@ -1306,6 +1311,13 @@ DATE is the format of `calendar-current-date' time is a list
       (calendar-absolute-from-gregorian date)
       seconds)
      t)))
+#+end_src
+
+** Cape
+Pulled in because of a bug somewhere in LSP, see [[https://github.com/minad/corfu/issues/188][here]].
+
+#+begin_src emacs-lisp
+(use-package cape)
 #+end_src
 
 ** Code Review
@@ -1580,19 +1592,19 @@ This guesses the language a text is in per-paragraph. This means that you can co
 Language Server Protocol support using =lsp-mode=. =read-process-output-max= is set so larger LSP JSON payloads can be processed by Emacs.
 
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :hook (lsp-mode . lsp-enable-which-key-integration)
-    :custom
-    (read-process-output-max (* 5 1024 1024))
-    (lsp-eslint-validate '("typescript" "svelte"))
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    (lsp-eldoc-render-all nil)
-    (lsp-use-plists t)
-    :bind (("M-RET" . lsp-execute-code-action)
-           ("M-d" . lsp-ui-doc-glance)
-           ("M-D" . lsp-ui-doc-show))
-    :config
-    (setq lsp-keymap-prefix "SPC"))
+(use-package lsp-mode
+  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :custom
+  (read-process-output-max (* 5 1024 1024))
+  ;(lsp-eslint-validate '("typescript" "svelte"))
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-eldoc-render-all nil)
+  (lsp-use-plists t)
+  :bind (("M-RET" . lsp-execute-code-action)
+         ("M-d" . lsp-ui-doc-glance)
+         ("M-D" . lsp-ui-doc-show))
+  :config
+  (setq lsp-keymap-prefix "SPC"))
 #+end_src
 
 LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
@@ -1909,7 +1921,7 @@ Quicker matching with =orderless=
     ;; Configure a custom style dispatcher (see the Consult wiki)
     ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
     ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless basic)
+    (setq completion-styles '(orderless partial-completion basic)
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
