@@ -1996,13 +1996,14 @@ Then compile Emacs with ~--with-tree-sitter~. Finally, point ~treesit-extra-load
 Switch on highlighting of trailing white space, and provide a facility to turn it off on a per-mode base, as for some modes it's not useful.
 
 #+begin_src emacs-lisp
-  (custom-set-variables '(show-trailing-whitespace t))
+(custom-set-variables '(show-trailing-whitespace t))
 
-  (defun aleks/disable-show-trailing-whitespace ()
-      "Disable trailing whitespace."
-      (setq show-trailing-whitespace nil))
+(defun aleks/disable-show-trailing-whitespace ()
+    "Disable trailing whitespace."
+    (setq show-trailing-whitespace nil))
 
-  (add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
+(add-hook 'calendar-mode-hook 'aleks/disable-show-trailing-whitespace)
+(add-hook 'embark-collect-mode-hook 'aleks/disable-show-trailing-whitespace)
 #+end_src
 
 ** XJira
