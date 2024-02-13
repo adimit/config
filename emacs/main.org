@@ -831,6 +831,14 @@ Render inline LaTeX fragments somewhat bigger, to match the font size.
   (plist-put org-format-latex-options :scale 2)
 #+end_src
 
+*** Hugo
+Write blog posts & website with a static site generator, Hugo.
+
+#+begin_src emacs-lisp
+(use-package ox-hugo
+  :after ox)
+#+end_src
+
 *** Reveal
 
 #+BEGIN_SRC emacs-lisp
