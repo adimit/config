@@ -1,0 +1,17 @@
+{
+    "ipc": true,
+    "height": 24,
+    "position": "top",
+    "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["battery", "tray", "clock"],
+    "sway/window": {
+        "format": "{}",
+        "max-length": 100,
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "🌍 $1",
+            "fish (.*)": " $1",
+            "(.*) - GNU Emacs.*": "✏️ $1"
+        }
+    }
+}
