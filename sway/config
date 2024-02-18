@@ -215,6 +215,7 @@ bindsym $mod+g exec slurp | grim -g - Pictures/screenshot_$(date -Iminutes).png
 exec /home/aleks/.local/bin/startup
 
 hide_edge_borders smart
+gaps inner 5
 
 # Hide title bars
 default_border pixel 1
