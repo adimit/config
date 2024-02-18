@@ -1,6 +1,6 @@
 [general]
 
-accounts = Fastmail, Outlook, Gmail
+accounts = Fastmail
 maxsyncaccounts = 3
 
 pythonfile = ~/.offlineimap.py
