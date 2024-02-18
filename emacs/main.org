@@ -1865,6 +1865,7 @@ Try out =selectrum= as an alternative to =ivy=.
 
 #+begin_src emacs-lisp
 (use-package vertico
+  :straight (vertico :type git :host github :repo "emacs-straight/vertico")
   :init
   (vertico-mode)
   :custom
