@@ -293,3 +293,8 @@ label:focus {
   background-color: #0069d4;
 }
 
+#custom-iso-week {
+  padding-right: 10px;
+  padding-left: 10px;
+  background: gray;
+}
