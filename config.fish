@@ -102,7 +102,7 @@ function fish_prompt
     # if logged in via SSH, show server
     if set -q SSH_CLIENT
         set_color blue
-        echo -n (hostname -f)' '
+        echo -n (hostnamectl hostname)' '
         set_color normal
     end
 
