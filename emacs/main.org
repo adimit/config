@@ -1378,6 +1378,18 @@ Display git diff hint in the gutter.
     :custom (diff-hl-side 'right))
 #+END_SRC
 
+** Dumb Jump
+Helps by creating an xref point to jump to for many different languages & language features without needing LSP or a tags file. Needs =rg= to be available (or =ag=, but we're using =rg=).
+
+#+begin_src emacs-lisp
+(use-package dumb-jump
+  :custom
+  (dumb-jump-force-searcher 'rg)
+  :config
+  (add-to-list 'dumb-jump-project-denoters "node_modules" 'append)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+#+end_src
+
 ** Editorconfig
 
 Read =.editorconfig= files and adjust settings correspondingly.
