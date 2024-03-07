@@ -205,7 +205,7 @@ set $sink `pactl list short sinks  | grep 'output.pci' | cut -f1`
 bindsym XF86AudioRaiseVolume exec notify-send -t 400 "Sound Level" "🔊 "$(amixer -D pulse sset Master 5%+ | perl -wnE 'say /\\[(\\d?\\d?\\d%)\\]/' | tail -n 1)
 bindsym XF86AudioLowerVolume exec notify-send -t 400 "Sound Level" "🔊 "$(amixer -D pulse sset Master 5%- | perl -wnE 'say /\\[(\\d?\\d?\\d%)\\]/' | tail -n 1)
 bindsym XF86AudioMute exec notify-send -t 400 "Mute" $(amixer -D pulse sset Master toggle | grep 'Front Left:' | sed 's/.*\[o\(.\).*/\1/; y/nf/🔊🔇/')
-bindsym Pause exec headset
+bindsym Pause exec sound
 bindsym XF86AudioPlay exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.PlayPause
 bindsym XF86AudioPause exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.Pause
 bindsym XF86AudioNext exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.Next
