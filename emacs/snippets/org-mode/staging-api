@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: staging-api
+# key: staging-api
+# --
+:header-args:restclient: :var auth="Authorization: ${1:api-key}\nUser-Agent: ADI\nContent-Type: application/json" report="https://api-reporting.meisterplan.io/v1" rest="https://api.meisterplan.io/v1"

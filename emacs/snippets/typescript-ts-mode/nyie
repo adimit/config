@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Not yet implemented expression
+# key: nyie
+# --
+
+(() => { throw new Error('Not yet implemented!') })();$0
