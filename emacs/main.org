@@ -41,7 +41,7 @@ Don't do garbage collection in the minibuffer
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 #+end_src
 
-This shows me GC breaks, to help debug performance problems.
+This is a handy macro to trace execution time. Use like so: ~(aleks/trace "something to trace" 'function-name 2)~. This would trace ~function-name~ whenever it takes longer than 2 seconds to complete (fractional seconds are supported, I think.)
 
 #+begin_src emacs-lisp
 (defmacro aleks/trace (msg sym &optional threshold)
@@ -61,8 +61,11 @@ from getting too noisy."
                   (< ,threshold end-time))
               (message "tracing %s took %fs." ,msg end-time))
           result)))))
+#+end_src
 
-(aleks/trace "garbage collection" 'garbage-collect 0.2)
+We don't need the tracing function for garbage collection, as there's a variable for that.
+
+#+begin_src emacs-lisp
 #+end_src
 
 ** Straight
@@ -156,36 +159,37 @@ Calendar is set up for European style display (Monday starts week) and manual lo
 Tübingen Hbf is: =48.516738, 9.055493=
 
 #+BEGIN_SRC emacs-lisp
-  (defvar holiday-baden-württemberg-holidays
-    '((holiday-fixed 1 1 "Neujahr")
-      (holiday-fixed 1 6 "Heilige Drei Könige")
-      (holiday-fixed 5 1 "Tag der Arbeit")
-      (holiday-fixed 10 3 "Tag der deutschen Einheit")
-      (holiday-fixed 11 1 "Allerheiligen")
-      (holiday-fixed 12 25 "Erster Weihnachtsfeiertag")
-      (holiday-fixed 12 26 "Zweiter Weihnachtsfeiertag")
-      (holiday-easter-etc -2 "Karfreitag")
-      (holiday-easter-etc +1 "Ostermontag")
-      (holiday-easter-etc +39 "Christi Himmelfahrt")
-      (holiday-easter-etc +50 "Pfingstmontag")
-      (holiday-easter-etc +60 "Fronleichnam")))
+(defvar holiday-baden-württemberg-holidays
+  '((holiday-fixed 1 1 "Neujahr")
+    (holiday-fixed 1 6 "Heilige Drei Könige")
+    (holiday-fixed 5 1 "Tag der Arbeit")
+    (holiday-fixed 10 3 "Tag der deutschen Einheit")
+    (holiday-fixed 11 1 "Allerheiligen")
+    (holiday-fixed 12 25 "Erster Weihnachtsfeiertag")
+    (holiday-fixed 12 26 "Zweiter Weihnachtsfeiertag")
+    (holiday-easter-etc -2 "Karfreitag")
+    (holiday-easter-etc +1 "Ostermontag")
+    (holiday-easter-etc +39 "Christi Himmelfahrt")
+    (holiday-easter-etc +50 "Pfingstmontag")
+    (holiday-easter-etc +60 "Fronleichnam")))
 
-  (use-package calendar
-    :defer t
-    :custom
-    (calendar-week-start-day 1)
-    (calendar-latitude 48.516738)
-    (calendar-longitude 9.055493)
-    (calendar-location-name "Tübingen, Germany")
-    (calendar-holidays
-     (append holiday-solar-holidays
-             holiday-baden-württemberg-holidays))
-    (calendar-date-style 'european)
-    (calendar-time-display-form
-     '(24-hours ":"
-                minutes
-                (if time-zone (concat " (" time-zone ")")))))
-  
+
+(use-package calendar
+  :defer t
+  :custom
+  (calendar-week-start-day 1)
+  (calendar-latitude 48.516738)
+  (calendar-longitude 9.055493)
+  (calendar-location-name "Tübingen, Germany")
+  (calendar-holidays
+   (append holiday-solar-holidays
+           holiday-baden-württemberg-holidays))
+  (calendar-date-style 'european)
+  (calendar-time-display-form
+   '(24-hours ":"
+              minutes
+              (if time-zone (concat " (" time-zone ")")))))
+
 #+END_SRC
 
 Here's a function that returns whether it's currently dark outside, so you don't have to look.
@@ -1158,13 +1162,13 @@ LSP lacks a general entrypoint to filter these out. See [[https://github.com/ema
 (advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
 #+end_src
 
-While we're at it, =xref= defaults to popping up a window whenever there's more than one definition it could jump to. That's annoying, I'd prefer it to just use ~completing-read~, which would use =corfu=. We can set ~xref-show-definitions-function~ to achieve that. (This will work in Emacs 28.1 or higher only.) This is most useful in TS because a symbol may at the same time be a value definition and a type name.
+While we're at it, =xref= defaults to popping up a window whenever there's more than one definition it could jump to. That's annoying, I'd prefer it to just use ~completing-read~. We can set ~xref-show-definitions-function~ to achieve that. (This will work in Emacs 28.1 or higher only.) This is most useful in TS because a symbol may at the same time be a value definition and a type name.
 
 #+begin_src emacs-lisp
 (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
 #+end_src
 
-There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance. I'm using =corfu= and hence I've turned off ~lsp-completion-provider~ here
+There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance.
 
 #+begin_src emacs-lisp
 (use-package lsp-mode
@@ -1183,7 +1187,7 @@ There's experimental support for inlay hints in typescript language server. I've
   (typescript-ts-mode . copilot-mode)
   (tsx-ts-mode . copilot-mode)
   :custom
-  (lsp-completion-provider :none) ; Corfu
+  (lsp-completion-provider :capf)
   (lsp-javascript-display-inlay-hints nil)
   (lsp-javascript-display-enum-member-value-hints nil)
   (lsp-javascript-display-parameter-type-hints nil)
@@ -1313,13 +1317,6 @@ DATE is the format of `calendar-current-date' time is a list
      t)))
 #+end_src
 
-** Cape
-Pulled in because of a bug somewhere in LSP, see [[https://github.com/minad/corfu/issues/188][here]].
-
-#+begin_src emacs-lisp
-(use-package cape)
-#+end_src
-
 ** Code Review
 
 Rudimentary support for code reviews. Missing line numbers, syntax highlighting. The interface is somewhat clunky, but workable. Integrates with forge and thus magit.
@@ -1330,53 +1327,34 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
     :custom (code-review-auth-login-marker 'forge))
 #+end_src
 
-** Corfu (Completion)
-
-An alternative to =company=.
-
-#+begin_src emacs-lisp
-(defun quit-corfu-and-exit-to-normal-mode ()
-  (interactive)
-  (corfu-quit))
-
-(use-package corfu
-  :custom
-  (corfu-auto t)
-  (corfu-preselect 'prompt)
-  (corfu-auto-delay 0.0)
-  (corfu-auto-prefix 0)
-  (corfu-quit-no-match 'separator)
-  (completion-styles '(basic))
-  (corfu-cycle t)
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ("<escape>" . quit-corfu-and-exit-to-normal-mode)
-        ([backtab] . corfu-previous))
-  :init
-  (global-corfu-mode))
-
-(use-package kind-icon
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default)
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
-(use-package emacs
-  :init
-  (setq completion-cycle-threshold 3)
-  (setq read-extended-command-predicate
-        #'command-completion-default-include-p))
-#+end_src
-
 ** Consult
 
 #+begin_src emacs-lisp
   (use-package consult)
 #+end_src
+
+** Company
+
+#+begin_src emacs-lisp
+(use-package company
+  :config
+  (company-tng-mode)
+  :hook
+  (prog-mode . company-mode)
+  :custom
+  (company-minimum-prefix-length 2)
+  (company-selection-wrap-around t)
+  (company-idle-delay 0))
+
+(use-package company-prescient
+  :hook (company-mode . company-prescient-mode))
+
+(use-package company-box
+  :hook
+  (company-mode . company-box-mode))
+#+end_src
+
+
 
 ** Copilot
 Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The keychord for accepting completions mimics the one in Fish shell for accepting history items. It's muscle memory, and they look almost the same.
@@ -1458,7 +1436,7 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
 (use-package evil-collection
   :after evil
   :custom (forge-add-default-bindings nil)
-  :config (evil-collection-init '(calendar dired calc ediff magit corfu edebug eglot eldoc elisp-mode elisp-refs elisp-slime-nav embark emoji eshell eww flycheck flymake forge gnus grep help lsp-ui-imenu mu4e mu4e-conversation org org-present org-roam pdf pdf-view image racket-describe reftex restclient rg ripgrep selectrum tetris vc-dir vc-annotate vc-git vdiff vertico wgrep which-key )))
+  :config (evil-collection-init '(calendar dired calc ediff magit edebug eglot eldoc elisp-mode elisp-refs elisp-slime-nav embark emoji eshell eww flycheck flymake forge gnus grep help lsp-ui-imenu mu4e mu4e-conversation org org-present org-roam pdf pdf-view image racket-describe reftex restclient rg ripgrep selectrum tetris vc-dir vc-annotate vc-git vdiff vertico wgrep which-key )))
 
 (use-package evil-surround
   :config
