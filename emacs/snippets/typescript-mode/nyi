@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: not yet implemented
-# key: nyi
-# --
-
-throw new Error('Not yet implemented!');
