@@ -1418,7 +1418,7 @@ Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The ke
 
 #+begin_src emacs-lisp
 (use-package copilot
- :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+ :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
  :general (:definer 'minor-mode :states 'insert :keymaps 'copilot-mode
                     "C-f" 'copilot-accept-completion
                     "C-M-f" 'copilot-accept-completion-by-word))
