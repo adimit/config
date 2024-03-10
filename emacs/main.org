@@ -125,6 +125,14 @@ Some basic appearance & behaviour settings
    '(mouse-yank-at-point t))
 #+end_src
 
+*** Transparency
+
+Shiny Emacs!
+
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(alpha-background . 80))
+#+end_src
+
 ** Auth
 This uses =pass= for all auth storage, including =mu4e= and =ghub=. If there are problems remember =(setq auth-source-debug t).=
 
