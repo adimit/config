@@ -30,7 +30,7 @@ font pango:Bitter 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec foot
+bindsym $mod+Return exec wezterm
 
 # kill focused window
 bindsym $mod+Shift+c kill
