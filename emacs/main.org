@@ -1634,6 +1634,18 @@ This guesses the language a text is in per-paragraph. This means that you can co
                               (pl . ("pl_PL" "Polish")))))
 #+end_src
 
+** Kagi
+For-pay search engine with an API.
+
+#+begin_src emacs-lisp
+(use-package password-store)
+(use-package kagi
+  :custom
+  (kagi-api-token (lambda () (password-store-get "kagi-api")))
+  (kagi-summarizer-engine "cecil")
+  (kagi-summarizer-default-laungage "EN")
+  (kagi-summarizer-cache t))
+#+end_src
 ** LSP
 
 Language Server Protocol support using =lsp-mode=. =read-process-output-max= is set so larger LSP JSON payloads can be processed by Emacs.
