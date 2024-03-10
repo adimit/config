@@ -780,21 +780,6 @@ Capture templates:
 *** Citations
 
 Only works with the new (as of summer 2021) org citation support.
-
-#+begin_src emacs-lisp
-  (defvar aleks/global-bibliography-files '("~/doc/lib/bib/main.bib"))
-  (custom-set-variables
-   '(org-cite-global-bibliography aleks/global-bibliography-files))
-#+end_src
-
-We install =citeproc= to get the CSL backend.
-
-#+begin_src emacs-lisp
-  (use-package citeproc
-    :config
-    (require 'oc-csl))
-#+end_src
-
 We set the export backend to biblatex for latex.
 
 #+begin_src emacs-lisp
@@ -977,9 +962,10 @@ I'm using org-cite nowadays, but org-ref still has important goodies.
   :custom
   (reftex-default-bibliography '("~/doc/lib/bib/main.bib"))
   (org-ref-default-bibliography '("~/doc/lib/bib/main.bib"))
-  (org-ref-pdf-directory '("~/doc/lib")))
-
+  (org-ref-pdf-directory '("~/doc/lib"))
+  (org-ref-insert-cite-function (lambda () (org-cite-insert nil))))
 #+end_src
+
 *** Org-Roam
 
 
@@ -993,6 +979,45 @@ Mostly for lecture notes, ideas for talks, but also random thoughts.
     (org-roam-directory (file-truename (concat (file-name-as-directory (getenv "HOME")) "org/roam")))
     :config
     (org-roam-setup))
+#+end_src
+
+And citation integration:
+
+#+begin_src emacs-lisp
+(use-package org-roam-bibtex
+  :straight
+  (:host github :repo "org-roam/org-roam-bibtex")
+  :after org-roam
+  :hook
+  (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (require 'org-ref)) ; optional: if using Org-ref v2 or v3 citation links
+
+(use-package citar-org-roam
+  :after (citar org-roam)
+  :config (citar-org-roam-mode))
+#+end_src
+
+Capture templates for roam nodes, and for references.
+
+#+begin_src emacs-lisp
+(setq org-roam-capture-templates
+      '(("d" "default" plain
+         "%?"
+         :target
+         (file+head
+          "%<%Y%m%d%H%M%S>-${slug}.org"
+          "#+title: ${note-title}\n")
+         :unnarrowed t)
+        ("n" "literature note" plain
+         "%?"
+         :target
+         (file+head
+          "%(expand-file-name (or citar-org-roam-subdir \"\") org-roam-directory)/${citar-citekey}.org"
+          "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n#+last_modified: %U\n\n")
+         :unnarrowed t))
+      citar-org-roam-capture-template-key "n"
+      citar-org-roam-subdir "lit")
 #+end_src
 
 **** UI
@@ -1020,6 +1045,30 @@ This is a small package that bundles [[https://edwardtufte.github.io/tufte-css/]
   (org-tufte :type git :host github :repo "Zilong-Li/org-tufte")
   :custom
   (org-tufte-htmlize-code t))
+#+end_src
+
+*** Citar
+
+CAPF for bibtex
+
+#+begin_src emacs-lisp
+(use-package citar
+  :no-require
+  :hook
+  (LaTeX-mode . citar-capf-setup)
+  (org-mode . citar-capf-setup)
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  (citar-library-paths '("~/doc/lib/"))
+  :config
+  (add-to-list 'citar-file-open-functions '("pdf" . citar-file-open-external)))
+
+(use-package citar-embark
+  :after citar embark
+  :no-require
+  :config (citar-embark-mode))
 #+end_src
 
 ** PlantUML
