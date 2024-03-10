@@ -210,7 +210,7 @@ bindsym XF86AudioPlay exec gdbus call --session --dest org.mpris.MediaPlayer2.Lo
 bindsym XF86AudioPause exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.Pause
 bindsym XF86AudioNext exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.Next
 bindsym XF86AudioPrev exec gdbus call --session --dest org.mpris.MediaPlayer2.Lollypop --object-path /org/mpris/MediaPlayer2 --method org.mpris.MediaPlayer2.Player.Previous
-bindsym $mod+g exec slurp | grim -g - Pictures/screenshot_$(date -Iminutes).png
+bindsym $mod+g exec slurp | grim -g - $(xdg-user-dir PICTURES)/screenshot_$(date -Iminutes).png
 
 exec /home/aleks/.local/bin/startup
 
