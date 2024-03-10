@@ -225,20 +225,11 @@ default_border pixel 1
 
 # I think this might help with some slow app startup. Maybe.
 exec systemctl --user import-environment
-
-output "eDP-1" bg ~/Family/photo-book/thailand/DSC_0647.jpg fill
-output "DP-6" bg ~/Family/photo-book/thailand/DSC_1014_01.jpg fill
-output "DP-7" bg ~/Family/photo-book/thailand/DSC_1014_01.jpg fill
-output "DP-8" bg ~/Family/photo-book/thailand/DSC_1014_01.jpg fill
-output "DP-9" bg ~/Family/photo-book/thailand/DSC_1014_01.jpg fill
-output "DP-2" bg ~/Family/photo-book/thailand/DSC_1093_01.jpg fill
-output "DP-3" bg ~/Family/photo-book/thailand/DSC_1093_01.jpg fill
-output "DP-4" bg ~/Family/photo-book/thailand/DSC_1093_01.jpg fill
-output "DP-5" bg ~/Family/photo-book/thailand/DSC_1093_01.jpg fill
-
 exec swayidle
 exec pasystray
 exec nm-applet
 exec gnome-keyring-daemon --start --components=secrets
 exec export $(gnome-keyring-daemon)
 exec dbus-update-activation-environment --systemd DISPLAY XAUTHORITY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec swww init
+exec /home/aleks/var/python/swayblur/bin/swayblur
