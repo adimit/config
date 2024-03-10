@@ -239,6 +239,6 @@ output "DP-5" bg ~/Family/photo-book/thailand/DSC_1093_01.jpg fill
 exec swayidle
 exec pasystray
 exec nm-applet
-exec dbus-update-activation-environment --all
 exec gnome-keyring-daemon --start --components=secrets
 exec export $(gnome-keyring-daemon)
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
