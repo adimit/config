@@ -241,4 +241,4 @@ exec pasystray
 exec nm-applet
 exec gnome-keyring-daemon --start --components=secrets
 exec export $(gnome-keyring-daemon)
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment --systemd DISPLAY XAUTHORITY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
