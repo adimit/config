@@ -29,6 +29,8 @@ alias rm 'rm -iv'
 alias mv 'mv -i'
 alias cp 'cp -i'
 alias icat 'kitty +kitten icat'
+alias stand 'linak-controller --move-to stand'
+alias sit 'linak-controller --move-to sit'
 
 function ssh
     TERM=screen-256color command ssh $argv
