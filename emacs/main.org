@@ -1639,7 +1639,11 @@ For-pay search engine with an API.
 
 #+begin_src emacs-lisp
 (use-package password-store)
+(use-package shell-maker)
 (use-package kagi
+  :straight (kagi.el
+             :host codeberg
+             :repo "bram85/kagi.el")
   :custom
   (kagi-api-token (lambda () (password-store-get "kagi-api")))
   (kagi-summarizer-engine "cecil")
