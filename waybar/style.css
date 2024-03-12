@@ -49,9 +49,9 @@ button:hover {
   background: rgba(0, 0, 0, 0.2);
 }
 
-#workspaces button.focused {
-  background-color: #64727d;
-  box-shadow: inset 0 -3px #ffffff;
+#workspaces button.active {
+  background: rgba(0, 255, 170, 0.4);
+  box-shadow: inset 0 -3px rgba(240, 34, 216, 0.4);
 }
 
 #workspaces button.urgent {

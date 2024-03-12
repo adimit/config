@@ -2,20 +2,16 @@
     "ipc": true,
     "height": 24,
     "position": "top",
-    "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad"],
-    "modules-center": ["sway/window"],
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["hyprland/window"],
     "modules-right": ["battery", "tray", "custom/iso-week", "clock"],
-    "sway/window": {
-        "format": "{}",
-        "max-length": 100,
-        "rewrite": {
-            "(.*) — Mozilla Firefox": "🌍 $1",
-            "fish (.*)": " $1",
-            "(.*) - GNU Emacs.*": "✏️ $1"
-        }
-    },
     "custom/iso-week": {
         "exec": "date +'%V'",
         "interval": 86400
+    },
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1"
     }
 }
