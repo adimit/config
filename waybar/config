@@ -5,12 +5,19 @@
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["hyprland/window"],
     "modules-right": ["battery", "tray", "custom/iso-week", "clock"],
+    "reload_style_on_change": true,
     "custom/iso-week": {
         "exec": "date +'%V'",
         "interval": 86400
     },
     "hyprland/workspaces": {
         "format": "{icon}",
+        "format-icons": {
+          "1": "⌨️",
+          "3": "🌍",
+          "music": "🎶",
+          "chat": "💬"
+        },
         "on-scroll-up": "hyprctl dispatch workspace e+1",
         "on-scroll-down": "hyprctl dispatch workspace e-1"
     }
