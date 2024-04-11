@@ -288,6 +288,7 @@ And here's a function to set the different faces.
      '(variable-pitch ((t (:family "Bitter" :height 180))))
      '(fixed-pitch ((t (:family "Fira Code" :height 160))))
      '(default ((t (:family "Fira Code" :height 160)))))
+    (set-fontset-font "fontset-default" 'symbol '("Iosevka Nerd Font"))
     (set-fontset-font "fontset-default" 'greek-iso8859-7 '("Fira Code Regular")))
 #+end_src
 
