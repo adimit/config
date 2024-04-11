@@ -1480,68 +1480,6 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   :hook (forge-post-mode . emojify-mode))
 #+end_src
 
-** Evil
-#+begin_src emacs-lisp
-(use-package evil
-  :hook (after-init . evil-mode)
-  :init
-  (setq evil-want-keybinding nil
-        evil-want-integration t)
-  :custom
-  (evil-want-Y-yank-to-eol t)
-  (evil-move-beyond-eol t)
-  (evil-undo-system 'undo-redo)
-  (evil-want-C-d-scroll nil) ; C-u does nothing anyway
-  :general
-  (:states 'normal
-           "RET" 'save-buffer
-           "g b" 'bury-buffer))
-
-(use-package evil-collection
-  :after evil
-  :custom (forge-add-default-bindings nil)
-  :config (evil-collection-init '(calendar dired calc ediff magit edebug eglot eldoc elisp-mode elisp-refs elisp-slime-nav embark emoji eshell eww flycheck flymake forge gnus grep help lsp-ui-imenu mu4e mu4e-conversation org org-present org-roam pdf pdf-view image racket-describe reftex restclient rg ripgrep selectrum tetris vc-dir vc-annotate vc-git vdiff vertico wgrep which-key )))
-
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode 1))
-#+end_src
-
-*** Dispatch with space/space menu.
-
-#+begin_src emacs-lisp
-(transient-define-prefix dispatch-space-menu () "This isn't documentation."
-  [[
-    "Buffers"
-    ("b b" "consult buffer" consult-buffer)
-    ("b k" "kill buffer" kill-this-buffer)
-    "Projectile"
-    ("p p" "switch project" projectile-switch-project)
-    ("p f" "find file in project" projectile-find-file)
-    ("p r" "ripgrep in project" consult-ripgrep)]
-   ["Org"
-    ("o a" "agenda" org-agenda)
-    ("o c o" "clock out" org-clock-out)
-    ("o c g" "clock goto" org-clock-goto)
-    ("o c i" "clock in" org-clock-in)
-    ("o c c" "capture" org-capture)
-    ("o p p" "present" org-present)
-    ("o i j" "jira link" xjira-org-insert-link-to-issue)
-    ("o i l" "insert link" org-insert-link)]
-   ["Git"
-    ("g s" "git status" magit-status)
-    ("g b" "git blame" magit-blame)
-    ("g f" "git find file" magit-find-file)]
-   ["Other"
-    ("e" "expand region" er/expand-region)
-    ("x f" "find file" find-file)
-    ("x e" "open eshell here" eshell-here)]])
-
-(general-define-key
- :states 'normal
- "SPC" 'dispatch-space-menu)
-#+end_src
-
 ** Expand Region
 
 #+begin_src emacs-lisp
@@ -1549,7 +1487,8 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
   :straight (expand-region
              :host nil
              :branch "treesit-er"
-             :repo "/home/aleks/src/expand-region.el"))
+             :repo "/home/aleks/src/expand-region.el")
+  :bind (("C-c e" . er/expand-region)))
 #+end_src
 
 ** Extract Issue Numbers from Branch
@@ -1734,8 +1673,205 @@ This allows creating a branch from the currently clocked in org-mode task. Using
       (message "No current task.")))
 #+end_src
 
-** Move File and Buffer
+** Meow
+*** TODO Stop windows from bouncing around when opening transients
+The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples
+*** TODO Redo
+*** DONE Start meow global mode on startup
+Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
+*** TODO Fix delete keybinding
+Meow's default is terrible. It should work like in Helix.
+*** TODO Find a way to join lines easily
+Vim's =shift-k=. How does that work in Helix? I seem to recall that it didn't work there either.
+*** TODO Fix =o= and =O=
+They should work like in Helix and Vim
+*** TODO Remove =general=
+That one's only useful with evil mode
+*** Preserve C-W in insert mode
 
+I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
+
+#+begin_src emacs-lisp
+(defun aleks/delete-backward-word ()
+  "Delete previous word. This is a copy of `evil-delete-backward-word'"
+  (interactive)
+  (let ((beginning (save-excursion
+                     (call-interactively 'backward-word)
+                     (point)))
+        (end (point)))
+    (cond
+     ((not (bobp)) (delete-region
+                    (max beginning (line-beginning-position))
+                    end))
+     (t (user-error "Beginning of line or buffer.")))))
+#+end_src
+*** Surround
+
+Helix has a small surround menu that pops up with =m= in normal mode. We'll try something similar here.
+
+#+begin_src emacs-lisp
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s)") (forward-char 1) (backward-list 1))))
+
+(transient-define-prefix dispatch-surround-menu () "This isn't documentation"
+  [[("m" "go to matching bracketish" match-paren)]])
+#+end_src
+
+*** Transient Window
+
+#+begin_src emacs-lisp
+(transient-define-prefix dispatch-window-menu () "This isn't documentation"
+  [["Movement"
+    ("h" "left" windmove-left)
+    ("l" "right" windmove-right)
+    ("k" "up" windmove-up)
+    ("j" "down" windmove-down)]
+   ["Control"
+    ("c" "delete this window" delete-window)
+    ("o" "delete other windows" delete-other-windows)
+    ("h" "split window horizontally" split-window-horizontally)
+    ("v" "split window vertically" split-window-vertically)]
+   ["Winner"
+    ("u" "winner mode undo" winner-undo)
+    ("r" "winner mode redo" winner-redo)]])
+#+end_src
+
+*** Transient GoTo menu
+
+#+begin_src emacs-lisp
+(defun aleks/goto-line (&optional count)
+        "Jump to COUNT line, or to the end of the buffer."
+        (interactive "p")
+        (if (null current-prefix-arg)
+            (call-interactively 'end-of-buffer)
+          (call-interactively 'goto-line)))
+#+end_src
+
+#+begin_src emacs-lisp
+(transient-define-prefix dispatch-goto-menu () "This isn't documentation"
+  [["Move"
+    ("e" "bottom" end-of-buffer)
+    ("g" "top" beginning-of-buffer)
+    ("d" "definition (xref)" xref-find-definitions)
+    ("h" "beginning of line" beginning-of-line)
+    ("l" "end of line" end-of-line)
+    ("s" "first non-blank-line" beginning-of-line-text)
+    ("f" "file at point" find-file-at-point)]
+   ["Buffer"
+    ("n" "next buffer" next-buffer)
+    ("p" "previous buffer" previous-buffer)
+    ("b" "bury buffer" bury-buffer)
+    ("u" "unbury buffer" unbury-buffer)
+    "Avy"
+    ("c" "goto char" avy-goto-char)
+    ("l" "got line" avy-goto-line)]])
+#+end_src
+
+*** Setup
+#+begin_src emacs-lisp
+(defun meow-setup ()
+  "My meow setup"
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . dispatch-goto-menu)
+   '("G" . buffer-end)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . dispatch-surround-menu)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<return>" . save-buffer)
+   '("<escape>" . ignore)
+   '("C-w" . dispatch-window-menu)))
+(use-package meow
+  :demand t
+  :bind
+  (("C-w" . aleks/delete-backward-word))
+  :custom
+  (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
+  :config
+  (setq meow--kbd-kill-region "S-<delete>")
+  (meow-setup)
+  (meow-global-mode 1))
+#+end_src
+
+** Move File and Buffer
 Adapted from this [[https://stackoverflow.com/questions/384284/how-do-i-rename-an-open-file-in-emacs][StackOverflow answer]]. This lets you rename the current buffer and file at the same time.
 
 #+begin_src emacs-lisp
@@ -2108,6 +2244,11 @@ Switch on highlighting of trailing white space, and provide a facility to turn i
 (add-hook 'embark-collect-mode-hook 'aleks/disable-show-trailing-whitespace)
 #+end_src
 
+** Winner
+Winner mode records window manipulation and allows you to undo/redo operations on windows. It is built-in, we just need to activate it.
+#+begin_src emacs-lisp
+(winner-mode)
+#+end_src
 ** XJira
 
 An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
