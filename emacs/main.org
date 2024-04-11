@@ -1681,13 +1681,34 @@ The documentation of =transient-display-buffer-action= should help with that. Pi
 Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
 *** TODO Fix delete keybinding
 Meow's default is terrible. It should work like in Helix.
+
+#+begin_src emacs-lisp
+(defun aleks/delete ()
+  "Deletes a character or the selection, if there is an active region."
+  (interactive)
+  (if (region-active-p)
+      (call-interactively 'kill-region)
+      (call-interactively 'meow-delete)))
+#+end_src
+
 *** TODO Find a way to join lines easily
 Vim's =shift-k=. How does that work in Helix? I seem to recall that it didn't work there either.
 *** TODO Fix =o= and =O=
 They should work like in Helix and Vim
 *** TODO Remove =general=
 That one's only useful with evil mode
-*** Preserve C-W in insert mode
+*** TODO Add search keybindings
+Maybe just use isearch, and but bind it to =/= and =?=
+*** TODO Add surround add
+*** TODO Add surround replace
+*** TODO Add surround delete
+*** TODO Add surround around object
+*** TODO Add surround inside object
+*** TODO Paren slurp/barf keybindings
+
+#+begin_src emacs-lisp
+#+end_src
+*** DONE Preserve C-W in insert mode
 
 I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
 
@@ -1817,13 +1838,13 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
    '("c" . meow-change)
-   '("d" . meow-delete)
+   '("d" . aleks/delete)
    '("D" . meow-backward-delete)
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
    '("g" . dispatch-goto-menu)
-   '("G" . buffer-end)
+   '("G" . end-of-buffer)
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
@@ -1862,11 +1883,16 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
 (use-package meow
   :demand t
   :bind
-  (("C-w" . aleks/delete-backward-word))
+  (("C-w" . aleks/delete-backward-word)
+   ("C-c x u" . undo-only))
   :custom
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
   :config
-  (setq meow--kbd-kill-region "S-<delete>")
+  (setq meow--kbd-kill-region "S-<delete>"
+        meow--kbd-forward-char "<right>"
+        meow--kbd-backward-char "<left>"
+        meow--kbd-undo "C-c x u")
+
   (meow-setup)
   (meow-global-mode 1))
 #+end_src
