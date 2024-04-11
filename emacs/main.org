@@ -1407,7 +1407,6 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 #+end_src
 
 
-
 ** Copilot
 Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The keychord for accepting completions mimics the one in Fish shell for accepting history items. It's muscle memory, and they look almost the same.
 
@@ -1679,15 +1678,18 @@ The documentation of =transient-display-buffer-action= should help with that. Pi
 *** TODO Redo
 *** DONE Start meow global mode on startup
 Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
-*** TODO Fix delete keybinding
-Meow's default is terrible. It should work like in Helix.
+*** DONE Fix delete keybinding
+Meow's default is terrible. It should work like in Helix. We can't just use =kill-region=, because that, rather annoyingly, doesn't end up deleting newlines.
 
 #+begin_src emacs-lisp
 (defun aleks/delete ()
   "Deletes a character or the selection, if there is an active region."
   (interactive)
   (if (region-active-p)
-      (call-interactively 'kill-region)
+      (progn
+        (call-interactively 'kill-region)
+        (when (looking-at "\n")
+            (call-interactively 'delete-char)))
       (call-interactively 'meow-delete)))
 #+end_src
 
@@ -1704,10 +1706,7 @@ Maybe just use isearch, and but bind it to =/= and =?=
 *** TODO Add surround delete
 *** TODO Add surround around object
 *** TODO Add surround inside object
-*** TODO Paren slurp/barf keybindings
 
-#+begin_src emacs-lisp
-#+end_src
 *** DONE Preserve C-W in insert mode
 
 I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
@@ -1879,11 +1878,15 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("'" . repeat)
    '("<return>" . save-buffer)
    '("<escape>" . ignore)
-   '("C-w" . dispatch-window-menu)))
+   '("C-w" . dispatch-window-menu)
+   '("C-f" . scroll-up-command)
+   '("C-b" . scroll-down-command)))
 (use-package meow
   :demand t
   :bind
   (("C-w" . aleks/delete-backward-word)
+   ("C-=" . sp-forward-slurp-sexp)
+   ("C-/" . sp-forward-barf-sexp)
    ("C-c x u" . undo-only))
   :custom
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
