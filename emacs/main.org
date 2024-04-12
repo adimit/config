@@ -95,7 +95,6 @@ Slurp the shell environment into Emacs when started as a daemon.
 (use-package exec-path-from-shell
   :custom exec-path-from-shell-variables
   '("PATH" "MANPATH"))
-(use-package general)
 (when (daemonp)
   (exec-path-from-shell-initialize))
 #+end_src
@@ -1286,10 +1285,6 @@ Jump to arbitrary points in the buffer
 
 #+begin_src emacs-lisp
 (use-package avy
-  :config
-  :general (:states 'normal
-                    "g c" 'avy-goto-char
-                    "g l" 'avy-goto-line)
   :custom (avy-all-windows 'all-frames))
 #+end_src
 
@@ -1411,10 +1406,10 @@ Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The ke
 
 #+begin_src emacs-lisp
 (use-package copilot
- :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
- :general (:definer 'minor-mode :states 'insert :keymaps 'copilot-mode
-                    "C-f" 'copilot-accept-completion
-                    "C-M-f" 'copilot-accept-completion-by-word))
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
+  :bind (:map copilot-mode-map
+              ("C-f" . 'copilot-accept-completion)
+              ("C-M-f" . 'copilot-accept-completion-by-word)))
 #+end_src
 
 ** Diff-hl
@@ -1610,9 +1605,6 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-doc-enable t)
-  :general
-  (:states 'normal
-           "g r" 'lsp-ui-peek-find-references)
   :config
   (define-key lsp-ui-peek-mode-map "j" 'lsp-ui-peek--select-next)
   (define-key lsp-ui-peek-mode-map "k" 'lsp-ui-peek--select-prev)
@@ -1674,7 +1666,9 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 ** Meow
 *** TODO Stop windows from bouncing around when opening transients
 The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples.
-*** TODO Redo
+
+A different option would be to stop using transients altogether. Meow uses something for its surround functions that might be useful.
+*** DONE Redo
 *** DONE Start meow global mode on startup
 Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
 *** DONE Fix delete keybinding
@@ -1694,19 +1688,34 @@ Meow's default is terrible. It should work like in Helix. We can't just use =kil
 
 *** TODO Find a way to join lines easily
 Vim's =shift-k=. How does that work in Helix? I seem to recall that it didn't work there either.
-*** TODO Fix =o= and =O=
-They should work like in Helix and Vim
-*** TODO Remove =general=
+*** DONE Fix =o= and =O=
+They should work like in Helix and Vim.
+=A= does sort of what I want, I think.
+*** DONE Add =A= keybinding
+cancel selection, then move to EOL, switch to insert.
+*** DONE Remove =general=
 That one's only useful with evil mode
-*** TODO Add search keybindings
+*** DONE Add search keybindings
 Maybe just use isearch, and but bind it to =/= and =?=
-*** TODO Add surround add
 *** TODO Add surround replace
 *** TODO Add surround delete
-*** TODO Add surround around object
-*** TODO Add surround inside object
+*** DONE Add surround around object
+*** DONE Add surround inside object
 *** TODO Create a visual mode for Meow
-** DONE Preserve C-W in insert mode
+[[https://github.com/meow-edit/meow/blob/master/CUSTOMIZATIONS.org#meow-define-state][There's docs on how to define a custom state]], those might help.
+Defining a visual mode frees up several important keybindings like =H= =L= =J= and =K=.
+*** DONE Go to references
+In LSP mode
+#+begin_src emacs-lisp
+           ;"g r" 'lsp-ui-peek-find-references
+#+end_src
+*** DONE Add keybinds for copilot in insert mode
+This was the =general= definer for evil:
+
+*** DONE Have =w= behave like in Helix
+Meow uses =meow-mark-word= here, where Helix uses something closer to Vim's =w=. The difference between =e= and =w= in Helix is that =e= will select a word's preceding whitespace and skip over whitespace when jumping (so an =e= selection can only start on whitespace, not end on it) whereas a =w= just inverts whatever =b= did transparently, so it can end on whitespace.
+*** DONE Add buffer switch to keypad menu
+*** DONE Preserve C-W in insert mode
 
 I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
 
@@ -1728,15 +1737,105 @@ I don't control a lot in insert mode, but =C-w= is important to my mental well-b
 
 Helix has a small surround menu that pops up with =m= in normal mode. We'll try something similar here.
 
+First, we'll need to define all the functions that'll do the heavy lifting for find and replacing surrounding objects.
+
 #+begin_src emacs-lisp
+(defvar aleks/list-of-mirrored-things
+  '((?( . ?))
+    (?[ . ?])
+    (?{ . ?})
+    (?< . ?>))
+  "A list of tuples for characters that should be mirrored when manipulating selections.")
+
+(defun aleks/find-mirrored-pair (char)
+  "If CHAR is a known mirrored pair, return it, or two copies of CHAR."
+  (or (assoc char aleks/list-of-mirrored-things)
+      (rassoc char aleks/list-of-mirrored-things)
+      `(,char . ,char)))
+
+(defun aleks/get-ordered-selection ()
+  "Return the points at which to insert a surround.
+
+It's either the beginning and end of a region, if such
+is active, or the value of `point' and one to the right of it."
+  (if (region-active-p)
+      `(,(region-beginning) . ,(region-end))
+    `(,(point) . ,(+ (point) 1))))
+
+(defun aleks/insert-surround ()
+  "Insert a pair of delineators around the selection."
+  (interactive)
+  (let ((target (aleks/find-mirrored-pair (read-char "Insert around selection:")))
+        (reg (aleks/get-ordered-selection)))
+    (save-excursion
+      (goto-char (cdr reg))
+      (insert (cdr target))
+      (goto-char (car reg))
+      (insert (car target)))
+    (message (format "Inserting %c %c around selection." (car target) (cdr target)))))
+
+(defun aleks/replace-surround ()
+  "Replaces a pair of delineators around the selection. NYI"
+  (interactive)
+  (save-excursion
+    (let* ((target (aleks/find-mirrored-pair (read-char "Replace char:")))
+           (a (search-backward (char-to-string (car target)) nil t))
+           (b (search-forward (char-to-string (cdr target)) nil t)))
+      (if (and a b)
+          (let ((replacement (aleks/find-mirrored-pair (read-char "Replace with:"))))
+            (goto-char a)
+            (delete-char 1)
+            (insert (car replacement))
+            (goto-char b)
+            (left-char)
+            (delete-char 1)
+            (insert (cdr replacement)))))))
+
+(defun aleks/delete-surround ()
+  "Deletes a pair of delineators around the selection. NYI"
+  (interactive)
+  (save-excursion
+    (let* ((target (aleks/find-mirrored-pair (read-char "Delete char:")))
+           (a (search-backward (char-to-string (car target)) nil t))
+           (b (search-forward (char-to-string (cdr target)) nil t)))
+      (if (and a b)
+          (progn
+            (goto-char a)
+            (delete-char 1)
+            (goto-char b)
+            (left-char 2)
+            (delete-char 1))))))
+
 (defun match-paren (arg)
   "Go to the matching paren if on a paren; otherwise insert %."
   (interactive "p")
   (cond ((looking-at "\\s(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s)") (forward-char 1) (backward-list 1))))
+#+end_src
 
+Then, we can assign them to a transient.
+
+#+begin_src emacs-lisp
 (transient-define-prefix dispatch-surround-menu () "This isn't documentation"
-  [[("m" "go to matching bracketish" match-paren)]])
+  [[("m" "go to matching bracketish" match-paren)
+    ("s" "surround add" aleks/insert-surround)
+    ("r" "surround replace" aleks/replace-surround)
+    ("d" "surround delete" aleks/delete-surround)
+    ("a" "select around object" meow-bounds-of-thing)
+    ("i" "select inside object" meow-inner-of-thing)]])
+#+end_src
+
+*** Append
+In Vim & Helix, pressing =A= will move the cursor to the end of the line, then drop you into insert mode. Meow doesn't know how that works.
+
+#+begin_src emacs-lisp
+(defun aleks/append-line ()
+  "Append to the end of the line"
+  (interactive)
+  (when (region-active-p)
+    (meow-cancel-selection))
+  (end-of-line)
+  (meow--switch-state 'insert))
 #+end_src
 
 *** Transient Window
@@ -1786,7 +1885,9 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
     ("u" "unbury buffer" unbury-buffer)
     "Avy"
     ("c" "goto char" avy-goto-char)
-    ("l" "got line" avy-goto-line)]])
+    ("l" "got line" avy-goto-line)]
+   ["LSP"
+    ("r" "references" lsp-ui-peek-find-references)]])
 #+end_src
 
 *** Setup
@@ -1832,7 +1933,7 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("a" . meow-append)
-   '("A" . meow-open-below)
+   '("A" . aleks/append-line)
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
    '("c" . meow-change)
@@ -1846,7 +1947,6 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
-   '("I" . meow-open-above)
    '("j" . meow-next)
    '("J" . meow-next-expand)
    '("k" . meow-prev)
@@ -1855,8 +1955,8 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("L" . meow-right-expand)
    '("m" . dispatch-surround-menu)
    '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
+   '("o" . meow-open-below)
+   '("O" . meow-open-above)
    '("p" . meow-yank)
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
@@ -1865,9 +1965,9 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("s" . meow-kill)
    '("t" . meow-till)
    '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
+   '("U" . undo-redo)
    '("v" . meow-visit)
-   '("w" . meow-mark-word)
+   '("w" . meow-next-symbol)
    '("W" . meow-mark-symbol)
    '("x" . meow-line)
    '("X" . meow-goto-line)
@@ -1875,6 +1975,9 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
+   '("/" . isearch-forward)
+   '("?" . isearch-backward)
+   '("=" . meow-indent)
    '("<return>" . save-buffer)
    '("<escape>" . meow-cancel-selection)
    '("C-w" . dispatch-window-menu)
@@ -1884,8 +1987,8 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
   :demand t
   :bind
   (("C-w" . aleks/delete-backward-word)
-   ("C-=" . sp-forward-slurp-sexp)
-   ("C-/" . sp-forward-barf-sexp)
+   ("C-c b b" . switch-to-buffer)
+   ("C-c b k" . kill-buffer)
    ("C-c x u" . undo-only))
   :custom
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
@@ -2028,12 +2131,12 @@ Smartparens to make handling parentheses easier.
 
 #+begin_src emacs-lisp
 (use-package smartparens
+  :demand t
   :init
   (require 'smartparens-config)
-  :general
-  (:definer 'minor-mode :states 'insert :keymaps 'smartparens-mode
-            "C-=" 'sp-forward-slurp-sexp
-            "C-/" 'sp-forward-barf-sexp)
+  :bind (:map smartparens-mode-map
+              ("C-=" . 'sp-forward-slurp-sexp)
+              ("C-/" . 'sp-forward-barf-sexp))
   :config
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1)
