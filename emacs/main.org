@@ -1406,7 +1406,6 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
   (company-mode . company-box-mode))
 #+end_src
 
-
 ** Copilot
 Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The keychord for accepting completions mimics the one in Fish shell for accepting history items. It's muscle memory, and they look almost the same.
 
@@ -1674,7 +1673,7 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 
 ** Meow
 *** TODO Stop windows from bouncing around when opening transients
-The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples
+The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples.
 *** TODO Redo
 *** DONE Start meow global mode on startup
 Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
@@ -1706,8 +1705,8 @@ Maybe just use isearch, and but bind it to =/= and =?=
 *** TODO Add surround delete
 *** TODO Add surround around object
 *** TODO Add surround inside object
-
-*** DONE Preserve C-W in insert mode
+*** TODO Create a visual mode for Meow
+** DONE Preserve C-W in insert mode
 
 I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
 
@@ -1877,7 +1876,7 @@ Helix has a small surround menu that pops up with =m= in normal mode. We'll try 
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("<return>" . save-buffer)
-   '("<escape>" . ignore)
+   '("<escape>" . meow-cancel-selection)
    '("C-w" . dispatch-window-menu)
    '("C-f" . scroll-up-command)
    '("C-b" . scroll-down-command)))
@@ -2283,8 +2282,8 @@ Winner mode records window manipulation and allows you to undo/redo operations o
 An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
 
 #+begin_src emacs-lisp
-  (use-package xjira
-    :straight (xjira :type git :host github :repo "adimit/xjira"))
+(use-package xjira
+  :straight (xjira :type git :host github :repo "adimit/xjira"))
 #+end_src
 
 The authorisation and host variables are set in auth source.
