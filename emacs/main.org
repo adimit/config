@@ -1664,60 +1664,52 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 #+end_src
 
 ** Meow
+The heart of the editing experience. This is an alternative to =evil=, it allows for modal editing with an automatic moving selection, like in Helix or Kakoune.
+
+I aim to keep my config here relatively consistent with Helix. It diverges from there only where I can't or haven't yet found a way to make it work. (Or where I don't care, because I don't use that particular functionality. As a rule of thumb, that includes everything that =Alt= is used for in Helix, as I don't use =Alt= while editing.)
+
+In particular, multiple cursors don't work the same way as in Helix. Emacs' editing model is not very conducive to multiple cursors, they're hard to make work in general.
 *** TODO Stop windows from bouncing around when opening transients
 The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples.
 
 A different option would be to stop using transients altogether. Meow uses something for its surround functions that might be useful.
-*** DONE Redo
-*** DONE Start meow global mode on startup
-Something's preventing it from just coming online. I have to call =meow-setup= and =meow-global-mode= by hand
-*** DONE Fix delete keybinding
-Meow's default is terrible. It should work like in Helix. We can't just use =kill-region=, because that, rather annoyingly, doesn't end up deleting newlines.
-
-#+begin_src emacs-lisp
-(defun aleks/delete ()
-  "Deletes a character or the selection, if there is an active region."
-  (interactive)
-  (if (region-active-p)
-      (progn
-        (call-interactively 'kill-region)
-        (when (looking-at "\n")
-            (call-interactively 'delete-char)))
-      (call-interactively 'meow-delete)))
-#+end_src
-
-*** TODO Find a way to join lines easily
-Vim's =shift-k=. How does that work in Helix? I seem to recall that it didn't work there either.
-*** DONE Fix =o= and =O=
-They should work like in Helix and Vim.
-=A= does sort of what I want, I think.
-*** DONE Add =A= keybinding
-cancel selection, then move to EOL, switch to insert.
-*** DONE Remove =general=
-That one's only useful with evil mode
-*** DONE Add search keybindings
-Maybe just use isearch, and but bind it to =/= and =?=
-*** TODO Add surround replace
-*** TODO Add surround delete
-*** DONE Add surround around object
-*** DONE Add surround inside object
+*** TODO Join lines easily
+In Helix and Vim you can use =J= (they work slightly differently, we're using the Helix way here). Meow uses the Kakoune-style capital keybindings for extending selections across lines. In order to use =J= for joining lines, we'll need to also add a visual mode to Meow
 *** TODO Create a visual mode for Meow
 [[https://github.com/meow-edit/meow/blob/master/CUSTOMIZATIONS.org#meow-define-state][There's docs on how to define a custom state]], those might help.
 Defining a visual mode frees up several important keybindings like =H= =L= =J= and =K=.
-*** DONE Go to references
-In LSP mode
-#+begin_src emacs-lisp
-           ;"g r" 'lsp-ui-peek-find-references
-#+end_src
-*** DONE Add keybinds for copilot in insert mode
-This was the =general= definer for evil:
 
-*** DONE Have =w= behave like in Helix
-Meow uses =meow-mark-word= here, where Helix uses something closer to Vim's =w=. The difference between =e= and =w= in Helix is that =e= will select a word's preceding whitespace and skip over whitespace when jumping (so an =e= selection can only start on whitespace, not end on it) whereas a =w= just inverts whatever =b= did transparently, so it can end on whitespace.
-*** DONE Add buffer switch to keypad menu
+#+begin_src fundamental
+(defvar aleks/meow-visual-keymap (make-keymap))
+(meow-define-state visual
+  "moew state emulating Vim/Helix visual state."
+  :lighter " [V]"
+  :keymap aleks/meow-visual-keymap
+  (if (eq meow--currrent-state 'visual)
+      (meow-select)))
+
+(setq meow-cursor-type-visual 'block)
+
+(meow-define-keys 'visual
+  '("<escape>" . meow-normal-mode)
+  '("h" . meow-left-expand)
+  '("l" . meow-right-expand)
+  '("j" . meow-next-expand)
+  '("k" . meow-prev-expand)
+  '("w" . meow-next-expand)
+  '("b" . meow-back-word))
+
+(add-variable-watcher 'meow--currrent-state
+                      (lambda (sym val op where)
+                        (message "meow--currrent-state: %s" val)))
+
+(add-variable-watcher 'meow--selection
+                      (lambda (sym val op where)
+                        (message "meow--selection: %s" val)))
+#+end_src
 *** DONE Preserve C-W in insert mode
 
-I don't control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
+I don't use control a lot in insert mode, but =C-w= is important to my mental well-being. We'll need to tell Meow that we don't want =C-w= to do anything with regions later by setting =meow--kbd-kill-region= to =S-<delete>=.
 
 #+begin_src emacs-lisp
 (defun aleks/delete-backward-word ()
@@ -1733,7 +1725,22 @@ I don't control a lot in insert mode, but =C-w= is important to my mental well-b
                     end))
      (t (user-error "Beginning of line or buffer.")))))
 #+end_src
-*** Surround
+*** DONE Fix delete keybinding
+Meow's default is terrible. It should work like in Helix. We can't just use =kill-region=, because that, rather annoyingly, doesn't end up deleting newlines.
+
+#+begin_src emacs-lisp
+(defun aleks/delete ()
+  "Deletes a character or the selection, if there is an active region."
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (call-interactively 'kill-region)
+        (when (looking-at "\n")
+          (call-interactively 'delete-char)))
+    (call-interactively 'meow-delete)))
+#+end_src
+
+*** DONE Surround
 
 Helix has a small surround menu that pops up with =m= in normal mode. We'll try something similar here.
 
@@ -1825,7 +1832,7 @@ Then, we can assign them to a transient.
     ("i" "select inside object" meow-inner-of-thing)]])
 #+end_src
 
-*** Append
+*** DONE Append
 In Vim & Helix, pressing =A= will move the cursor to the end of the line, then drop you into insert mode. Meow doesn't know how that works.
 
 #+begin_src emacs-lisp
@@ -1838,7 +1845,7 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
   (meow--switch-state 'insert))
 #+end_src
 
-*** Transient Window
+*** DONE Transient Window
 
 #+begin_src emacs-lisp
 (transient-define-prefix dispatch-window-menu () "This isn't documentation"
@@ -1857,7 +1864,7 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
     ("r" "winner mode redo" winner-redo)]])
 #+end_src
 
-*** Transient GoTo menu
+*** DONE Transient GoTo menu
 
 #+begin_src emacs-lisp
 (defun aleks/goto-line (&optional count)
