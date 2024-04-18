@@ -1675,6 +1675,10 @@ The documentation of =transient-display-buffer-action= should help with that. Pi
 A different option would be to stop using transients altogether. Meow uses something for its surround functions that might be useful.
 *** TODO Join lines easily
 In Helix and Vim you can use =J= (they work slightly differently, we're using the Helix way here). Meow uses the Kakoune-style capital keybindings for extending selections across lines. In order to use =J= for joining lines, we'll need to also add a visual mode to Meow
+*** TODO Make =xa= behave the same way as in Helix
+In =hx= you would start on the next line, in Meow you start on the same line. This is low priority, as I actually kinda like Meow's behaviour more.
+*** DONE Create =ga= and =gm= like in Helix
+Go to last accessed file, goto last modified file. We'll leave =gm= be for now.
 *** TODO Create a visual mode for Meow
 [[https://github.com/meow-edit/meow/blob/master/CUSTOMIZATIONS.org#meow-define-state][There's docs on how to define a custom state]], those might help.
 Defining a visual mode frees up several important keybindings like =H= =L= =J= and =K=.
@@ -1865,6 +1869,7 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
 #+end_src
 
 *** DONE Transient GoTo menu
+This menu opens when you  press =g=. It's similar to Helix' menu, but not quite the same.
 
 #+begin_src emacs-lisp
 (defun aleks/goto-line (&optional count)
@@ -1883,8 +1888,7 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
     ("d" "definition (xref)" xref-find-definitions)
     ("h" "beginning of line" beginning-of-line)
     ("l" "end of line" end-of-line)
-    ("s" "first non-blank-line" beginning-of-line-text)
-    ("f" "file at point" find-file-at-point)]
+    ("s" "first non-blank-line" beginning-of-line-text)]
    ["Buffer"
     ("n" "next buffer" next-buffer)
     ("p" "previous buffer" previous-buffer)
@@ -1892,9 +1896,12 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
     ("u" "unbury buffer" unbury-buffer)
     "Avy"
     ("c" "goto char" avy-goto-char)
-    ("l" "got line" avy-goto-line)]
+    ("L" "got line" avy-goto-line)]
    ["LSP"
-    ("r" "references" lsp-ui-peek-find-references)]])
+    ("r" "references" lsp-ui-peek-find-references)
+    "Files"
+    ("f" "file at point" find-file-at-point)
+    ("a" "last file" pop-global-mark)]])
 #+end_src
 
 *** Setup
