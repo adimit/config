@@ -2122,4 +2122,4 @@ An integration for Jira I wrote. The only thing it does is offer a way to captur
     :straight (xjira :type git :host github :repo "adimit/xjira"))
 #+end_src
 
-The authorisation and host variables are set in =private.org=.
+The authorisation and host variables are set in auth source.
