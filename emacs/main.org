@@ -1752,8 +1752,8 @@ First, we'll need to define all the functions that'll do the heavy lifting for f
 
 #+begin_src emacs-lisp
 (defvar aleks/list-of-mirrored-things
-  '((?( . ?))
-    (?[ . ?])
+  '((?\( . ?\))
+    (?\[ . ?\])
     (?{ . ?})
     (?< . ?>))
   "A list of tuples for characters that should be mirrored when manipulating selections.")
