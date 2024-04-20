@@ -1681,10 +1681,21 @@ In =hx= you would start on the next line, in Meow you start on the same line. Th
 Go to last accessed file, goto last modified file. We'll leave =gm= be for now.
 *** TODO Create =p= and =P= bindings
 *** TODO Make =w= behave more like in Helix/Vim
+I'll need to find the exact boundaries at which the cursor stops
 *** TODO Add proper bindings in magit, org agenda
 *** TODO Rebind meow's keypad key
 Space would be much better suited for a general menu
 *** TODO Create space menu
+*** TODO Make =F= and =T= work as expected
+Meow's idea to use =-f= is cute, but =F= is in muscle memory, and free anyway.
+*** TODO Make =C= , =D=, =Y= work as expected
+Note that =C-k= is =org-kill-line= in org-mode. These bindings have to respect that.
+
+- [X] =C=: kill to the end of the line, then insert-mode
+- [ ] Make =C= respect =org-kill-line= in =org-mode=
+- [ ] =D=: kill to the end of the line
+- [ ] =Y=: copy until the end of the line
+- [X] unbind =s=, we don't need it (maybe it'll come in handy for something else)
 *** TODO Create a visual mode for Meow
 [[https://github.com/meow-edit/meow/blob/master/CUSTOMIZATIONS.org#meow-define-state][There's docs on how to define a custom state]], those might help.
 Defining a visual mode frees up several important keybindings like =H= =L= =J= and =K=.
@@ -1956,6 +1967,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("A" . aleks/append-line)
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
+   '("C" . meow-kill)
    '("c" . meow-change)
    '("d" . aleks/delete)
    '("D" . meow-backward-delete)
@@ -1982,7 +1994,6 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
-   '("s" . meow-kill)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . undo-redo)
