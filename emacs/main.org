@@ -1686,8 +1686,48 @@ I'll need to find the exact boundaries at which the cursor stops
 *** TODO Rebind meow's keypad key
 Space would be much better suited for a general menu
 *** TODO Create space menu
-*** TODO Make =F= and =T= work as expected
+*** DONE Accept =(= =)=, and ={= =}= etc for selections
+To change generics tags in languages like TS, Rust, or HTML or JSX tags, we register =angle=
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'meow
+  (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">"))))
+#+end_src
+
+Meow uses /round/, /square/, /curly/ etc. but I find that unintuitive.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'meow
+  (setq meow-char-thing-table
+        `(,@meow-char-thing-table
+          (?\( . round)
+          (?\) . round)
+          (?\[ . square)
+          (?\] . square)
+          (?{ . curly)
+          (?} . curly)
+          (?< . angle)
+          (?> . angle))))
+#+end_src
+
+*** DONE Make =F= and =T= work as expected
 Meow's idea to use =-f= is cute, but =F= is in muscle memory, and free anyway.
+
+#+begin_src emacs-lisp
+(defun aleks/meow-find-backwards ()
+  "Like `meow-find', but backwards."
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-find)))
+
+
+(defun aleks/meow-till-backwards ()
+  "Like `meow-till', but backwards."
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-till)))
+#+end_src
+
 *** TODO Make =C= , =D=, =Y= work as expected
 Note that =C-k= is =org-kill-line= in org-mode. These bindings have to respect that.
 
@@ -1974,6 +2014,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
+   '("F" . aleks/meow-find-backwards)
    '("g" . dispatch-goto-menu)
    '("G" . end-of-buffer)
    '("h" . meow-left)
@@ -1995,6 +2036,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("t" . meow-till)
+   '("T" . aleks/meow-till-backwards)
    '("u" . meow-undo)
    '("U" . undo-redo)
    '("v" . meow-visit)
