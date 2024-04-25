@@ -1674,15 +1674,26 @@ The documentation of =transient-display-buffer-action= should help with that. Pi
 
 A different option would be to stop using transients altogether. Meow uses something for its surround functions that might be useful.
 *** TODO Join lines easily
-In Helix and Vim you can use =J= (they work slightly differently, we're using the Helix way here). Meow uses the Kakoune-style capital keybindings for extending selections across lines. In order to use =J= for joining lines, we'll need to also add a visual mode to Meow
+In Helix and Vim you can use =J= (they work slightly differently, we're using the Helix way here). Meow uses the Kakoune-style capital keybindings for extending selections across lines. In order to use =J= for joining lines, we'll need to also add a visual mode to Meow.
 *** TODO Make =xa= behave the same way as in Helix
 In =hx= you would start on the next line, in Meow you start on the same line. This is low priority, as I actually kinda like Meow's behaviour more.
 *** DONE Create =ga= and =gm= like in Helix
 Go to last accessed file, goto last modified file. We'll leave =gm= be for now.
-*** TODO Create =p= and =P= bindings
+*** TODO Create paste bindings for  =p= and =P=
+*** DONE =e= should not select newline when it's the last word
+I'm not sure that it does. But =ed= should *not* delete the newline, just the last word.
+
+In fact, =(buffer-substring (mark) (point))= says that the newline isn't part of it. So the behaviour is actually =d=.
+
+The actual problem was =aleks/delete=. I don't actually know why I had that ~(when (looking-at "\n"))~ clause.
 *** TODO Make =w= behave more like in Helix/Vim
 I'll need to find the exact boundaries at which the cursor stops
-*** TODO Add proper bindings in magit, org agenda
+*** TODO Add proper bindings in magit
+- [ ] have to remap =SPC= somehow.
+- [ ] ~discard-hunk~ needs a proper binding
+- [ ] search needs to work properly
+- [ ] select needs to work properly (visual mode needs to work for that)
+*** TODO Add proper bindings for org agenda
 *** TODO Rebind meow's keypad key
 Space would be much better suited for a general menu
 *** TODO Create space menu
@@ -1728,14 +1739,39 @@ Meow's idea to use =-f= is cute, but =F= is in muscle memory, and free anyway.
     (call-interactively 'meow-till)))
 #+end_src
 
-*** TODO Make =C= , =D=, =Y= work as expected
+*** DONE Make =C= , =D=, =Y= work as expected
 Note that =C-k= is =org-kill-line= in org-mode. These bindings have to respect that.
 
 - [X] =C=: kill to the end of the line, then insert-mode
-- [ ] Make =C= respect =org-kill-line= in =org-mode=
-- [ ] =D=: kill to the end of the line
-- [ ] =Y=: copy until the end of the line
+- [X] Make =C= respect =org-kill-line= in =org-mode=
+- [X] =D=: kill to the end of the line
+- [X] =Y=: copy until the end of the line
 - [X] unbind =s=, we don't need it (maybe it'll come in handy for something else)
+
+Meow has a selection fallback mode: certain commands work without a selection. When they're called with no selection, a certain other action is invoked instead. These fallbacks are registered in ~meow-selection-command-fallback~.
+
+We could either register our command in said variable, or we can just fake ~this-command~ which ~meow--with-selection-fallback~ uses to determine the fallback.
+
+#+begin_src emacs-lisp
+(defun aleks/change-line ()
+  "Kill the rest of the line, then drop into insert mode."
+  (interactive)
+  (setq this-command #'meow-kill)
+  (call-interactively 'meow-kill)
+  (meow--switch-state 'insert)
+  (setq-local meow--insert-pos (point)))
+#+end_src
+
+The copy-to-the-end-of-line function only does so if the selection is empty, and otherwise copies the selection.
+
+#+begin_src emacs-lisp
+(defun aleks/Y ()
+  "Copy the region from point to end of line."
+  (interactive)
+  (if (region-active-p)
+      (call-interactively 'copy-region-as-kill)
+    (copy-region-as-kill (point) (line-end-position))))
+#+end_src
 *** TODO Create a visual mode for Meow
 [[https://github.com/meow-edit/meow/blob/master/CUSTOMIZATIONS.org#meow-define-state][There's docs on how to define a custom state]], those might help.
 Defining a visual mode frees up several important keybindings like =H= =L= =J= and =K=.
@@ -1786,6 +1822,7 @@ I don't use control a lot in insert mode, but =C-w= is important to my mental we
                     end))
      (t (user-error "Beginning of line or buffer.")))))
 #+end_src
+
 *** DONE Fix delete keybinding
 Meow's default is terrible. It should work like in Helix. We can't just use =kill-region=, because that, rather annoyingly, doesn't end up deleting newlines.
 
@@ -1795,9 +1832,7 @@ Meow's default is terrible. It should work like in Helix. We can't just use =kil
   (interactive)
   (if (region-active-p)
       (progn
-        (call-interactively 'kill-region)
-        (when (looking-at "\n")
-          (call-interactively 'delete-char)))
+        (call-interactively 'kill-region))
     (call-interactively 'meow-delete)))
 #+end_src
 
@@ -1908,6 +1943,8 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
 
 *** DONE Transient Window
 
+Rather annoyingly, =window.el= defines ~split-window-vertically~ and ~split-window-horizontally~ the wrong way around, causing all manner of confusion. (If you split a window vertically, you split it *down*, with a window on the left side, then the right side! But =window.el= states: "Split WINDOW-TO-SPLIT into two windows, _one above the other_.") So we need to swap directions here.
+
 #+begin_src emacs-lisp
 (transient-define-prefix dispatch-window-menu () "This isn't documentation"
   [["Movement"
@@ -1918,8 +1955,8 @@ In Vim & Helix, pressing =A= will move the cursor to the end of the line, then d
    ["Control"
     ("c" "delete this window" delete-window)
     ("o" "delete other windows" delete-other-windows)
-    ("h" "split window horizontally" split-window-horizontally)
-    ("v" "split window vertically" split-window-vertically)]
+    ("-" "split window horizontally" split-window-vertically)
+    ("v" "split window vertically" split-window-horizontally)]
    ["Winner"
     ("u" "winner mode undo" winner-undo)
     ("r" "winner mode redo" winner-redo)]])
@@ -2007,10 +2044,10 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("A" . aleks/append-line)
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
-   '("C" . meow-kill)
+   '("C" . aleks/kill-line)
    '("c" . meow-change)
    '("d" . aleks/delete)
-   '("D" . meow-backward-delete)
+   '("D" . meow-kill)
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
@@ -2045,7 +2082,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("x" . meow-line)
    '("X" . meow-goto-line)
    '("y" . meow-save)
-   '("Y" . meow-sync-grab)
+   '("Y" . aleks/Y)
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("/" . isearch-forward)
