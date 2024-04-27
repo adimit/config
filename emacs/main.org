@@ -1688,7 +1688,7 @@ But the default action is append-paste (yank, whatever), i.e. paste below, or af
   "Returns t if `kill-ring' ends with a newline."
   (string-suffix-p "\n" (car kill-ring)))
 
-(defun aleks/paste-qabove ()
+(defun aleks/paste-above ()
   "Like Vim's `P'."
   (interactive)
   (when (aleks/pasting-line-p)
@@ -1700,15 +1700,11 @@ But the default action is append-paste (yank, whatever), i.e. paste below, or af
   (interactive)
   (if (aleks/pasting-line-p)
       (progn (end-of-line)
-             (newline-and-indent)
-             (let ((str (car kill-ring)))
-               (setcar kill-ring
-                       (replace-regexp-in-string
-                        "^[ \t]*\\([^ \t].*\\)\n"
-                        "\\1"
-                        str))))
-    (forward-char))
-  (call-interactively 'meow-yank))
+             (let* ((transform (lambda (str) (concat "\n" (substring str 0 -1))))
+                    (yank-transform-functions `(,transform ,@yank-transform-functions)))
+               (call-interactively 'meow-yank)))
+    (progn (forward-char)
+           (call-interactively 'meow-yank))))
 #+end_src
 
 *** DONE =e= should not select newline when it's the last word
