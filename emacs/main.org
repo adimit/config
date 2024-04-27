@@ -1680,6 +1680,37 @@ In =hx= you would start on the next line, in Meow you start on the same line. Th
 *** DONE Create =ga= and =gm= like in Helix
 Go to last accessed file, goto last modified file. We'll leave =gm= be for now.
 *** TODO Create paste bindings for  =p= and =P=
+Meow's default (~meow-yank~) is much like Vim/Helix's =P=, but if you've got a whole line in the kill ring, it'll paste it in the middle of your cursor. That's not great, and very confusing.
+But the default action is append-paste (yank, whatever), i.e. paste below, or after the current cursor.
+
+#+begin_src emacs-lisp
+(defun aleks/pasting-line-p ()
+  "Returns t if `kill-ring' ends with a newline."
+  (string-suffix-p "\n" (car kill-ring)))
+
+(defun aleks/paste-qabove ()
+  "Like Vim's `P'."
+  (interactive)
+  (when (aleks/pasting-line-p)
+    (beginning-of-line))
+  (call-interactively 'meow-yank))
+
+(defun aleks/paste-below ()
+  "Like Vim's `p'."
+  (interactive)
+  (if (aleks/pasting-line-p)
+      (progn (end-of-line)
+             (newline-and-indent)
+             (let ((str (car kill-ring)))
+               (setcar kill-ring
+                       (replace-regexp-in-string
+                        "^[ \t]*\\([^ \t].*\\)\n"
+                        "\\1"
+                        str))))
+    (forward-char))
+  (call-interactively 'meow-yank))
+#+end_src
+
 *** DONE =e= should not select newline when it's the last word
 I'm not sure that it does. But =ed= should *not* delete the newline, just the last word.
 
@@ -2067,7 +2098,9 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("n" . meow-search)
    '("o" . meow-open-below)
    '("O" . meow-open-above)
-   '("p" . meow-yank)
+   '("P" . aleks/paste-above)
+   '("p" . aleks/paste-below)
+
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
