@@ -126,10 +126,12 @@ Some basic appearance & behaviour settings
 
 *** Transparency
 
-Shiny Emacs!
+I've disabled transparency so far because of two bugs: [[https://github.com/minad/org-modern/discussions/178#discussioncomment-8626220][Blocks in org-modern don't show transparency]], and Prot's =spacious-padding= also doesn't. I think that's a bug in Emacs itself. Once it's fixed (if ever), maybe I'll go back to transparency, because it is kinda nice.
+
+There's a bug report [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][on the Emacs bug tracker]].
 
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 #+end_src
 
 ** Auth
@@ -1679,9 +1681,9 @@ In Helix and Vim you can use =J= (they work slightly differently, we're using th
 In =hx= you would start on the next line, in Meow you start on the same line. This is low priority, as I actually kinda like Meow's behaviour more.
 *** DONE Create =ga= and =gm= like in Helix
 Go to last accessed file, goto last modified file. We'll leave =gm= be for now.
-*** TODO Create paste bindings for  =p= and =P=
+*** DONE Create paste bindings for  =p= and =P=
 Meow's default (~meow-yank~) is much like Vim/Helix's =P=, but if you've got a whole line in the kill ring, it'll paste it in the middle of your cursor. That's not great, and very confusing.
-But the default action is append-paste (yank, whatever), i.e. paste below, or after the current cursor.
+We also still need the default action, append-paste (yank, whatever), i.e. paste below, or after the current cursor.
 
 #+begin_src emacs-lisp
 (defun aleks/pasting-line-p ()
@@ -1714,7 +1716,21 @@ In fact, =(buffer-substring (mark) (point))= says that the newline isn't part of
 
 The actual problem was =aleks/delete=. I don't actually know why I had that ~(when (looking-at "\n"))~ clause.
 *** TODO Make =w= behave more like in Helix/Vim
-I'll need to find the exact boundaries at which the cursor stops
+I'll need to find the exact boundaries at which the cursor stops.
+
+This is a pretty big task: Emacs doesn't have what we need, its ~forward-word~ is written in C (no doubt for efficiency reasons) and it has a very different idea of what a word is than we do.
+
+But there's a mechanism to hack into ~forward-word~ called ~find-word-boundary-function-table~. Setting it locally here, just as we do in the yank step might be useful. Unfortunately, the documentation for ~find-word-boundary-function-table~ is utterly useless. I think I get how it's supposed to work, but it's intransparent which characters correspond to which point in the array. I guess I'll have to read the C source code.
+
+In order to find out *how* to override it, studying Helix' code could come in handy. See =src/core/movement.rs=, line 237. We'll need to find out what ~range_to_target~ does for the different targets. For moving to word ends, the targets are ~WordmotionTarget::NextWordEnd~ and ~WordMotionTarget::NextLongWordEnd~.
+
+Helix goes through all the chars in its range and categorises them according to ~categorize_char()~ in ~char.rs~ into EOL, newline, word, punctuation or "unknown". It uses these categories to detect word boundaries in ~is_word_boundary()~ and ~is_long_word_boundary()~ in ~movement.rs~. see ~reached_target()~ right after for some additional conditions for the different movement types.
+
+#+begin_src emacs-lisp
+(defun aleks/move-forward-word ()
+  "Move forward one word."
+  (interactive))
+#+end_src
 *** TODO Add proper bindings in magit
 - [ ] have to remap =SPC= somehow.
 - [ ] ~discard-hunk~ needs a proper binding
@@ -2428,6 +2444,26 @@ Snippets live in version control under the Emacs directory.
     (yas-snippet-dirs '("~/config/emacs/snippets")))
 #+end_src
 
+** Spacious Padding
+Prot's sense for aesthetics is awesome. Unfortunately, the package doesn't play well with transparency.
+
+#+begin_src emacs-lisp
+(use-package spacious-padding
+  :custom
+  (spacious-padding-subtle-mode-line
+   `( :mode-line-active 'default
+      :mode-line-inactive vertical-border))
+  (spacious-padding-widths
+   '( :internal-border-width 15
+      :header-line-width 4
+      :mode-line-width 5
+      :tab-width 4
+      :right-divider-width 30
+      :scroll-bar-width 8
+      :fringe-width 8))
+  :init
+  (spacious-padding-mode))
+#+end_src
 ** String Inflection
 
 Useful to cycle between =CamelCase=, =snake_case=, etc. No keybindings, I just call it with =M-x=.
