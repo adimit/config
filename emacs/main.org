@@ -128,7 +128,7 @@ Some basic appearance & behaviour settings
 
 I've disabled transparency so far because of two bugs: [[https://github.com/minad/org-modern/discussions/178#discussioncomment-8626220][Blocks in org-modern don't show transparency]], and Prot's =spacious-padding= also doesn't. I think that's a bug in Emacs itself. Once it's fixed (if ever), maybe I'll go back to transparency, because it is kinda nice.
 
-There's a bug report [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][on the Emacs bug tracker]].
+There's a bug report [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][on the Emacs bug tracker]]
 
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(alpha-background . 100))
@@ -481,7 +481,7 @@ Eros mode shows you the result of elisp expressions in-band, instead of in the m
     :mode "\\.fish$")
 #+END_SRC
 
-** Graphql
+** GraphQL
 
 #+BEGIN_SRC emacs-lisp
   (use-package request)
@@ -1745,7 +1745,10 @@ To change generics tags in languages like TS, Rust, or HTML or JSX tags, we regi
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'meow
-  (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">"))))
+  (meow-thing-register 'angle '(pair ("<") (">")) '(pair ("<") (">")))
+  (meow-thing-register 'single-quote '(pair ("'") ("'")) '(pair ("'") ("'")))
+  (meow-thing-register 'double-quote '(pair ("\"") ("\"")) '(pair ("\"") ("\"")))
+  (meow-thing-register 'backtick '(pair ("`") ("`")) '(pair ("`") ("`"))))
 #+end_src
 
 Meow uses /round/, /square/, /curly/ etc. but I find that unintuitive.
@@ -1761,7 +1764,10 @@ Meow uses /round/, /square/, /curly/ etc. but I find that unintuitive.
           (?{ . curly)
           (?} . curly)
           (?< . angle)
-          (?> . angle))))
+          (?> . angle)
+          (?' . single-quote)
+          (?\" . double-quote)
+          (?` . backtick))))
 #+end_src
 
 *** DONE Make =F= and =T= work as expected
