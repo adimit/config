@@ -1671,6 +1671,10 @@ The heart of the editing experience. This is an alternative to =evil=, it allows
 I aim to keep my config here relatively consistent with Helix. It diverges from there only where I can't or haven't yet found a way to make it work. (Or where I don't care, because I don't use that particular functionality. As a rule of thumb, that includes everything that =Alt= is used for in Helix, as I don't use =Alt= while editing.)
 
 In particular, multiple cursors don't work the same way as in Helix. Emacs' editing model is not very conducive to multiple cursors, they're hard to make work in general.
+
+*** TODO Add skip paragraph/defun bindings ={= and =}=
+*** TODO Add surround objects for quotes and org/markdown markup
+=``=, =""=, =''=, =**=, etc. Actually, a functionality like in Helix where you can just use arbitrary characters as surrounds would be great, but I think that's going to be a bit difficult with Meow.
 *** TODO Stop windows from bouncing around when opening transients
 The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples.
 
@@ -2150,7 +2154,8 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
   (("C-w" . aleks/delete-backward-word)
    ("C-c b b" . switch-to-buffer)
    ("C-c b k" . kill-buffer)
-   ("C-c x u" . undo-only))
+   ("C-c x u" . undo-only)
+   ("C-c w" . dispatch-window-menu))
   :custom
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
   :config
@@ -2311,12 +2316,13 @@ Smartparens to make handling parentheses easier.
 I haven't configured =projectile= to use =selectrum=, but it's working alright for now.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :bind (("C-c p p" . projectile-switch-project)
-           ("C-c p b" . projectile-switch-to-buffer)
-           ("C-c p f" . projectile-find-file))
-   :config
-    (projectile-mode +1))
+(use-package projectile
+  :bind (("C-c p p" . projectile-switch-project)
+         ("C-c p b" . projectile-switch-to-buffer)
+         ("C-c p f" . projectile-find-file)
+         ("C-c p g" . consult-ripgrep))
+ :config
+  (projectile-mode +1))
 #+END_SRC
 
 ** Pulsar
