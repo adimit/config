@@ -1976,6 +1976,7 @@ is active, or the value of `point' and one to the right of it."
 Then, we can assign them to a transient.
 
 #+begin_src emacs-lisp
+(require 'transient)
 (transient-define-prefix dispatch-surround-menu () "This isn't documentation"
   [[("m" "go to matching bracketish" match-paren)
     ("s" "surround add" aleks/insert-surround)
@@ -2191,52 +2192,53 @@ The context definitions are in =private.org=.
 =set-from-line= manages identities: always answer with the =to:= email address when it's to one of my private email addresses. Manage mailing list identities separately (I know of no automatic way, unfortunately.)
 
 #+begin_src emacs-lisp
-  (defun aleks/set-from-line ()
-    "Set From: address based on To: address of original email.  Also set mailing list addresses."
-    (when mu4e-compose-parent-message
-      (cond
-       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :to "aleks.bg")
-        (setq user-mail-address (plist-get (car (mu4e-message-field mu4e-compose-parent-message :to)) :email)))
-       ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
-        (setq user-mail-address "org@list.aleks.bg")))))
+(defun aleks/set-from-line ()
+  "Set From: address based on To: address of original email.  Also set mailing list addresses."
+  (when mu4e-compose-parent-message
+    (cond
+     ((mu4e-message-contact-field-matches mu4e-compose-parent-message :to "aleks.bg")
+      (setq user-mail-address (plist-get (car (mu4e-message-field mu4e-compose-parent-message :to)) :email)))
+     ((mu4e-message-contact-field-matches mu4e-compose-parent-message :list-post "emacs-orgmode")
 
-  (defun aleks/sequence-to-directory (&rest args)
-    "Turn ARGS into a valid path, each item a segment."
-    (mapconcat #'file-name-as-directory args nil))
+      (setq user-mail-address "org@list.aleks.bg")))))
 
-  (use-package mu4e
-    :commands mu4e
-    :straight (:host github
-                     :files ("build/mu4e/*.el")
-                     :branch "v1.8.14"
-                     :repo "djcb/mu"
-                     :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
-    :config
-    (require 'mu4e-contrib)
-    (aleks/load-org-file "private.org")
-    (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
-    (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
-    (require 'org-mu4e)
-    :hook
-    (mu4e-view-mode . aleks/disable-show-trailing-whitespace)
-    (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
-    (mu4e-compose-mode . aleks/set-from-line)
-    :custom
-    (mu4e-mu-binary
-     (concat
-      (aleks/sequence-to-directory (getenv "HOME") ".emacs.d" "straight" "repos" "mu" "build" "mu")
-      "mu"))
-    (shr-color-visible-luminance-min 80)
-    (mail-user-agent 'mu4e-user-agent)
-    (mu4e-update-interval 60)
-    (message-send-mail-function 'smtpmail-send-it)
-    (mu4e-use-fancy-chars t)
-    (mu4e-attachment-dir "~/Downloads")
-    (mu4e-view-show-images t)
-    (mu4e-headers-fields '((:human-date . 25)
-                           (:flags . 6)
-                           (:from . 22)
-                           (:thread-subject . nil))))
+(defun aleks/sequence-to-directory (&rest args)
+  "Turn ARGS into a valid path, each item a segment."
+  (mapconcat #'file-name-as-directory args nil))
+
+(use-package mu4e
+  :commands mu4e
+  :straight (:host github
+                   :files ("build/mu4e/*.el")
+                   :branch "v1.8.15"
+                   :repo "djcb/mu"
+                   :pre-build (("./autogen.sh") ("ninja" "-C" "build")))
+  :config
+  (require 'mu4e-contrib)
+  (aleks/load-org-file "private.org")
+  (add-to-list 'mu4e-headers-actions '("in browser" . mu4e-action-view-in-browser) t)
+  (add-to-list 'mu4e-view-actions '("in browser" . mu4e-action-view-in-browser) t)
+  (require 'org-mu4e)
+  :hook
+  (mu4e-view-mode . aleks/disable-show-trailing-whitespace)
+  (mu4e-headers-mode . aleks/disable-show-trailing-whitespace)
+  (mu4e-compose-mode . aleks/set-from-line)
+  :custom
+  (mu4e-mu-binary
+   (concat
+    (aleks/sequence-to-directory (getenv "HOME") ".emacs.d" "straight" "repos" "mu" "build" "mu")
+    "mu"))
+  (shr-color-visible-luminance-min 80)
+  (mail-user-agent 'mu4e-user-agent)
+  (mu4e-update-interval 60)
+  (message-send-mail-function 'smtpmail-send-it)
+  (mu4e-use-fancy-chars t)
+  (mu4e-attachment-dir "~/Downloads")
+  (mu4e-view-show-images t)
+  (mu4e-headers-fields '((:human-date . 25)
+                         (:flags . 6)
+                         (:from . 22)
+                         (:thread-subject . nil))))
 #+END_SRC
 
 ** Multiple Cursors
