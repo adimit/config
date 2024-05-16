@@ -131,7 +131,7 @@ I've disabled transparency so far because of two bugs: [[https://github.com/mina
 There's a bug report [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][on the Emacs bug tracker]]
 
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 #+end_src
 
 ** Auth
