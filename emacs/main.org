@@ -369,21 +369,23 @@ When reading and writing text, the buffer shouldn't get too wide. Olivetti mode 
 Moreover, =text-mode= buffers should have spell check enabled, be narrowed, and use variable pitch and word wrap. However, a variety of buffers seem to trigger =text-mode-hook= that, in my opinion, have no business doing so. So we also define an exclusion list.
 
 #+begin_src emacs-lisp
-  (defconst not-really-text-modes
-    '(yaml-mode nxml-mode mhtml-mode)
-    "Modes that somehow trigger the `text-mode-hook' but aren't really text.")
+(defconst not-really-text-modes
+  '(yaml-mode nxml-mode mhtml-mode)
+  "Modes that somehow trigger the `text-mode-hook' but aren't really text.")
 
-  (defun aleks/text-mode-hook ()
-    "Set up the current `major-mode' for writing text unless it's a member of `not-really-text-modes'."
-    (unless (member major-mode not-really-text-modes)
-      (message (format "Setting up %s for writing prose." major-mode))
-      (flyspell-mode)
-      (visual-line-mode)
-      (variable-pitch-mode)
-      (olivetti-mode)))
+(defun aleks/text-mode-hook ()
+  "Set up the current `major-mode' for writing text unless it's a member of `not-really-text-modes'."
+  (unless (member major-mode not-really-text-modes)
+    (message (format "Setting up %s for writing prose." major-mode))
+    (flyspell-mode)
+    (visual-line-mode)
+    (variable-pitch-mode)
+    (olivetti-mode)))
 
-  (use-package olivetti
-    :hook (text-mode . aleks/text-mode-hook))
+(use-package olivetti
+  :hook (text-mode . aleks/text-mode-hook)
+  :config
+  (set-face-background 'olivetti-fringe (face-attribute 'default :background)))
 #+end_src
 
 ** Theme
