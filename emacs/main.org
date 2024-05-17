@@ -531,10 +531,12 @@ Haskell support via =haskell-mode= and LSP.
 
 ** Json
 #+BEGIN_SRC emacs-lisp
-  (use-package json-mode
-    :mode "\\.json$"
-    :config
-    (add-to-list 'flycheck-disabled-checkers 'json-python-json))
+(use-package json-mode
+  :mode "\\.json$"
+  :custom
+  (js-indent-level 2)
+  :config
+  (add-to-list 'flycheck-disabled-checkers 'json-python-json))
 #+END_SRC
 
 ** Kotlin
