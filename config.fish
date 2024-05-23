@@ -211,3 +211,13 @@ set -gx PATH $HOME/.cabal/bin $PATH /home/aleks/.ghcup/bin # ghcup-env
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+if test "$TERM" = "dumb"
+  function fish_prompt
+    echo "\$ "
+  end
+
+  function fish_right_prompt; end
+  function fish_greeting; end
+  function fish_title; end
+end
