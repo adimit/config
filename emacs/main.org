@@ -73,7 +73,7 @@ The initialization code for =straight.el= that lives [[https://github.com/raxod5
 
 Note that you also have to place the following in your =early-init.el=:
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (setq package-enable-at-startup nil)
 #+end_src
 
@@ -126,9 +126,9 @@ Some basic appearance & behaviour settings
 
 *** Transparency
 
-I've disabled transparency so far because of two bugs: [[https://github.com/minad/org-modern/discussions/178#discussioncomment-8626220][Blocks in org-modern don't show transparency]], and Prot's =spacious-padding= also doesn't. I think that's a bug in Emacs itself. Once it's fixed (if ever), maybe I'll go back to transparency, because it is kinda nice.
+There are two bugs with transparency: [[https://github.com/minad/org-modern/discussions/178#discussioncomment-8626220][Blocks in org-modern don't show transparency]], and Prot's =spacious-padding= also doesn't. I think that's a bug in Emacs itself. [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][I've reported it here]].
 
-There's a bug report [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-05/msg00015.html][on the Emacs bug tracker]]
+The org-modern bug has been fixed in Po Lu's patch (which I apply), so transparency is usable now, but =spacious-padding= won't work with transparency.
 
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(alpha-background . 85))
@@ -360,6 +360,15 @@ The interpolation factor dictates scroll speed.
 (custom-set-variables
  '(isearch-lazy-count t)
  '(isearch-yank-on-move t))
+#+end_src
+
+** Shell prompt
+Emacs matches shell prompt patterns in several places, including tramp and inferior processes.
+
+Since I've got a custom shell prompt in all my computers, I need to expand it.
+
+#+begin_src emacs-lisp
+(setq shell-prompt-pattern "^[^#$%>\na-zA-Z ]*[#$%>▶●■] *")
 #+end_src
 
 ** Text buffers
@@ -1270,6 +1279,17 @@ There's experimental support for inlay hints in typescript language server. I've
 * Utilities
 
 Various add-ons outside of major mode functionality and Emacs core functionality.
+
+** Abbrev
+Abbrevs to fix common spelling mistakes I make
+
+#+begin_src emacs-lisp
+(define-abbrev global-abbrev-table "mesiterplan" "meisterplan")
+(define-abbrev global-abbrev-table "Mesiterplan" "Meisterplan")
+
+(add-hook 'text-mode-hook 'abbrev-mode)
+(add-hook 'prog-mode-hook 'abbrev-mode)
+#+end_src
 
 ** Apheleia (Auto-format on save)
 Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g. =prettier=, =black=, =rustfmt=.
@@ -2468,20 +2488,22 @@ Snippets live in version control under the Emacs directory.
 ** Spacious Padding
 Prot's sense for aesthetics is awesome. Unfortunately, the package doesn't play well with transparency.
 
-#+begin_src emacs-lisp
+*Note*: Disabled because it doesn't mesh well with transparency.
+
+#+begin_src emacs-lisp :tangle no
 (use-package spacious-padding
   :custom
   (spacious-padding-subtle-mode-line
    `( :mode-line-active 'default
       :mode-line-inactive vertical-border))
   (spacious-padding-widths
-   '( :internal-border-width 15
-      :header-line-width 4
-      :mode-line-width 5
-      :tab-width 4
-      :right-divider-width 30
-      :scroll-bar-width 8
-      :fringe-width 8))
+   '( :internal-border-width 0
+      :header-line-width 0
+      :mode-line-width 1
+      :tab-width 0
+      :right-divider-width 0
+      :scroll-bar-width 0
+      :fringe-width 0))
   :init
   (spacious-padding-mode))
 #+end_src
