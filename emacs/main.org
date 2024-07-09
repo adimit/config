@@ -2168,6 +2168,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
   :bind
   (("C-w" . aleks/delete-backward-word)
    ("C-c b b" . switch-to-buffer)
+   ("C-c b i" . ibuffer)
    ("C-c b k" . kill-buffer)
    ("C-c x u" . undo-only)
    ("C-c w" . dispatch-window-menu))
