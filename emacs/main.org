@@ -497,12 +497,11 @@ Eros mode shows you the result of elisp expressions in-band, instead of in the m
 ** GraphQL
 
 #+BEGIN_SRC emacs-lisp
-  (use-package request)
+(use-package request)
 
-  (use-package graphql-mode
-    :load-path "~/src/graphql-mode/"
-    :mode "\\.graphql$"
-    :custom (graphql-indent-level 2))
+(use-package graphql-mode
+  :mode "\\.graphqls?$"
+  :custom (graphql-indent-level 4))
 #+END_SRC
 
 ** Graphviz
