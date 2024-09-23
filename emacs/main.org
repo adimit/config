@@ -1398,6 +1398,7 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 (use-package company
   :config
   (company-tng-mode)
+  (define-key company-active-map (kbd "RET") 'company-select-next)
   :hook
   (prog-mode . company-mode)
   :custom
