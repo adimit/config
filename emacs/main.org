@@ -1617,11 +1617,13 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-doc-enable t)
-  :config
-  (define-key lsp-ui-peek-mode-map "j" 'lsp-ui-peek--select-next)
-  (define-key lsp-ui-peek-mode-map "k" 'lsp-ui-peek--select-prev)
-  (define-key lsp-ui-peek-mode-map "J" 'lsp-ui-peek--select-next-file)
-  (define-key lsp-ui-peek-mode-map "K" 'lsp-ui-peek--select-prev-file))
+  :bind (:map lsp-ui-peek-mode-map
+              ("<return>" . 'lsp-ui-peek--goto-xref)
+              ("j" . 'lsp-ui-peek--select-next)
+              ("k" . 'lsp-ui-peek--select-prev)
+              ("J" . 'lsp-ui-peek--select-next-file)
+              ("K" . 'lsp-ui-peek--select-prev-file)))
+
 #+end_src
 
 Finally, treemacs can help orientation
