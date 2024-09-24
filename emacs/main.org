@@ -1757,6 +1757,18 @@ Helix goes through all the chars in its range and categorises them according to 
 *** TODO Rebind meow's keypad key
 Space would be much better suited for a general menu
 *** TODO Create space menu
+*** DONE Toggle case function
+#+begin_src emacs-lisp
+(defun aleks/toggle-case ()
+  "Toggle case of the char at point.
+
+Moves point forward as a side-effect. This is in line with Vim's
+behaviour, but differs from Helix."
+  (interactive)
+  (if (char-uppercase-p (char-after (point)))
+      (downcase-region (point) (progn (forward-char 1) (point)))
+    (upcase-region (point) (progn (forward-char 1) (point)))))
+#+end_src
 *** DONE Accept =(= =)=, and ={= =}= etc for selections
 To change generics tags in languages like TS, Rust, or HTML or JSX tags, we register =angle=
 
@@ -2140,7 +2152,6 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("O" . meow-open-above)
    '("P" . aleks/paste-above)
    '("p" . aleks/paste-below)
-
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
@@ -2161,6 +2172,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("/" . isearch-forward)
    '("?" . isearch-backward)
    '("=" . meow-indent)
+   '("~" . aleks/toggle-case)
    '("<return>" . save-buffer)
    '("<escape>" . meow-cancel-selection)
    '("C-w" . dispatch-window-menu)
