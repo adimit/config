@@ -1398,7 +1398,7 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 (use-package company
   :config
   (company-tng-mode)
-  (define-key company-active-map (kbd "RET") 'company-select-next)
+  (define-key company-active-map (kbd "RET") 'company-complete-selection)
   :hook
   (prog-mode . company-mode)
   :custom
@@ -1590,6 +1590,7 @@ For-pay search engine with an API.
   (kagi-summarizer-default-laungage "EN")
   (kagi-summarizer-cache t))
 #+end_src
+
 ** LSP
 
 Language Server Protocol support using =lsp-mode=. =read-process-output-max= is set so larger LSP JSON payloads can be processed by Emacs.
@@ -2509,6 +2510,7 @@ Prot's sense for aesthetics is awesome. Unfortunately, the package doesn't play 
   :init
   (spacious-padding-mode))
 #+end_src
+
 ** String Inflection
 
 Useful to cycle between =CamelCase=, =snake_case=, etc. No keybindings, I just call it with =M-x=.
@@ -2600,6 +2602,7 @@ Winner mode records window manipulation and allows you to undo/redo operations o
 #+begin_src emacs-lisp
 (winner-mode)
 #+end_src
+
 ** XJira
 
 An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
