@@ -243,19 +243,37 @@ There are two shell aliases that help with server mode:
 A function to open a new shell in the current buffer's file's directory. It's lifted [[https://www.reddit.com/r/emacs/comments/1zkj2d/advanced_usage_of_eshell/][from here]].
 
 #+begin_src emacs-lisp
-  (defun eshell-here ()
-    "Opens up a new shell in the directory associated with the current buffer's file."
-    (interactive)
-    (let* ((parent (file-name-directory (buffer-file-name)))
-           (name   (car
-                    (last
-                     (split-string parent "/" t)))))
-      (split-window-vertically)
-      (other-window 1)
-      (eshell "new")
-      (rename-buffer (concat "*eshell: " name "*"))
-      (insert (concat "ls"))
-      (eshell-send-input)))
+(defun eshell-here ()
+  "Opens up a new shell in the directory associated with the current buffer's file."
+  (interactive)
+  (let* ((parent (file-name-directory (buffer-file-name)))
+         (name   (car
+                  (last
+                   (split-string parent "/" t)))))
+    (split-window-vertically)
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+    (insert (concat "ls"))
+#+end_src
+
+A little snippet to open a shell in the current buffer's working directory.
+
+#+begin_src emacs-lisp
+(defun aleks/open-shell-here ()
+  "Spawn a shell in the current buffer's directory."
+  (interactive)
+  (if buffer-file-name
+      (let ((target-directory (file-name-directory buffer-file-name)))
+        (start-process (format "terminal-in-%s" target-directory) nil "foot" "-D" target-directory "fish" "-C" "ls"))
+    (message "Buffer %s is not associated with a file." (buffer-name))))
+#+end_src
+
+We'll put both under the global =C-c= keymap.
+
+#+begin_src emacs-lisp
+(keymap-global-set "C-c o t" 'aleks/open-shell-here)
+(keymap-global-set "C-c o e" 'eshell-here)
 #+end_src
 
 ** Font
