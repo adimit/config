@@ -489,6 +489,7 @@ This is useful for ecukes tests. I don't use those myself, but some other packag
 (use-package feature-mode
   :mode "\\.feature\\'")
 #+end_src
+
 ** Docker
 
 #+BEGIN_SRC emacs-lisp
@@ -506,6 +507,7 @@ Eros mode shows you the result of elisp expressions in-band, instead of in the m
   :config
   (eros-mode 1))
 #+end_src
+
 ** Fish
 
 #+BEGIN_SRC emacs-lisp
@@ -1417,7 +1419,9 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
 (use-package company
   :config
   (company-tng-mode)
-  (define-key company-active-map (kbd "RET") 'company-complete-selection)
+  :bind
+  (:map company-active-map
+        ("RET" . 'company-complete-selection))
   :hook
   (prog-mode . company-mode)
   :custom
@@ -1738,10 +1742,11 @@ We also still need the default action, append-paste (yank, whatever), i.e. paste
   "Like Vim's `p'."
   (interactive)
   (if (aleks/pasting-line-p)
-      (progn (end-of-line)
-             (let* ((transform (lambda (str) (concat "\n" (substring str 0 -1))))
-                    (yank-transform-functions `(,transform ,@yank-transform-functions)))
-               (call-interactively 'meow-yank)))
+      (progn
+        (end-of-line)
+        (let* ((transform (lambda (str) (concat "\n" (substring str 0 -1))))
+               (yank-transform-functions `(,transform ,@yank-transform-functions)))
+          (call-interactively 'meow-yank)))
     (progn (forward-char)
            (call-interactively 'meow-yank))))
 #+end_src
@@ -1929,11 +1934,26 @@ I don't use control a lot in insert mode, but =C-w= is important to my mental we
 Meow's default is terrible. It should work like in Helix. We can't just use =kill-region=, because that, rather annoyingly, doesn't end up deleting newlines.
 
 #+begin_src emacs-lisp
+(defun aleks/is-region-on-lines-p ()
+  "Returns t iff the region covers a whole line or lines.
+This means that the region starts on BOL and ends on EOL
+(not necessily the same line)."
+  (and (region-active-p)
+       (save-excursion
+         (goto-char (region-beginning))
+         (bolp))
+       (save-excursion
+         (goto-char (region-end))
+         (eolp))))
+
 (defun aleks/delete ()
   "Deletes a character or the selection, if there is an active region."
   (interactive)
   (if (region-active-p)
       (progn
+        (when (and (aleks/is-region-on-lines-p)
+                   (< (point) (point-max)))
+          (call-interactively 'forward-char))
         (call-interactively 'kill-region))
     (call-interactively 'meow-delete)))
 #+end_src
