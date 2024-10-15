@@ -243,18 +243,19 @@ There are two shell aliases that help with server mode:
 A function to open a new shell in the current buffer's file's directory. It's lifted [[https://www.reddit.com/r/emacs/comments/1zkj2d/advanced_usage_of_eshell/][from here]].
 
 #+begin_src emacs-lisp
-(defun eshell-here ()
-  "Opens up a new shell in the directory associated with the current buffer's file."
-  (interactive)
-  (let* ((parent (file-name-directory (buffer-file-name)))
-         (name   (car
-                  (last
-                   (split-string parent "/" t)))))
-    (split-window-vertically)
-    (other-window 1)
-    (eshell "new")
-    (rename-buffer (concat "*eshell: " name "*"))
-    (insert (concat "ls"))
+  (defun eshell-here ()
+    "Opens up a new shell in the directory associated with the current buffer's file."
+    (interactive)
+    (let* ((parent (file-name-directory (buffer-file-name)))
+           (name   (car
+                    (last
+                     (split-string parent "/" t)))))
+      (split-window-vertically)
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: " name "*"))
+      (insert (concat "ls"))
+      (eshell-send-input)))
 #+end_src
 
 A little snippet to open a shell in the current buffer's working directory.
