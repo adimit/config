@@ -1769,9 +1769,93 @@ In order to find out *how* to override it, studying Helix' code could come in ha
 Helix goes through all the chars in its range and categorises them according to ~categorize_char()~ in ~char.rs~ into EOL, newline, word, punctuation or "unknown". It uses these categories to detect word boundaries in ~is_word_boundary()~ and ~is_long_word_boundary()~ in ~movement.rs~. see ~reached_target()~ right after for some additional conditions for the different movement types.
 
 #+begin_src emacs-lisp
-(defun aleks/move-forward-word ()
-  "Move forward one word."
-  (interactive))
+(defun aleks/categorise-char (&optional pos)
+  "Categorise char after POS into one of the relevant categories for movement.
+
+The categories include: \\='whitespace \\='punctuation \\='word or \\='newline."
+  (let* ((pos (or pos (point)))
+         (syntax (syntax-after pos)))
+    (pcase (car syntax)
+      (0 'whitespace)
+      (2 'word)
+      (12 'newline)
+      (_ 'punctuation))))
+
+(defun word-boundary-p (prev next)
+  "Returns t if there's a word boundary between PREV and NEXT."
+  (pcase `(,prev ,next)
+    (`(whitespace word) t)
+    (`(word whitespace) t)
+    (`(word punctuation) t)
+    (`(punctuation word) t)
+    (`(whitespace newline) t)
+    ;;(`(newline whitespace) t)
+    (`(punctuation newline) t)
+    ;;(`(newline punctuation) t)
+    (_ nil)))
+
+(defun bounds-of-hxword-at-point ()
+  "Get the bounds of the hxword at point."
+  (let* ((end (hxword-end (point)))
+         (start (hxword-start end)))
+    (cons start (1+ end))))
+
+(defun hxword-at-point ()
+  "Get the string of the hxword at point."
+  (pcase-let ((`(,start . ,end) (bounds-of-hxword-at-point)))
+    (buffer-substring start end)))
+
+(defun register-hxword ()
+  "Registers hxword as a thing."
+  (put 'hxword 'bounds-of-thing-at-point 'bounds-of-hxword-at-point)
+  (put 'hxword 'thing-at-point 'hxword-at-point)
+  (put 'hxword 'beginning-op (lambda () (forward-hxword -1)))
+  (put 'hxword 'end-op (lambda () (forward-hxword 1))))
+
+(defun hxword-end (position)
+  "Find the forward bound of a hxword starting from POSITION."
+  (let* ((pos position)
+         (prev (aleks/categorise-char pos))
+         (next nil))
+    (while (and
+            (< pos (buffer-size))
+            (progn
+              (setq next (aleks/categorise-char (1+ pos)))
+              (not (word-boundary-p prev next))))
+      (setq pos (1+ pos)
+            prev next))
+    pos))
+
+(defun hxword-start (position)
+  "Find the backward bound of a hxword starting from POSITION."
+  (let* ((pos position)
+         (prev (aleks/categorise-char pos))
+         (next nil))
+    (while (and
+            (> pos (point-min))
+            (progn
+              (setq next (aleks/categorise-char (1- pos)))
+              (not (word-boundary-p prev next))))
+      (setq pos (1- pos)
+            prev next))
+    pos))
+
+(defun forward-hxword (&optional n)
+  "Move forward N words or 1 if N is nil or backwards if N is negative."
+  (interactive)
+  (let ((n (or n 1))
+        (pos (1+ (point))))
+    (if (> n 0)
+        (let ((i 0))
+          (while (< i n)
+            (setq pos (hxword-end pos)
+                  i (1+ i))
+            (goto-char pos)))
+      (let ((i (abs n)))
+        (while (< 0 i)
+          (setq pos (hxword-start pos)
+                i (1- i))
+          (goto-char pos))))))
 #+end_src
 *** TODO Add proper bindings in magit
 - [ ] have to remap =SPC= somehow.
@@ -2234,7 +2318,6 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
         meow--kbd-forward-char "<right>"
         meow--kbd-backward-char "<left>"
         meow--kbd-undo "C-c x u")
-
   (meow-setup)
   (meow-global-mode 1))
 #+end_src
