@@ -1712,10 +1712,18 @@ In particular, multiple cursors don't work the same way as in Helix. Emacs' edit
 *** TODO Add skip paragraph/defun bindings ={= and =}=
 *** TODO Add surround objects for quotes and org/markdown markup
 =``=, =""=, =''=, =**=, etc. Actually, a functionality like in Helix where you can just use arbitrary characters as surrounds would be great, but I think that's going to be a bit difficult with Meow.
-*** TODO Stop windows from bouncing around when opening transients
+*** DONE Stop windows from bouncing around when opening transients
 The documentation of =transient-display-buffer-action= should help with that. Pity there are no examples.
 
 A different option would be to stop using transients altogether. Meow uses something for its surround functions that might be useful.
+
+This just hides transient for 1 second. That's OK for me.
+
+#+begin_src emacs-lisp
+(use-package transient
+  :custom (transient-show-popup 1))
+#+end_src
+
 *** TODO Join lines easily
 In Helix and Vim you can use =J= (they work slightly differently, we're using the Helix way here). Meow uses the Kakoune-style capital keybindings for extending selections across lines. In order to use =J= for joining lines, we'll need to also add a visual mode to Meow.
 *** TODO Make =xa= behave the same way as in Helix
