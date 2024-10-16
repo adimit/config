@@ -1765,7 +1765,7 @@ I'm not sure that it does. But =ed= should *not* delete the newline, just the la
 In fact, =(buffer-substring (mark) (point))= says that the newline isn't part of it. So the behaviour is actually =d=.
 
 The actual problem was =aleks/delete=. I don't actually know why I had that ~(when (looking-at "\n"))~ clause.
-*** TODO Make =w= behave more like in Helix/Vim
+*** DONE Make =w= behave more like in Helix/Vim
 I'll need to find the exact boundaries at which the cursor stops.
 
 This is a pretty big task: Emacs doesn't have what we need, its ~forward-word~ is written in C (no doubt for efficiency reasons) and it has a very different idea of what a word is than we do.
@@ -2184,28 +2184,18 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
 
 #+begin_src emacs-lisp
 (defun aleks/goto-line (&optional count)
-        "Jump to COUNT line, or to the end of the buffer."
+        "Jump to COUNT line, or to the beginning of the buffer."
         (interactive "p")
         (if (null current-prefix-arg)
-            (call-interactively 'end-of-buffer)
+            (call-interactively 'beginning-of-buffer)
           (call-interactively 'goto-line)))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun go-to-or-beginning-of-buffer (&optional n)
-  "Go to line N or to the beginning of the buffer."
-  (interactive "^P")
-  (message "prefix %s" (or current-prefix-arg n))
-  (if (or current-prefix-arg n)
-      (progn
-        (goto-char (point-min))
-        (forward-line (1- (prefix-numeric-value (or current-prefix-arg n)))))
-    (goto-char (point-min))))
-
 (transient-define-prefix dispatch-goto-menu () "This isn't documentation"
   [["Move"
     ("e" "bottom" end-of-buffer)
-    ("g" "top" go-to-or-beginning-of-buffer)
+    ("g" "top" aleks/goto-line)
     ("d" "definition (xref)" xref-find-definitions)
     ("h" "beginning of line" beginning-of-line)
     ("l" "end of line" end-of-line)
