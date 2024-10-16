@@ -1805,13 +1805,6 @@ The categories include: \\='whitespace \\='punctuation \\='word or \\='newline."
   (pcase-let ((`(,start . ,end) (bounds-of-hxword-at-point)))
     (buffer-substring start end)))
 
-(defun register-hxword ()
-  "Registers hxword as a thing."
-  (put 'hxword 'bounds-of-thing-at-point 'bounds-of-hxword-at-point)
-  (put 'hxword 'thing-at-point 'hxword-at-point)
-  (put 'hxword 'beginning-op (lambda () (forward-hxword -1)))
-  (put 'hxword 'end-op (lambda () (forward-hxword 1))))
-
 (defun hxword-end (position)
   "Find the forward bound of a hxword starting from POSITION."
   (let* ((pos position)
@@ -1844,18 +1837,27 @@ The categories include: \\='whitespace \\='punctuation \\='word or \\='newline."
   "Move forward N words or 1 if N is nil or backwards if N is negative."
   (interactive)
   (let ((n (or n 1))
-        (pos (1+ (point))))
+        (pos (point)))
     (if (> n 0)
-        (let ((i 0))
+        (let ((i 0)
+              (pos (1+ pos)))
           (while (< i n)
             (setq pos (hxword-end pos)
                   i (1+ i))
             (goto-char pos)))
-      (let ((i (abs n)))
+      (let ((i (abs n))
+            (pos (1- pos)))
         (while (< 0 i)
           (setq pos (hxword-start pos)
                 i (1- i))
           (goto-char pos))))))
+
+(defun register-hxword ()
+  "Registers hxword as a thing."
+  (put 'hxword 'bounds-of-thing-at-point 'bounds-of-hxword-at-point)
+  (put 'hxword 'thing-at-point 'hxword-at-point)
+  (put 'hxword 'beginning-op (lambda () (forward-hxword -1)))
+  (put 'hxword 'end-op (lambda () (forward-hxword 1))))
 #+end_src
 *** TODO Add proper bindings in magit
 - [ ] have to remap =SPC= somehow.
@@ -2255,8 +2257,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("c" . meow-change)
    '("d" . aleks/delete)
    '("D" . meow-kill)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
+   '("e" . meow-next-symbol)
    '("f" . meow-find)
    '("F" . aleks/meow-find-backwards)
    '("g" . dispatch-goto-menu)
@@ -2285,8 +2286,8 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("u" . meow-undo)
    '("U" . undo-redo)
    '("v" . meow-visit)
-   '("w" . meow-next-symbol)
-   '("W" . meow-mark-symbol)
+   '("w" . meow-next-word)
+   '("W" . meow-mark-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
    '("y" . meow-save)
@@ -2302,6 +2303,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("C-w" . dispatch-window-menu)
    '("C-f" . scroll-up-command)
    '("C-b" . scroll-down-command)))
+
 (use-package meow
   :demand t
   :bind
@@ -2312,8 +2314,11 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    ("C-c x u" . undo-only)
    ("C-c w" . dispatch-window-menu))
   :custom
+  (meow-word-thing 'hxword)
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
+  (meow-expand-hint-counts '((word . 10) (line . 10) (block . 10) (find . 10) (till . 10)))
   :config
+  (register-hxword)
   (setq meow--kbd-kill-region "S-<delete>"
         meow--kbd-forward-char "<right>"
         meow--kbd-backward-char "<left>"
