@@ -1709,7 +1709,7 @@ I aim to keep my config here relatively consistent with Helix. It diverges from 
 
 In particular, multiple cursors don't work the same way as in Helix. Emacs' editing model is not very conducive to multiple cursors, they're hard to make work in general.
 
-*** TODO Add skip paragraph/defun bindings ={= and =}=
+*** DONE Add skip paragraph/defun bindings ={= and =}=
 *** TODO Add surround objects for quotes and org/markdown markup
 =``=, =""=, =''=, =**=, etc. Actually, a functionality like in Helix where you can just use arbitrary characters as surrounds would be great, but I think that's going to be a bit difficult with Meow.
 *** DONE Stop windows from bouncing around when opening transients
@@ -2192,10 +2192,20 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
 #+end_src
 
 #+begin_src emacs-lisp
+(defun go-to-or-beginning-of-buffer (&optional n)
+  "Go to line N or to the beginning of the buffer."
+  (interactive "^P")
+  (message "prefix %s" (or current-prefix-arg n))
+  (if (or current-prefix-arg n)
+      (progn
+        (goto-char (point-min))
+        (forward-line (1- (prefix-numeric-value (or current-prefix-arg n)))))
+    (goto-char (point-min))))
+
 (transient-define-prefix dispatch-goto-menu () "This isn't documentation"
   [["Move"
     ("e" "bottom" end-of-buffer)
-    ("g" "top" beginning-of-buffer)
+    ("g" "top" go-to-or-beginning-of-buffer)
     ("d" "definition (xref)" xref-find-definitions)
     ("h" "beginning of line" beginning-of-line)
     ("l" "end of line" end-of-line)
@@ -2309,6 +2319,8 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("<return>" . save-buffer)
    '("<escape>" . meow-cancel-selection)
    '("C-w" . dispatch-window-menu)
+   '("{" . backward-paragraph)
+   '("}" . forward-paragraph)
    '("C-f" . scroll-up-command)
    '("C-b" . scroll-down-command)))
 
