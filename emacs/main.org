@@ -1521,6 +1521,7 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
 #+end_src
 
 ** Extract Issue Numbers from Branch
+
 Insert the current ticket number if we're on a feature branch.
 
 #+begin_src emacs-lisp
@@ -1595,6 +1596,18 @@ This guesses the language a text is in per-paragraph. This means that you can co
                               (de . ("de_DE" "German"))
                               (bg . ("bg_BG" "Bulgarian"))
                               (pl . ("pl_PL" "Polish")))))
+#+end_src
+
+** Hemacs
+
+My own layer on top of meow to bring editing shortcuts closer to Helix.
+
+#+begin_src emacs-lisp
+(use-package hemacs
+  :straight (hemacs :type git :repo "/home/aleks/src/hemacs")
+  :after (meow)
+  :config
+  (hemacs--register-hxword))
 #+end_src
 
 ** Kagi
@@ -1776,7 +1789,7 @@ In order to find out *how* to override it, studying Helix' code could come in ha
 
 Helix goes through all the chars in its range and categorises them according to ~categorize_char()~ in ~char.rs~ into EOL, newline, word, punctuation or "unknown". It uses these categories to detect word boundaries in ~is_word_boundary()~ and ~is_long_word_boundary()~ in ~movement.rs~. see ~reached_target()~ right after for some additional conditions for the different movement types.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun aleks/categorise-char (&optional pos)
   "Categorise char after POS into one of the relevant categories for movement.
 
@@ -1790,18 +1803,16 @@ The categories include: \\='whitespace \\='punctuation \\='word or \\='newline."
       (_ 'punctuation))))
 
 (defun word-boundary-p (prev next)
-  "Returns t if there's a word boundary between PREV and NEXT."
+  "Returns t if there's a word boundary between PREV and NEXT.
+
+Trailing whitespace is counted as part of the word."
   (pcase `(,prev ,next)
-    (`(whitespace word) t)
-    (`(word whitespace) t)
     (`(word punctuation) t)
     (`(punctuation word) t)
     (`(whitespace newline) t)
     (`(whitespace punctuation) t)
     (`(punctuation whitespace) t)
-    ;;(`(newline whitespace) t)
     (`(punctuation newline) t)
-    ;;(`(newline punctuation) t)
     (_ nil)))
 
 (defun bounds-of-hxword-at-point ()
@@ -1869,6 +1880,7 @@ The categories include: \\='whitespace \\='punctuation \\='word or \\='newline."
   (put 'hxword 'beginning-op (lambda () (forward-hxword -1)))
   (put 'hxword 'end-op (lambda () (forward-hxword 1))))
 #+end_src
+
 *** TODO Add proper bindings in magit
 - [ ] have to remap =SPC= somehow.
 - [ ] ~discard-hunk~ needs a proper binding
@@ -2330,7 +2342,6 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
   (meow-expand-hint-counts '((word . 10) (line . 10) (block . 10) (find . 10) (till . 10)))
   :config
-  (register-hxword)
   (setq meow--kbd-kill-region "S-<delete>"
         meow--kbd-forward-char "<right>"
         meow--kbd-backward-char "<left>"
