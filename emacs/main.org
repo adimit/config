@@ -1292,6 +1292,14 @@ There's experimental support for inlay hints in typescript language server. I've
      :height 1.0)))
 #+end_src
 
+** Web Mode
+
+To edit HTML with Jinja2
+
+#+begin_src emacs-lisp
+(use-package web-mode)
+#+end_src
+
 ** YAML
 
 #+BEGIN_SRC emacs-lisp
