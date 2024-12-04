@@ -212,19 +212,27 @@ set -gx PATH $HOME/.cabal/bin $PATH /home/aleks/.ghcup/bin # ghcup-env
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
-if test "$TERM" = "dumb"
-  function fish_prompt
-    echo "\$ "
-  end
+if test "$TERM" = dumb
+    function fish_prompt
+        echo "\$ "
+    end
 
-  function fish_right_prompt; end
-  function fish_greeting; end
-  function fish_title; end
+    function fish_right_prompt
+    end
+    function fish_greeting
+    end
+    function fish_title
+    end
 end
 
 # pnpm
 set -gx PNPM_HOME "/home/aleks/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+
+# If we've got Hyprland, and we're running from TTY1, launch Hyprland
+if command -v Hyprland >/dev/null && [ (tty) = "/dev/tty1" ]
+    exec Hyprland
+end
