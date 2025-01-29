@@ -13,6 +13,16 @@ window#waybar {
   transition-duration: 0.5s;
 }
 
+#custom-arewelive.sharing {
+  background-color: rgba(255, 99, 99, 1);
+  padding: 0em 5em;
+}
+
+#custom-arewelive.notsharing {
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(0, 0, 0, 0);
+}
+
 window#waybar.hidden {
   opacity: 0.2;
 }
