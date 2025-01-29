@@ -1448,6 +1448,22 @@ Github Co-Pilot support. It has no hook, I enable it on an as-need basis. The ke
               ("C-M-f" . 'copilot-accept-completion-by-word)))
 #+end_src
 
+** Delete this file
+
+Delete the currently active file & kill its buffer.
+
+#+begin_src emacs-lisp
+(defun delete-this-file (&optional trash)
+  "Delete the file currently associated with the active buffer."
+  (interactive "P")
+        (let ((file-name (buffer-file-name)))
+        (if (not file-name)
+            (message "Buffer is not visiting a file")
+          (progn
+            (delete-file file-name trash)
+            (kill-buffer (current-buffer))))))
+#+end_src
+
 ** Diff-hl
 
 Display git diff hint in the gutter.
