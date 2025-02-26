@@ -733,7 +733,22 @@ Capture templates:
    ("j" "Add MP Jira ticket" entry
     (file+headline my-org-work-file "Tasks")
     ,(join-lines
-      '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title)"
+      '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :ticket:"
+        "SCHEDULED: %t"
+        ":PROPERTIES:"
+        ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
+        ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
+        ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
+        ":Reporter: %(xjira-get 'reporter)"
+        ":END:"
+        ""
+        "#+begin_quote"
+        "%(xjira-get 'description)"
+        "#+end_quote")))
+   ("r" "Add MP Jira ticket to review" entry
+    (file+headline my-org-work-file "Tasks")
+    ,(join-lines
+      '("* TODO Review %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :review:"
         "SCHEDULED: %t"
         ":PROPERTIES:"
         ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
