@@ -2367,7 +2367,9 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    ("C-c b i" . ibuffer)
    ("C-c b k" . kill-buffer)
    ("C-c x u" . undo-only)
-   ("C-c w" . dispatch-window-menu))
+   ("C-c w" . dispatch-window-menu)
+   ("C-S-v" . cua-paste)
+   ("C-S-c" . cua-copy-region))
   :custom
   (meow-word-thing 'hxword)
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
