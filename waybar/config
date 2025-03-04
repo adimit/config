@@ -2,8 +2,7 @@
     "ipc": true,
     "height": 24,
     "position": "top",
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["hyprland/window"],
+    "modules-left": ["wlr/taskbar"],
     "modules-right": ["custom/arewelive", "battery", "tray", "custom/iso-week", "clock"],
     "reload_style_on_change": true,
     "custom/iso-week": {
@@ -16,15 +15,9 @@
       "return-type": "json",
       "format": "{}",
     },
-    "hyprland/workspaces": {
-        "format": "{icon}",
-        "format-icons": {
-          "1": "⌨️",
-          "3": "🌍",
-          "music": "🎶",
-          "chat": "💬"
-        },
-        "on-scroll-up": "hyprctl dispatch workspace e+1",
-        "on-scroll-down": "hyprctl dispatch workspace e-1"
+    "wlr/taskbar": {
+      "format": "{icon} {name}",
+      "tooltip-format": "{title} | {app_id}",
+      "on-click": "activate",
     }
 }
