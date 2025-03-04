@@ -252,6 +252,7 @@ layout {
 // spawn-at-startup "alacritty" "-e" "fish"
 
 spawn-at-startup "waybar"
+spawn-at-startup "emacs --daemon"
 
 spawn-at-startup "/home/aleks/.cargo/bin/xwayland-sattellite"
 
