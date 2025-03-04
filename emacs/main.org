@@ -2377,7 +2377,10 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    ("C-c x u" . undo-only)
    ("C-c w" . dispatch-window-menu)
    ("C-S-v" . cua-paste)
-   ("C-S-c" . cua-copy-region))
+   ("C-S-c" . cua-copy-region)
+   ("<f2>" . flycheck-next-error)
+   ("S-<f2>" . flycheck-previous-error)
+   ("<f6>" . lsp-rename))
   :custom
   (meow-word-thing 'hxword)
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
