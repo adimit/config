@@ -61,7 +61,7 @@ input {
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
     focus-follows-mouse max-scroll-amount="0%"
 
-    workspace-auto-back-and-forth
+    // workspace-auto-back-and-forth
 }
 
 // You can configure outputs by their name, which you can find
@@ -365,7 +365,7 @@ binds {
     XF86AudioNext        allow-when-locked=true { spawn "gdbus" "call" "--session" "--dest" "org.mpris.MediaPlayer2.Lollypop" "--object-path" "/org/mpris/MediaPlayer2" "--method" "org.mpris.MediaPlayer2.Player.Next"; }
     XF86AudioPrev        allow-when-locked=true { spawn "gdbus" "call" "--session" "--dest" "org.mpris.MediaPlayer2.Lollypop" "--object-path" "/org/mpris/MediaPlayer2" "--method" "org.mpris.MediaPlayer2.Player.Previous"; }
 
-    Mod+C { close-window; }
+    Mod+Shift+C { close-window; }
 
     Mod+Left  { focus-column-left; }
     Mod+Down  { focus-window-down; }
@@ -485,30 +485,30 @@ binds {
     //
     // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
     // will all refer to the 3rd workspace.
-    Mod+1 { focus-workspace 1; }
+    Mod+1 { focus-workspace "code"; }
     Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
+    Mod+3 { focus-workspace "web"; }
     Mod+4 { focus-workspace 4; }
     Mod+5 { focus-workspace 5; }
     Mod+6 { focus-workspace 6; }
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
-    Mod+9 { focus-workspace 9; }
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+9 { focus-workspace "gather"; }
+    Mod+Ctrl+1 { move-column-to-workspace "code"; }
     Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+3 { move-column-to-workspace "web"; }
     Mod+Ctrl+4 { move-column-to-workspace 4; }
     Mod+Ctrl+5 { move-column-to-workspace 5; }
     Mod+Ctrl+6 { move-column-to-workspace 6; }
     Mod+Ctrl+7 { move-column-to-workspace 7; }
     Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    Mod+Ctrl+9 { move-column-to-workspace "gather"; }
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
     // Switches focus between the current and the previous workspace.
-    // Mod+Tab { focus-workspace-previous; }
+    Mod+Grave { focus-workspace-previous; }
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.
@@ -589,4 +589,40 @@ binds {
 
     Mod+E { spawn "emacsclient" "-c" "-n" "-e" "(switch-to-buffer nil)"; }
     Mod+Z { spawn "sound"; }
+
+    Mod+M { focus-workspace "music"; }
+    Mod+Ctrl+M { move-column-to-workspace "music"; }
+}
+
+workspace "music" {
+  open-on-output "eDP-1"
+}
+
+workspace "gather" {
+  open-on-output "eDP-1"
+}
+
+workspace "code" {}
+workspace "web" {}
+
+window-rule {
+  match title="Lollypop"
+  open-on-workspace "music"
+}
+
+window-rule {
+  match title="Signal"
+  block-out-from "screen-capture"
+  open-on-workspace "music"
+}
+
+window-rule {
+  match title="Reddit"
+  block-out-from "screen-capture"
+}
+
+// sub Reddit-posts
+window-rule {
+  match title=r#" : r/.*Mozilla Firefox"#
+  block-out-from "screen-capture"
 }
