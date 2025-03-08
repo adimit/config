@@ -531,7 +531,7 @@ binds {
     // Makes the column "fill the rest of the space".
     Mod+Ctrl+F { expand-column-to-available-width; }
 
-    Mod+Shift+C { center-column; }
+    Mod+Shift+Return { center-column; }
 
     // Finer width adjustments.
     // This command can also:
