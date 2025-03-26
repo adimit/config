@@ -570,6 +570,21 @@ Haskell support via =haskell-mode= and LSP.
   (add-to-list 'flycheck-disabled-checkers 'json-python-json))
 #+END_SRC
 
+** KDL
+
+A small major mode to edit KDL files (Niri's weird idea of a configuration file format. I'd rather it have steel or something).
+
+Note that kdl needs to have been compile using =treesit-install-language-grammar=. Also note the extension of =treesit-language-source-alist= further on.
+
+#+begin_src emacs-lisp
+(use-package kdl-ts-mode
+  :mode "\\.kdl$"
+  :straight (kdl-ts-mode'
+             :type git
+             :host github
+             :repo "dataphract/kdl-ts-mode"))
+#+end_src
+
 ** Kotlin
 
 There's some support via Kotlin's LSP server. It isn't nearly good enough yet, but it gets you most of the way there.
@@ -2761,9 +2776,20 @@ Then download some grammars. There's a little helper script:
 Then compile Emacs with ~--with-tree-sitter~. Finally, point ~treesit-extra-load-path~ to the above =tree-sitter-module= project.
 
 #+begin_src emacs-lisp
-  (require 'treesit)
-  (setq treesit-extra-load-path
-        (list "~/var/src/tree-sitter-module/dist"))
+(require 'treesit)
+(setq treesit-extra-load-path
+      (list "~/var/src/tree-sitter-module/dist"))
+#+end_src
+
+Add a KDL grammar, because Niri made the questionable choice to use KDL as their configuration language.
+
+#+begin_src emacs-lisp
+(setq treesit-language-source-alist
+      '((kdl "https://github.com/tree-sitter-grammars/tree-sitter-kdl/"
+             "master"
+             "src"
+             nil
+             nil)))
 #+end_src
 
 ** Which-Key
