@@ -7,6 +7,7 @@
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
 input {
+    disable-power-key-handling
     keyboard {
         xkb {
             // You can set rules, model, layout, variant and options.
@@ -254,9 +255,7 @@ layout {
 // spawn-at-startup "alacritty" "-e" "fish"
 
 spawn-at-startup "waybar"
-spawn-at-startup "emacs --daemon"
-
-spawn-at-startup "/home/aleks/.cargo/bin/xwayland-sattellite"
+spawn-at-startup "emacs" "--daemon"
 
 environment {
   DISPLAY ":0"
@@ -594,6 +593,10 @@ binds {
     Mod+Ctrl+M { move-column-to-workspace "music"; }
 }
 
+workspace "code" {}
+
+workspace "web" {}
+
 workspace "music" {
   open-on-output "eDP-1"
 }
@@ -601,9 +604,6 @@ workspace "music" {
 workspace "gather" {
   open-on-output "eDP-1"
 }
-
-workspace "code" {}
-workspace "web" {}
 
 window-rule {
   match title="Lollypop"
