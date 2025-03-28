@@ -232,7 +232,7 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-# If we've got Hyprland, and we're running from TTY1, launch Hyprland
-if command -v Hyprland >/dev/null && [ (tty) = "/dev/tty1" ]
-    exec Hyprland
+# If we've got Niri, and we're running from TTY1, launch Niri
+if command -v niri >/dev/null && [ (tty) = /dev/tty1 ]
+    exec niri --session
 end
