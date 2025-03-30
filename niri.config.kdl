@@ -487,7 +487,7 @@ binds {
     // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
     // will all refer to the 3rd workspace.
     Mod+1 { focus-workspace "code"; }
-    Mod+2 { focus-workspace 2; }
+    Mod+2 { focus-workspace "code2"; }
     Mod+3 { focus-workspace "web"; }
     Mod+4 { focus-workspace 4; }
     Mod+5 { focus-workspace 5; }
@@ -496,7 +496,7 @@ binds {
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace "gather"; }
     Mod+Ctrl+1 { move-column-to-workspace "code"; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+2 { move-column-to-workspace "code2"; }
     Mod+Ctrl+3 { move-column-to-workspace "web"; }
     Mod+Ctrl+4 { move-column-to-workspace 4; }
     Mod+Ctrl+5 { move-column-to-workspace 5; }
@@ -596,6 +596,8 @@ binds {
 }
 
 workspace "code" {}
+
+workspace "code2" {}
 
 workspace "web" {}
 
