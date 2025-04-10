@@ -560,6 +560,27 @@ Haskell support via =haskell-mode= and LSP.
     (haskell-literate-mode . lsp))
 #+END_SRC
 
+** JQ
+
+A mode to edit =jq= expressions. Also allows editing them in org buffers like so:
+
+#+begin_src org
+,#+begin_src jq :in-file a.json
+.[]
+,#+end_src
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package jq-mode
+  :config
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((jq . t)))
+  :straight (jq-mode
+             :type git
+             :host github
+             :repo "ljos/jq-mode"))
+#+end_src
+
 ** Json
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode
