@@ -258,9 +258,10 @@ environment {
   DISPLAY ":0"
 }
 
-spawn-at-startup "xwayland-satellite"
 spawn-at-startup "waybar"
+spawn-at-startup "xwayland-satellite"
 spawn-at-startup "emacs" "--daemon"
+spawn-at-startup "sh" "-c" "'sleep 30; seafile-applet'"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
