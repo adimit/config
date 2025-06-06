@@ -2,4 +2,4 @@
 # name: local-api key
 # key: local-api
 # --
-:header-args:restclient: :var auth="Authorization: ${1:api-key}\nUser-Agent: ADI\nContent-Type: application/json" report="http://mp.local:8490/v1" rest="http://mp.local:8360/v1"
+:header-args:restclient: :var auth="Authorization: ${1:api-key}\nUser-Agent: ADI\nContent-Type: application/json" report="http://api-reporting.local.meisterplan.dev:8490/v1" rest="http://api.local.meisterplan.dev:8360/v1"
