@@ -1363,12 +1363,18 @@ Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g.
 =rustfmt= isn't supported out of the box. I've opened a [[https://github.com/raxod502/apheleia/pull/45][PR]]. In the meantime, we define our own.
 
 #+begin_src emacs-lisp
+(defun inhibit-apheleia-in-package-json ()
+  "Return t if the buffer is visiting a file called package.json"
+  (string-equal (file-name-nondirectory (or buffer-file-name "")) "package.json"))
+
 (use-package apheleia
   :straight (apheleia :type git
                       :host github
                       :repo "raxod502/apheleia")
   :config
-  (apheleia-global-mode +1))
+  (apheleia-global-mode +1)
+  :custom
+  (apheleia-inhibit-functions '(inhibit-apheleia-in-package-json)))
 #+end_src
 
 ** Avy
