@@ -775,12 +775,9 @@ Capture templates:
         ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
         ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
         ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
-        ":Reporter: %(xjira-get 'reporter)"
-        ":END:"
-        ""
-        "#+begin_quote"
-        "%(xjira-get 'description)"
-        "#+end_quote")))
+        ":Assignee: %(xjira-get 'assignee)"
+        ":Status: %(xjira-get 'status)"
+        ":END:")))
    ("r" "Add MP Jira ticket to review" entry
     (file+headline my-org-work-file "Tasks")
     ,(join-lines
@@ -790,12 +787,9 @@ Capture templates:
         ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
         ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
         ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
-        ":Reporter: %(xjira-get 'reporter)"
-        ":END:"
-        ""
-        "#+begin_quote"
-        "%(xjira-get 'description)"
-        "#+end_quote")))
+        ":Assignee: %(xjira-get 'assignee)"
+        ":Status: %(xjira-get 'status)"
+        ":END:")))
    ("M" "Morning routine tasks" entry
     (file+headline my-org-work-file "Tasks")
     ,(join-lines
