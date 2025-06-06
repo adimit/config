@@ -2819,6 +2819,24 @@ Add a KDL grammar, because Niri made the questionable choice to use KDL as their
              nil)))
 #+end_src
 
+** URL get into buffer
+
+A little helper function to allow quick retrievals of raw contents from a URL. It's wild Emacs doesn't have that built-in.
+
+#+begin_src emacs-lisp
+(defun aleks/url-get-into-buffer ()
+  "Retrieve the contents of a URL into a temp buffer and switch to it."
+  (interactive)
+  (request (read-from-minibuffer "URL: ")
+    :success (cl-function
+              (lambda (&key data &allow-other-keys)
+                (with-current-buffer
+                    (get-buffer-create "*http temp*")
+                  (erase-buffer)
+                  (insert data)
+                  (switch-to-buffer (current-buffer)))))))
+#+end_src
+
 ** Which-Key
 
 =which-key= shows hints after pressing a prefix key. Greatly aids discoverability.
