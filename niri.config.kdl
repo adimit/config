@@ -252,7 +252,7 @@ layout {
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
-// spawn-at-startup "alacritty" "-e" "fish"
+spawn-at-startup "foot" "fish"
 
 environment {
   DISPLAY ":0"
@@ -488,7 +488,7 @@ binds {
     //
     // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
     // will all refer to the 3rd workspace.
-    Mod+1 { focus-workspace "code"; }
+    Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace "code2"; }
     Mod+3 { focus-workspace "web"; }
     Mod+4 { focus-workspace 4; }
@@ -497,7 +497,7 @@ binds {
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace "gather"; }
-    Mod+Ctrl+1 { move-column-to-workspace "code"; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
     Mod+Ctrl+2 { move-column-to-workspace "code2"; }
     Mod+Ctrl+3 { move-column-to-workspace "web"; }
     Mod+Ctrl+4 { move-column-to-workspace 4; }
@@ -631,4 +631,8 @@ window-rule {
 window-rule {
   match title=r#" : r/.*Mozilla Firefox"#
   block-out-from "screen-capture"
+}
+
+hotkey-overlay {
+  skip-at-startup
 }
