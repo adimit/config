@@ -893,6 +893,14 @@ And we set a lot of configuration options for org.
  '(org-footnote-section nil)) ; place footnotes in same section
 #+end_src
 
+*** dslide
+
+#+begin_src emacs-lisp
+(use-package dslide)
+(use-package moc
+  :bind (("C-c f" . moc-focus)))
+#+end_src
+
 *** Export
 
 Enable export back ends not enabled by default.
