@@ -106,8 +106,9 @@ input {
 // Find more information on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
+    background-color "transparent"
     // Set gaps around windows in logical pixels.
-    gaps 16
+    gaps 8
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -381,6 +382,23 @@ window-rule {
 window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
+}
+
+overview {
+  zoom 0.40
+  workspace-shadow {
+        softness 300
+        spread 5
+
+        offset x=0 y=0
+
+        color "444"
+  }
+}
+
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
 }
 
 binds {
@@ -665,22 +683,14 @@ workspace "gather" {
 
 window-rule {
   match title="Lollypop"
+  match title="Signal"
   open-on-workspace "music"
 }
 
 window-rule {
   match title="Signal"
-  block-out-from "screen-capture"
-  open-on-workspace "music"
-}
-
-window-rule {
   match title="Reddit"
-  block-out-from "screen-capture"
-}
-
 // sub Reddit-posts
-window-rule {
   match title=r#" : r/.*Mozilla Firefox"#
   block-out-from "screen-capture"
 }
