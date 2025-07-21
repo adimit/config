@@ -1777,7 +1777,7 @@ This allows creating a branch from the currently clocked in org-mode task. Using
 (defun aleks/branchify (string)
   "Make STRING a valid git branch name."
   (replace-regexp-in-string
-   (rx (or (any " " "[" "]" "~" "^" ":" "\\") (seq bos "\.") "\.\." (seq "/" eos) (seq "\.lock" eos)))
+   (rx (or (any " " "*" "[" "]" "~" "^" ":" "\\") (seq bos "\.") "\.\." (seq "/" eos) (seq "\.lock" eos)))
    "-" string))
 
 (defun aleks/create-branch-from-current-task ()
