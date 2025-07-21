@@ -1105,17 +1105,6 @@ Not very useful, except as a motivation to have the network grow.
             org-roam-ui-open-on-start t))
 #+end_src
 
-*** Org-tufte
-This is a small package that bundles [[https://edwardtufte.github.io/tufte-css/][Tufte's CSS]] with org mode to make something on the web that resembles [[https://tufte-latex.github.io/tufte-latex/][Tufte's handouts]]. It might come in useful for presentations or blogs, but I'd probably want to modify the CSS a bit.
-
-#+begin_src emacs-lisp
-(use-package org-tufte
-  :straight
-  (org-tufte :type git :host github :repo "Zilong-Li/org-tufte")
-  :custom
-  (org-tufte-htmlize-code t))
-#+end_src
-
 *** Citar
 
 CAPF for bibtex
