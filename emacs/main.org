@@ -2407,7 +2407,11 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("{" . backward-paragraph)
    '("}" . forward-paragraph)
    '("C-f" . scroll-up-command)
-   '("C-b" . scroll-down-command)))
+   '("C-b" . scroll-down-command)
+   ;;; Emacs treats C-i and TAB the same. There's ways around that but this is easier
+   ;;;'("C-i" . back-button-global-forward)
+   '("C-S-o" . back-button-global-forward)
+   '("C-o" . back-button-global-backward)))
 
 (use-package meow
   :demand t
