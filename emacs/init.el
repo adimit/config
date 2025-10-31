@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defvar temporary-file-name-handler-alist file-name-handler-alist)
 (setq gc-cons-threshold (* 1024 1024 1024)
       gcmh-high-cons-threshold (* 1024 1024 1024)
@@ -11,7 +12,7 @@
                            gc-cons-percentage 0.1
                            file-name-handler-alist temporary-file-name-handler-alist)))
 
-; load straight.el
+                                        ; load straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -25,11 +26,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-; fetch the development version of org-mode before evaluating literate configuration files
-(straight-use-package
- '(org :type git :repo "https://code.orgmode.org/bzg/org-mode.git"))
+;; We need to fetch the use-package version of org before evaluating the literate files.
+(straight-use-package 'org)
 
-; load literate configuration files
+;; load literate configuration files
 (defun aleks/load-org-file (name)
   "Load an org file with NAME from the org directory."
   (let* ((config-emacs-directory "~/config/emacs")

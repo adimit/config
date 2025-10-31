@@ -259,7 +259,6 @@ environment {
   DISPLAY ":0"
 }
 
-spawn-at-startup "waybar"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "emacs" "--daemon"
 spawn-at-startup "sh" "-c" "'sleep 30; seafile-applet'"
@@ -599,6 +598,7 @@ binds {
     Mod+Ctrl+R { reset-window-height; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+Shift+F { toggle-windowed-fullscreen; }
 
     // Expand the focused column to space not taken up by other fully visible columns.
     // Makes the column "fill the rest of the space".
@@ -616,6 +616,8 @@ binds {
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
+
+    Mod+G { toggle-overview; }
 
     // Finer height adjustments when in column with other windows.
     Mod+Shift+Minus { set-window-height "-10%"; }
@@ -697,4 +699,8 @@ window-rule {
 
 hotkey-overlay {
   skip-at-startup
+}
+
+xwayland-satellite {
+    path "~/.cargo/bin/xwayland-satellite"
 }

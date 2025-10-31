@@ -36,7 +36,7 @@ function ssh
     TERM=screen-256color command ssh $argv
 end
 
-for i in $HOME/local/*/bin
+for i in "$HOME/local/*/bin"
     set PATH $i $PATH
 end
 
@@ -206,7 +206,7 @@ set -gx LSP_USE_PLISTS true
 string match -r ".wasmtime" "$PATH" >/dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
 
 set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME
-set -gx PATH $HOME/.cabal/bin $PATH /home/aleks/.ghcup/bin # ghcup-env
+set -gx PATH $HOME/.cabal/bin $PATH $HOME/.ghcup/bin # ghcup-env
 
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
@@ -226,7 +226,7 @@ if test "$TERM" = dumb
 end
 
 # pnpm
-set -gx PNPM_HOME "/home/aleks/.local/share/pnpm"
+set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end

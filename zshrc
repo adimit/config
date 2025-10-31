@@ -357,13 +357,10 @@ $CLDF" #switch to default color for rest of line.
 
 PS1="$TEMPPS1$PROMPTCHAR "
 
-function zle-line-init zle-keymap-select {
+
     PS1="$TEMPPS1${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
     PS2="$(color 'blue')%_ ${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
-    zle reset-prompt
-}
 
-zless -N zle-line-init
 zle -N zle-keymap-select
 
 autoload -U edit-command-line
@@ -377,8 +374,13 @@ if [ -f $localfile ]; then
 	source $localfile
 fi
 
-export GPGKEY=290BBA85
-
 if [ $TOPICSTART ]; then
 	ls
 fi
+
+[ -s /home/linuxbrew ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" ] && \. "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+source $REPOS_MP/mp-scripts/.zshrc

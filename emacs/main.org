@@ -1,3 +1,9 @@
+* Preamble
+
+#+begin_src emacs-lisp
+;; -*- lexical-binding: t; -*-
+#+end_src
+
 * Info
 This configuration assumes Emacs has been compiled like this:
 
@@ -660,7 +666,7 @@ Loading org already happened in =init.el=.
 
 *** Keybindings
 #+begin_src emacs-lisp
-(use-package org
+(use-package emacs
   :bind (("C-c o a" . org-agenda)
          ("C-c o C" . org-capture)
          ("C-c o c c" . org-capture)
@@ -694,22 +700,22 @@ Add diary and agenda files.
 And here's a plugin to put everything into nice sections, and get a better overview of the agenda
 
 #+begin_src emacs-lisp
-  (use-package org-super-agenda
-    :hook
-    (org-agenda-mode . org-super-agenda-mode)
-    :config
-    (setq ; this essentially resets `org-super-agenda-header-map' to an empty (pass-through) keymap
-     org-super-agenda-header-map (make-sparse-keymap)
-     org-super-agenda-groups
-     '((:name "Work"
-              :file-path "work.org")
-       (:name "Meetings"
-              :file-path "work.org"
-              :todo "MEET")
-       (:name "Personal"
-              :todo "TODO"
-              :tag "family"
-              :file-path "main.org"))))
+(use-package org-super-agenda
+  :hook
+  (org-agenda-mode . org-super-agenda-mode)
+  :config
+  (setq ; this essentially resets `org-super-agenda-header-map' to an empty (pass-through) keymap
+   org-super-agenda-header-map (make-sparse-keymap)
+   org-super-agenda-groups
+   '((:name "Work"
+            :file-path "work.org")
+     (:name "Meetings"
+            :file-path "work.org"
+            :todo "MEET")
+     (:name "Personal"
+            :todo "TODO"
+            :tag "family"
+            :file-path "main.org"))))
 #+end_src
 
 *** Babel
@@ -790,15 +796,6 @@ Capture templates:
         ":Assignee: %(xjira-get 'assignee)"
         ":Status: %(xjira-get 'status)"
         ":END:")))
-   ("M" "Morning routine tasks" entry
-    (file+headline my-org-work-file "Tasks")
-    ,(join-lines
-      '("* TODO Morning Routine on %(calendar-date-string (calendar-current-date))"
-        "SCHEDULED: %t"
-        ""
-        "- [ ] [[https://sentry.io/organizations/meisterplan/issues/][Sentry]]"
-        "- [ ] [[https://meisterplan.zendesk.com/agent/dashboard][Support Tickets]]"
-        "- [ ] Tests & CVEs")))
    ("m" "Add meeting" entry
     (file+headline my-org-work-file "Meetings")
     ,(join-lines
@@ -807,6 +804,22 @@ Capture templates:
         ":PROPERTIES:"
         ":REFERENCE:"
         ":END:")))
+   ("M" "Good Morning" entry
+    (file+headline my-org-work-file "Tasks")
+    ,(join-lines
+      '("* TODO %<%A> KNUTH-114812 Morning Checklist"
+          "SCHEDULED: %t"
+          ":PROPERTIES:"
+          ":END:"
+          ""
+          "- [ ] check emails, teams"
+          "- [ ] check gW and Google calendars"
+          "- [ ] (re-)schedule agenda"
+          "- [ ] ensure times tracked for last work day"
+          "- [ ] any open code reviews?"
+          "- [ ] block time for today"
+          "- [ ] designate first task for today"
+          "")))
    ("S" "Sprint" entry (file my-org-work-file)
     ,(join-lines
       '("* Sprint %^{Title}"
@@ -1386,6 +1399,7 @@ I use this to mimic how Vim's jump list  =CTRL-O= and =CTRL-I= works.
   :config (back-button-mode 1))
 #+end_src
 
+
 ** Buttercup
 This is just for testing elisp files. Having it in the config allows me to execute the tests from within my active Emacs session, and not just using =eldev=.
 
@@ -1594,10 +1608,6 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
 
 #+begin_src emacs-lisp
 (use-package expand-region
-  :straight (expand-region
-             :host nil
-             :branch "treesit-er"
-             :repo "/home/aleks/src/expand-region.el")
   :bind (("C-c e" . er/expand-region)))
 #+end_src
 
@@ -1685,7 +1695,7 @@ My own layer on top of meow to bring editing shortcuts closer to Helix.
 
 #+begin_src emacs-lisp
 (use-package hemacs
-  :straight (hemacs :type git :repo "/home/aleks/src/hemacs")
+  :straight (hemacs :type git :repo "~/src/hemacs")
   :after (meow)
   :config
   (hemacs--register-hxword))
@@ -1717,7 +1727,6 @@ Language Server Protocol support using =lsp-mode=. =read-process-output-max= is 
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (read-process-output-max (* 5 1024 1024))
-  ;(lsp-eslint-validate '("typescript" "svelte"))
   (lsp-rust-analyzer-server-display-inlay-hints t)
   (lsp-eldoc-render-all nil)
   (lsp-use-plists t)
@@ -2877,8 +2886,8 @@ Winner mode records window manipulation and allows you to undo/redo operations o
 An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
 
 #+begin_src emacs-lisp
-(use-package xjira
-  :straight (xjira :type git :host github :repo "adimit/xjira"))
+  (use-package xjira
+    :straight (xjira :type git :host github :repo "adimit/xjira"))
 #+end_src
 
 The authorisation and host variables are set in auth source.
