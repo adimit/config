@@ -1399,7 +1399,6 @@ I use this to mimic how Vim's jump list  =CTRL-O= and =CTRL-I= works.
   :config (back-button-mode 1))
 #+end_src
 
-
 ** Buttercup
 This is just for testing elisp files. Having it in the config allows me to execute the tests from within my active Emacs session, and not just using =eldev=.
 
@@ -1672,6 +1671,39 @@ In order to be able to ~require~ things in Elisp projects using =eldev= and for 
   (defun disable-checkdoc ()
     (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
   (add-hook 'org-src-mode-hook 'disable-checkdoc)
+#+end_src
+
+** gptel
+
+Allow agent workflows with copilot.
+
+#+begin_src emacs-lisp
+(use-package gptel
+  :config
+  (setq gptel-model 'gpt-4o)
+  (setq gptel-backend (gptel-make-gh-copilot "Copilot"))
+  (gptel-make-kagi "kagi" :key (lambda () (auth-source-pass-get 'secret "kagi.com/api")))
+  (with-eval-after-load 'gptel-transient
+    (transient-replace-suffix 'gptel-menu "RET"
+      '("C-<return>" gptel--suffix-send))))
+#+end_src
+
+Ask kagi something
+
+#+begin_src emacs-lisp
+(gptel-make-preset 'kagi
+  :description "Ask Kagi about something"
+  :backend "kagi"
+  :model 'fastgpt)
+#+end_src
+
+Summarise
+
+#+begin_src emacs-lisp
+(gptel-make-preset 'sum
+  :description "Create a summary of a buffer or URL"
+  :backend "kagi"
+  :model 'summarize:agnes)
 #+end_src
 
 ** Guess-Language
