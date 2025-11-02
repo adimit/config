@@ -1721,6 +1721,41 @@ This guesses the language a text is in per-paragraph. This means that you can co
                               (pl . ("pl_PL" "Polish")))))
 #+end_src
 
+** Home Assistant LSP
+
+A little LSP server to make it easier to write home assistant automations etc. Because I sure don't wanna run that VS Code abomination on my Pi.
+
+#+begin_src emacs-lisp
+(require 'auth-source)
+
+(defun homeassistant-lsp-if-configuration-file ()
+  "Check if the current buffer is 'configuration.yaml'."
+  (string-equal (file-name-nondirectory (buffer-file-name)) "configuration.yaml"))
+
+(defun homeassistant-fetch-auth (item)
+  "Fetch the Home Assistant token from auth source using the key `homeassistant/token`."
+  (auth-source-pass-get 'secret (concat "home-assistant/" item)))
+
+(defvar homeassistant-lsp-cmd `(,(expand-file-name "~/.local/share/pnpm/homeassistant-lsp") "--stdio")
+  "Command to start the Home Assistant LSP server.")
+
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection (lambda () homeassistant-lsp-cmd))
+  :activation-fn 'homeassistant-lsp-if-configuration-file
+  :server-id 'homeassistant
+  :multi-root t
+  :initialization-options (lambda ()
+                            (let ((token (homeassistant-fetch-auth "token"))
+                                  (host (homeassistant-fetch-auth "host")))
+                              (unless (and token host)
+                                (user-error "Failed to fetch the Home Assistant auth info from auth source"))
+                              `(:homeassistant
+                                (:host ,(concat "ws://" host "/api/websocket")
+                                       :token ,token))))
+  ))
+#+end_src
+
 ** Hemacs
 
 My own layer on top of meow to bring editing shortcuts closer to Helix.
