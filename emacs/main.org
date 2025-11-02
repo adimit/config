@@ -1727,7 +1727,7 @@ My own layer on top of meow to bring editing shortcuts closer to Helix.
 
 #+begin_src emacs-lisp
 (use-package hemacs
-  :straight (hemacs :type git :repo "~/src/hemacs")
+  :straight `(hemacs :type git :repo ,(expand-file-name "src/hemacs" (getenv "HOME")))
   :after (meow)
   :config
   (hemacs--register-hxword))
