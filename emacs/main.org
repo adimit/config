@@ -806,7 +806,7 @@ Capture templates:
         ("M" "Good Morning" entry
          (file+headline my-org-work-file "Tasks")
          ,(join-lines
-           `("* TODO %<%A> KNUTH-114812 Morning Checklist"
+           `("* TODO KNUTH-114812 %<%A> Morning Checklist"
              "SCHEDULED: %t"
              ":PROPERTIES:"
              ":END:"
