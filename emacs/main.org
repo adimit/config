@@ -741,120 +741,120 @@ Capture templates:
   "Join STRINGS with newlines."
   (string-join strings "\n"))
 
-(customize-set-variable
- 'org-capture-templates
- `(("c" "Add to today" entry
-    (file+regexp my-org-main-file "Week [0-9][0-9]?")
-    ,(join-lines
-      '("* TODO %?"
-        "SCHEDULED: %t"
-        ":PROPERTIES:"
-        ":CREATED: %U"
-        ":END:"
-        "")))
-   ("W" "Plan Week" entry (file my-org-main-file)
-    ,(join-lines
-      '("* Week %(aleks/get-next-week-number)"
-        "** TODO Prepare Cat Meds"
-        "** TODO Clean Bathroom"
-        "** TODO Weekly Review"
-        "** TODO Vacuum & Mop"
-        "** TODO Make Yogurt"
-        "** TODO Feed Sourdough")))
-   ("s" "Add task to sprint" entry
-    (file+headline my-org-work-file "Tasks")
-    ,(join-lines
-      '("* TODO %?"
-        "SCHEDULED: %t"
-        ":PROPERTIES:"
-        ":CREATED: %U"
-        ":REFERENCE: %f"
-        ":END:"
-        ""
-        "%i")))
-   ("j" "Add MP Jira ticket" entry
-    (file+headline my-org-work-file "Tasks")
-    ,(join-lines
-      '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :ticket:"
-        "SCHEDULED: %t"
-        ":PROPERTIES:"
-        ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
-        ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
-        ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
-        ":Assignee: %(xjira-get 'assignee)"
-        ":Status: %(xjira-get 'status)"
-        ":END:")))
-   ("r" "Add MP Jira ticket to review" entry
-    (file+headline my-org-work-file "Tasks")
-    ,(join-lines
-      '("* TODO Review %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :review:"
-        "SCHEDULED: %t"
-        ":PROPERTIES:"
-        ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
-        ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
-        ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
-        ":Assignee: %(xjira-get 'assignee)"
-        ":Status: %(xjira-get 'status)"
-        ":END:")))
-   ("m" "Add meeting" entry
-    (file+headline my-org-work-file "Meetings")
-    ,(join-lines
-      '("* MEET %?"
-        "SCHEDULED: %^T"
-        ":PROPERTIES:"
-        ":REFERENCE:"
-        ":END:")))
-   ("M" "Good Morning" entry
-    (file+headline my-org-work-file "Tasks")
-    ,(join-lines
-      '("* TODO %<%A> KNUTH-114812 Morning Checklist"
-          "SCHEDULED: %t"
-          ":PROPERTIES:"
-          ":END:"
-          ""
-          "- [ ] check emails, teams"
-          "- [ ] check gW and Google calendars"
-          "- [ ] (re-)schedule agenda"
-          "- [ ] ensure times tracked for last work day"
-          "- [ ] any open code reviews?"
-          "- [ ] block time for today"
-          "- [ ] designate first task for today"
-          "")))
-   ("S" "Sprint" entry (file my-org-work-file)
-    ,(join-lines
-      '("* Sprint %^{Title}"
-        "** Meetings"
-        "*** MEET EG Backend"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 7) '(10 30))"
-        ":PROPERTIES:"
-        ":REFERENCE: %(eval eg-backend-confluence-link)"
-        ":END:"
-        "*** MEET Refinement 1"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 8) '(9 30))"
-        "*** MEET Refinement 2"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 10) '(9 30))"
-        "*** MEET EG Frontend"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 14) '(10 00))"
-        ":PROPERTIES:"
-        ":REFERENCE: %(eval eg-frontend-confluence-link)"
-        ":END:"
-        "*** MEET Refinement 3"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 15) '(9 30))"
-        "*** MEET Sprint Review"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
-        "*** MEET Retro"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
-        "*** MEET Next sprint SP1"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(10 00))"
-        "*** MEET Next sprint SP2"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(13 00))"
-        "** Tasks"
-        "*** TODO Update Metrics"
-        "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/monday-this-week (aleks/next-sprint-review-day)))"
-        ":PROPERTIES:"
-        ":REFERENCE: %(eval team-integration-metrics-sheet-link)"
-        ":END:"
-        "%i%?")))))
+(setq org-capture-templates
+      `(("c" "Add to today" entry
+         (file+regexp my-org-main-file "Week [0-9][0-9]?")
+         ,(join-lines
+           '("* TODO %?"
+             "SCHEDULED: %t"
+             ":PROPERTIES:"
+             ":CREATED: %U"
+             ":END:"
+             "")))
+        ("W" "Plan Week" entry (file my-org-main-file)
+         ,(join-lines
+           '("* Week %(aleks/get-next-week-number)"
+             "** TODO Prepare Cat Meds"
+             "** TODO Clean Bathroom"
+             "** TODO Weekly Review"
+             "** TODO Vacuum & Mop"
+             "** TODO Make Yogurt"
+             "** TODO Feed Sourdough")))
+        ("s" "Add task to sprint" entry
+         (file+headline my-org-work-file "Tasks")
+         ,(join-lines
+           '("* TODO %?"
+             "SCHEDULED: %t"
+             ":PROPERTIES:"
+             ":CREATED: %U"
+             ":REFERENCE: %f"
+             ":END:"
+             ""
+             "%i")))
+        ("j" "Add MP Jira ticket" entry
+         (file+headline my-org-work-file "Tasks")
+         ,(join-lines
+           '("* TODO %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :ticket:"
+             "SCHEDULED: %t"
+             ":PROPERTIES:"
+             ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
+             ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
+             ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
+             ":Assignee: %(xjira-get 'assignee)"
+             ":Status: %(xjira-get 'status)"
+             ":END:")))
+        ("r" "Add MP Jira ticket to review" entry
+         (file+headline my-org-work-file "Tasks")
+         ,(join-lines
+           '("* TODO Review %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :review:"
+             "SCHEDULED: %t"
+             ":PROPERTIES:"
+             ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
+             ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
+             ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
+             ":Assignee: %(xjira-get 'assignee)"
+             ":Status: %(xjira-get 'status)"
+             ":END:")))
+        ("m" "Add meeting" entry
+         (file+headline my-org-work-file "Meetings")
+         ,(join-lines
+           '("* MEET %?"
+             "SCHEDULED: %^T"
+             ":PROPERTIES:"
+             ":REFERENCE:"
+             ":END:")))
+        ("M" "Good Morning" entry
+         (file+headline my-org-work-file "Tasks")
+         ,(join-lines
+           `("* TODO %<%A> KNUTH-114812 Morning Checklist"
+             "SCHEDULED: %t"
+             ":PROPERTIES:"
+             ":END:"
+             ""
+             "- [ ] check emails, teams"
+             "- [ ] check gW and Google calendars"
+             "- [ ] (re-)schedule agenda"
+             ,(concat "- [ ] check [[" confluence-tasks-url "][tasks in Confluence]]")
+             "- [ ] ensure times tracked for last work day"
+             "- [ ] any open code reviews?"
+             "- [ ] block time for today"
+             "- [ ] designate first task for today"
+             "")))
+        ("S" "Sprint" entry (file my-org-work-file)
+         ,(join-lines
+           '("* Sprint %^{Title}"
+             "** Meetings"
+             "*** MEET EG Backend"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 7) '(10 30))"
+             ":PROPERTIES:"
+             ":REFERENCE: %(eval eg-backend-confluence-link)"
+             ":END:"
+             "*** MEET Refinement 1"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 8) '(9 30))"
+             "*** MEET Refinement 2"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 10) '(9 30))"
+             "*** MEET EG Frontend"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 14) '(10 00))"
+             ":PROPERTIES:"
+             ":REFERENCE: %(eval eg-frontend-confluence-link)"
+             ":END:"
+             "*** MEET Refinement 3"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 15) '(9 30))"
+             "*** MEET Sprint Review"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
+             "*** MEET Retro"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
+             "*** MEET Next sprint SP1"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(10 00))"
+             "*** MEET Next sprint SP2"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(13 00))"
+             "** Tasks"
+             "*** TODO Update Metrics"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/monday-this-week (aleks/next-sprint-review-day)))"
+             ":PROPERTIES:"
+             ":REFERENCE: %(eval team-integration-metrics-sheet-link)"
+             ":END:"
+             "%i%?")))))
 #+end_src
 
 *** Citations
