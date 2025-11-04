@@ -1740,22 +1740,21 @@ A little LSP server to make it easier to write home assistant automations etc. B
 
 (defvar homeassistant-lsp-cmd `(,(expand-file-name "~/.local/share/pnpm/homeassistant-lsp") "--stdio")
   "Command to start the Home Assistant LSP server.")
-
-(lsp-register-client
- (make-lsp-client
-  :new-connection (lsp-stdio-connection (lambda () homeassistant-lsp-cmd))
-  :activation-fn 'homeassistant-lsp-if-configuration-file
-  :server-id 'homeassistant
-  :multi-root t
-  :initialization-options (lambda ()
-                            (let ((token (homeassistant-fetch-auth "token"))
-                                  (host (homeassistant-fetch-auth "host")))
-                              (unless (and token host)
-                                (user-error "Failed to fetch the Home Assistant auth info from auth source"))
-                              `(:homeassistant
-                                (:host ,(concat "ws://" host "/api/websocket")
-                                       :token ,token))))
-  ))
+(with-eval-after-load 'lsp
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection (lambda () homeassistant-lsp-cmd))
+    :activation-fn 'homeassistant-lsp-if-configuration-file
+    :server-id 'homeassistant
+    :multi-root t
+    :initialization-options (lambda ()
+                              (let ((token (homeassistant-fetch-auth "token"))
+                                    (host (homeassistant-fetch-auth "host")))
+                                (unless (and token host)
+                                  (user-error "Failed to fetch the Home Assistant auth info from auth source"))
+                                `(:homeassistant
+                                  (:host ,(concat "ws://" host "/api/websocket")
+                                         :token ,token)))))))
 #+end_src
 
 ** Hemacs
