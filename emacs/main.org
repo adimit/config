@@ -2475,7 +2475,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("j" . meow-next)
    '("J" . meow-next-expand)
    '("k" . meow-prev)
-   '("K" . meow-prev-expand)
+   '("K" . hemacs-join-lines)
    '("l" . meow-right)
    '("L" . meow-right-expand)
    '("m" . dispatch-surround-menu)
