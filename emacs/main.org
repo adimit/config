@@ -812,12 +812,14 @@ Capture templates:
              ":END:"
              ""
              "- [ ] check emails, teams"
-             "- [ ] check gW and Google calendars"
-             "- [ ] (re-)schedule agenda"
              ,(concat "- [ ] check [[" confluence-tasks-url "][tasks in Confluence]]")
              "- [ ] ensure times tracked for last work day"
-             "- [ ] any open code reviews?"
+             ,(concat "- [ ] " student-link-1)
+             ,(concat "- [ ] " student-link-2)
+             "- [ ] check gW and Google calendars"
+             "- [ ] (re-)schedule agenda"
              "- [ ] block time for today"
+             "- [ ] any open code reviews?"
              "- [ ] designate first task for today"
              "")))
         ("S" "Sprint" entry (file my-org-work-file)
