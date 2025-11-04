@@ -37,8 +37,8 @@
     (if (file-readable-p org-file)
         (org-babel-load-file org-file))))
 
-(aleks/load-org-file "main.org")
 (aleks/load-org-file "private.org")
+(aleks/load-org-file "main.org")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
