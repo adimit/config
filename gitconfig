@@ -53,5 +53,7 @@
 
 [includeIf "gitdir:~/src/mp-*/"]
            path = ~/.gitconfig.meisterplan
+[includeIf "gitdir:/tmp/mporca/*"]
+           path = ~/.gitconfig.meisterplan
 [init]
 	defaultBranch = main
