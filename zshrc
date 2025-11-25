@@ -117,7 +117,12 @@ hash -d werti=~src/werti-passives
 hash -d ws=~src/workspace
 hash -d uni=~doc/uni
 
-autoload -U compinit && compinit
+autoload -Uz compinit
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+    compinit
+else
+    compinit -C
+fi
 zstyle ':completion:*' menu select=10
 zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tty,cmd'
 
@@ -360,8 +365,6 @@ PS1="$TEMPPS1$PROMPTCHAR "
 
     PS1="$TEMPPS1${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
     PS2="$(color 'blue')%_ ${${KEYMAP/vicmd/$NORMALCHAR}/(main|viins)/$PROMPTCHAR} "
-
-zle -N zle-keymap-select
 
 autoload -U edit-command-line
 zle -N edit-command-line
