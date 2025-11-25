@@ -1727,7 +1727,9 @@ This guesses the language a text is in per-paragraph. This means that you can co
 
 A little LSP server to make it easier to write home assistant automations etc. Because I sure don't wanna run that VS Code abomination on my Pi.
 
-#+begin_src emacs-lisp
+Currently disabled.
+
+#+begin_src emacs-lisp :tangle no
 (require 'auth-source)
 
 (defun homeassistant-lsp-if-configuration-file ()
