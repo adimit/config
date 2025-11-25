@@ -232,7 +232,12 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
+if command -v fnm >/dev/null
+    fnm env --use-on-cd --shell fish --log-level error | source
+    fnm completions --shell fish --log-level error | source
+end
+
 # If we've got Niri, and we're running from TTY1, launch Niri
-if command -v niri >/dev/null && [ (tty) = /dev/tty1 ]
-    exec niri --session
+if command -v niri-session >/dev/null && [ (tty) = /dev/tty1 ]
+    exec niri-session
 end
