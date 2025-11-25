@@ -843,7 +843,7 @@ Capture templates:
              "*** MEET Refinement 3"
              "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 15) '(9 30))"
              "*** MEET Sprint Review"
-             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(15 30))"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-review-day) '(14 30))"
              "*** MEET Retro"
              "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/next-sprint-planning-day) '(9 00))"
              "*** MEET Next sprint SP1"
