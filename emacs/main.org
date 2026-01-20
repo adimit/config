@@ -1832,7 +1832,7 @@ LSP Ui provides action overlays and other goodies, but can get somewhat intrusiv
 (use-package lsp-ui
   :custom
   (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-enable t)
   (lsp-ui-doc-enable t)
   :bind (:map lsp-ui-peek-mode-map
               ("<return>" . 'lsp-ui-peek--goto-xref)
