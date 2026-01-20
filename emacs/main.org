@@ -1340,6 +1340,11 @@ There's experimental support for inlay hints in typescript language server. I've
   (lsp-javascript-display-property-declaration-type-hints nil)
   (lsp-javascript-display-variable-type-hints nil)
   :config
+  (lsp-register-client (make-lsp-client
+                        :new-connection (lsp-stdio-connection '("tsgo" "--lsp" "-stdio"))
+                        :activation-fn 'lsp-typescript-javascript-tsx-jsx-activate-p
+                        :server-id 'tsgo-ls))
+  (setq lsp-client-priority '(:tsgo-ls 1 :ts-ls 0))
   (defun js-set-inlay-face ()
     (set-face-attribute
      'lsp-javascript-inlay-face nil
