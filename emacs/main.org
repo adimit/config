@@ -693,9 +693,9 @@ Loading org already happened in =init.el=.
 The most important files get their own variables.
 
 #+begin_src emacs-lisp
-  (defcustom org-directory (concat (file-name-as-directory (getenv "HOME")) "org") "Org directory.")
-  (defcustom my-org-main-file (concat (file-name-as-directory org-directory) "main.org") "Personal Org agenda file.")
-  (defcustom my-org-work-file (concat (file-name-as-directory org-directory) "work.org") "Professional Org agenda file.")
+  (setq org-directory (concat (file-name-as-directory (getenv "HOME")) "org"))
+  (setq my-org-main-file (concat (file-name-as-directory org-directory) "main.org"))
+  (setq my-org-work-file (concat (file-name-as-directory org-directory) "work.org"))
 #+end_src
 
 Add diary and agenda files.
