@@ -2,6 +2,12 @@
 # Created on 2016-02-09
 # Author: Aleksandar Dimitrov <aleks.dimitrov@gmail.com>
 
+function log_if_tty
+    if [ (tty) = /dev/tty1 ]
+        echo $argv
+    end
+end
+
 # Vim on the command line
 set -x EDITOR "/usr/bin/env vim"
 
@@ -232,10 +238,14 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-if command -v fnm >/dev/null
+log_if_tty "Loaded config, loading fnm."
+
+if command -v fnm >/dev/null && [ (tty) != /dev/tty1 ]
     fnm env --use-on-cd --shell fish --log-level error | source
     fnm completions --shell fish --log-level error | source
 end
+
+log_if_tty "Loaded fnm, loading niri."
 
 # If we've got Niri, and we're running from TTY1, launch Niri
 if command -v niri-session >/dev/null && [ (tty) = /dev/tty1 ]
