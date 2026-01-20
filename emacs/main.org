@@ -1890,7 +1890,9 @@ The best =git= porcelain ever.
   :custom
   (magit-save-repository-buffers 'dontask)
   :config
-  (transient-append-suffix 'magit-branch '(2 2 2) '("o" "from current task" aleks/create-branch-from-current-task)))
+  (with-eval-after-load 'magit-branch
+    (transient-append-suffix 'magit-branch "c"
+      '("o" "from current task" aleks/create-branch-from-current-task))))
 #+end_src
 
 Integration for Github.
