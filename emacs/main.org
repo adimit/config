@@ -2709,7 +2709,7 @@ Smartparens to make handling parentheses easier.
   (show-smartparens-global-mode 1)
   :custom
   (sp-wrap-repeat-last 2) ;; repeat wrap with different pair
-  (smartparens-strict-mode 1)
+  (smartparens-strict-mode 0)
   (sp-show-pair-delay 0))
 #+end_src
 
