@@ -1636,37 +1636,37 @@ You know you want it, too. 😼 Using =emojify= mostly for Emoji insertion. Disp
 Insert the current ticket number if we're on a feature branch.
 
 #+begin_src emacs-lisp
-  (defun buffer-insert-at-end (string)
-    "Insert STRING at the maximal point in a buffer."
-    (save-excursion
-      (goto-char (point-max))
-      (end-of-line)
-      (insert ?\n string)
-      (unless (string-suffix-p "\n" string)
-        (insert ?\n))))
+(defun buffer-insert-at-end (string)
+  "Insert STRING at the maximal point in a buffer."
+  (save-excursion
+    (goto-char (point-max))
+    (end-of-line)
+    (insert ?\n string)
+    (unless (string-suffix-p "\n" string)
+      (insert ?\n))))
 
-  (defun get-knuth-number-from-string (string)
-    "Return KNUTH issue number from STRING.
-  Return nil if STRING does not contain a KNUTH issue.
-  STRING may be nil."
-    (if (and string (string-match "\\(KNUTH-[[:digit:]]\+\\)" string))
-        (match-string 1 string)
-      nil))
+(defun get-knuth-number-from-string (string)
+  "Return KNUTH issue number from STRING.
+Return nil if STRING does not contain a KNUTH issue.
+STRING may be nil."
+  (if (and string (string-match "\\(KNUTH-[[:digit:]]\+\\)" string))
+      (match-string 1 string)
+    nil))
 
-  (defun insert-knuth-ticket-number-from-branch ()
-    "If we're on a KNUTH feature branch, insert the ticket number."
-    (interactive)
-    (let ((knuth (get-knuth-number-from-string (magit-get-current-branch))))
-      (if (and knuth (not (buffer-line-matches-p (concat "^" knuth)))) (buffer-insert-at-end knuth))))
+(defun insert-knuth-ticket-number-from-branch ()
+  "If we're on a KNUTH feature branch, insert the ticket number."
+  (interactive)
+  (let ((knuth (get-knuth-number-from-string (magit-get-current-branch))))
+    (if (and knuth (not (buffer-line-matches-p (concat "^" knuth)))) (buffer-insert-at-end knuth))))
 
-  (defun buffer-line-matches-p (needle)
-    "Return t if the last line matches NEEDLE.
-  Ignores comments"
-    (save-excursion
-      (goto-char 0)
-      (search-forward-regexp needle nil 'noerror)))
+(defun buffer-line-matches-p (needle)
+  "Return t if the last line matches NEEDLE.
+Ignores comments"
+  (save-excursion
+    (goto-char 0)
+    (search-forward-regexp needle nil 'noerror)))
 
-  (add-hook 'git-commit-setup-hook 'insert-knuth-ticket-number-from-branch)
+(add-hook 'git-commit-setup-hook 'insert-knuth-ticket-number-from-branch)
 #+end_src
 
 ** Flycheck
