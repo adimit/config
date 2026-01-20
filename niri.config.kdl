@@ -662,8 +662,8 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 
-    Mod+E { spawn "emacsclient" "-c" "-n" "-e" "(switch-to-buffer nil)"; }
-    Mod+Z { spawn "sound"; }
+    Mod+E { spawn "~/.local/bin/emacsclient" "-c" "-n"; }
+    Mod+Z { spawn "~/.cargo/bin/sound"; }
 
     Mod+M { focus-workspace "music"; }
     Mod+Ctrl+M { move-column-to-workspace "music"; }
