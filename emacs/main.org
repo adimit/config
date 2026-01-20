@@ -472,6 +472,16 @@ I'd like to append to =org-babel-load-languages= right from a =use-package= =:co
 
 A list of supported major modes and their configuration.
 
+** Agda
+
+/esli/
+
+#+begin_src emacs-lisp
+(use-package agda2-mode
+  :mode "\\.agda\\'"
+  :mode "\\.lagda.md\\'")
+#+end_src
+
 ** CSS
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
