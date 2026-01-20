@@ -2685,11 +2685,13 @@ A mode that eases working with people on code together. It turns on line numbers
 
 ** Parentheses
 
-Highlight parentheses in different colours according to their nesting level.
+Highlight parentheses in different colours according to their nesting level. jq mode has problems with it, though, so we disable it there.
 
 #+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-      :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook ((prog-mode . (lambda ()
+                        (unless (eq major-mode 'jq-mode)
+                          (rainbow-delimiters-mode))))))
 #+end_src
 
 Smartparens to make handling parentheses easier.
