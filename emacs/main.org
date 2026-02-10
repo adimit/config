@@ -828,9 +828,8 @@ Capture templates:
              "- [ ] [[shell:foot zsh&][log in]]"
              "- [ ] check gW and Google calendars"
              "- [ ] (re-)schedule agenda"
+             ,(concat "- [ ] any [[" sprint-board-link "][open code reviews]]?")
              "- [ ] block time for today"
-             "- [ ] any open code reviews?"
-             "- [ ] designate first task for today"
              "")))
         ("S" "Sprint" entry (file my-org-work-file)
          ,(join-lines
