@@ -1381,6 +1381,15 @@ Abbrevs to fix common spelling mistakes I make
 (add-hook 'prog-mode-hook 'abbrev-mode)
 #+end_src
 
+** Agent shell
+
+#+begin_src emacs-lisp
+(use-package agent-shell
+  :config
+  (setq agent-shell-anthropic-authentication
+        (agent-shell-anthropic-make-authentication :login t)))
+#+end_src
+
 ** Apheleia (Auto-format on save)
 Use [[https://github.com/raxod502/apheleia][Apheleia]] for on-save-actions, e.g. =prettier=, =black=, =rustfmt=.
 
