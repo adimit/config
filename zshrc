@@ -386,4 +386,6 @@ fi
 eval "$(fnm env --use-on-cd --log-level error --shell zsh)"
 eval "$(fnm completions --log-level error --shell zsh)"
 
+export OO_SOURCE_DIR="/tmp/mporca/"
+
 source $REPOS_MP/mp-scripts/.zshrc
