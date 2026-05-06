@@ -38,7 +38,7 @@
 	smtpuser = aleks.dimitrov@gmail.com
 	smtpserverport = 587
 [core]
-	excludesfile = /home/aleks/.gitignore
+	excludesfile = /home/adi@itd.local/.gitignore
 [pull]
 	rebase = true
 [filter "lfs"]
@@ -53,7 +53,7 @@
 
 [includeIf "gitdir:~/src/mp-*/"]
            path = ~/.gitconfig.meisterplan
-[includeIf "gitdir:/tmp/mporca/*"]
+[includeIf "gitdir:/tmp/mporca/mp-*/"]
            path = ~/.gitconfig.meisterplan
 [init]
 	defaultBranch = main
