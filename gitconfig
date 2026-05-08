@@ -38,7 +38,7 @@
 	smtpuser = aleks.dimitrov@gmail.com
 	smtpserverport = 587
 [core]
-	excludesfile = /home/adi@itd.local/.gitignore
+	excludesfile = ~/.gitignore
 [pull]
 	rebase = true
 [filter "lfs"]

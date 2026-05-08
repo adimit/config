@@ -83,14 +83,20 @@ Note that you also have to place the following in your =early-init.el=:
   (setq package-enable-at-startup nil)
 #+end_src
 
+Straight doesn't play [[https://github.com/radian-software/straight.el/issues/1146][well with projectile and eglot]]. We declare =project= and some others to be built-in packages, so =projectile='s version isn't shadowed.
+
+#+begin_src emacs-lisp
+(setq straight-built-in-pseudo-packages '(emacs project flymake xref))
+#+end_src
+
 ** Use-Package
 
 For general package management use use-package, and instruct it to always use straight.
 
 #+begin_src emacs-lisp
-  (straight-use-package 'use-package)
-  (custom-set-variables
-   '(straight-use-package-by-default t))
+(straight-use-package 'use-package)
+(custom-set-variables
+ '(straight-use-package-by-default t))
 #+end_src
 
 ** Environment
