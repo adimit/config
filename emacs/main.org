@@ -346,18 +346,18 @@ Handle specific file types. This is used especially by =ein-python=.
 Doom's mode line. Not the prettiest thing in the world, but it just works. There's also [[https://github.com/rougier/nano-modeline][nano-modeline]] which I like more, but it doesn't work with LSP ootb, and I can't be bothered to make it work with LSP.
 
 #+begin_src emacs-lisp
-  (use-package doom-modeline
-    :init (doom-modeline-mode 1)
-    :custom
-    (doom-modeline-icon t)
-    (doom-modeline-major-mode-icon t)
-    (doom-modeline-buffer-state-icon t)
-    (doom-modeline-buffer-encoding nil)
-    (doom-modeline-modal-icon t)
-    (doom-modeline-lsp t))
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-buffer-state-icon t)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-modal-icon t)
+  (doom-modeline-update-eglot t))
 
-  (use-package nerd-icons
-    :if (display-graphic-p))
+(use-package nerd-icons
+  :if (display-graphic-p))
 #+end_src
 
 ** Scrolling
@@ -573,13 +573,8 @@ Also add =ob-dot= to embed graphs in Org mode
 Haskell support via =haskell-mode= and LSP.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode
-    :mode "\\.l?hs\\'")
-
-  (use-package lsp-haskell
-    :hook
-    (haskell-mode . lsp)
-    (haskell-literate-mode . lsp))
+(use-package haskell-mode
+  :mode "\\.l?hs\\'")
 #+END_SRC
 
 ** JQ
@@ -640,7 +635,6 @@ The Kotlin language server likes to eat gigabytes of RAM, so I only activate it 
 (use-package kotlin-mode
   :mode "\\.kt$"
   :hook
-  ;; (kotlin-mode . lsp)
   (kotlin-mode . display-fill-column-indicator-mode))
 #+END_SRC
 
@@ -1192,14 +1186,6 @@ For Google's =.proto= spec files
 
 ** Python
 
-LSP support with MS's server:
-
-#+begin_src emacs-lisp
-  (use-package lsp-python-ms
-    :custom (lsp-python-ms-auto-install-server t)
-    :hook (python-mode . lsp))
-#+end_src
-
 Jupyter notebook support (mainly for org.)
 
 #+begin_src emacs-lisp
@@ -1264,17 +1250,7 @@ Rustic mode works well with =rust-analyzer=. Format on save is done with [[Aphel
 #+begin_src emacs-lisp
 (use-package rustic
   :hook
-  (rustic-mode . lsp)
-  (rustic-mode . copilot-mode)
-  :custom
-  (rustic-lsp-server 'rust-analyzer)
-  (lsp-rust-server 'rust-analyzer)
-  (lsp-rust-analyzer-server-command '("~/.local/bin/rust-analyzer")))
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package lsp-mode
-    :hook (rust-ts-mode . lsp))
+  (rustic-mode . copilot-mode))
 #+end_src
 
 ** Typescript
@@ -1289,74 +1265,6 @@ Syntax highlighting via newly integrated tree-sitter (Emacs 29).
        auto-mode-alist))
 #+end_src
 
-When looking up React functional components, LSP returns React type signatures from React's own definitions in addition to the definition of the component itself. I'm not terribly interested in those, so we filter them out with a crude heuristic (a certain verbatim type signature and file location).
-
-LSP lacks a general entrypoint to filter these out. See [[https://github.com/emacs-lsp/lsp-mode/issues/2103][this issue]].
-
-#+begin_src emacs-lisp
-(require 'cl-seq)
-(require 'eieio)
-(require 'xref)
-
-(defun aleks/xref-react-type-definition-p (item)
-  "Return t if `item' is a React type definition."
-  (and
-   (string-match-p "ReactElement<any, any>" (xref-item-summary item))
-   (string-suffix-p "@types/react/index.d.ts" (xref-file-location-file (xref-item-location item)))))
-
-(defun aleks/filter-react-type-definitions (items)
-  "Remove React FunctionComponent type definitions from xref-items."
-  (cl-remove-if #'aleks/xref-react-type-definition-p items))
-
-(advice-add 'lsp--locations-to-xref-items :filter-return #'aleks/filter-react-type-definitions)
-#+end_src
-
-While we're at it, =xref= defaults to popping up a window whenever there's more than one definition it could jump to. That's annoying, I'd prefer it to just use ~completing-read~. We can set ~xref-show-definitions-function~ to achieve that. (This will work in Emacs 28.1 or higher only.) This is most useful in TS because a symbol may at the same time be a value definition and a type name.
-
-#+begin_src emacs-lisp
-(setq xref-show-definitions-function #'xref-show-definitions-completing-read)
-#+end_src
-
-There's experimental support for inlay hints in typescript language server. I've disabled some inlay hints to improve performance.
-
-#+begin_src emacs-lisp
-(use-package lsp-mode
-  :defer t
-  :mode
-  ("\\.ts\\'" . typescript-ts-mode)
-  ("\\.tsx\\'" . tsx-ts-mode)
-  :init
-  (defun aleks/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-  :hook
-  (lsp-completion-mode . aleks/lsp-mode-setup-completion)
-  (typescript-ts-mode . lsp)
-  (tsx-ts-mode . lsp)
-  (typescript-ts-mode . copilot-mode)
-  (tsx-ts-mode . copilot-mode)
-  :custom
-  (lsp-completion-provider :capf)
-  (lsp-javascript-display-inlay-hints nil)
-  (lsp-javascript-display-enum-member-value-hints nil)
-  (lsp-javascript-display-parameter-type-hints nil)
-  (lsp-javascript-display-parameter-name-hints nil)
-  (lsp-javascript-display-return-type-hints nil)
-  (lsp-javascript-display-property-declaration-type-hints nil)
-  (lsp-javascript-display-variable-type-hints nil)
-  :config
-  (lsp-register-client (make-lsp-client
-                        :new-connection (lsp-stdio-connection '("tsgo" "--lsp" "-stdio"))
-                        :activation-fn 'lsp-typescript-javascript-tsx-jsx-activate-p
-                        :server-id 'tsgo-ls))
-  (setq lsp-client-priority '(:tsgo-ls 1 :ts-ls 0))
-  (defun js-set-inlay-face ()
-    (set-face-attribute
-     'lsp-javascript-inlay-face nil
-     :inherit 'variable-pitch
-     :foreground "#787878"
-     :height 1.0)))
-#+end_src
 
 ** Web Mode
 
@@ -1756,41 +1664,6 @@ This guesses the language a text is in per-paragraph. This means that you can co
                               (pl . ("pl_PL" "Polish")))))
 #+end_src
 
-** Home Assistant LSP
-
-A little LSP server to make it easier to write home assistant automations etc. Because I sure don't wanna run that VS Code abomination on my Pi.
-
-Currently disabled.
-
-#+begin_src emacs-lisp :tangle no
-(require 'auth-source)
-
-(defun homeassistant-lsp-if-configuration-file ()
-  "Check if the current buffer is 'configuration.yaml'."
-  (string-equal (file-name-nondirectory (buffer-file-name)) "configuration.yaml"))
-
-(defun homeassistant-fetch-auth (item)
-  "Fetch the Home Assistant token from auth source using the key `homeassistant/token`."
-  (auth-source-pass-get 'secret (concat "home-assistant/" item)))
-
-(defvar homeassistant-lsp-cmd `(,(expand-file-name "~/.local/share/pnpm/homeassistant-lsp") "--stdio")
-  "Command to start the Home Assistant LSP server.")
-(with-eval-after-load 'lsp
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection (lambda () homeassistant-lsp-cmd))
-    :activation-fn 'homeassistant-lsp-if-configuration-file
-    :server-id 'homeassistant
-    :multi-root t
-    :initialization-options (lambda ()
-                              (let ((token (homeassistant-fetch-auth "token"))
-                                    (host (homeassistant-fetch-auth "host")))
-                                (unless (and token host)
-                                  (user-error "Failed to fetch the Home Assistant auth info from auth source"))
-                                `(:homeassistant
-                                  (:host ,(concat "ws://" host "/api/websocket")
-                                         :token ,token)))))))
-#+end_src
 
 ** Hemacs
 
@@ -1821,74 +1694,41 @@ For-pay search engine with an API.
   (kagi-summarizer-cache t))
 #+end_src
 
-** LSP
+** Eglot
 
-Language Server Protocol support using =lsp-mode=. =read-process-output-max= is set so larger LSP JSON payloads can be processed by Emacs.
+Language Server Protocol support using built-in =eglot=.
 
 #+begin_src emacs-lisp
-(use-package lsp-mode
-  :hook (lsp-mode . lsp-enable-which-key-integration)
+(use-package eglot
+  :commands (eglot eglot-ensure)
+  :hook
+  (prog-mode . eglot-ensure)
+  :bind (("M-RET" . eglot-code-actions)
+         ("M-d" . eglot-find-type-definition)
+         ("M-D" . xref-find-references)))
+
+(use-package eglot-typescript-preset
   :custom
-  (read-process-output-max (* 5 1024 1024))
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-eldoc-render-all nil)
-  (lsp-use-plists t)
-  :bind (("M-RET" . lsp-execute-code-action)
-         ("M-d" . lsp-ui-doc-glance)
-         ("M-D" . lsp-ui-doc-show))
+  (eglot-typescript-preset-auto-setup nil)
   :config
-  (setq lsp-keymap-prefix "SPC"))
-#+end_src
+  (setopt eglot-typescript-preset-lsp-server 'rass)
+  (eglot-typescript-preset-setup))
 
-LSP Ui provides action overlays and other goodies, but can get somewhat intrusive.
+(use-package flymake
+  :after eglot
+  :hook (prog-mode . flymake-mode))
 
-#+begin_src emacs-lisp
-(use-package lsp-ui
+(use-package consult-eglot
+  :after (eglot consult)
+  :bind (("C-c C-j" . consult-eglot-symbols)))
+
+(use-package xref
   :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-enable t)
-  (lsp-ui-doc-enable t)
-  :bind (:map lsp-ui-peek-mode-map
-              ("<return>" . 'lsp-ui-peek--goto-xref)
-              ("j" . 'lsp-ui-peek--select-next)
-              ("k" . 'lsp-ui-peek--select-prev)
-              ("J" . 'lsp-ui-peek--select-next-file)
-              ("K" . 'lsp-ui-peek--select-prev-file)))
+  (xref-show-definitions-function #'xref-show-definitions-completing-read))
 
-#+end_src
-
-[[https://github.com/blahgeek/emacs-lsp-booster][LSP Booster]] should make lsp somewhat faster. Maybe. Since we're running Emacs 30, the [[https://github.com/blahgeek/emacs-lsp-booster/issues/35][JSON-to-bytecode parser is probably not worth it]], we'll disable that. Note that the maintenance status of lsp-booster seems dubious right now.
-
-You'll need lsp booster first.
-
-#+begin_src shell
-cargo install emacs-lsp-booster
-#+end_src
-
-#+begin_src emacs-lisp
-(require 'lsp)
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let* ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" (cons "-n" (cons "--" orig-result))))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-#+end_src
-
-Finally, treemacs can help orientation.
-
-#+begin_src emacs-lisp
-  (use-package lsp-treemacs
-    :hook (lsp-mode . lsp-treemacs-sync-mode))
+(use-package project
+  :config
+  (setq project-switch-commands 'project-find-regexp))
 #+end_src
 
 ** Magit
@@ -2433,6 +2273,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
     ("e" "bottom" end-of-buffer)
     ("g" "top" aleks/goto-line)
     ("d" "definition (xref)" xref-find-definitions)
+    ("r" "references (xref)" xref-find-references)
     ("h" "beginning of line" beginning-of-line)
     ("l" "end of line" end-of-line)
     ("s" "first non-blank-line" beginning-of-line-text)]
@@ -2444,9 +2285,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
     "Avy"
     ("c" "goto char" avy-goto-char)
     ("L" "got line" avy-goto-line)]
-   ["LSP"
-    ("r" "references" lsp-ui-peek-find-references)
-    "Files"
+   ["Files"
     ("f" "file at point" find-file-at-point)
     ("a" "last file" pop-global-mark)]])
 #+end_src
@@ -2567,7 +2406,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    ("C-S-c" . cua-copy-region)
    ("<f2>" . flycheck-next-error)
    ("S-<f2>" . flycheck-previous-error)
-   ("<f6>" . lsp-rename))
+   ("<f6>" . eglot-rename))
   :custom
   (meow-word-thing 'hxword)
   (meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
