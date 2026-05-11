@@ -1525,7 +1525,9 @@ Language Server Protocol support using built-in =eglot=.
 (use-package eglot
   :commands (eglot eglot-ensure)
   :hook
-  (prog-mode . eglot-ensure)
+  (prog-mode . (lambda ()
+                 (unless (derived-mode-p 'json-mode 'json-ts-mode)
+                   (eglot-ensure))))
   :bind (("M-RET" . eglot-code-actions)
          ("M-d" . eglot-find-type-definition)
          ("M-D" . xref-find-references)))
