@@ -1517,6 +1517,43 @@ Read =.editorconfig= files and adjust settings correspondingly.
     :config (editorconfig-mode 1))
 #+END_SRC
 
+** Eglot
+
+Language Server Protocol support using built-in =eglot=.
+
+#+begin_src emacs-lisp
+(use-package eglot
+  :commands (eglot eglot-ensure)
+  :hook
+  (prog-mode . eglot-ensure)
+  :bind (("M-RET" . eglot-code-actions)
+         ("M-d" . eglot-find-type-definition)
+         ("M-D" . xref-find-references)))
+
+(use-package eglot-typescript-preset
+  :custom
+  (eglot-typescript-preset-auto-setup nil)
+  :config
+  (setopt eglot-typescript-preset-lsp-server 'rass)
+  (eglot-typescript-preset-setup))
+
+(use-package flymake
+  :after eglot
+  :hook (prog-mode . flymake-mode))
+
+(use-package consult-eglot
+  :after (eglot consult)
+  :bind (("C-c C-j" . consult-eglot-symbols)))
+
+(use-package xref
+  :custom
+  (xref-show-definitions-function #'xref-show-definitions-completing-read))
+
+(use-package project
+  :config
+  (setq project-switch-commands 'project-find-regexp))
+#+end_src
+
 ** Embark
 
 #+begin_src emacs-lisp
@@ -1664,7 +1701,6 @@ This guesses the language a text is in per-paragraph. This means that you can co
                               (pl . ("pl_PL" "Polish")))))
 #+end_src
 
-
 ** Hemacs
 
 My own layer on top of meow to bring editing shortcuts closer to Helix.
@@ -1692,43 +1728,6 @@ For-pay search engine with an API.
   (kagi-summarizer-engine "cecil")
   (kagi-summarizer-default-laungage "EN")
   (kagi-summarizer-cache t))
-#+end_src
-
-** Eglot
-
-Language Server Protocol support using built-in =eglot=.
-
-#+begin_src emacs-lisp
-(use-package eglot
-  :commands (eglot eglot-ensure)
-  :hook
-  (prog-mode . eglot-ensure)
-  :bind (("M-RET" . eglot-code-actions)
-         ("M-d" . eglot-find-type-definition)
-         ("M-D" . xref-find-references)))
-
-(use-package eglot-typescript-preset
-  :custom
-  (eglot-typescript-preset-auto-setup nil)
-  :config
-  (setopt eglot-typescript-preset-lsp-server 'rass)
-  (eglot-typescript-preset-setup))
-
-(use-package flymake
-  :after eglot
-  :hook (prog-mode . flymake-mode))
-
-(use-package consult-eglot
-  :after (eglot consult)
-  :bind (("C-c C-j" . consult-eglot-symbols)))
-
-(use-package xref
-  :custom
-  (xref-show-definitions-function #'xref-show-definitions-completing-read))
-
-(use-package project
-  :config
-  (setq project-switch-commands 'project-find-regexp))
 #+end_src
 
 ** Magit
