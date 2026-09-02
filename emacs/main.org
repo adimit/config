@@ -2438,7 +2438,7 @@ The context definitions are in =private.org=.
 
 =set-from-line= manages identities: always answer with the =to:= email address when it's to one of my private email addresses. Manage mailing list identities separately (I know of no automatic way, unfortunately.)
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun aleks/set-from-line ()
   "Set From: address based on To: address of original email.  Also set mailing list addresses."
   (when mu4e-compose-parent-message
