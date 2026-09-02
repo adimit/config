@@ -260,10 +260,3 @@ if command -v fnm >/dev/null && [ (tty) != /dev/tty1 ]
     fnm env --use-on-cd --shell fish --log-level error | source
     fnm completions --shell fish --log-level error | source
 end
-
-log_if_tty "Loaded fnm, loading niri."
-
-# If we've got Niri, and we're running from TTY1, launch Niri
-if command -v niri-session >/dev/null && [ (tty) = /dev/tty1 ]
-    exec niri-session
-end
