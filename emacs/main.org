@@ -1635,7 +1635,13 @@ Ignores comments"
 (use-package flycheck
   ;; setting the load path so flycheck knows about includes
   :custom (flycheck-emacs-lisp-load-path 'inherit)
-  :config (global-flycheck-mode))
+  :config
+  (global-flycheck-mode)
+  ;; flycheck's built-in org-lint checker is incompatible with the report
+  ;; format of Org ≥9.7 and signals wrong-type-argument errors.  Remove it
+  ;; from the checker registry; flycheck-disabled-checkers is unsuitable
+  ;; here because it is automatically buffer-local.
+  (setq flycheck-checkers (delq 'org-lint flycheck-checkers)))
 #+END_SRC
 
 *** Correct dependencies in eldev projects
@@ -2274,6 +2280,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
     ("g" "top" aleks/goto-line)
     ("d" "definition (xref)" xref-find-definitions)
     ("r" "references (xref)" xref-find-references)
+    ("E" "flymake errors" consult-flymake)
     ("h" "beginning of line" beginning-of-line)
     ("l" "end of line" end-of-line)
     ("s" "first non-blank-line" beginning-of-line-text)]
@@ -2404,8 +2411,8 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    ("C-c w" . dispatch-window-menu)
    ("C-S-v" . cua-paste)
    ("C-S-c" . cua-copy-region)
-   ("<f2>" . flycheck-next-error)
-   ("S-<f2>" . flycheck-previous-error)
+   ("<f2>" . flymake-goto-next-error)
+   ("S-<f2>" . flymake-goto-prev-error)
    ("<f6>" . eglot-rename))
   :custom
   (meow-word-thing 'hxword)
