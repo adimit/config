@@ -114,27 +114,43 @@ function fish_prompt
         set_color normal
     end
 
-    # Current git branch (simplified)
-    set -l git_branch ( git branch 2> /dev/null \
-                      | sed -n -e 's/\* \(.*\)/\1/p' \
-                               -e 's/(detached from \(.*\))/d:\1/p' \
-                               -e 's/(HEAD detached \(at\|from\) \(.*\))/d:\2/p' \
-                               -e 's/^hotfix\//h\//p' \
-                               -e 's/^feature\//f\//p' \
-                      | tail -n 1 | sed -e 's/\(.\{19\}\).\+/\1…/')
-    if set -q $git_branch
-    else
-        set_color --bold $fish_color_quote
-        echo -n $git_branch' '
-        set_color normal
+    # Current VCS status. jj takes precedence over git in colocated repos:
+    # show the current bookmark(s) (first 12 chars) and the unambiguous
+    # change-id prefix. --ignore-working-copy keeps the prompt fast and avoids
+    # snapshotting the working copy on every render.
+    set -l jj_status
+    if command -q jj
+        set jj_status ( jj log --no-graph --ignore-working-copy --color never -r @ \
+            -T 'separate(" ", local_bookmarks.map(|b| b.name().substr(0, 12)).join(","), change_id.shortest().prefix())' \
+            2> /dev/null )
     end
 
-    set username (whoami)
+    if test -n "$jj_status"
+        set_color --bold $fish_color_quote
+        echo -n $jj_status' '
+        set_color normal
+    else
+        # Current git branch (simplified)
+        set -l git_branch ( git branch 2> /dev/null \
+                          | sed -n -e 's/\* \(.*\)/\1/p' \
+                                   -e 's/(detached from \(.*\))/d:\1/p' \
+                                   -e 's/(HEAD detached \(at\|from\) \(.*\))/d:\2/p' \
+                                   -e 's/^hotfix\//h\//p' \
+                                   -e 's/^feature\//f\//p' \
+                          | tail -n 1 | sed -e 's/\(.\{19\}\).\+/\1…/')
+        if test -n "$git_branch"
+            set_color --bold $fish_color_quote
+            echo -n $git_branch' '
+            set_color normal
+        end
+    end
+
+    set username (whoami 2>/dev/null; or echo "")
     set default_color yellow
     set insert_color green
     set visual_color blue
 
-    if [ $username = root ]
+    if [ "$username" = root ]
         set default_color red
         set insert_color red
         set visual_color red
