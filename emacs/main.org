@@ -1417,6 +1417,21 @@ DATE is the format of `calendar-current-date' time is a list
      t)))
 #+end_src
 
+** Claude
+
+#+begin_src emacs-lisp
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C" . claude-code-ide-menu) ; Set your favorite keybinding
+  :custom
+  (claude-code-ide-terminal-backend 'ghostel)
+  :config
+  (claude-code-ide-emacs-tools-setup))
+#+end_src
+
+#+RESULTS:
+: claude-code-ide-menu
+
 ** Code Review
 
 Rudimentary support for code reviews. Missing line numbers, syntax highlighting. The interface is somewhat clunky, but workable. Integrates with forge and thus magit.
@@ -1660,6 +1675,12 @@ In order to be able to ~require~ things in Elisp projects using =eldev= and for 
   (add-hook 'org-src-mode-hook 'disable-checkdoc)
 #+end_src
 
+** Ghostel
+
+#+begin_src emacs-lisp
+(use-package ghostel)
+#+end_src
+
 ** gptel
 
 Allow agent workflows with copilot.
@@ -1780,6 +1801,55 @@ This allows creating a branch from the currently clocked in org-mode task. Using
       (let ((branch-name (aleks/branchify org-clock-current-task)))
         (magit-branch-and-checkout branch-name (magit-read-starting-point "Create and checkout branch starting at"))
         (message "Created and checked out `%s'" branch-name))
+    (message "No current task.")))
+#+end_src
+
+** Majutsu
+
+An integration layer for jujutsu
+
+#+begin_src emacs-lisp
+(use-package majutsu
+  :straight (:host github :repo "0WD0/majutsu")
+  :config
+  (with-eval-after-load 'majutsu-bookmark
+    (transient-append-suffix 'majutsu-bookmark "c"
+      '("o" "from current task" aleks/create-bookmark-from-current-task))))
+#+end_src
+
+*** Integration into org-mode
+
+The jujutsu counterpart to =aleks/create-branch-from-current-task=. It reads a base revision using Majutsu's own =completing-read= prompt — which offers local bookmarks, tags and workspaces as completions, defaulting to =@= — creates a new change on top of it, then points a bookmark named after the currently clocked task at that new change. Like the Magit version it operates on the repository of =default-directory=, so invoke it from a Majutsu buffer (it's wired into the =majutsu-bookmark= transient above) or another buffer inside the target repository.
+
+#+begin_src emacs-lisp
+(defun aleks/jj-bookmarkify (string)
+  "Make STRING a valid jj bookmark name.
+jj bookmark names are stricter than git branch names: only
+alphanumerics and =_ . / + -= are allowed, and the separators
+=. / + -= may not appear at the start or end.  Collapse every run of
+disallowed characters into a single hyphen, then trim leading and
+trailing separators."
+  (let ((sanitized (replace-regexp-in-string "[^A-Za-z0-9_./+-]+" "-" string)))
+    (replace-regexp-in-string (rx (or (seq bos (+ (any "./+-")))
+                                      (seq (+ (any "./+-")) eos)))
+                              "" sanitized)))
+
+(defun aleks/create-bookmark-from-current-task ()
+  "Create a jj bookmark named after the currently clocked org task.
+
+Prompt for a base revision -- Majutsu offers local bookmarks, tags and
+workspaces as completions, defaulting to `@' -- create a new change on
+top of it, and point a bookmark named after the current org task at that
+new change."
+  (interactive)
+  (require 'majutsu)
+  (if (and (boundp 'org-clock-current-task) org-clock-current-task)
+      (let ((bookmark-name (aleks/jj-bookmarkify org-clock-current-task))
+            (base (majutsu-read-single-revset "Create new change on top of")))
+        (if (and (zerop (majutsu-call-jj "new" base))
+                 (zerop (majutsu-run-jj "bookmark" "create" bookmark-name "-r" "@")))
+            (message "Created bookmark `%s' on a new change atop `%s'" bookmark-name base)
+          (message "Failed to create bookmark `%s'" bookmark-name)))
     (message "No current task.")))
 #+end_src
 
