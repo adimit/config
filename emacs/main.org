@@ -824,7 +824,6 @@ Capture templates:
              "- [ ] check emails, teams"
              ,(concat "- [ ] check [[" confluence-tasks-url "][tasks in Confluence]]")
              ,(concat "- [ ] ensure times are [[" time-tracking-url "][tracked for last work]] day")
-             ,(concat "- [ ] " student-board-link)
              "- [ ] [[shell:foot zsh&][log in]]"
              "- [ ] check gW and Google calendars"
              "- [ ] (re-)schedule agenda"
