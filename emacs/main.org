@@ -643,16 +643,17 @@ The Kotlin language server likes to eat gigabytes of RAM, so I only activate it 
 The function =browse-amazon-history-at-point= is useful to get to the Amazon order number from the bank statement itself. Helps with categorisation.
 
 #+BEGIN_SRC emacs-lisp
-  (defun browse-amazon-history-at-point ()
-    "Open amazon.de order history.  The search term is `thing-at-point'."
-    (interactive)
-    (browse-url (concat "https://www.amazon.de/gp/your-account/order-history/?search=" (thing-at-point 'symbol 'no-props))))
+(defun browse-amazon-history-at-point ()
+  "Open amazon.de order history.  The search term is `thing-at-point'."
+  (interactive)
+  (browse-url (concat "https://www.amazon.de/your-orders/search/ref=ppx_yo2ov_dt_b_search?opt=ab&search=" (thing-at-point 'symbol 'no-props))))
 
-  (use-package ledger-mode
-    :mode "hledger\\.journal$" "\\.ledger$")
 
-  (use-package flycheck-ledger
-    :after flycheck ledger-mode)
+(use-package ledger-mode
+  :mode "hledger\\.journal$" "\\.ledger$")
+
+(use-package flycheck-ledger
+  :after flycheck ledger-mode)
 #+END_SRC
 
 ** Lua
@@ -2688,20 +2689,18 @@ Try out =selectrum= as an alternative to =ivy=.
 
 #+begin_src emacs-lisp
 (use-package vertico
-  :straight (vertico :type git :host github :repo "emacs-straight/vertico")
   :init
   (vertico-mode)
   :custom
   (vertico-cycle t))
 
-(use-package vertico-directory
-  :straight (vertico-directory :type git :host github :repo "emacs-straight/vertico" :files ("extensions/*.el"))
-  :after vertico
-  :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word))
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+;; (use-package vertico-directory
+;;   :after vertico
+;;   :bind (:map vertico-map
+;;               ("RET" . vertico-directory-enter)
+;;               ("DEL" . vertico-directory-delete-char)
+;;               ("M-DEL" . vertico-directory-delete-word))
+;;   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package savehist
   :init
