@@ -1551,8 +1551,6 @@ Language Server Protocol support using built-in =eglot=.
   (eglot-typescript-preset-auto-setup nil)
   :config
   (setopt eglot-typescript-preset-lsp-server 'rass)
-  (setopt eglot-typescript-preset-rass-tools
-          '(["tsc" "--lsp" "--stdio"] eslint))
   (eglot-typescript-preset-setup))
 
 (use-package flymake
