@@ -1449,28 +1449,27 @@ Rudimentary support for code reviews. Missing line numbers, syntax highlighting.
   (use-package consult)
 #+end_src
 
-** Company
+** Completion Preview
+
+Emacs 31 ships a built-in =completion-preview-mode= that shows completion candidates inline as ghost text, instead of popping up a separate window. This replaces the earlier Company-based setup. See [[https://protesilaos.com/codelog/2026-08-29-emacs-completion-preview-mode/][Prot's write-up]] for the rationale.
 
 #+begin_src emacs-lisp
-(use-package company
-  :config
-  (company-tng-mode)
+(use-package completion-preview
+  :straight nil
+  :demand t
   :bind
-  (:map company-active-map
-        ("RET" . 'company-complete-selection))
-  :hook
-  (prog-mode . company-mode)
-  :custom
-  (company-minimum-prefix-length 2)
-  (company-selection-wrap-around t)
-  (company-idle-delay 0))
-
-(use-package company-prescient
-  :hook (company-mode . company-prescient-mode))
-
-(use-package company-box
-  :hook
-  (company-mode . company-box-mode))
+  ( :map completion-preview-active-mode-map
+    ("M-i" . completion-preview-insert-word)
+    ("M-n" . completion-preview-next-candidate)
+    ("M-p" . completion-preview-prev-candidate)
+    ("M-<return>" . completion-preview-insert)
+    ;; TAB defers to the *Completions* buffer to show all candidates.
+    ("<tab>" . completion-preview-complete))
+  :config
+  (setq completion-preview-minimum-symbol-length 2)
+  (with-eval-after-load 'org
+    (add-to-list 'completion-preview-commands #'org-self-insert-command))
+  (global-completion-preview-mode 1))
 #+end_src
 
 ** Copilot
