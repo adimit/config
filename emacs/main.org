@@ -718,7 +718,7 @@ Separate agendas for work and personal items. =C-c o a= goes straight to the wor
           (org-agenda-include-diary nil)))
         ("p" "Personal (main.org)" agenda ""
          ((org-agenda-files (list my-org-main-file))))
-        ("b" "Work and personal" agenda ""))) ; org-agenda-files already lists both
+        ("b" "Work and personal" agenda "")))
 
 (defun aleks/org-agenda-work ()
   "Show the agenda for work.org only."
@@ -746,8 +746,10 @@ And here's a plugin to put everything into nice sections, and get a better overv
   :hook
   (org-agenda-mode . org-super-agenda-mode)
   :config
-  (setq ; this essentially resets `org-super-agenda-header-map' to an empty (pass-through) keymap
-   org-super-agenda-header-map (make-sparse-keymap)
+  (setq ; nil, not an empty keymap: headers get this map as both `keymap' and
+        ; `local-map', and an empty `local-map' hides `org-agenda-mode-map'.
+        ; With nil, headers use the same keymaps as the rest of the agenda.
+   org-super-agenda-header-map nil
    org-super-agenda-groups
    '((:name "Work" ; meetings are excluded here, or this group would claim them first
             :and (:file-path "work.org" :not (:todo "MEET")))
