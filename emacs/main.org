@@ -808,6 +808,66 @@ Redisplay images after code block evaluation. Handy if the result of your comput
 
 *** Capture
 
+Review captures link the pull request for the ticket. Feature branches always start with the ticket key (=KNUTH-12345= or =KNUTH-12345-something=), but I don't know the repository when I capture, so this searches the whole organisation. It uses GitHub's search through =ghub= with forge's token, because forge's own database only knows the repositories I track and only as of the last =forge-pull=. Open PRs win; merged or closed ones are only linked if nothing is open. If nothing is found, or the lookup fails, =:REFERENCE:= falls back to the Jira link.
+
+#+begin_src emacs-lisp
+(defvar aleks/github-review-org "itdesign-gmbh"
+  "GitHub organisation searched for pull requests of a Jira ticket.")
+
+(defconst aleks/github-pr-search-query
+  "query($q: String!) {
+     search(query: $q, type: ISSUE, first: 20) {
+       nodes { ... on PullRequest {
+         number title url state headRefName repository { name } } } } }"
+  "GraphQL query for pull requests matching a search string.")
+
+(defvar url-user-agent)
+
+(defun aleks/github-prs-for-ticket (key)
+  "Return PRs in `aleks/github-review-org' whose branch is KEY or starts with KEY.
+Open PRs if there are any, otherwise PRs in any state."
+  (require 'ghub)
+  ;; restclient leaves `url-user-agent' nil when a request never completes,
+  ;; and GitHub rejects requests without a User-Agent.
+  (let ((response (let ((url-user-agent (or url-user-agent 'default)))
+                    (ghub-post "/graphql" nil
+                      :payload `((query . ,aleks/github-pr-search-query)
+                                 (variables (q . ,(format "org:%s is:pr head:%s"
+                                                          aleks/github-review-org key))))
+                      :auth 'forge :silent t))))
+    (when-let* ((errors (alist-get 'errors response)))
+      (error "GitHub: %s" (let-alist (car errors) .message)))
+    (let* ((branch-re (rx bos (literal key) (or eos (not digit))))
+           (prs (let ((case-fold-search t))
+                  (seq-filter (lambda (pr)
+                                (when-let* ((head (alist-get 'headRefName pr)))
+                                  (string-match-p branch-re head)))
+                              (let-alist response .data.search.nodes)))))
+      (or (seq-filter (lambda (pr) (equal (alist-get 'state pr) "OPEN")) prs)
+          prs))))
+
+(defun aleks/review-reference-properties (key jira-link)
+  "Property lines linking the PRs of Jira ticket KEY, plus :Ticket: JIRA-LINK.
+The first PR goes into :REFERENCE:, further ones into :REFERENCE+:.  When no
+PR is found, or the lookup fails, :REFERENCE: falls back to JIRA-LINK."
+  (let ((prs (condition-case err
+                 (aleks/github-prs-for-ticket key)
+               (error (message "PR lookup for %s failed: %s" key (error-message-string err))
+                      nil))))
+    (unless prs (message "No pull request found for %s" key))
+    (join-lines
+     (cons (concat ":Ticket: " jira-link)
+           (if prs
+               (seq-map-indexed
+                (lambda (pr i)
+                  (let-alist pr
+                    (format ":REFERENCE%s: %s" (if (zerop i) "" "+")
+                            (org-link-make-string
+                             .url (format "%s#%d: %s" .repository.name .number .title)))))
+                prs)
+             (list (concat ":REFERENCE: " jira-link)))))))
+#+end_src
+
 Capture templates:
 
 #+begin_src emacs-lisp
@@ -880,7 +940,7 @@ Capture templates:
            '("* TODO Review %(xjira-org-capture-issue \"KNUTH\") %(xjira-get 'issue) %(xjira-get 'title) :review:"
              "SCHEDULED: %t"
              ":PROPERTIES:"
-             ":REFERENCE: %(eval (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
+             "%(aleks/review-reference-properties (xjira-get 'issue) (xjira-make-org-link (xjira-get 'issue) (xjira-get 'title)))"
              ":Parent: %(eval (xjira-make-org-link (xjira-get 'parent) (xjira-get 'parent-title)))"
              ":Epic: %(eval (xjira-make-org-link (xjira-get 'epic) (xjira-get 'epic-title)))"
              ":Assignee: %(xjira-get 'assignee)"
@@ -3113,9 +3173,21 @@ Winner mode records window manipulation and allows you to undo/redo operations o
 
 An integration for Jira I wrote. The only thing it does is offer a way to capture Jira issues in org-capture templates.
 
+Review captures keep the Jira link in =:Ticket:= because =:REFERENCE:= holds the pull request, so the issue key lookup checks =:Ticket:= before xjira's own =:REFERENCE:= lookup.
+
+#+begin_src emacs-lisp
+(defun aleks/xjira-issue-key-from-ticket ()
+  "Return the Jira key from the entry's :Ticket: property, or nil."
+  (when-let* ((link (org-entry-get (point) "Ticket" t))
+              ((string-match (concat (regexp-quote xjira-host) "/browse/\\([^]]*\\)") link)))
+    (match-string 1 link)))
+#+end_src
+
 #+begin_src emacs-lisp
   (use-package xjira
-    :straight (xjira :type git :host github :repo "adimit/xjira"))
+    :straight (xjira :type git :host github :repo "adimit/xjira")
+    :config
+    (advice-add 'xjira--get-issue-key-at-point :before-until #'aleks/xjira-issue-key-from-ticket))
 #+end_src
 
 The authorisation and host variables are set in auth source.
