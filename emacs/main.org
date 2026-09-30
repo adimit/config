@@ -120,20 +120,21 @@ Tweak various aspects of Emacs' visuals and behaviour.
 Some basic appearance & behaviour settings
 
 #+begin_src emacs-lisp
-  (blink-cursor-mode 0)
-  (global-hl-line-mode)
-  (set-face-attribute hl-line-face nil :underline nil)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (custom-set-variables
-   '(inhibit-startup-screen t)
-   ; prevent emacs from trying to resize the frame
-   '(frame-inhibit-implied-resize t)
-   '(indent-tabs-mode nil)
-   '(initial-scratch-message "")
-   '(mouse-yank-at-point t))
+(blink-cursor-mode 0)
+(global-hl-line-mode)
+(set-face-attribute hl-line-face nil :underline nil)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(setopt
+ show-paren-delay 0.05
+ inhibit-startup-screen t
+ treesit-font-lock-level 2
+ frame-inhibit-implied-resize t
+ indent-tabs-mode nil
+ initial-scratch-message ""
+ mouse-yank-at-point t)
 #+end_src
 
 *** Transparency
@@ -358,6 +359,22 @@ Doom's mode line. Not the prettiest thing in the world, but it just works. There
 
 (use-package nerd-icons
   :if (display-graphic-p))
+#+end_src
+
+** PGTK
+Some optimisations for Emacs on PGTK.
+
+#+begin_src emacs-lisp
+(when (boundp 'pgtk-wait-for-event-timeout)
+  (setopt pgtk-wait-for-event-timeout 0.001
+          pgtk-use-im-context-on-new-connection nil))
+#+end_src
+
+From [[https://www.jamescherti.com/emacs-user-interface-better-responsiveness-and-latency/][here]], limit pauses due to WMs not sending confirmations back (I'm not sure we need that)
+
+#+begin_src emacs-lisp
+(when (display-graphic-p)
+  (modify-frame-parameters nil '((wait-for-wm . nil))))
 #+end_src
 
 ** Scrolling
