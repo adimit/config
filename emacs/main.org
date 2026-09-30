@@ -820,10 +820,20 @@ Capture templates:
          ,(join-lines
            '("* Week %(aleks/get-next-week-number)"
              "** TODO Weekly Review"
-             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 6) '(20 30))"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 4) '(9 00))"
              ":PROPERTIES:"
              ":CREATED: %U"
              ":END:"
+             "- [ ] Glass of Water, or tea"
+             "- [ ] Good Music"
+             "- [ ] Check calendar"
+             "- [ ] Check emails"
+             "- [ ] Check Signal"
+             "- [ ] Re-schedule agenda"
+             "- [ ] Review last week in planner"
+             "- [ ] Go through [[Projects]]"
+             "- [ ] Go through [[Reading]]"
+             "- [ ] Check phone reminders"
              )))
         ("s" "Add task to sprint" entry
          (file+headline my-org-work-file "Tasks")
@@ -887,7 +897,7 @@ Capture templates:
              "- [ ] [[shell:foot zsh&][log in]]"
              ,(concat "- [ ] any [[" sprint-board-link "][open code reviews]]?")
              "- [ ] org: schedule"
-             "- [ ] notebook: block time"
+             "- [ ] planner: block time"
              "")))
         ("S" "Sprint" entry (file my-org-work-file)
          ,(join-lines
