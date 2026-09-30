@@ -573,7 +573,7 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 
-    Mod+E { spawn "~/.local/bin/emacsclient" "-c" "-n"; }
+    Mod+E { spawn "~/.local/bin/emacsclient" "-c" "-n" "-e" "(aleks/org-agenda-work-frame)"; }
     Mod+Z { spawn "~/.cargo/bin/sound"; }
 
     Mod+M { focus-workspace "music"; }
