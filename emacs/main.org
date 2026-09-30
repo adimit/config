@@ -95,8 +95,7 @@ For general package management use use-package, and instruct it to always use st
 
 #+begin_src emacs-lisp
 (straight-use-package 'use-package)
-(custom-set-variables
- '(straight-use-package-by-default t))
+(setopt straight-use-package-by-default t)
 #+end_src
 
 ** Environment
@@ -165,15 +164,14 @@ Use gpg-agent for pinentry so the passphrase is cached across calls.
 No files with =~= everywhere. Prevent creation of lockfiles, as that confuses some watch tasks (notably webpack dev server.)
 
 #+BEGIN_SRC emacs-lisp
-(custom-set-variables
- '(backup-directory-alist `(("." . "~/.saves")))
- '(delete-old-versions t)
- '(kept-new-versions 6)
- '(kept-old-versions 2)
- '(version-control t)
- '(backup-by-copying t)
- '(make-backup-files t)
- '(create-lockfiles nil))
+(setopt backup-directory-alist `(("." . "~/.saves"))
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t
+        backup-by-copying t
+        make-backup-files t
+        create-lockfiles nil)
 #+END_SRC
 
 ** Calendar
@@ -336,10 +334,9 @@ These are triggered after [[Theme]] selection.
 Handle specific file types. This is used especially by =ein-python=.
 
 #+begin_src emacs-lisp
-  (custom-set-variables
-   '(mailcap-user-mime-data
-     '((viewer . "eog %s")
-       (type . "image/.*"))))
+  (with-eval-after-load 'mailcap
+    (setopt mailcap-user-mime-data
+            '(("eog %s" "image/.*" nil))))
 #+end_src
 
 ** Mode Line
@@ -382,13 +379,12 @@ From [[https://www.jamescherti.com/emacs-user-interface-better-responsiveness-an
 This mimics helix editor: scroll one line at a time, leaving some margin at the edges:
 
 #+begin_src emacs-lisp
-  (custom-set-variables
-   '(mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-   '(mouse-wheel-progressive-speed nil)
-   '(mouse-wheel-follow-mouse 't)
-   '(scroll-step 1)
-   '(scroll-margin 6)
-   '(scroll-conservatively 101))
+  (setopt mouse-wheel-scroll-amount '(1 ((shift) . 1))
+          mouse-wheel-progressive-speed nil
+          mouse-wheel-follow-mouse t
+          scroll-step 1
+          scroll-margin 6
+          scroll-conservatively 101)
 #+end_src
 
 The weird thing here is =scroll-conservatively=. It controls how Emacs scrolls once the point moves out of view. The default (0) means that it will always recenter the screen on the point. A value greater than 100 means that it will never do that, and always just try to scoot the buffer so the cursor is visible on the edge.
@@ -396,20 +392,17 @@ The weird thing here is =scroll-conservatively=. It controls how Emacs scrolls o
 Since Emacs 29, we've got smooth scrolling, too.
 
 #+begin_src emacs-lisp
-  (if (>= emacs-major-version 29)
-      (custom-set-variables
-       '(pixel-scroll-precision-mode t)
-       '(pixel-scroll-precision-large-scroll-height 40.0)
-       '(pixel-scroll-precision-interpolation-factor 8.0)))
+(setopt pixel-scroll-precision-mode t
+        pixel-scroll-precision-large-scroll-height 40.0
+        pixel-scroll-precision-interpolation-factor 8.0)
 #+end_src
 
 The interpolation factor dictates scroll speed.
 
 ** Search
 #+begin_src emacs-lisp
-(custom-set-variables
- '(isearch-lazy-count t)
- '(isearch-yank-on-move t))
+(setopt isearch-lazy-count t
+        isearch-yank-on-move t)
 #+end_src
 
 ** Shell prompt
@@ -471,10 +464,9 @@ Use Prot's awesome Modus theme, vivendi by default. They're built-in.
 We want more generous undo limits, because I make mistakes quite often and I use modern computers.
 
 #+begin_src emacs-lisp
-(custom-set-variables
- '(undo-limit (expt 2 24)) ; 16MiB
- '(undo-strong-limit (expt 2 26)) ; 64MiB
- '(undo-outer-limit (expt 2 28))) ; 256MiB
+(setopt undo-limit (expt 2 24)
+        undo-strong-limit (expt 2 26)
+        undo-outer-limit (expt 2 28))
 #+end_src
 
 ** Utility functions
@@ -720,10 +712,9 @@ The most important files get their own variables.
 Add diary and agenda files.
 
 #+begin_src emacs-lisp
-  (custom-set-variables
-   '(org-agenda-include-diary t)
-   '(org-agenda-files `(,my-org-main-file ,my-org-work-file))
-   '(diary-file (concat (file-name-as-directory org-directory) "diary")))
+  (setopt org-agenda-include-diary t
+          org-agenda-files `(,my-org-main-file ,my-org-work-file)
+          diary-file (concat (file-name-as-directory org-directory) "diary"))
 #+end_src
 
 Separate agendas for work and personal items. =C-c o a= goes straight to the work agenda, which leaves out the diary; the dispatcher on =C-c o A= also offers the personal and combined ones.
@@ -960,10 +951,9 @@ Only works with the new (as of summer 2021) org citation support.
 We set the export backend to biblatex for latex.
 
 #+begin_src emacs-lisp
-  (custom-set-variables
-   '(org-cite-export-processors
-     '((latex biblatex)
-       (t csl))))
+  (setopt org-cite-export-processors
+          '((latex biblatex nil nil)
+            (t csl nil nil)))
 #+end_src
 
 *** Contrib
@@ -981,26 +971,22 @@ We set the export backend to biblatex for latex.
 And we set a lot of configuration options for org.
 
 #+begin_src emacs-lisp
-(custom-set-variables
- '(org-tags-column 0) ; alignment broken with variable pitch
- '(org-confirm-babel-evaluate nil) ; don't prompt when evaluating
- '(org-startup-folded t)
- '(org-hide-emphasis-markers t)
- '(org-babel-confirm-evaluate nil)
- '(org-log-into-drawer t)
- '(org-catch-invisible-edits 'show-and-error)
- '(org-special-ctrl-a/e t)
- '(org-log-into-drawer t)
- '(org-ellipsis "…")
- '(org-fontify-whole-heading-line t)
- '(org-pretty-entities t)
- '(org-agenda-tags-column 0)
- '(org-edit-src-content-indentation 0)
- '(org-image-actual-width nil) ; Take the width from ORG_ATTRs
- '(org-outline-path-complete-in-steps nil) ; use a flat list instead of hierarchichal steps
- '(org-refile-targets
-   '((nil . (:maxlevel . 4)))) ; don't descend more than 4 levels when refiling
- '(org-footnote-section nil)) ; place footnotes in same section
+(setopt org-tags-column 0 ; alignment broken with variable pitch
+        org-confirm-babel-evaluate nil ; don't prompt when evaluating
+        org-startup-folded 'fold
+        org-hide-emphasis-markers t
+        org-fold-catch-invisible-edits 'smart
+        org-special-ctrl-a/e t
+        org-log-into-drawer t
+        org-ellipsis "…"
+        org-fontify-whole-heading-line t
+        org-pretty-entities t
+        org-agenda-tags-column 0
+        org-edit-src-content-indentation 0
+        org-image-actual-width nil ; Take the width from ORG_ATTRs
+        org-outline-path-complete-in-steps nil ; use a flat list instead of hierarchichal steps
+        org-refile-targets '((nil . (:maxlevel . 4))) ; don't descend more than 4 levels when refiling
+        org-footnote-section nil) ; place footnotes in same section
 #+end_src
 
 *** dslide
@@ -3100,7 +3086,7 @@ A little helper function to allow quick retrievals of raw contents from a URL. I
 Switch on highlighting of trailing white space, and provide a facility to turn it off on a per-mode base, as for some modes it's not useful.
 
 #+begin_src emacs-lisp
-(custom-set-variables '(show-trailing-whitespace t))
+(setopt show-trailing-whitespace t)
 
 (defun aleks/disable-show-trailing-whitespace ()
     "Disable trailing whitespace."
