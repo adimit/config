@@ -38,6 +38,13 @@ alias icat 'kitty +kitten icat'
 alias stand 'linak-controller --move-to stand'
 alias sit 'linak-controller --move-to sit'
 
+## Abbr
+
+abbr -a je 'jj edit'
+abbr -a jn 'jj new'
+abbr -a jg 'jj sync'
+abbr -a jf 'jj git fetch'
+
 function ssh
     TERM=screen-256color command ssh $argv
 end
@@ -250,7 +257,7 @@ end
 # pnpm
 set -gx PNPM_HOME "/home/adi@itd.local/.local/share/pnpm"
 if not string match -q -- "$PNPM_HOME/bin" $PATH
-  set -gx PATH "$PNPM_HOME/bin" $PATH
+    set -gx PATH "$PNPM_HOME/bin" $PATH
 end
 # pnpm end
 
