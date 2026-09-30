@@ -739,6 +739,28 @@ nothing to print."
   nil)
 #+end_src
 
+Inside the agenda, =V= opens a small menu for switching between those views without going through the dispatcher. The switch keeps the dates on screen, so if you're looking at next week in the work agenda, =V p= shows next week's personal agenda.
+
+#+begin_src emacs-lisp
+(defun aleks/org-agenda-switch-view (key)
+  "Show the agenda custom command KEY for the dates on screen.
+From an agenda buffer, keep its start day and span instead of
+jumping back to the current week."
+  (let ((org-agenda-start-day org-starting-day)
+        (org-agenda-span (or org-agenda-current-span org-agenda-span)))
+    (org-agenda nil key)))
+
+(transient-define-prefix aleks/org-agenda-view-menu ()
+  "Switch between the custom agenda views."
+  ["Agenda view"
+   ("w" "Work (work.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "w")))
+   ("p" "Personal (main.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "p")))
+   ("b" "Work and personal" (lambda () (interactive) (aleks/org-agenda-switch-view "b")))])
+
+(with-eval-after-load 'org-agenda
+  (keymap-set org-agenda-mode-map "V" #'aleks/org-agenda-view-menu))
+#+end_src
+
 And here's a plugin to put everything into nice sections, and get a better overview of the agenda
 
 #+begin_src emacs-lisp
