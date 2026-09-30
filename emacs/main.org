@@ -1542,6 +1542,9 @@ Language Server Protocol support using built-in =eglot=.
 #+begin_src emacs-lisp
 (use-package eglot
   :commands (eglot eglot-ensure)
+  :custom
+  (eglot-sync-connect nil)
+  (eglot-events-buffer-config '(:size 0 :format short))
   :hook
   (prog-mode . (lambda ()
                  (unless (derived-mode-p 'json-mode 'json-ts-mode)
@@ -1549,12 +1552,114 @@ Language Server Protocol support using built-in =eglot=.
   :bind (("M-RET" . eglot-code-actions)
          ("M-d" . eglot-find-type-definition)
          ("M-D" . xref-find-references)))
+#+end_src
+
+*** TypeScript through =rass=
+
+=eglot-typescript-preset= drives TS/JS through =rass= (rassumfrassum), which
+multiplexes =typescript-language-server= and =eslint= behind one eglot
+connection. Two unrelated breakages currently stack on that combination, and
+both have to be patched around before a single diagnostic reaches flymake.
+
+The first is a contract change in rass. Version 0.3.4 turned
+=LspLogic.process_request= from an in-place mutator into a transformer:
+=rassum.py= now forwards whatever it returns and omits =params= entirely when
+that value is falsy. The =rass-preset.tpl.py= template shipped by
+=eglot-typescript-preset= (still unfixed in its v1.0.0) is written against the
+0.3.3 contract and calls =super().process_request= without returning it, so
+every request rass relays arrives at the child servers with no =params= at
+all. Both children reject =initialize= with =-32602 Request initialize defines
+1 params but received none=, rass merges no capabilities from either, and
+eglot is left with neither diagnostics nor =:codeActionProvider= — which is
+the "Unsupported or ignored LSP capability" that =M-RET= reports.
+
+The second is TypeScript discovery. =typescript-language-server= 6.0.0 and
+=typescript= 6.0.3 are both installed globally with pnpm, which isolates every
+package in its own content-addressed directory, so the server finds no
+=typescript= sibling to walk up to, fails =initialize= with "Could not find a
+valid TypeScript installation", and exits. pnpm does repoint the =tsserver=
+shim at the current content hash on every install, so the hash is re-read from
+that shim instead of hardcoded, and handed to the server through =NODE_PATH=.
+That is a fallback resolution path, so a project's own =node_modules= still
+takes precedence and the eslint child is unaffected. This mirrors the Helix
+workaround in [[file:~/.config/helix/languages.toml][languages.toml]], which
+shells out to =~/.local/bin/helix-tsls=; here it is done in elisp instead.
+
+The two are independent, and the order matters when debugging: without the
+first fix nothing initializes at all, and with it alone eslint comes up on its
+own while TypeScript stays silent. Both hang off private
+=eglot-typescript-preset= functions, so both are worth re-checking whenever
+that package or rass is upgraded — if either name goes away the advice stops
+firing silently and the old symptoms come back.
+
+#+begin_src emacs-lisp
+(defun aleks/pnpm-global-node-modules ()
+  "Return pnpm's global `node_modules' directory that holds TypeScript.
+Return nil when it cannot be located.  The directory name embeds a
+content hash that changes on every global install, so read it back out
+of the `tsserver' shim, which pnpm regenerates at the same time."
+  (when-let* ((shim (or (executable-find "tsserver")
+                        (expand-file-name
+                         "bin/tsserver"
+                         (or (getenv "PNPM_HOME") "~/.local/share/pnpm"))))
+              ((file-readable-p shim))
+              (bin-dir (file-name-directory shim)))
+    (with-temp-buffer
+      (insert-file-contents shim)
+      (goto-char (point-max))
+      (when (re-search-backward
+             (rx (or bol (any "=\"' "))
+                 (group (+ (not (any " \"'\n"))) "/node_modules")
+                 "/typescript" (any "/\"' "))
+             nil t)
+        (let* ((raw (replace-regexp-in-string
+                     (rx bos "$basedir/") "" (match-string 1) t t))
+               (dir (expand-file-name raw bin-dir)))
+          (and (file-directory-p (expand-file-name "typescript/lib" dir))
+               dir))))))
+
+(defun aleks/eglot-refresh-node-path (&rest _)
+  "Put pnpm's global `node_modules' at the front of NODE_PATH.
+Runs while eglot is assembling a rass server contact, so the content
+hash is re-resolved after every global pnpm install rather than being
+frozen at the value it had when Emacs started.
+
+Hooked onto preset-path generation rather than onto
+`eglot-typescript-preset--server-contact' itself: eglot dispatches on
+the `func-arity' of a contact function, and advice widens that to
+\\(&rest args), which makes eglot pass an extra argument the contact
+function does not accept."
+  (when-let* ((dir (aleks/pnpm-global-node-modules)))
+    (setenv "NODE_PATH"
+            (string-join
+             (cons dir (seq-remove
+                        (lambda (entry) (equal entry dir))
+                        (split-string (or (getenv "NODE_PATH") "")
+                                      path-separator t)))
+             path-separator))))
+
+(defun aleks/rass-preset-return-process-request (orig-fun name replacements)
+  "Restore the `return' rass 0.3.4 expects from the generated preset.
+The regexp matches only the unreturned call, so this becomes a no-op as
+soon as the template upstream adopts the newer contract itself."
+  (let ((rendered (funcall orig-fun name replacements)))
+    (if (equal name "rass-preset.tpl.py")
+        (replace-regexp-in-string
+         (rx bol (group (* blank))
+             "super().process_request(method, params, server)" eol)
+         "\\1return super().process_request(method, params, server)"
+         rendered t)
+      rendered)))
 
 (use-package eglot-typescript-preset
   :custom
   (eglot-typescript-preset-auto-setup nil)
   :config
   (setopt eglot-typescript-preset-lsp-server 'rass)
+  (advice-add 'eglot-typescript-preset--render-template :around
+              #'aleks/rass-preset-return-process-request)
+  (advice-add 'eglot-typescript-preset--rass-preset-path :before
+              #'aleks/eglot-refresh-node-path)
   (eglot-typescript-preset-setup))
 
 (use-package flymake
