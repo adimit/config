@@ -44,6 +44,12 @@ abbr -a je 'jj edit'
 abbr -a jn 'jj new'
 abbr -a jg 'jj sync'
 abbr -a jf 'jj git fetch'
+abbr -a jd 'jj diff'
+abbr -a jm 'jj describe -m'
+abbr -a pi 'pnpm install'
+abbr -a pd 'pnpm dev'
+abbr -a pt 'pnpm test'
+abbr -a p pnpm
 
 function ssh
     TERM=screen-256color command ssh $argv
