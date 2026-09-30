@@ -835,14 +835,21 @@ Capture templates:
              ":END:"
              "- [ ] Glass of Water, or tea"
              "- [ ] Good Music"
+             "- [ ] Clean Desk"
+             "- [ ] Clean backpack"
              "- [ ] Check calendar"
+             "- [ ] Paper? Letters?"
+             "- [ ] 3 Minutes: collect thoughts on paper"
              "- [ ] Check emails"
              "- [ ] Check Signal"
              "- [ ] Re-schedule agenda"
              "- [ ] Review last week in planner"
              "- [ ] Go through [[Projects]]"
              "- [ ] Go through [[Reading]]"
+             "- [ ] Make/review notes on current reading"
              "- [ ] Check phone reminders"
+             "- [ ] Contacts with Family, Friends?"
+             "- [ ] Snack"
              )))
         ("s" "Add task to sprint" entry
          (file+headline my-org-work-file "Tasks")
