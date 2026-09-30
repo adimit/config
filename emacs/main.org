@@ -1944,18 +1944,16 @@ trailing separators."
 (defun aleks/create-bookmark-from-current-task ()
   "Create a jj bookmark named after the currently clocked org task.
 
-Prompt for a base revision -- Majutsu offers local bookmarks, tags and
-workspaces as completions, defaulting to `@' -- create a new change on
-top of it, and point a bookmark named after the current org task at that
-new change."
+Prompt for a revision -- Majutsu offers local bookmarks, tags and
+workspaces as completions, defaulting to `@' -- point a bookmark named
+after the current org task at the selected change."
   (interactive)
   (require 'majutsu)
   (if (and (boundp 'org-clock-current-task) org-clock-current-task)
       (let ((bookmark-name (aleks/jj-bookmarkify org-clock-current-task))
-            (base (majutsu-read-single-revset "Create new change on top of")))
-        (if (and (zerop (majutsu-call-jj "new" base))
-                 (zerop (majutsu-run-jj "bookmark" "create" bookmark-name "-r" "@")))
-            (message "Created bookmark `%s' on a new change atop `%s'" bookmark-name base)
+            (base (majutsu-read-single-revset "Create bookmark on")))
+        (if (zerop (majutsu-run-jj "bookmark" "create" bookmark-name "-r" "@"))
+            (message "Created bookmark `%s' on `%s'" bookmark-name base)
           (message "Failed to create bookmark `%s'" bookmark-name)))
     (message "No current task.")))
 #+end_src
