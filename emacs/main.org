@@ -822,14 +822,18 @@ Capture templates:
              ":PROPERTIES:"
              ":END:"
              ""
-             "- [ ] check emails, teams"
+             "- [ ] [[https://outlook.office.com][emails]]"
+             "- [ ] teams"
              ,(concat "- [ ] check [[" confluence-tasks-url "][tasks in Confluence]]")
              ,(concat "- [ ] ensure times are [[" time-tracking-url "][tracked for last work]] day")
+             "- [ ] check work appointments"
+             "- [ ] private [[https://app.fastmail.com/mail/Inbox][emails]]"
+             "- [ ] private [[https://app.fastmail.com/calendar/week][calendar]]"
+             "- [ ] phone reminders"
              "- [ ] [[shell:foot zsh&][log in]]"
-             "- [ ] check gW and Google calendars"
-             "- [ ] (re-)schedule agenda"
              ,(concat "- [ ] any [[" sprint-board-link "][open code reviews]]?")
-             "- [ ] block time for today"
+             "- [ ] org: schedule"
+             "- [ ] notebook: block time"
              "")))
         ("S" "Sprint" entry (file my-org-work-file)
          ,(join-lines
