@@ -889,7 +889,7 @@ Capture templates:
          ,(join-lines
            '("* Week %(aleks/get-next-week-number)"
              "** TODO Weekly Review"
-             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 4) '(9 00))"
+             "SCHEDULED: %(aleks/org-active-timestamp-from-gregorian (aleks/gregorian-relative-to 4) '(8 30))"
              ":PROPERTIES:"
              ":CREATED: %U"
              ":END:"
