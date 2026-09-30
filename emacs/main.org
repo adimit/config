@@ -1845,9 +1845,7 @@ My own layer on top of meow to bring editing shortcuts closer to Helix.
 #+begin_src emacs-lisp
 (use-package hemacs
   :straight `(hemacs :type git :repo ,(expand-file-name "src/hemacs" (getenv "HOME")))
-  :after (meow)
-  :config
-  (hemacs--register-hxword))
+  :after (meow))
 #+end_src
 
 ** Kagi
@@ -2520,13 +2518,13 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("]" . meow-end-of-thing)
    '("a" . meow-append)
    '("A" . aleks/append-line)
-   '("b" . meow-back-word)
+   '("b" . hemacs-move-prev-word-start)
    '("B" . meow-back-symbol)
    '("C" . aleks/change-line)
    '("c" . meow-change)
    '("d" . aleks/delete)
    '("D" . meow-kill)
-   '("e" . meow-next-symbol)
+   '("e" . hemacs-move-next-word-end)
    '("f" . meow-find)
    '("F" . aleks/meow-find-backwards)
    '("g" . dispatch-goto-menu)
@@ -2555,7 +2553,7 @@ This menu opens when you  press =g=. It's similar to Helix' menu, but not quite 
    '("u" . meow-undo)
    '("U" . undo-redo)
    '("v" . meow-visit)
-   '("w" . meow-next-word)
+   '("w" . hemacs-move-next-word-start)
    '("W" . meow-mark-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
