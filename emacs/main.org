@@ -750,12 +750,13 @@ jumping back to the current week."
         (org-agenda-span (or org-agenda-current-span org-agenda-span)))
     (org-agenda nil key)))
 
-(transient-define-prefix aleks/org-agenda-view-menu ()
-  "Switch between the custom agenda views."
-  ["Agenda view"
-   ("w" "Work (work.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "w")))
-   ("p" "Personal (main.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "p")))
-   ("b" "Work and personal" (lambda () (interactive) (aleks/org-agenda-switch-view "b")))])
+(with-eval-after-load 'transient
+  (transient-define-prefix aleks/org-agenda-view-menu ()
+    "Switch between the custom agenda views."
+    ["Agenda view"
+     ("w" "Work (work.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "w")))
+     ("p" "Personal (main.org)" (lambda () (interactive) (aleks/org-agenda-switch-view "p")))
+     ("b" "Work and personal" (lambda () (interactive) (aleks/org-agenda-switch-view "b")))]))
 
 (with-eval-after-load 'org-agenda
   (keymap-set org-agenda-mode-map "V" #'aleks/org-agenda-view-menu))
