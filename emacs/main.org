@@ -1640,10 +1640,11 @@ Delete the currently active file & kill its buffer.
 
 ** Diff-hl
 
-Display git diff hint in the gutter.
+Display git diff hint in the gutter. The =:hook= alone would defer loading until Magit first refreshes, so =:demand= it — otherwise buffers in repositories I only touch through Majutsu never get markers.
 
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
+    :demand t
     :hook (magit-post-refresh . diff-hl-magit-post-refresh)
     :config (global-diff-hl-mode)
     :custom (diff-hl-side 'right))
@@ -2091,6 +2092,69 @@ after the current org task at the selected change."
             (message "Created bookmark `%s' on `%s'" bookmark-name base)
           (message "Failed to create bookmark `%s'" bookmark-name)))
     (message "No current task.")))
+#+end_src
+
+*** Change markers in the gutter
+
+=diff-hl= goes through =vc-git=, which works in colocated repositories: jj keeps git's =HEAD= at =@-=, so diff-hl's ordinary markers show exactly what changed in =@=. On top of that, diff-hl can draw a second layer of flat markers for the changes between a /reference revision/ and =HEAD=. Pointing that reference at where the current stack forks off trunk shows the whole stack — or, when reviewing, the whole PR — underneath the markers for =@=.
+
+The base is the fork point rather than the nearest immutable ancestor, because a PR's head is published and therefore immutable: that base would collapse to =@-= and hide the PR. It's also not bare =trunk()=, which would paint trunk's newer commits into the gutter (reversed) whenever trunk has moved on since the branch was cut.
+
+Majutsu refreshes its buffers after every jj operation, which is when =@-= or the fork point may have moved, so hook the reference update in there. Graph changes made from a terminal need =M-x aleks/diff-hl-jj-refresh=, or any Majutsu refresh.
+
+#+begin_src emacs-lisp
+(defconst aleks/diff-hl-jj-reference-revset "fork_point(trunk() | @) ~ root()"
+  "Revset for the commit diff-hl's reference layer is drawn against.
+This is the merge base of trunk and the working copy, i.e. what a PR's
+diff is computed against.  Excluding `root()' leaves repositories without
+a trunk with no reference layer, rather than one that marks every line.")
+
+(defun aleks/diff-hl-jj-reference ()
+  "Return the commit id of `aleks/diff-hl-jj-reference-revset', or nil.
+Ignore the working copy: the answer only depends on the commit graph, and
+snapshotting from Emacs could race with jj running in a terminal."
+  (let ((id (majutsu-jj-string "log" "--ignore-working-copy" "--no-graph"
+                               "-r" aleks/diff-hl-jj-reference-revset
+                               "-T" "commit_id")))
+    (unless (string-empty-p (or id ""))
+      id)))
+
+(defun aleks/diff-hl-jj-refresh ()
+  "Point diff-hl at the jj fork point of the current project and redraw."
+  (interactive)
+  (when-let* ((proj (project-current)))
+    (if-let* ((rev (aleks/diff-hl-jj-reference)))
+        (diff-hl-set-reference-rev-in-project-internal rev proj)
+      ;; Only drop a stale reference; resetting messages and redraws.
+      (when (assoc (expand-file-name (project-root proj))
+                   diff-hl-reference-revision-projects-cache)
+        (diff-hl-reset-reference-rev-in-project proj)))))
+
+(defvar aleks/diff-hl-jj--refresh-timer nil)
+
+(defun aleks/diff-hl-jj-schedule-refresh ()
+  "Refresh diff-hl for this repository once Majutsu is done refreshing.
+A single operation refreshes several Majutsu buffers, each running
+`majutsu-refresh-buffer-hook', so collapse them into one refresh."
+  (when (timerp aleks/diff-hl-jj--refresh-timer)
+    (cancel-timer aleks/diff-hl-jj--refresh-timer))
+  (let ((dir default-directory))
+    (setq aleks/diff-hl-jj--refresh-timer
+          (run-with-idle-timer 0.1 nil
+                               (lambda ()
+                                 (let ((default-directory dir))
+                                   (aleks/diff-hl-jj-refresh)))))))
+
+(defun aleks/diff-hl-jj-maybe-init ()
+  "Set the reference revision for a jj buffer that has none yet.
+`diff-hl-mode' copies the per-project reference into new buffers, so jj
+only needs asking for the first file of a project opened this session."
+  (when (and (not (local-variable-p 'diff-hl-reference-revision))
+             (locate-dominating-file default-directory ".jj"))
+    (aleks/diff-hl-jj-refresh)))
+
+(add-hook 'majutsu-refresh-buffer-hook #'aleks/diff-hl-jj-schedule-refresh)
+(add-hook 'diff-hl-mode-on-hook #'aleks/diff-hl-jj-maybe-init)
 #+end_src
 
 ** Meow
