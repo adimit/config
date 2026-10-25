@@ -1,0 +1,51 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "Aleksandar Dimitrov"
+email = "adimit@users.noreply.github.com"
+
+[ui]
+default-command = "l"
+
+[aliases]
+# daily
+e   = ["edit"]                          # jj e zs
+m   = ["describe", "-m"]                # jj m "fix thing"
+n   = ["new"]                           # jj n X   (you never need -r with new)
+nt  = ["new", "trunk()"]                # start fresh work off master/main@origin
+nb  = ["new", "-B", "@", "-m"]          # jj nb "msg": insert a change below @
+d   = ["diff"]
+dr  = ["diff", "-r"]                    # jj dr X  (diff's bare arguments are paths, so -r stays)
+
+# history surgery
+reb = ["rebase", "--onto", "trunk()"]   # jj rt -s X   (replaces "-s X --onto master@origin")
+fixup = ["squash", "--into", "@-", "--"]  # jj sqp path/to/file
+
+# bookmarks & remote
+set  = ["bookmark", "set"]
+u  = ["bookmark", "advance"]
+track  = ["bookmark", "track", "--remote=origin"]
+fetch = ["git", "fetch"]
+push  = ["git", "push"]
+f   = ["git", "fetch"]
+p   = ["git", "push"]
+
+sync = ["util", "exec", "--", "sh", "-c", "jj git fetch && jj rebase -s 'roots(trunk()..@)' -o 'trunk()'"]
+
+l = ["log", "--no-pager", "-T", "builtin_log_oneline", "-n", "10"]
+
+
+[signing]
+backend = "gpg"
+key = "8D441B5047DF6CC7"
+behavior = "drop"
+
+[git]
+sign-on-push = true
+
+[[--scope]]
+--when.repositories = ["~/config", "~/src/sound", "~/src/hemacs", "~/src/xjira"]
+[--scope.user]
+email = "git@aleks.bg"
+[--scope.signing]
+key = "11E41BD481B3BFF4103D245678FC36A605AAE848"
